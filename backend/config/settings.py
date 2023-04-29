@@ -58,7 +58,10 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer', 'Token'),
 }
 
-DRF_STANDARDIZED_ERRORS = {"ENABLE_IN_DEBUG_FOR_UNHANDLED_EXCEPTIONS": True}
+DRF_STANDARDIZED_ERRORS = {
+    "ENABLE_IN_DEBUG_FOR_UNHANDLED_EXCEPTIONS": True,
+    "EXCEPTION_FORMATTER_CLASS": "utils.errors.MyExceptionFormatter"
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

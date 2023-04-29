@@ -19,6 +19,10 @@ The project is structured as follows:
     - `wsgi.py`
     - `asgi.py`
     - `settings.py`
+  
+  - `utils`: Contains necessary "tools" for the project
+    - `errors.py`: Defines error formats (to ensure consistency.)
+    
   - `accounts`:
     - `views.py`
     - `serializers.py`
@@ -31,7 +35,7 @@ Example response:
 
 ```
 {
-    "status": 200,
+    "status": "success",
     "message": "Success",
     "data": {
         "id": 1,
@@ -45,8 +49,8 @@ Example error response:
 
 ```
 {
-    "status": 400,
-    "message": "Bad Request",
-    "error": "The 'name' field is required."
+    "status": "error",
+    "message": "The 'name' field is required."
+    "data": null,
 }
 ```
