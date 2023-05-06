@@ -188,3 +188,7 @@ class UserRoles(APIView):
         return Response({'roles': roles})
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> Squashed commit
