@@ -1,16 +1,18 @@
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
-
-from .views import UserViewSet
-
-
-router = DefaultRouter()
-router.register(r'users', UserViewSet)
+from accounts.views import AdminResetPassword, ChangePassword, FetchUser, LoginAPIView, UserRoles, UserViewSet
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('users/<int:pk>/assign-role/', UserViewSet.as_view({'post': 'assign_role'})),
-    path('users/<int:pk>/roles/', UserViewSet.as_view({'get': 'get_roles'})),
+    path("login", LoginAPIView.as_view(), name="user_login"),
+    path("token/refresh", TokenRefreshView.as_view()),
+    path("user", FetchUser.as_view(), name="fetch_user"),
+    path("password/change", ChangePassword.as_view(), name="password_change"),
+    path("password/admin_reset", AdminResetPassword.as_view(), name="admin_password_reset"),
+    path('users/roles', UserRoles.as_view(), name="user_roles"),
+    path('users', UserViewSet.as_view(), name="users"),
 ]
+    
+
 
 

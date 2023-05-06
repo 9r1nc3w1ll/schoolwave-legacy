@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'rest_framework',
     'rest_framework_simplejwt',
@@ -38,16 +39,13 @@ INSTALLED_APPS = [
     'drf_spectacular',
     "drf_standardized_errors",
     'rest_framework.authtoken',
-    'rest_auth',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',    
-    'rest_auth.registration',
-
+    'django_rename_app',
 
 
     "accounts",
     "school",
+    "class_module",
+    "session"
 ]
 
 AUTH_USER_MODEL = "accounts.User"
@@ -57,6 +55,17 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
+    "DEFAULT_SCHEMA_CLASS" : "drf_spectacular.openapi.AutoSchema"
+}
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE' : 'Schoolwave API Docs'
+}
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE' : 'Schoolwave API Docs'
 }
 
 AUTHENTICATION_BACKENDS = (
@@ -87,6 +96,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'accounts.middleware.audit_log_middleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -170,3 +180,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+FRONTEND_URL = config('FRONTEND_URL')

@@ -15,4 +15,12 @@ class Migration(migrations.Migration):
             name='role',
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
+        migrations.RemoveField(
+            model_name='user',
+            name='approval_status',
+        ),
+        migrations.RemoveField(
+            model_name='user',
+            name='requested_role',
+        ),
     ]
