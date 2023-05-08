@@ -1,9 +1,9 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
-from .serializers import UserSerializer
+from .serializers import LoginSerializer, UserSerializer
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from .models import User
@@ -21,22 +21,28 @@ class LoginAPIView(APIView):
         except Exception as e:
             raise ValidationError(f"{e.args[0]} is required.")
         
-        user = authenticate(request, username=username, password=password)
+        serializer = LoginSerializer(data=request.data)
 
-        if user is not None:
-            update_last_login(None, user)
-            data = {
-                "status": "success",
-                "message": "Login Successful",
-                "data": {
-                    "access_token" : user.tokens["access"],
-                    "refresh_token" : user.tokens["refresh"],
-                    **UserSerializer(user).data
-                }
+        serializer.is_valid(raise_exception=True)
+        
+        user = authenticate(
+            username=serializer.validated_data['username'], 
+            password=serializer.validated_data['password']
+        )
+
+        update_last_login(None, user)
+
+        data = {
+            "status": "success",
+            "message": "Login Successful",
+            "data": {
+                "access_token" : user.tokens["access"],
+                "refresh_token" : user.tokens["refresh"],
+                **UserSerializer(user).data
             }
-            return Response(data)
-        else:
-            raise ValidationError("Invalid credentials")
+        }
+        return Response(data)
+        
 
 
 class FetchUser(APIView):
@@ -88,7 +94,6 @@ class AdminResetPassword(APIView):
     def post(self, request, *args, **kwargs):
 
         data = request.data
-
 
         try:
             user_id = data["user_id"]
