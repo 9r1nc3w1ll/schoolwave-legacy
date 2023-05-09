@@ -37,8 +37,17 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     "drf_standardized_errors",
+    'rest_framework.authtoken',
+    'rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',    
+    'rest_auth.registration',
+
+
 
     "accounts",
+    "school",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
@@ -49,6 +58,12 @@ REST_FRAMEWORK = {
     ),
     "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
 }
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'rest_framework.authentication.TokenAuthentication',
+)
 
 REST_USE_JWT = True
 

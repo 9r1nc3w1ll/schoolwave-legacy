@@ -1,0 +1,26 @@
+useronboarding
+
+http://127.0.0.1:8000/api/auth/user_onboarding/
+
+{
+    "username": "olan",
+    "password": "paword123@!",
+    "email": "olan@example.com",
+    "first_name": "OLa",
+    "last_name": "Sam"
+}
+
+school onboarding
+
+http://127.0.0.1:8000/api/auth/schools/
+
+{
+    "name": "Example School",
+    "description": "This is an example school.",
+    "owner": 1,
+    "date_of_establishment": "2022-01-01",
+    "motto": "Learning is fun!",
+    "website_url": "https://www.example.com",
+    "tag": "31ad4f96-1d60-4f28-83e9-9b24e8fb102c"
+}
+
