@@ -56,7 +56,6 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
     'AUTH_HEADER_TYPES': ('Bearer', 'Token'),
-    'UPDATE_LAST_LOGIN' : True
 }
 
 DRF_STANDARDIZED_ERRORS = {
