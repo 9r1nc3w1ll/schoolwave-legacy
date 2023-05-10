@@ -24,3 +24,86 @@ http://127.0.0.1:8000/api/auth/schools/
     "tag": "31ad4f96-1d60-4f28-83e9-9b24e8fb102c"
 }
 
+http://127.0.0.1:8000/api/auth/users/1/roles/
+
+{
+    "id": 3,
+    "username": "dan",
+    "first_name": "dan",
+    "last_name": "Ola",
+    "email": "alx@example.com",
+    "roles": "student",
+    "approval_status": "n",
+    "requested_role": "student"
+}
+
+
+
+Create User:
+
+Method: POST
+Endpoint: http://localhost:8000/api/users/
+Body (raw JSON):
+json
+Copy code
+{
+  "username": "john_doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+Test:
+json
+Copy code
+pm.test("User created successfully", function () {
+  pm.response.to.have.status(201);
+  var jsonData = pm.response.json();
+  pm.expect(jsonData.username).to.eql("john_doe");
+  pm.expect(jsonData.email).to.eql("john@example.com");
+});
+Read User:
+
+Method: GET
+Endpoint: http://localhost:8000/api/users/{user_id}
+Test:
+json
+Copy code
+pm.test("User retrieved successfully", function () {
+  pm.response.to.have.status(200);
+  var jsonData = pm.response.json();
+  pm.expect(jsonData.username).to.eql("john_doe");
+  pm.expect(jsonData.email).to.eql("john@example.com");
+});
+Update User:
+
+Method: PUT
+Endpoint: http://localhost:8000/api/users/{user_id}
+Body (raw JSON):
+json
+Copy code
+{
+  "username": "john_doe_updated",
+  "email": "john_updated@example.com"
+}
+Test:
+json
+Copy code
+pm.test("User updated successfully", function () {
+  pm.response.to.have.status(200);
+  var jsonData = pm.response.json();
+  pm.expect(jsonData.username).to.eql("john_doe_updated");
+  pm.expect(jsonData.email).to.eql("john_updated@example.com");
+});
+Delete User:
+
+Method: DELETE
+Endpoint: http://localhost:8000/api/users/{user_id}
+Test:
+json
+Copy code
+pm.test("User deleted successfully", function () {
+  pm.response.to.have.status(204);
+  pm.expect(pm.response.text()).to.eql("");
+});
+Make sure to replace {user_id} with the actual ID of the user you want to perform operations on. Adjust the endpoint URL and data according to your specific API setup.
+
+These Postman tests will verify the HTTP response status codes and the returned JSON data, ensuring that the create, read, update, and delete operations are executed successfully.
