@@ -8,7 +8,7 @@ router = DefaultRouter()
 router.register(r'users', UserViewSet)
 
 urlpatterns = [
-    path('users/', include(router.urls)),
+    path('', include(router.urls)),
     path('users/<int:pk>/assign-role/', UserViewSet.as_view({'post': 'assign_role'})),
     path('users/<int:pk>/roles/', UserViewSet.as_view({'get': 'get_roles'})),
 ]
