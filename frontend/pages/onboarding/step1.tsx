@@ -4,6 +4,7 @@ import { setPageTitle } from '../../store/themeConfigSlice';
 import { useRouter } from 'next/router';
 import OnboardingLayout from '@/components/Layouts/OnboardingLayout';
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useMutation } from 'react-query';
 
 type FormValues = {
   firstName: string;
@@ -12,6 +13,7 @@ type FormValues = {
   phone: string;
   password: string;
   confirmpassword: string;
+  username: string
 };
 
 
@@ -21,9 +23,32 @@ const Step1 = () => {
     dispatch(setPageTitle('Contact Form'));
   });
   const router = useRouter();
+  const { mutate, isLoading, error } = useMutation(
+    (post) =>
+      fetch(`${process.env.backend_url}/api/auth/user_onboarding/`, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify(post),
+        headers: {
+          "Content-type": "application/json",
+          "access-Control-Allow-Origin": "allow",
+          "credentials": "include"
+        }
+      }),
+    {
+      onSuccess: async (data) => {
+        console.log("Post added successfully: " );
+      },
+      onError: (error) => {
+        console.log(error);
+      }
+    }
+  );
 
   const { register, handleSubmit } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = data => console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = data => {
+    data.username = data.email
+     mutate(data)};
 
   return (
     <div className="panel m-6 w-full max-w-lg sm:w-[640px]">
@@ -160,3 +185,5 @@ Step1.getLayout = (page: any) => {
 };
 
 export default Step1;
+
+

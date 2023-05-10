@@ -27,7 +27,7 @@ The project is structured as follows:
     - `views.py`
     - `serializers.py`
     - `models.py`
-    - `urls.py`
+    - `urls.py` 
 
 ## Responses
 
