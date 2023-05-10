@@ -96,28 +96,7 @@ class ChangePassword(APIView):
 
 
 
-        try:
-            user_id = data["user_id"]
-            password = data["password"]
-
-            user = User.objects.get(id=user_id)
-        except KeyError as e:
-            raise ValidationError(f'{e.args[0]} is required')
-        except User.DoesNotExist:
-            raise ValidationError("User with given id does not exist.")
         
-        
-        user.set_password(password)
-        
-        user.save()
-
-        resp = {
-            "status": "success",
-            "message": "Password changed successfully.",
-            "data": None
-        }
-        return Response(resp)
-
 
 class PasswordResetRequestView(APIView):
     def post(self, request):
