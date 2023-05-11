@@ -27,7 +27,7 @@ const Step1 = () => {
     (post) =>
       fetch(`${process.env.backend_url}/api/auth/user_onboarding/`, {
         method: "POST",
-        mode: "cors",
+        mode: "no-cors",
         body: JSON.stringify(post),
         headers: {
           "Content-type": "application/json",
