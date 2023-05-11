@@ -1,3 +1,7 @@
+# Environment
+.env
+_schoolwave
+
 # Django #
 *.log
 *.pot

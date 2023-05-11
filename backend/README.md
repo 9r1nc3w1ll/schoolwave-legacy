@@ -4,10 +4,14 @@ This project is built (mainly) using Django REST Framework
 
 ## Installation
 
-1. Clone the repository to your local machine
-2. Install dependencies using `pip install -r requirements.txt`
-3. Set up the database by running `python manage.py migrate`
-4. Start the server using `python manage.py runserver`
+1. Clone the repository to your local machine.
+2. Create a virtual environment (if you haven't already) by running `make env`.
+3. Activate the virtual environment by running `source source ./_schoolwave/bin/activate`.
+4. Install dependencies using `pip install -r requirements.txt`.
+5. Create an env file named `.env` by makeing a copy the `.env_example` file.
+6. Database Setup: You can spin up a local database or use `docker compose up` to run Postgres in Docker.
+7. Set up the database by running `python manage.py migrate`.
+8. Start the server using `python manage.py runserver`.
 
 ## Structure
 
