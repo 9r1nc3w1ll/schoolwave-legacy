@@ -3,29 +3,111 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useRouter } from 'next/router';
 import OnboardingLayout from '@/components/Layouts/OnboardingLayout';
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useMutation } from 'react-query';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal)
+
+type FormValues = {
+  description: string;
+  name: string;
+  motto: string;
+  website_url: string;
+  date_of_establishment: string;
+  owner: number
+
+};
+
+
 const Step2 = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setPageTitle('Contact Form'));
   });
   const router = useRouter();
+  const { mutate, isLoading, error } = useMutation(
+    (post) =>
+      fetch(`${process.env.backend_url}/api/auth/schools/`, {
+        method: "POST",
+        body: JSON.stringify(post),
+        headers: { "Content-type": "application/json" }
+      }),
+    {
+      onSuccess: async (data) => {
+        MySwal.fire({
+          confirmButtonText: 'Go to Dashboard',
+          html: <div className='w-3/5 mx-auto center'> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-12 h-12 text-success mx-auto">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        
+          <p className='text-success text-center'>School Created successfully </p></div> ,
+   
+        }).then(()=>{
+          router.push('/')
+        });
+      },
+      onError: (error) => {
+        MySwal.fire({
+          title: "An Error Occured"
+        })
+      }
+    }
+  );
 
-  const submitForm = (e: any) => {
-    e.preventDefault();
-    router.push('/');
-  };
+  const { register, handleSubmit, getValues, formState } = useForm<FormValues>();
+  const { errors } : any = formState
+  const onSubmit: SubmitHandler<FormValues> = data => {
+    data.owner= 4
+    console.log('llll', data)
+    mutate(data)};
 
   return (
-   
-    <div className="panel m-6 w-full max-w-lg sm:w-[480px]">
+    <div className="panel m-6 w-full max-w-lg sm:w-[640px]">
       <h2 className="mb-5 text-2xl font-bold">
       
-                   School Information
+      School Information
       </h2>
       <p className="mb-7">Provide the information below so we can setup your school for you</p>
-      <form className="space-y-4" onSubmit={submitForm}>
+      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="relative">
+          <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="6" r="4" stroke="currentColor" strokeWidth="1.5" />
+              <ellipse opacity="0.5" cx="12" cy="17" rx="7" ry="4" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+          </span>
+          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Name" {...register("name",  {
+            required: true })} />
+        </div>
+        <div className="relative">
+          <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+            </svg>
 
-     
+          </span>
+          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="About your school"  {...register("description",  {
+            required: false })}/>
+        </div>
+        <div className="relative">
+   
+         
+          <label >Date of Establishment</label>
+          <input type="date" className="form-input "  placeholder="Date of Establishment" {...register("date_of_establishment",  {
+            required: true })}/>
+        </div>
+        <div className="relative">
+          <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+            </svg>
+
+          </span>
+          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Website" {...register("website_url",  {
+            required: true })} />
+        </div>
         <div className="relative">
           <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5">
@@ -49,34 +131,16 @@ const Step2 = () => {
               />
             </svg>
           </span>
-          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Name" />
+          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Motto" {...register("motto",  {
+            required: false })} />
         </div>
-        <div className="relative">
-          <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                opacity="0.5"
-                d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              <path
-                d="M6 8L8.1589 9.79908C9.99553 11.3296 10.9139 12.0949 12 12.0949C13.0861 12.0949 14.0045 11.3296 15.8411 9.79908L18 8"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          </span>
-          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Address" />
-
-        </div>
+     
         <button type="submit" className="btn btn-primary w-full">
-                        Create School
+                        Create School 
         </button>
       </form>
     </div>
- 
+
   );
 };
 
@@ -85,3 +149,5 @@ Step2.getLayout = (page: any) => {
 };
 
 export default Step2;
+
+

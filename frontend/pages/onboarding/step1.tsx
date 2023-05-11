@@ -5,6 +5,10 @@ import { useRouter } from 'next/router';
 import OnboardingLayout from '@/components/Layouts/OnboardingLayout';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from 'react-query';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal)
 
 type FormValues = {
   firstName: string;
@@ -32,10 +36,22 @@ const Step1 = () => {
       }),
     {
       onSuccess: async (data) => {
-        console.log("Post added successfully: " );
+        MySwal.fire({
+          confirmButtonText: 'Next Step',
+          html: <div className='w-3/5 mx-auto center'> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-12 h-12 text-success mx-auto">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        
+          <p className='text-success text-center'>User Created successfully </p></div> ,
+   
+        }).then(()=>{
+          router.push('/onboarding/step2')
+        });
       },
       onError: (error) => {
-        console.log(error);
+        MySwal.fire({
+          title: "An Error Occured"
+        })
       }
     }
   );

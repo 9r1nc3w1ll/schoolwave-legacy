@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   // const status = {step1: false, step2: true}
  
-  const response = await fetch("http://127.0.0.1:8000/api/auth/app_status/", { method: "POST"});
+  const response = await fetch("http://127.0.0.1:8000/api/auth/app_status/", { method: "GET"});
   const status = await response.json();
   // console.log(jsonData);
 
