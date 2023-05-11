@@ -16,29 +16,18 @@ User = get_user_model()
 class AppStatusView(APIView):
     def get(self, request):
         step1 = User.objects.count() != 0
-        # checks if there is user
-        if step1:
-            step2 = School.objects.count() != 0
-            # checks if there is school
-            if step2:
-                return Response({'step1': True, 'step2': True})
-            else:
-                return Response({'step1': True, 'step2': False})
-        else:
-            return Response({'step1': False, 'step2': False})
+        step2 = School.objects.count() != 0
+        return Response({'step1': step1, 'step2': step2})
 
 
 class UserAPIView(GenericAPIView):
-    
     serializer_class = UserSerializer
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-
         if serializer.is_valid():
             serializer.save()
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
-
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
