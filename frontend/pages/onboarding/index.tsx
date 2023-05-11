@@ -19,7 +19,8 @@ const Step0 = () => {
   return (
    
     <div className="panel m-6 w-full max-w-lg sm:w-[480px]">
-      <h2 className="mb-5 text-2xl font-bold">
+     
+      <h2 className="mb-5 text-2xl font-bold text-center">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block h-7 w-7 text-primary ltr:mr-3 rtl:ml-3">
           <path
             opacity="0.5"
@@ -37,7 +38,7 @@ const Step0 = () => {
         </svg>
                     Welcome to Schoolwave
       </h2>
-      <p className="mb-7">Provide the information below so we can setup your school for you</p>
+      <p className="mb-7 text-center">It appears your school portal is not set up; click next to set up school admin/owner account.</p>
      
       <button type="button" className="btn btn-primary w-2/3 mx-auto">  <Link href='/onboarding/step1'>  Next
       </Link></button>

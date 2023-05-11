@@ -68,7 +68,7 @@ const Step1 = () => {
   
                     School Owner/Admin Information
       </h2>
-      <p className="mb-7">Let us create you  </p>
+      <p className="mb-7">Provide the information below so we can setup your school admin account </p>
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="relative">
           <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
