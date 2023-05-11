@@ -45,10 +45,11 @@ const Step1 = () => {
     }
   );
 
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { register, handleSubmit, getValues, formState } = useForm<FormValues>();
+  const { errors } : any = formState
   const onSubmit: SubmitHandler<FormValues> = data => {
     data.username = data.email
-     mutate(data)};
+    mutate(data)};
 
   return (
     <div className="panel m-6 w-full max-w-lg sm:w-[640px]">
@@ -65,7 +66,8 @@ const Step1 = () => {
               <ellipse opacity="0.5" cx="12" cy="17" rx="7" ry="4" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </span>
-          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="First Name" {...register("firstName")} />
+          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="First Name" {...register("firstName",  {
+            required: true })} />
         </div>
         <div className="relative">
           <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -74,7 +76,8 @@ const Step1 = () => {
               <ellipse opacity="0.5" cx="12" cy="17" rx="7" ry="4" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </span>
-          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Last Name"  {...register("lastName")}/>
+          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Last Name"  {...register("lastName",  {
+            required: true })}/>
         </div>
         <div className="relative">
           <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -93,7 +96,8 @@ const Step1 = () => {
               />
             </svg>
           </span>
-          <input type="email" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Email" {...register("email")}/>
+          <input type="email" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Email" {...register("email",  {
+            required: true })}/>
         </div>
         <div className="relative">
           <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -143,7 +147,8 @@ const Step1 = () => {
               />
             </svg>
           </span>
-          <input type="password" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Password" {...register("password")} />
+          <input type="password" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Password" {...register("password",  {
+            required: true })} />
         </div>
         <div className="relative">
           <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -168,8 +173,18 @@ const Step1 = () => {
               />
             </svg>
           </span>
-          <input type="password" className="form-input ltr:pl-8 rtl:pr-8" placeholder=" Confirm Password" {...register("confirmpassword")} />
-
+          <input type="password" className="form-input ltr:pl-8 rtl:pr-8" placeholder=" Confirm Password" {...register("confirmpassword", {
+            required: true,
+            validate: (val: string) => {
+              const { password } = getValues();
+              return password === val || "Passwords should match!";
+            },
+          })} />
+          <p className='text-danger'>{errors.email?  errors.email.message: ''}</p>
+          <p className='text-danger'>{errors.lastName?  errors.lastName.message: ''}</p>
+          <p className='text-danger'>{errors.firstName?  errors.firstName.message: ''}</p>
+          <p className='text-danger'>{errors.password?  errors.password.message: ''}</p>
+          <p className='text-danger'>{errors.confirmpassword?  errors.confirmpassword.message: ''}</p>
         </div>
         <button type="submit" className="btn btn-primary w-full">
                         Create School Admin
