@@ -7,6 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from 'react-query';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { NextPageWithLayout } from '../_app';
 
 const MySwal = withReactContent(Swal)
 
@@ -21,7 +22,7 @@ type FormValues = {
 };
 
 
-const Step1 = () => {
+const Step1  = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setPageTitle('Contact Form'));
@@ -60,7 +61,8 @@ const Step1 = () => {
   const { errors } : any = formState
   const onSubmit: SubmitHandler<FormValues> = data => {
     data.username = data.email
-    mutate(data)};
+    // mutate(data);
+  }
 
   return (
     <div className="panel m-6 w-full max-w-lg sm:w-[640px]">
@@ -211,5 +213,3 @@ Step1.getLayout = (page: any) => {
 };
 
 export default Step1;
-
-
