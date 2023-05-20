@@ -3,6 +3,8 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+
+from .serializers import SessionSerializer
 from .models import Session
 from school.models import School
 from utils.permissions import IsSchoolOwner
@@ -11,6 +13,7 @@ from utils.permissions import IsSchoolOwner
 class ListCreateSession(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Session.objects.all()
+    serializer_class = SessionSerializer
 
     def get_queryset(self):
         """
@@ -56,6 +59,7 @@ class ListCreateSession(ListCreateAPIView):
 class RetrieveUpdateDestorySession(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Session.objects.all()
+    serializer_class = SessionSerializer
 
     def get_queryset(self):
         """

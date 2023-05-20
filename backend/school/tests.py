@@ -1,18 +1,27 @@
+"""
+REWRITE ALL TESTS HERE.
+"""
 from django.urls import reverse
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
-from rest_framework.exceptions import ValidationError
-
-from school.serializers import SchoolSerializer
-
+from datetime import datetime
+from .models import School
 from django.contrib.auth import get_user_model
+
 User = get_user_model()
 
-class AppStatusViewTest(APITestCase):
+class SchoolAPITestCase(APITestCase):
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.school = School.objects.create(name='Test School', owner=self.user, date_of_establishment=datetime.now().date())
+
+
     def test_app_status_no_user_no_school(self):
         url = reverse('app_status')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
     def test_app_status_with_user(self):
         url = reverse('user_onboarding')
@@ -23,13 +32,10 @@ class AppStatusViewTest(APITestCase):
                 "first_name": "Name",
                 "last_name": "Lastname"
             }
-        response = self.client.get(url, data)
-        print(f"test_app_status_with_user{response.status_code}")
+        response = self.client.post(url, data)
+        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
-
-class UserAPIViewTest(APITestCase):
+    
     def test_create_user_valid_credentials(self):
         url = reverse('user_onboarding')
         data = {
@@ -42,8 +48,7 @@ class UserAPIViewTest(APITestCase):
             }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
+    
     def test_create_user_invalid_credentials(self):
         url = reverse('user_onboarding')
         data = {
@@ -55,37 +60,27 @@ class UserAPIViewTest(APITestCase):
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-
-class SchoolAPIViewTest(APITestCase):
+    
     def test_create_school_valid_data(self):
-        user_id = self.test_create_user_valid_credentials()
+        
         url = reverse('school_onboarding')
         data = {
             "name": "Example School",
             "description": "This is an example school.",
-            "owner": user_id,
+            "owner": self.user.id,
             "date_of_establishment": "2022-01-01",
             "motto": "Learning is fun!",
             "website_url": "https://www.example.com",
             "tag": "example-school"
         }
 
-        headers = {
-            'Authorization' : f'Bearer {self.user.tokens["access"]}'
-        }
-        response = self.client.post(url, data)
-        print(f"Response Status Code: {response.status_code}")
-        print(f"Response Content: {response.content.decode()}")
+        self.client.force_authenticate(user=self.user)
 
-        serializer = SchoolSerializer(data=data)
-        serializer.is_valid()
-        print(f"Serializer Errors: {serializer.errors}")
+        response = self.client.post(url, data)
+        
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-
-
+    
     def test_create_school_invalid_data(self):
         url = reverse('school_onboarding')
         data = {

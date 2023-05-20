@@ -28,26 +28,29 @@ class UserAPIView(GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
 
+        serializer.is_valid(raise_exception=True)
 
-        if serializer.is_valid():
-            serializer.save()
-            resp = {
-                "message": "User created successfully.",
-                "data": None
-            }
-            return Response(resp)
-        raise ValidationError("Failed to create user")
+        
+        serializer.save()
+        resp = {
+            "message": "User created successfully.",
+            "data": None
+        }
+        return Response(resp)
+        
 
 
 
 class SchoolAPIView(APIView):
     def post(self, request):
         serializer = SchoolSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            resp = {
-                "message": "School created successfully.",
-                "data": None
-            }
-            return Response(resp)
-        raise ValidationError("Failed to create school")
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+    
+        resp = {
+            "message": "School created successfully.",
+            "data": None
+        }
+        return Response(resp, status=status.HTTP_201_CREATED)

@@ -3,6 +3,8 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+
+from .serializers import ClassSerializer
 from .models import Class
 from school.models import School
 from utils.permissions import IsSchoolOwner
@@ -11,6 +13,7 @@ from utils.permissions import IsSchoolOwner
 class ListCreateClass(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Class.objects.all()
+    serializer_class = ClassSerializer
 
     def get_queryset(self):
         """
@@ -56,6 +59,7 @@ class ListCreateClass(ListCreateAPIView):
 class RetrieveUpdateDestoryClass(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Class.objects.all()
+    serializer_class = ClassSerializer
 
     def get_queryset(self):
         """

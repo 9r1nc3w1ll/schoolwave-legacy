@@ -39,6 +39,8 @@ class AuthenticationTestCase(APITestCase):
         
         response = self.client.post(reverse("password_change"), data=data, headers=headers)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        
     
     def test_password_change_with_incorrect_password(self):
         data = {'old_password' :'22password', 'new_password' : 'newpassword'}

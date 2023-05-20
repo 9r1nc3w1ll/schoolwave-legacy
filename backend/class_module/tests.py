@@ -3,7 +3,12 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from school.models import School
 from .models import Class
-from django.contrib.auth.models import User
+from datetime import datetime
+
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class ClassTests(APITestCase):
@@ -11,28 +16,32 @@ class ClassTests(APITestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.school = School.objects.create(
             name='Test School',
-            owner=self.user
+            owner=self.user,
+            date_of_establishment=datetime.now().date()
         )
         self.class_obj = Class.objects.create(
             name='Test Class',
-            school=self.school
+            school=self.school,
+            description='Description'
         )
 
     def test_create_class(self):
-        url = reverse('class-list-create')
+        url = reverse('list_create_class')
         data = {
             'name': 'New Class',
-            'school': self.school.id
+            'school': self.school.id,
+            'description' : 'Description',
         }
         self.client.force_authenticate(user=self.user)
         response = self.client.post(url, data, format='json')
+
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Class.objects.count(), 2)
         self.assertEqual(Class.objects.last().name, 'New Class')
 
     def test_list_classes(self):
-        url = reverse('class-list-create')
+        url = reverse('list_create_class')
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
@@ -41,7 +50,7 @@ class ClassTests(APITestCase):
         self.assertEqual(response.data['data'][0]['name'], 'Test Class')
 
     def test_retrieve_class(self):
-        url = reverse('class-retrieve-update-destroy', args=[self.class_obj.id])
+        url = reverse('retrieve_update_destroy_class', args=[self.class_obj.id])
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
@@ -49,19 +58,19 @@ class ClassTests(APITestCase):
         self.assertEqual(response.data['data']['name'], 'Test Class')
 
     def test_update_class(self):
-        url = reverse('class-retrieve-update-destroy', args=[self.class_obj.id])
+        url = reverse('retrieve_update_destroy_class', args=[self.class_obj.id])
         data = {
             'name': 'Updated Class',
             'school': self.school.id
         }
         self.client.force_authenticate(user=self.user)
-        response = self.client.put(url, data, format='json')
+        response = self.client.patch(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Class.objects.get(id=self.class_obj.id).name, 'Updated Class')
 
     def test_delete_class(self):
-        url = reverse('class-retrieve-update-destroy', args=[self.class_obj.id])
+        url = reverse('retrieve_update_destroy_class', args=[self.class_obj.id])
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(url)
 

@@ -68,12 +68,6 @@ SPECTACULAR_SETTINGS = {
     'TITLE' : 'Schoolwave API Docs'
 }
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-    'rest_framework.authentication.TokenAuthentication',
-)
-
 REST_USE_JWT = True
 
 SIMPLE_JWT = {
