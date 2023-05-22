@@ -1,6 +1,8 @@
 # Environment
 .env
-_schoolwave
+
+# Virtual environment
+.venv/
 
 # Django #
 *.log

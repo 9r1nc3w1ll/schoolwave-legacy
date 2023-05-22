@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = eval(config('DEBUG'))
+DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -39,12 +39,10 @@ INSTALLED_APPS = [
     'drf_spectacular',
     "drf_standardized_errors",
     'rest_framework.authtoken',
-    'django_rename_app',
-
 
     "account",
     "school",
-    "class_module",
+    "class",
     "session"
 ]
 
