@@ -42,13 +42,13 @@ INSTALLED_APPS = [
     'django_rename_app',
 
 
-    "accounts",
+    "account",
     "school",
     "class_module",
     "session"
 ]
 
-AUTH_USER_MODEL = "accounts.User"
+AUTH_USER_MODEL = "account.User"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -90,7 +90,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'accounts.middleware.audit_log_middleware',
+    'account.middleware.audit_log_middleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

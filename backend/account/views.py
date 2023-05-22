@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from pyotp import TOTP
 import hashlib
 
-from accounts.utils import send_user_mail
+from account.utils import send_user_mail
 from .serializers import PasswordResetRequestSerializer, PasswordChangeSerializer, AdminPasswordResetSerializer
 from .models import PasswordResetRequest, User
 

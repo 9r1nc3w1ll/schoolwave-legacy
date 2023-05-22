@@ -21,7 +21,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("accounts/", include("accounts.urls")),
+    path("account/", include("account.urls")),
     path('school/', include('school.urls')),
     path('session/', include('session.urls')),
     path('class/', include('class_module.urls')),
