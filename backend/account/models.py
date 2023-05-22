@@ -25,7 +25,7 @@ class BaseModel(models.Model):
 
     def save(self, *args, **kwargs):
         self.updated_at = timezone.now()
-        return super(User, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
     
     def delete(self, *args, **kwar):
         self.deleted_at = timezone.now()
@@ -35,7 +35,7 @@ class User(BaseModel, AbstractUser):
         db_table = "users"
 
     email = models.EmailField(null=True)
-    role = models.CharField(max_length=50, choices=USER_TYPES, default=USER_TYPES[2])
+    role = models.CharField(max_length=50, choices=USER_TYPES, default='student')
     
     @property
     def tokens(self):
@@ -72,4 +72,4 @@ class AuditLog(BaseModel):
     path = models.CharField(max_length=255, null=True)
 
     def __str__(self):
-        return f"AuditLog: {self.action} - {self.object_type} ({self.object_id}) - User: {self.user.username}"
+        return f"AuditLog: {self.action} - {self.object_type} ({self.object_id}) - User: {self.actor.username}"

@@ -1,26 +1,35 @@
 from django.db import models
 from uuid import uuid4
-from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.utils.text import slugify
+from account.models import User
 
-User = get_user_model()
+class BaseModel(models.Model):
+    class Meta:
+        abstract = True
+
+    id = models.UUIDField(default=uuid4, editable=False, unique=True, primary_key=True, null=False)
+    created_at = models.DateTimeField(default=timezone.now, null=False)
+    updated_at = models.DateTimeField(default=timezone.now, null=False)
+    deleted_at = models.DateTimeField(null=True)
+
+    def save(self, *args, **kwargs):
+        self.updated_at = timezone.now()
+        return super().save(*args, **kwargs)
 
 
-class School(models.Model):
+class School(BaseModel):
+    class Meta:
+        db_table = "schools"
+
     name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    logo = models.ImageField(upload_to='school_logos/', null=True, blank=True)
+    description = models.TextField(null=True)
+    logo_file_name = models.CharField(max_length=255, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    date_of_establishment = models.DateField()
-    motto = models.CharField(max_length=255, blank=True)
-    website_url = models.URLField(blank=True)
-    tag = models.SlugField(unique=True)
-
-    uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(null=True, blank=True)
-    deleted = models.BooleanField(default=False)
+    date_of_establishment = models.DateField(null=True)
+    motto = models.CharField(max_length=255, null=True)
+    tag = models.SlugField(max_length=10, unique=True)
+    website_url = models.URLField(null=True)
 
     def save(self, *args, **kwargs):
         self.tag = slugify(self.name)
