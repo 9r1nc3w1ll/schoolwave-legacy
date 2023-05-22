@@ -8,11 +8,11 @@ export async function middleware(request: NextRequest) {
   }
 
   // Allow /_next and assets to get through
-  if (request.nextUrl.pathname.match(/(^\/_next)|(\.(png)|(svg)|(json)|(jp(e)?g)$)/)) {
+  if (request.nextUrl.pathname.match(/(^\/_next)|(\.(png)|(ico)|(svg)|(json)|(jp(e)?g)$)/)) {
     return;
   }
 
-  const response = await fetch("http://127.0.0.1:8000/api/auth/app_status/", { method: "GET"});
+  const response = await fetch("http://127.0.0.1:8000/school/app_status/", { method: "GET"});
   const status: TAppStatus = await response.json();
   const step1Path = '/onboarding/step1';
   const step2Path = '/onboarding/step2';

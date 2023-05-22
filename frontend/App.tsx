@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from './store';
 import { toggleRTL, toggleTheme, toggleLocale, toggleMenu, toggleLayout, toggleAnimation, toggleNavbar, toggleSemidark } from './store/themeConfigSlice';
 import {
-
   QueryClient,
   QueryClientProvider,
 } from 'react-query'
