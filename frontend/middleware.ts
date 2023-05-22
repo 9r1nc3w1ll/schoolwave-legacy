@@ -7,16 +7,24 @@ export async function middleware(request: NextRequest) {
    step2: boolean;
   }
 
+  const step1Path = '/onboarding/step1';
+  const step2Path = '/onboarding/step2';
+  const loginPath = '/login';
+
   // Allow /_next and assets to get through
   if (request.nextUrl.pathname.match(/(^\/_next)|(\.(png)|(ico)|(svg)|(json)|(jp(e)?g)$)/)) {
     return;
   }
 
-  const response = await fetch("http://127.0.0.1:8000/school/app_status/", { method: "GET"});
+  const response = await fetch("http://127.0.0.1:8000/school/status", { method: "GET"});
+  if (response.statusText.toLocaleLowerCase() !== 'ok') {
+    // TODO: We should redirect to technical setup page or 500
+    console.warn('backend api failed', { response });
+    console.log('redirecting', { pathname: request.nextUrl.pathname, destination: step1Path });
+    return NextResponse.redirect(new URL(step1Path, request.url));
+  }
+
   const status: TAppStatus = await response.json();
-  const step1Path = '/onboarding/step1';
-  const step2Path = '/onboarding/step2';
-  const loginPath = '/login';
 
   if (!status.step1 && !request.nextUrl.pathname.startsWith(step1Path)) {
     console.log('redirecting', { pathname: request.nextUrl.pathname, destination: step1Path });

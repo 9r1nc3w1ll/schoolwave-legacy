@@ -29,7 +29,7 @@ interface FormResponse {
 const Step1  = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setPageTitle('Contact Form'));
+    dispatch(setPageTitle('Owner Setup'));
   });
   const router = useRouter();
   const { mutateAsync, isLoading, error } = useMutation<Response, unknown, FormValues, unknown>(

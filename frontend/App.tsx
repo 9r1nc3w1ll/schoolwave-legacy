@@ -22,11 +22,10 @@ function App({ children }: PropsWithChildren) {
     dispatch(toggleAnimation(localStorage.getItem('animation') || themeConfig.animation));
     dispatch(toggleNavbar(localStorage.getItem('navbar') || themeConfig.navbar));
     dispatch(toggleSemidark(localStorage.getItem('semidark') || themeConfig.semidark));
-    // locale
     const locale = localStorage.getItem('i18nextLng') || themeConfig.locale;
     dispatch(toggleLocale(locale));
     i18n.changeLanguage(locale);
-  }, [dispatch, themeConfig.theme, themeConfig.menu, themeConfig.layout, themeConfig.rtlClass, themeConfig.animation, themeConfig.navbar, themeConfig.locale, themeConfig.semidark]);
+  }, [dispatch, themeConfig.theme, themeConfig.menu, themeConfig.layout, themeConfig.rtlClass, themeConfig.animation, themeConfig.navbar, themeConfig.locale, themeConfig.semidark, i18n]);
 
   return (
     <div
