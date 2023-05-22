@@ -7,5 +7,8 @@ from .basic import user_is_verified
 
 
 def user_is_teacher(user):
-    return user_is_verified(user) and user.requested_role == 'teacher' \
-        if user.is_authenticated else False
+    return (
+        user_is_verified(user) and user.requested_role == "teacher"
+        if user.is_authenticated
+        else False
+    )

@@ -1,14 +1,19 @@
-from django.db import models
 from uuid import uuid4
+
+from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+
 from account.models import User
+
 
 class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-    id = models.UUIDField(default=uuid4, editable=False, unique=True, primary_key=True, null=False)
+    id = models.UUIDField(
+        default=uuid4, editable=False, unique=True, primary_key=True, null=False
+    )
     created_at = models.DateTimeField(default=timezone.now, null=False)
     updated_at = models.DateTimeField(default=timezone.now, null=False)
     deleted_at = models.DateTimeField(null=True)

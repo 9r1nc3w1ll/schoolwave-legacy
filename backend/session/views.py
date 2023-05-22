@@ -1,13 +1,14 @@
-from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from .serializers import SessionSerializer
-from .models import Session
 from school.models import School
 from utils.permissions import IsSchoolOwner
+
+from .models import Session
+from .serializers import SessionSerializer
 
 
 class ListCreateSession(ListCreateAPIView):
@@ -23,7 +24,7 @@ class ListCreateSession(ListCreateAPIView):
 
         qs = self.queryset.filter(school=school)
         return qs
-    
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -34,7 +35,7 @@ class ListCreateSession(ListCreateAPIView):
         resp = {
             "status": "success",
             "message": "Session created successfully.",
-            "data": serializer.data
+            "data": serializer.data,
         }
         return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -51,7 +52,7 @@ class ListCreateSession(ListCreateAPIView):
         resp = {
             "status": "success",
             "message": "Sessions fetched successfully.",
-            "data": serializer.data
+            "data": serializer.data,
         }
         return Response(resp)
 
@@ -77,13 +78,12 @@ class RetrieveUpdateDestorySession(RetrieveUpdateDestroyAPIView):
         resp = {
             "status": "success",
             "message": "Session fetched successfully.",
-            "data": serializer.data
+            "data": serializer.data,
         }
         return Response(resp)
-    
-    
+
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
+        partial = kwargs.pop("partial", False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -92,10 +92,10 @@ class RetrieveUpdateDestorySession(RetrieveUpdateDestroyAPIView):
         resp = {
             "status": "success",
             "message": "Session updated successfully.",
-            "data": serializer.data
+            "data": serializer.data,
         }
         return Response(resp)
-    
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
@@ -103,8 +103,7 @@ class RetrieveUpdateDestorySession(RetrieveUpdateDestroyAPIView):
         resp = {
             "status": "success",
             "message": "Session updated successfully.",
-            "data": None
+            "data": None,
         }
 
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
-    

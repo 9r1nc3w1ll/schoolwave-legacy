@@ -1,9 +1,11 @@
-from django.urls import resolve
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.urls import resolve
+
 from .models import AuditLog
 
 User = get_user_model()
+
 
 def audit_log_middleware(get_response):
     # One-time configuration and initialization.
@@ -17,11 +19,13 @@ def audit_log_middleware(get_response):
         # Code to be executed for each request/response after
         # the view is called.
 
-        if request.method in ['POST', 'PUT', 'PATCH', 'DELETE'] and not isinstance(request.user, AnonymousUser):
+        if request.method in ["POST", "PUT", "PATCH", "DELETE"] and not isinstance(
+            request.user, AnonymousUser
+        ):
             view = resolve(request.path_info).func
 
             # Exclude sensitive information from logging
-            if hasattr(view, 'exclude_logging_fields'):
+            if hasattr(view, "exclude_logging_fields"):
                 excluded_fields = view.exclude_logging_fields
                 request_data = request.data.copy()
                 for field in excluded_fields:
@@ -34,9 +38,9 @@ def audit_log_middleware(get_response):
             path = request.path
 
             # Check if the view has an object and object_id
-            if hasattr(view, 'kwargs'):
+            if hasattr(view, "kwargs"):
                 object_type = view.__class__.__name__
-                object_id = view.kwargs.get('pk')
+                object_id = view.kwargs.get("pk")
             else:
                 object_type = None
                 object_id = None
@@ -59,6 +63,7 @@ def audit_log_middleware(get_response):
 
     return middleware
 
+
 class AuditLogMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -66,11 +71,13 @@ class AuditLogMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
 
-        if request.method in ['POST', 'PUT', 'PATCH', 'DELETE'] and not isinstance(request.user, AnonymousUser):
+        if request.method in ["POST", "PUT", "PATCH", "DELETE"] and not isinstance(
+            request.user, AnonymousUser
+        ):
             view = resolve(request.path_info).func
 
             # Exclude sensitive information from logging
-            if hasattr(view, 'exclude_logging_fields'):
+            if hasattr(view, "exclude_logging_fields"):
                 excluded_fields = view.exclude_logging_fields
                 request_data = request.data.copy()
                 for field in excluded_fields:
@@ -83,9 +90,9 @@ class AuditLogMiddleware:
             path = request.path
 
             # Check if the view has an object and object_id
-            if hasattr(view, 'kwargs'):
+            if hasattr(view, "kwargs"):
                 object_type = view.__class__.__name__
-                object_id = view.kwargs.get('pk')
+                object_id = view.kwargs.get("pk")
             else:
                 object_type = None
                 object_id = None
