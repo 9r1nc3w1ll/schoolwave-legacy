@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -25,6 +25,8 @@ class User(BaseModel, AbstractUser):
     email = models.EmailField(null=True)
     role = models.CharField(max_length=50, choices=USER_TYPES, default="student")
 
+    USERNAME_FIELD = "username"
+
     @property
     def tokens(self):
         refresh = RefreshToken.for_user(self)
@@ -43,7 +45,7 @@ class PasswordResetRequest(BaseModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     otp = models.CharField(max_length=32)
-    active = models.BooleanField(default=True)
+    expires_at = models.DateTimeField(null=False)
 
 
 class AuditLog(BaseModel):

@@ -1,17 +1,13 @@
-from django.contrib.auth import authenticate, get_user_model
-from django.http import HttpRequest
-from django.shortcuts import render
-from rest_framework import generics, response, status
-from rest_framework.exceptions import ValidationError
+from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import make_password
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from account.models import User
 from account.serializers import UserSerializer
+from school.models import School
 from school.serializers import SchoolSerializer
-
-from .models import School
-
-User = get_user_model()
 
 
 class AppStatusView(APIView):
@@ -22,23 +18,37 @@ class AppStatusView(APIView):
 
 
 class UserAPIView(APIView):
-    serializer_class = UserSerializer
-
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer = UserSerializer(data=request.data)
 
-        user = authenticate(
-            username=serializer.validated_data.get("username"),
-            password=serializer.validated_data.get("password"),
-        )
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
-        print(user)
+        serializer.save(is_active=True)
+
+        if (
+            authenticate(
+                request=request,
+                username=serializer.data.get("username"),
+                password=serializer.data.get("password"),
+            )
+            is None
+        ):
+            message = "user authentication failed"  # TODO: Log this error
+            return Response(
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={message}
+            )
+
+        user = User.objects.get(username=serializer.data.get("username"))
+        if user is None:
+            message = "user not found"  # TODO: Log this error
+            return Response(
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={message}
+            )
 
         resp = {
             "message": "User created successfully.",
-            "data": None,
+            "user": user,
             "token": {
                 "access_token": user.tokens["access"],
                 "refresh_token": user.tokens["refresh"],

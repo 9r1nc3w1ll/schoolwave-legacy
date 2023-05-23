@@ -5,15 +5,15 @@ from account.views import (
     AdminResetPassword,
     ChangePassword,
     FetchUser,
-    LoginAPIView,
+    LoginView,
     UserRoles,
     UserViewSet,
 )
 
 urlpatterns = [
-    path("login", LoginAPIView.as_view(), name="user_login"),
-    path("token/refresh", TokenRefreshView.as_view()),
+    path("login", LoginView.as_view(), name="user_login"),
     path("user", FetchUser.as_view(), name="fetch_user"),
+    path("token/refresh", TokenRefreshView.as_view()),
     path("password/change", ChangePassword.as_view(), name="password_change"),
     path(
         "password/admin_reset",

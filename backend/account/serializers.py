@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 
-from .models import User
+from account.models import User
 
 
 class PasswordResetRequestSerializer(serializers.Serializer):
@@ -93,6 +93,10 @@ class UserSerializer(serializers.ModelSerializer):
             "blank": "Password field cannot be empty",
         },
     )
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
 
     def retrieve(self, instance):
         resp = {

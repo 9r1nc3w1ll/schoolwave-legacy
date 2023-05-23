@@ -1,47 +1,48 @@
-from rest_framework.views import APIView
-from rest_framework.exceptions import ValidationError, AuthenticationFailed
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.response import Response
-
-from pyotp import TOTP
 import hashlib
 
-from account.utils import send_user_mail
-from .serializers import (
-    PasswordResetRequestSerializer,
-    PasswordChangeSerializer,
-    AdminPasswordResetSerializer,
-)
-from .models import PasswordResetRequest, User
-
-from .serializers import LoginSerializer, UserSerializer
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import update_last_login
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import Group
-from rest_framework import generics
-from .models import User
 from django.conf import settings
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import Group, update_last_login
+from django.shortcuts import get_object_or_404
+from pyotp import TOTP
+from rest_framework import status
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from account.utils import send_user_mail
+
+from .models import PasswordResetRequest, User
+from .serializers import (
+    AdminPasswordResetSerializer,
+    LoginSerializer,
+    PasswordChangeSerializer,
+    PasswordResetRequestSerializer,
+    UserSerializer,
+)
 
 
 # Create your views here.
-class LoginAPIView(APIView):
-    serializer_class = LoginSerializer
-
+class LoginView(APIView):
     def post(self, request, *args, **kwargs):
-        # username, password
         data = request.data
-
         serializer = LoginSerializer(data=data)
 
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
-        user = authenticate(
-            username=serializer.validated_data["username"],
-            password=serializer.validated_data["password"],
+        authUser = authenticate(
+            username=serializer.data.get("username"),
+            password=serializer.data.get("password"),
         )
 
-        update_last_login(None, user)
+        if not authUser:
+            response = {"message": "Invalid credentials"}
+            return Response(status=status.HTTP_401_UNAUTHORIZED, data=response)
+
+        update_last_login(User, authUser)
+        user = User.objects.get(username=authUser.get_username())
 
         data = {
             "status": "success",
@@ -49,9 +50,10 @@ class LoginAPIView(APIView):
             "data": {
                 "access_token": user.tokens["access"],
                 "refresh_token": user.tokens["refresh"],
-                **UserSerializer(user).data,
+                "data": UserSerializer(user).data,
             },
         }
+
         return Response(data)
 
 
