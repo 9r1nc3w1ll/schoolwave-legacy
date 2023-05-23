@@ -1,10 +1,14 @@
 from django.db import models
 
+from config.models import BaseModel
 from school.models import School
 
 
-class Class(models.Model):
+class Class(BaseModel):
+    class Meta:
+        db_table = "classes"
+
     school = models.ForeignKey(School, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=150)
     description = models.TextField()
-    class_index = models.PositiveSmallIntegerField(default=1)
+    class_index = models.PositiveSmallIntegerField(default=0)

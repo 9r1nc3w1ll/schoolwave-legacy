@@ -6,6 +6,8 @@ from django.db.models import Q
 from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from config.models import BaseModel
+
 USER_TYPES = (
     ("staff", "Staff"),
     ("parent", "Parent"),
@@ -14,25 +16,6 @@ USER_TYPES = (
     ("admin", "Admin"),
     ("super_admin", "Super_Admin"),
 )
-
-
-class BaseModel(models.Model):
-    class Meta:
-        abstract = True
-
-    id = models.UUIDField(
-        default=uuid4, editable=False, unique=True, primary_key=True, null=False
-    )
-    created_at = models.DateTimeField(default=timezone.now, null=False)
-    updated_at = models.DateTimeField(default=timezone.now, null=False)
-    deleted_at = models.DateTimeField(null=True)
-
-    def save(self, *args, **kwargs):
-        self.updated_at = timezone.now()
-        return super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwar):
-        self.deleted_at = timezone.now()
 
 
 class User(BaseModel, AbstractUser):
