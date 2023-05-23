@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from config.models import BaseModel
 
@@ -22,10 +22,11 @@ class User(BaseModel, AbstractUser):
     class Meta:
         db_table = "users"
 
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
     email = models.EmailField(null=True)
     role = models.CharField(max_length=50, choices=USER_TYPES, default="student")
-
-    USERNAME_FIELD = "username"
+    objects = UserManager()
 
     @property
     def tokens(self):
@@ -41,22 +42,23 @@ class User(BaseModel, AbstractUser):
 
 class PasswordResetRequest(BaseModel):
     class Meta:
-        db_table = "password_reset_request"
+        db_table = "password_reset_requests"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     otp = models.CharField(max_length=32)
-    expires_at = models.DateTimeField(null=False)
 
 
 class AuditLog(BaseModel):
     class Meta:
         db_table = "audit_log"
 
-    action = models.CharField(max_length=10)
-    object_type = models.CharField(max_length=255, null=True)
-    object_id = models.IntegerField(null=True)
     actor = models.ForeignKey(User, on_delete=models.CASCADE)
+    action = models.CharField(max_length=10)
+    object_type = models.CharField(max_length=100, null=True)
+    object_id = models.IntegerField(null=True)
     path = models.CharField(max_length=255, null=True)
+    status = models.CharField(max_length=50, null=True)
+    status_code = models.SmallIntegerField(null=True)
 
     def __str__(self):
         return f"AuditLog: {self.action} - {self.object_type} ({self.object_id}) - User: {self.actor.username}"

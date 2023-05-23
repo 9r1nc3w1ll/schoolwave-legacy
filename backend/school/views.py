@@ -1,11 +1,12 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from account.models import User
-from account.serializers import UserSerializer
+from account.serializers import SchoolAdminSerializer
 from school.models import School
 from school.serializers import SchoolSerializer
 
@@ -17,20 +18,20 @@ class AppStatusView(APIView):
         return Response({"step1": step1, "step2": step2})
 
 
-class UserAPIView(APIView):
+class CreateOwner(APIView):
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = SchoolAdminSerializer(data=request.data)
 
         if not serializer.is_valid():
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
-        serializer.save(is_active=True)
+        serializer.save(is_active=True, role="admin")
 
         if (
             authenticate(
                 request=request,
-                username=serializer.data.get("username"),
-                password=serializer.data.get("password"),
+                username=request.data.get("username"),
+                password=request.data.get("password"),
             )
             is None
         ):
@@ -48,7 +49,7 @@ class UserAPIView(APIView):
 
         resp = {
             "message": "User created successfully.",
-            "user": user,
+            "user": serializer.data,
             "token": {
                 "access_token": user.tokens["access"],
                 "refresh_token": user.tokens["refresh"],
@@ -58,10 +59,14 @@ class UserAPIView(APIView):
         return Response(resp)
 
 
-class SchoolAPIView(APIView):
+class CreateSchool(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         serializer = SchoolSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
+
         serializer.save()
         resp = {
             "message": "School created successfully.",

@@ -81,18 +81,12 @@ class LoginSerializer(serializers.Serializer):
         return data
 
 
-class UserSerializer(serializers.ModelSerializer):
+class SchoolAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ("id", "groups", "user_permissions")
 
-    password = serializers.CharField(
-        write_only=True,
-        error_messages={
-            "required": "Password is required",
-            "blank": "Password field cannot be empty",
-        },
-    )
+    password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)

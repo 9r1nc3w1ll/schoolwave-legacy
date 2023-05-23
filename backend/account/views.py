@@ -19,7 +19,7 @@ from .serializers import (
     LoginSerializer,
     PasswordChangeSerializer,
     PasswordResetRequestSerializer,
-    UserSerializer,
+    SchoolAdminSerializer,
 )
 
 
@@ -50,7 +50,7 @@ class LoginView(APIView):
             "data": {
                 "access_token": user.tokens["access"],
                 "refresh_token": user.tokens["refresh"],
-                "data": UserSerializer(user).data,
+                "data": SchoolAdminSerializer(user).data,
             },
         }
 
@@ -66,7 +66,7 @@ class FetchUser(APIView):
         data = {
             "status": "success",
             "message": "User retrieved successfully.",
-            "data": UserSerializer(request.user).data,
+            "data": SchoolAdminSerializer(request.user).data,
         }
         return Response(data)
 
@@ -141,12 +141,12 @@ class UserViewSet(APIView):
         resp = {
             "status": "success",
             "message": "User retrieved successfully.",
-            "data": UserSerializer(request.user).data,
+            "data": SchoolAdminSerializer(request.user).data,
         }
         return Response(resp)
 
     def post(self, request, *args, **kwargs):
-        serializer = UserSerializer(data=request.data)
+        serializer = SchoolAdminSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
 
@@ -183,7 +183,7 @@ class UserViewSet(APIView):
             resp = {
                 "status": "success",
                 "message": "User created successfully.",
-                "data": UserSerializer(user).data,
+                "data": SchoolAdminSerializer(user).data,
             }
             return Response(resp)
         else:
@@ -196,7 +196,7 @@ class UserViewSet(APIView):
 
     def put(self, request, *args, **kwargs):
         user = request.user
-        serializer = UserSerializer(user, data=request.data)
+        serializer = SchoolAdminSerializer(user, data=request.data)
         if serializer.is_valid():
             user_data = serializer.validated_data
             fields_to_update = [
@@ -210,7 +210,7 @@ class UserViewSet(APIView):
             resp = {
                 "status": "success",
                 "message": "User updated successfully.",
-                "data": UserSerializer(user).data,
+                "data": SchoolAdminSerializer(user).data,
             }
             return Response(resp)
         else:
@@ -267,7 +267,7 @@ class UserRoles(APIView):
     """
 
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = SchoolAdminSerializer
 
     # endpoint to get the roles assigned to a user
     def get(self, request, *args, **kwargs):
