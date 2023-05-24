@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from account.models import User
-from account.serializers import UserSerializer
+from account.serializers import OwnerSerializer, UserSerializer
 from school.models import School
 from school.serializers import SchoolSerializer
 
@@ -29,15 +29,12 @@ class CreateOwner(APIView):
                 {"message": "Owner already created."}, status=status.HTTP_409_CONFLICT
             )
 
-        serializer = UserSerializer(data=request.data)
+        serializer = OwnerSerializer(data=request.data)
 
         if not serializer.is_valid():
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
         serializer.save(is_active=True, role="admin")
-
-        if serializer.validated_data is None:
-            return
 
         if (
             authenticate(

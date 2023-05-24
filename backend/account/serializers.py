@@ -56,20 +56,8 @@ class PasswordChangeSerializer(serializers.Serializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(
-        max_length=50,
-        error_messages={
-            "required": "Username is required",
-            "blank": "Username field cannot be empty",
-        },
-    )
-    password = serializers.CharField(
-        min_length=5,
-        error_messages={
-            "required": "Password is required",
-            "blank": "Password field cannot be empty",
-        },
-    )
+    username = serializers.CharField(max_length=50)
+    password = serializers.CharField(min_length=5)
 
     def validate(self, data):
         user = authenticate(
@@ -98,18 +86,19 @@ class UserSerializer(serializers.ModelSerializer):
         resp = {
             "status": "success",
             "message": "User retrieved successfully",
-            "data": self.data,
+            "user": self.data,
         }
         return resp
 
     def update(self, instance, validated_data):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
+        # TODO: Verify that password gets rehashed correctly
         instance.save()
         resp = {
             "status": "success",
             "message": "User updated successfully",
-            "data": self.data,
+            "user": self.data,
         }
         return resp
 
@@ -118,6 +107,17 @@ class UserSerializer(serializers.ModelSerializer):
         resp = {
             "status": "success",
             "message": "User deleted successfully",
-            "data": None,
+            "user": self.data,
         }
         return resp
+
+
+class OwnerSerializer(UserSerializer):
+    email = serializers.EmailField()
+    username = serializers.CharField(max_length=50)
+    # TODO: Enforce strong password rule for admin
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ["email", "password", "username"]

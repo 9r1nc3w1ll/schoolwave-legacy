@@ -15,7 +15,7 @@ class School(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True)
     logo_file_name = models.CharField(max_length=255, null=True)
-    owner = models.ForeignKey(User, unique=True, on_delete=models.CASCADE)
+    owner = models.OneToOneField(User, on_delete=models.CASCADE)
     date_of_establishment = models.DateField(null=True)
     motto = models.CharField(max_length=255, null=True)
     tag = models.SlugField(max_length=10, unique=True)
