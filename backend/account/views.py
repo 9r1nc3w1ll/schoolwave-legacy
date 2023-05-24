@@ -12,6 +12,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from account.utils import send_user_mail
+from school.models import School
+from school.serializers import SchoolSerializer
 
 from .models import PasswordResetRequest, User
 from .serializers import (
@@ -19,7 +21,7 @@ from .serializers import (
     LoginSerializer,
     PasswordChangeSerializer,
     PasswordResetRequestSerializer,
-    SchoolAdminSerializer,
+    UserSerializer,
 )
 
 
@@ -33,6 +35,7 @@ class LoginView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
         authUser = authenticate(
+            request=request,
             username=serializer.data.get("username"),
             password=serializer.data.get("password"),
         )
@@ -42,7 +45,13 @@ class LoginView(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED, data=response)
 
         update_last_login(User, authUser)
-        user = User.objects.get(username=authUser.get_username())
+        user: User = User.objects.get(username=authUser.get_username())
+
+        try:
+            school = School.objects.get(owner=user)
+            schoolData = SchoolSerializer(school).data
+        except School.DoesNotExist:
+            schoolData = None
 
         data = {
             "status": "success",
@@ -50,7 +59,8 @@ class LoginView(APIView):
             "data": {
                 "access_token": user.tokens["access"],
                 "refresh_token": user.tokens["refresh"],
-                "data": SchoolAdminSerializer(user).data,
+                "user": UserSerializer(user).data,
+                "school": schoolData,
             },
         }
 
@@ -66,7 +76,7 @@ class FetchUser(APIView):
         data = {
             "status": "success",
             "message": "User retrieved successfully.",
-            "data": SchoolAdminSerializer(request.user).data,
+            "data": UserSerializer(request.user).data,
         }
         return Response(data)
 
@@ -141,12 +151,12 @@ class UserViewSet(APIView):
         resp = {
             "status": "success",
             "message": "User retrieved successfully.",
-            "data": SchoolAdminSerializer(request.user).data,
+            "data": UserSerializer(request.user).data,
         }
         return Response(resp)
 
     def post(self, request, *args, **kwargs):
-        serializer = SchoolAdminSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
 
@@ -183,7 +193,7 @@ class UserViewSet(APIView):
             resp = {
                 "status": "success",
                 "message": "User created successfully.",
-                "data": SchoolAdminSerializer(user).data,
+                "data": UserSerializer(user).data,
             }
             return Response(resp)
         else:
@@ -196,7 +206,7 @@ class UserViewSet(APIView):
 
     def put(self, request, *args, **kwargs):
         user = request.user
-        serializer = SchoolAdminSerializer(user, data=request.data)
+        serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             user_data = serializer.validated_data
             fields_to_update = [
@@ -210,7 +220,7 @@ class UserViewSet(APIView):
             resp = {
                 "status": "success",
                 "message": "User updated successfully.",
-                "data": SchoolAdminSerializer(user).data,
+                "data": UserSerializer(user).data,
             }
             return Response(resp)
         else:
@@ -267,7 +277,7 @@ class UserRoles(APIView):
     """
 
     queryset = User.objects.all()
-    serializer_class = SchoolAdminSerializer
+    serializer_class = UserSerializer
 
     # endpoint to get the roles assigned to a user
     def get(self, request, *args, **kwargs):

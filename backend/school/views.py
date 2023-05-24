@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
@@ -6,12 +8,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from account.models import User
-from account.serializers import SchoolAdminSerializer
+from account.serializers import UserSerializer
 from school.models import School
 from school.serializers import SchoolSerializer
 
+logger = logging.getLogger(__name__)
 
-class AppStatusView(APIView):
+
+class SetupStatus(APIView):
     def get(self, request):
         step1 = User.objects.count() != 0
         step2 = School.objects.count() != 0
@@ -20,43 +24,43 @@ class AppStatusView(APIView):
 
 class CreateOwner(APIView):
     def post(self, request):
-        serializer = SchoolAdminSerializer(data=request.data)
+        # Prevent filling of this form if a school admin has been created
+        serializer = UserSerializer(data=request.data)
 
         if not serializer.is_valid():
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
         serializer.save(is_active=True, role="admin")
 
+        if serializer.validated_data is None:
+            return
+
         if (
             authenticate(
                 request=request,
-                username=request.data.get("username"),
-                password=request.data.get("password"),
+                username=serializer.validated_data.get("username"),  # type: ignore
+                password=serializer.validated_data.get("password"),  # type: ignore
             )
             is None
         ):
-            message = "user authentication failed"  # TODO: Log this error
+            message = "user authentication failed"
+            logger.warning(message)
             return Response(
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={message}
             )
 
-        user = User.objects.get(username=serializer.data.get("username"))
-        if user is None:
-            message = "user not found"  # TODO: Log this error
-            return Response(
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={message}
-            )
+        user: User = User.objects.get(username=serializer.data.get("username"))
 
-        resp = {
-            "message": "User created successfully.",
-            "user": serializer.data,
-            "token": {
-                "access_token": user.tokens["access"],
-                "refresh_token": user.tokens["refresh"],
-            },
-        }
-
-        return Response(resp)
+        return Response(
+            {
+                "message": "User created successfully.",
+                "user": serializer.data,
+                "token": {
+                    "access_token": user.tokens["access"],
+                    "refresh_token": user.tokens["refresh"],
+                },
+            }
+        )
 
 
 class CreateSchool(APIView):
@@ -68,9 +72,11 @@ class CreateSchool(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
         serializer.save()
-        resp = {
-            "message": "School created successfully.",
-            "data": None,
-        }
 
-        return Response(resp, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                "message": "School created successfully.",
+                "school": serializer.data,
+            },
+            status=status.HTTP_201_CREATED,
+        )

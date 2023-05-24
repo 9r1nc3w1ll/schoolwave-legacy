@@ -81,7 +81,7 @@ class LoginSerializer(serializers.Serializer):
         return data
 
 
-class SchoolAdminSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ("id", "groups", "user_permissions")
@@ -89,7 +89,9 @@ class SchoolAdminSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        user = User(**validated_data)
+        user.set_password(validated_data["password"])
+        user.save()
         return user
 
     def retrieve(self, instance):
