@@ -31,7 +31,6 @@ class User(BaseModel, AbstractUser):
     @property
     def tokens(self):
         refresh = RefreshToken.for_user(self)
-        print(refresh)
         return {"refresh": str(refresh), "access": str(refresh.access_token)}
 
     def save(self, *args, **kwargs):

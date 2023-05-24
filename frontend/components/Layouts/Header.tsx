@@ -233,10 +233,7 @@ const Header = () => {
             <div>
               {themeConfig.theme === 'light' ? (
                 <button
-                  className={`${
-                    themeConfig.theme === 'light' &&
-                                        'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'
-                  }`}
+                  className={`${themeConfig.theme === 'light' && 'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'}`}
                   onClick={() => dispatch(toggleTheme('dark'))}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -256,10 +253,7 @@ const Header = () => {
               )}
               {themeConfig.theme === 'dark' && (
                 <button
-                  className={`${
-                    themeConfig.theme === 'dark' &&
-                                        'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'
-                  }`}
+                  className={`${themeConfig.theme === 'dark' && 'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'}`}
                   onClick={() => dispatch(toggleTheme('system'))}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -272,10 +266,7 @@ const Header = () => {
               )}
               {themeConfig.theme === 'system' && (
                 <button
-                  className={`${
-                    themeConfig.theme === 'system' &&
-                                        'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'
-                  }`}
+                  className={`${themeConfig.theme === 'system' && 'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'}`}
                   onClick={() => dispatch(toggleTheme('light'))}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -409,7 +400,7 @@ const Header = () => {
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                           </svg>
                         </div>
-                                                No data available.
+                        No data available.
                       </button>
                     </li>
                   )}
@@ -508,7 +499,7 @@ const Header = () => {
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                           </svg>
                         </div>
-                                                No data available.
+                        No data available.
                       </button>
                     </li>
                   )}
@@ -528,11 +519,11 @@ const Header = () => {
                       <img className="h-10 w-10 rounded-md object-cover" src="/assets/images/user-profile.jpeg" alt="userProfile" />
                       <div className="ltr:pl-4 rtl:pr-4">
                         <h4 className="text-base">
-                                                    John Doe
+                          John Doe
                           <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">Pro</span>
                         </h4>
                         <button type="button" className="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
-                                                    johndoe@gmail.com
+                          johndoe@gmail.com
                         </button>
                       </div>
                     </div>
@@ -548,7 +539,7 @@ const Header = () => {
                           strokeWidth="1.5"
                         />
                       </svg>
-                                            Profile
+                      Profile
                     </Link>
                   </li>
                   <li>
@@ -567,7 +558,7 @@ const Header = () => {
                           strokeLinecap="round"
                         />
                       </svg>
-                                            Inbox
+                      Inbox
                     </Link>
                   </li>
                   <li>
@@ -591,7 +582,7 @@ const Header = () => {
                           />
                         </g>
                       </svg>
-                                            Lock Screen
+                      Lock Screen
                     </Link>
                   </li>
                   <li className="border-t border-white-light dark:border-white-light/10">
@@ -606,7 +597,7 @@ const Header = () => {
                         />
                         <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
-                                            Sign Out
+                      Sign Out
                     </Link>
                   </li>
                 </ul>
