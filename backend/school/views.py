@@ -24,7 +24,11 @@ class SetupStatus(APIView):
 
 class CreateOwner(APIView):
     def post(self, request):
-        # Prevent filling of this form if a school admin has been created
+        if User.objects.count() != 0:
+            return Response(
+                {"message": "Owner already created."}, status=status.HTTP_409_CONFLICT
+            )
+
         serializer = UserSerializer(data=request.data)
 
         if not serializer.is_valid():
@@ -67,6 +71,11 @@ class CreateSchool(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
+        if School.objects.count() != 0:
+            return Response(
+                {"message": "School already created."}, status=status.HTTP_409_CONFLICT
+            )
+
         serializer = SchoolSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
