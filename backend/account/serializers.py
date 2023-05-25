@@ -70,11 +70,11 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        exclude = ("id", "groups", "user_permissions")
-
-    password = serializers.CharField(write_only=True)
+        exclude = ["groups", "user_permissions", "deleted_at"]
 
     def create(self, validated_data):
         user = User(**validated_data)
@@ -114,10 +114,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 class OwnerSerializer(UserSerializer):
     email = serializers.EmailField()
-    username = serializers.CharField(max_length=50)
-    # TODO: Enforce strong password rule for admin
-    password = serializers.CharField(write_only=True)
 
+    # TODO: Enforce strong password rule for admin
     class Meta:
         model = User
-        fields = ["email", "password", "username"]
+        fields = [
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "password",
+        ]

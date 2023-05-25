@@ -55,8 +55,8 @@ class CreateOwner(APIView):
         return Response(
             {
                 "message": "User created successfully.",
-                "user": serializer.data,
-                "token": {
+                "data": {
+                    "user": UserSerializer(user).data,
                     "access_token": user.tokens["access"],
                     "refresh_token": user.tokens["refresh"],
                 },
