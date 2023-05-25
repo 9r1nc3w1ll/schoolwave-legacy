@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "account",
     "school",
     "session",
+    "admission"
 ]
 
 AUTH_USER_MODEL = "account.User"
@@ -87,6 +88,21 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "config.urls"
+
+# AWS_ACCESS_KEY_ID = 'your-access-key-id'
+# AWS_SECRET_ACCESS_KEY = 'your-secret-access-key'
+# AWS_STORAGE_BUCKET_NAME = 'your-bucket-name'
+# AWS_S3_REGION_NAME = 'your-s3-region'
+# AWS_S3_ENDPOINT_URL = 'your-s3-endpoint-url'
+
+# AWS_S3_CUSTOM_DOMAIN = 'your-custom-domain'
+
+
+# AWS_S3_OBJECT_PARAMETERS = {
+#     'CacheControl': 'max-age=86400',
+# }
+
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 TEMPLATES = [
     {
