@@ -9,7 +9,6 @@ import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 
 const LoginBoxed = () => {
-  const dispatch = useDispatch();
   // useEffect(() => {
   //   dispatch(setPageTitle('Login Boxed'));
   // });
@@ -18,9 +17,6 @@ const LoginBoxed = () => {
   const onSubmit = async (data: any) => {
     const result = await signIn('credentials', { username: data.email, password: data.password, redirect: true, callbackUrl: '/' })
   };
-  console.log(errors);
-  const router = useRouter();
-  const isDark = false;
 
   // const submitForm = (e: any) => {
   //   e.preventDefault();

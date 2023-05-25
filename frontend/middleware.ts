@@ -12,8 +12,8 @@ export async function middleware(request: NextRequest) {
   const step2Path = '/onboarding/step2';
   const loginPath = '/login';
 
-  // Allow step1, /_next and assets to get through
-  if (request.nextUrl.pathname.startsWith(step1Path) || request.nextUrl.pathname.match(/(^\/_next)|(\.(png)|(ico)|(svg)|(json)|(jp(e)?g)$)/)) {
+  // Allow step1, /api, /_next and assets to get through
+  if (request.nextUrl.pathname.startsWith(step1Path) || request.nextUrl.pathname.match(/(^(\/_next)|(\/api))|(\.(png)|(ico)|(svg)|(json)|(jp(e)?g)$)/)) {
     return;
   }
 

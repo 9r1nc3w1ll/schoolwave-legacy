@@ -15,6 +15,13 @@ interface TAuthUser {
   updated_at: string
 };
 
+interface TRegisterCredentials {
+  access_token: string;
+  refresh_token: string;
+  user: TAuthUser;
+  school?: TSchool;
+}
+
 type TSchool = any; // TODO: Refactor to actual school type
 
 type TLoginResponse = {
@@ -28,15 +35,16 @@ type TLoginResponse = {
 }
 
 
-const BACKEND_LOGIN_URL = `${process.env.backend_url}/account/login`;
+const BACKEND_LOGIN_URL = `${process.env.BACKEND_URL}/account/login`;
 
 export const authOptions: NextAuthOptions = {
   secret: 'topsecret',
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
+      id: "credentials",
       // The name to display on the sign in form (e.g. "Sign in with...")
-      name: "Credentials",
+      name: "Username and password",
       // `credentials` is used to generate a form on the sign in page.
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
       // e.g. domain, username, password, 2FA token, etc.
@@ -60,6 +68,43 @@ export const authOptions: NextAuthOptions = {
 
         const { data: { user, access_token, refresh_token, school } }: TLoginResponse = await res.json()
         if (!res.ok || !user) {
+          return null;
+        }
+
+        return {
+          ...user,
+          ...(school ? { school } : {}),
+          name: `${user.first_name} ${user.last_name}`,
+          access_token,
+          refresh_token,
+        }
+      }
+    }),
+    CredentialsProvider({
+      id: "register",
+      credentials: {},
+      async authorize(credentials, req) {
+        const { username, first_name, last_name, email, password } = credentials as any;
+
+        const response = await fetch(`${process.env.BACKEND_URL}/school/register-admin`, {
+          method: "POST",
+          body: JSON.stringify({
+            username,
+            first_name,
+            last_name,
+            email,
+            password,
+          }),
+          headers: { "Content-Type": "application/json" }
+        })
+
+        if (!response.ok) {
+          throw Error(JSON.stringify({ message: await response.json(), status: response.status, statusText: response.statusText }))
+        }
+
+        const { data: { user, access_token, refresh_token, school } }: TLoginResponse = await response.json();
+
+        if (!user) {
           return null;
         }
 

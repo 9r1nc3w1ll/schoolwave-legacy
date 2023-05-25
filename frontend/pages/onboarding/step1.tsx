@@ -7,16 +7,16 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from 'react-query';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { signIn } from 'next-auth/react';
 
 const MySwal = withReactContent(Swal)
 
 interface FormValues {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  phone: string;
   password: string;
-  confirmPassword: string;
+  confirm_password: string;
   username: string;
 };
 
@@ -26,30 +26,33 @@ interface FormResponse {
 }
 
 
-const Step1  = () => {
+const Step1 = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setPageTitle('Owner Setup'));
   });
   const router = useRouter();
-  const { mutateAsync, isLoading, error } = useMutation<Response, unknown, FormValues, unknown>(
-    (post) =>
-      fetch(`${process.env.backend_url}/api/auth/user_onboarding/`, {
-        method: "POST",
-        body: JSON.stringify(post),
-        headers: { "Content-Type": "application/json" }
-      }),
+  const { mutateAsync, isLoading, error } = useMutation(
     {
-      onSuccess: async (data) => {
+      async mutationFn(data: any) {
+        const { ok, error }: any = await signIn('register', { ...data, redirect: false });
+        if (!ok) {
+          return Promise.reject(JSON.parse(error))
+        }
+      },
+      async onSuccess(data) {
         MySwal.fire({
           confirmButtonText: 'Next Step',
-          html: <div className='w-3/5 mx-auto center'> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-12 h-12 text-success mx-auto">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        
-          <p className='text-success text-center'>User Created successfully </p></div> ,
-   
-        }).then(()=>{
+          html: (
+            <div className='w-3/5 mx-auto center'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-12 h-12 text-success mx-auto">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className='text-success text-center'>User Created successfully</p>
+            </div>
+          ),
+
+        }).then(() => {
           router.push('/onboarding/step2')
         });
       },
@@ -61,13 +64,10 @@ const Step1  = () => {
     }
   );
 
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm<FormValues>();  
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm<FormValues>();
+  const onSubmit = async (data: any) => {
     data.username = data.email
-    const { token }: FormResponse = await  (await mutateAsync(data)).json();
-    console.log({ token });
-    // TODO: Get token
-    // TODO: Store token in local storage
+    await mutateAsync(data)
   }
 
   return (
@@ -83,7 +83,7 @@ const Step1  = () => {
                 <ellipse opacity="0.5" cx="12" cy="17" rx="7" ry="4" stroke="currentColor" strokeWidth="1.5" />
               </svg>
             </span>
-            <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="First Name" {...register("firstName",  { required: true })} />
+            <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="First Name" {...register("first_name", { required: true })} />
           </div>
           <div className="relative">
             <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -92,8 +92,9 @@ const Step1  = () => {
                 <ellipse opacity="0.5" cx="12" cy="17" rx="7" ry="4" stroke="currentColor" strokeWidth="1.5" />
               </svg>
             </span>
-            <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Last Name"  {...register("lastName",  {
-              required: true })}/>
+            <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Last Name"  {...register("last_name", {
+              required: true
+            })} />
           </div>
           <div className="relative">
             <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -112,8 +113,9 @@ const Step1  = () => {
                 />
               </svg>
             </span>
-            <input type="email" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Email" {...register("email",  {
-              required: true })}/>
+            <input type="email" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Email" {...register("email", {
+              required: true
+            })} />
           </div>
           <div className="relative">
             <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -138,7 +140,6 @@ const Step1  = () => {
                 />
               </svg>
             </span>
-            <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Phone" />
           </div>
           <div className="relative">
             <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -163,8 +164,9 @@ const Step1  = () => {
                 />
               </svg>
             </span>
-            <input type="password" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Password" {...register("password",  {
-              required: true })} />
+            <input type="password" className="form-input ltr:pl-8 rtl:pr-8" placeholder="Password" {...register("password", {
+              required: true
+            })} />
           </div>
           <div className="relative">
             <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -189,18 +191,18 @@ const Step1  = () => {
                 />
               </svg>
             </span>
-            <input type="password" className="form-input ltr:pl-8 rtl:pr-8" placeholder=" Confirm Password" {...register("confirmPassword", {
+            <input type="password" className="form-input ltr:pl-8 rtl:pr-8" placeholder=" Confirm Password" {...register("confirm_password", {
               required: true,
               validate: (val: string) => {
                 const { password } = getValues();
                 return password === val || "Passwords should match!";
               },
             })} />
-            <p className='text-danger'>{errors.email?  errors.email.message: ''}</p>
-            <p className='text-danger'>{errors.lastName?  errors.lastName.message: ''}</p>
-            <p className='text-danger'>{errors.firstName?  errors.firstName.message: ''}</p>
-            <p className='text-danger'>{errors.password?  errors.password.message: ''}</p>
-            <p className='text-danger'>{errors.confirmPassword?  errors.confirmPassword.message: ''}</p>
+            <p className='text-danger'>{errors.email ? errors.email.message : ''}</p>
+            <p className='text-danger'>{errors.last_name ? errors.last_name.message : ''}</p>
+            <p className='text-danger'>{errors.first_name ? errors.first_name.message : ''}</p>
+            <p className='text-danger'>{errors.password ? errors.password.message : ''}</p>
+            <p className='text-danger'>{errors.confirm_password ? errors.confirm_password.message : ''}</p>
           </div>
           <button type="submit" className="btn btn-primary w-full">Create School Admin</button>
         </fieldset>
