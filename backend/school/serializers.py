@@ -6,4 +6,4 @@ from .models import School
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
-        exclude = ["owner"]
+        fields = "__all__"

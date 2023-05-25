@@ -30,9 +30,10 @@ class SessionAPITestCase(APITestCase):
 
         # Create a session
         self.session = Session.objects.create(
-            name="Test Session",
             school=self.school,
             resumption_date=datetime.now().date(),
+            start_date="2040",
+            end_date="2050"
         )
 
     def test_list_sessions(self):
@@ -50,7 +51,6 @@ class SessionAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         data = {
-            "name": "New Session",
             "school": self.school.id,
             "resumption_date": datetime.now().date(),
             "start_date": "2022",
@@ -59,10 +59,11 @@ class SessionAPITestCase(APITestCase):
 
         response = self.client.post(url, data)
 
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["status"], "success")
         self.assertEqual(response.data["message"], "Session created successfully.")
-        self.assertEqual(response.data["data"]["name"], "2022 / 2023")
+        self.assertEqual(response.data["data"]["name"], "2022/2023")
 
     def test_retrieve_session(self):
         url = reverse("retrieve_update_destroy_session", kwargs={"pk": self.session.id})
@@ -85,7 +86,7 @@ class SessionAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["status"], "success")
         self.assertEqual(response.data["message"], "Session updated successfully.")
-        self.assertEqual(response.data["data"]["name"], "2023 / 2024")
+        self.assertEqual(response.data["data"]["name"], "2023/2024")
 
     def test_delete_session(self):
         url = reverse("retrieve_update_destroy_session", kwargs={"pk": self.session.id})

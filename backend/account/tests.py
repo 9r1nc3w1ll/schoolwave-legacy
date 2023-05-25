@@ -8,7 +8,7 @@ User = get_user_model()
 
 class AuthenticationTestCase(APITestCase):
     def setUp(self):
-        self.user = User.objects.create(username="username", password="password")
+        self.user = User.objects.create_user(username="username", password="password")
 
     def test_user_login(self):
         data = {"username": "username", "password": "password"}

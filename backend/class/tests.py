@@ -32,6 +32,7 @@ class ClassTests(APITestCase):
             "name": "New Class",
             "school": self.school.id,
             "description": "Description",
+            "class_index" : 1
         }
         self.client.force_authenticate(user=self.user)
         response = self.client.post(url, data, format="json")

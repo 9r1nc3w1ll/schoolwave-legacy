@@ -10,7 +10,7 @@ class Session(BaseModel):
         db_table = "sessions"
         unique_together = ("school", "name", "active")
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, blank=True, null=True)
     active = models.BooleanField(null=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     start_date = PartialDateField()
@@ -18,8 +18,7 @@ class Session(BaseModel):
     resumption_date = models.DateField()
 
     def save(self, *args, **kwargs):
-        if len(self.name) == 0:
-            self.name = f"{self.start_date}/{self.end_date}"
+        self.name = f"{self.start_date}/{self.end_date}"
 
         return super().save(*args, **kwargs)
 

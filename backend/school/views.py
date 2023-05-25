@@ -3,6 +3,7 @@ import logging
 from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -23,7 +24,7 @@ class SetupStatus(APIView):
 
 class CreateOwner(APIView):
     def post(self, request):
-        if User.objects.count() != 0:
+        if User.objects.filter(is_superuser=True).count() != 0:
             return Response(
                 {"message": "Owner already created."}, status=status.HTTP_409_CONFLICT
             )

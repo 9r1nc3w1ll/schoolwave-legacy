@@ -12,3 +12,6 @@ class Class(BaseModel):
     name = models.CharField(max_length=150)
     description = models.TextField()
     class_index = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["created_at"]

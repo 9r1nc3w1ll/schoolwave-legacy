@@ -18,7 +18,7 @@ class School(BaseModel):
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
     date_of_establishment = models.DateField(null=True)
     motto = models.CharField(max_length=255, null=True)
-    tag = models.SlugField(max_length=10, unique=True)
+    tag = models.SlugField(max_length=100, unique=True)
     website_url = models.URLField(null=True)
 
     def save(self, *args, **kwargs):

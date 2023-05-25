@@ -7,6 +7,7 @@ class SessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
         fields = "__all__"
+        extra_kwargs = {'name': {'read_only': True}}
 
 
 class TermSerializer(serializers.ModelSerializer):
