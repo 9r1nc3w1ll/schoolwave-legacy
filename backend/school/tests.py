@@ -44,7 +44,7 @@ class SchoolAPITestCase(APITestCase):
             "date_of_establishment": "2022-01-01",
             "motto": "Learning is fun!",
             "website_url": "https://www.example.com",
-            "tag": "example-school",
+            "tag": "example",
         }
 
         self.client.force_authenticate(user=self.user)

@@ -24,7 +24,7 @@ class SetupStatus(APIView):
 
 class CreateOwner(APIView):
     def post(self, request):
-        if User.objects.filter(is_superuser=True).count() != 0:
+        if User.objects.filter(role="admin").count() != 0:
             return Response(
                 {"message": "Owner already created."}, status=status.HTTP_409_CONFLICT
             )

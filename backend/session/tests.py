@@ -23,7 +23,7 @@ class SessionAPITestCase(APITestCase):
 
         # Create a school
         self.school = School.objects.create(
-            name="Test School",
+            name="chrisland",
             owner=self.user,
             date_of_establishment=datetime.now().date(),
         )

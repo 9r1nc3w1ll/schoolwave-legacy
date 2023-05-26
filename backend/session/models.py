@@ -10,7 +10,7 @@ class Session(BaseModel):
         db_table = "sessions"
         unique_together = ("school", "name", "active")
 
-    name = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=50)
     active = models.BooleanField(null=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     start_date = PartialDateField()
