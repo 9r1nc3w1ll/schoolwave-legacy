@@ -5,7 +5,7 @@ from faker import Faker
 fk = Faker()
 
 class Command(BaseCommand):
-    help = 'Seed the database with 50 entries'
+    help = 'Seed the database with 5 entries'
 
     def handle(self, *args, **options):
         for i in range(5):
