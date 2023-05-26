@@ -35,6 +35,7 @@
     "i18next": "^22.4.10",
     "mantine-datatable": "^1.7.35",
     "next": "13.1.2",
+    "next-auth": "^4.22.1",
     "ni18n": "^1.0.5",
     "react": "18.2.0",
     "react-18-image-lightbox": "^5.1.4",
