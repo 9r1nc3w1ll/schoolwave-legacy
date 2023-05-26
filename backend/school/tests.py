@@ -24,6 +24,8 @@ class SchoolAPITestCase(APITestCase):
 
     def test_create_admin(self):
         url = reverse("register_admin")
+        self.user.delete()
+        
         data = {
             "username": "name1",
             "password": "password1123@!",
