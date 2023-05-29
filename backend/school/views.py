@@ -86,7 +86,6 @@ class CreateSchool(APIView):
                 "school": serializer.data,
             },
             status=status.HTTP_201_CREATED,
-<<<<<<< HEAD
         )
 
 
@@ -186,6 +185,3 @@ class RetrieveUpdateDestoryClass(RetrieveUpdateDestroyAPIView):
         }
 
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
-=======
-        )
->>>>>>> f9babbc (User Management CRUD endpoints for single and multiple users)
