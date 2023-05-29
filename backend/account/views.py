@@ -23,7 +23,7 @@ from .serializers import (
     PasswordResetRequestSerializer,
     UserSerializer,
 )
-
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 # Create your views here.
 class LoginView(APIView):
@@ -55,7 +55,6 @@ class LoginView(APIView):
             schoolData = None
 
         data = {
-            "status": "success",
             "message": "Login Successful",
             "data": {
                 "access_token": user.tokens["access"],
@@ -75,7 +74,6 @@ class FetchUser(APIView):
 
     def get(self, request, *args, **kwargs):
         data = {
-            "status": "success",
             "message": "User retrieved successfully.",
             "data": UserSerializer(request.user).data,
         }
@@ -107,9 +105,7 @@ class ChangePassword(APIView):
         request.user.save()
 
         resp = {
-            "status": "success",
-            "message": "Password changed successfully.",
-            "data": None,
+            "message": "Password changed successfully."
         }
         return Response(resp)
 
@@ -139,103 +135,120 @@ class PasswordResetRequestView(APIView):
         send_user_mail(email, reset_link)
 
         resp = {
-            "status": "success",
-            "message": "Reset link sent to user's email",
-            "data": None,
+            "message": "Reset link sent to user's email"
         }
 
         return Response(resp)
 
 
-class UserViewSet(APIView):
-    def get(self, request, *args, **kwargs):
-        resp = {
-            "status": "success",
-            "message": "User retrieved successfully.",
-            "data": UserSerializer(request.user).data,
-        }
-        return Response(resp)
+class UserViewSet(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
-    def post(self, request, *args, **kwargs):
+    def get_queryset(self):
+        """
+        Modify in case there are several users
+        """
+        user = User.objects.get(id=self.request.user_id)
+
+        qs = self.queryset.filter(user=user)
+        return qs
+
+    def create(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-
-            role = request.data.get("role")
-
-            # Define a dictionary mapping roles to group names
-            role_to_group = {
-                "staff": "Staff",
-                "parent": "Parent",
-                "student": "Student",
-                "teacher": "Teacher",
-                "admin": "Admin",
-                "super_admin": "Super_Admin",
-            }
-
-            # Check if the requested role is valid
-            if role in role_to_group:
-                # Update the user's role
-                user.role = role
-                user.groups.clear()
-
-                # Get or create the group based on the requested role
-                group_name = role_to_group[role]
-                group, created = Group.objects.get_or_create(name=group_name)
-
-                # Assign the group to the user
-                user.groups.add(group)
-            else:
-                # Handle invalid role here
-                # For example, raise an exception or return an error response
-                # You can customize it based on your requirements
-                raise ValueError("Invalid role")
+            message = "User created successfully."
+            data = UserSerializer(user).data
 
             resp = {
-                "status": "success",
-                "message": "User created successfully.",
-                "data": UserSerializer(user).data,
-            }
-            return Response(resp)
+                    "message": message,
+                    "data": data,
+                }
+            return Response(resp, status=status.HTTP_201_CREATED)
         else:
             resp = {
-                "status": "error",
                 "message": "Invalid data.",
                 "errors": serializer.errors,
             }
-            return Response(resp)
+            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, *args, **kwargs):
-        user = request.user
-        serializer = UserSerializer(user, data=request.data)
+    def list(self, request, *args, **kwargs):
+        user_id = kwargs.get("user_id")
+        
+        # Retrieve user data based on the user_id parameter
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+                data = UserSerializer(user).data
+                message = "User retrieved successfully."
+            except User.DoesNotExist:
+                return Response({
+                    'error': 'User not found.'
+                    })
+        else:
+            # Retrieve data for all users
+            users = User.objects.all()
+            data = UserSerializer(users, many=True).data
+            message = "Users retrieved successfully."
+
+        resp = {
+            "message": message,
+            "data": data,
+        }
+        return Response(resp)
+
+class RetrieveUpdateDestroyUser(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = "user_id"  # Set the lookup field to match the URL parameter name
+
+    def get_object(self):
+        user_id = self.kwargs.get("user_id")
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({
+                    'error': 'User not found.'
+                    })
+        return user
+
+    def get(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = UserSerializer(user)
+        return Response({
+            "message": "User retrieved successfully.",
+            "data": serializer.data
+        })
+
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        user = self.get_object()
+
+        serializer = UserSerializer(user, data=data, partial=True)
         if serializer.is_valid():
-            user_data = serializer.validated_data
-            fields_to_update = [
-                "username",
-                "email",
-                "role",
-            ]  # Add more fields as needed
-            for field in fields_to_update:
-                setattr(user, field, user_data.get(field, getattr(user, field)))
-            user.save()
-            resp = {
-                "status": "success",
-                "message": "User updated successfully.",
-                "data": UserSerializer(user).data,
-            }
-            return Response(resp)
-        else:
-            resp = {
-                "status": "error",
-                "message": "Invalid data.",
-                "errors": serializer.errors,
-            }
-            return Response(resp)
+            user = serializer.save()
+            message = "User updated successfully."
+            data = UserSerializer(user).data
+
+            return Response({
+                "message": message,
+                "data": data
+            })
+        
+        return Response({
+            "message": "Invalid data.",
+            "errors": serializer.errors
+        })
 
     def delete(self, request, *args, **kwargs):
-        user = request.user
-        user.delete()
-        resp = {"status": "success", "message": "User deleted successfully."}
+        user = self.get_object()  # Retrieve the user object
+        user.delete()  # Call delete on the retrieved user object
+        resp = {
+            "message": "User deleted successfully.",
+        }
         return Response(resp)
 
 
@@ -259,9 +272,7 @@ class AdminResetPassword(APIView):
         user.save()
 
         resp = {
-            "status": "success",
             "message": "Password changed successfully.",
-            "data": None,
         }
         return Response(resp)
 

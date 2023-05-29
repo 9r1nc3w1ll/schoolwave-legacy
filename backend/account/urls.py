@@ -8,6 +8,7 @@ from account.views import (
     LoginView,
     UserRoles,
     UserViewSet,
+    RetrieveUpdateDestroyUser,
 )
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     ),
     path("users/roles", UserRoles.as_view(), name="user_roles"),
     path("users", UserViewSet.as_view(), name="users"),
+    path("users/<uuid:user_id>/", RetrieveUpdateDestroyUser.as_view(), name="user-detail"),
 ]

@@ -75,42 +75,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ["groups", "user_permissions", "deleted_at"]
-
+    
     def create(self, validated_data):
         user = User(**validated_data)
         user.set_password(validated_data["password"])
         user.save()
         return user
-
-    def retrieve(self, instance):
-        resp = {
-            "status": "success",
-            "message": "User retrieved successfully",
-            "user": self.data,
-        }
-        return resp
-
-    def update(self, instance, validated_data):
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        # TODO: Verify that password gets rehashed correctly
-        instance.save()
-        resp = {
-            "status": "success",
-            "message": "User updated successfully",
-            "user": self.data,
-        }
-        return resp
-
-    def delete(self, instance):
-        instance.delete()
-        resp = {
-            "status": "success",
-            "message": "User deleted successfully",
-            "user": self.data,
-        }
-        return resp
-
 
 class OwnerSerializer(UserSerializer):
     email = serializers.EmailField()
