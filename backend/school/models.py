@@ -22,7 +22,6 @@ class School(BaseModel):
     website_url = models.URLField(null=True)
 
     def __str__(self):
-<<<<<<< HEAD
         return self.name
 
 
@@ -34,6 +33,3 @@ class Class(BaseModel):
     name = models.CharField(max_length=150)
     description = models.TextField()
     class_index = models.PositiveSmallIntegerField(default=0)
-=======
-        return self.name
->>>>>>> f9babbc (User Management CRUD endpoints for single and multiple users)
