@@ -12,7 +12,7 @@ class School(BaseModel):
     class Meta:
         db_table = "schools"
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=100)
     description = models.TextField(null=True)
     logo_file_name = models.CharField(max_length=255, null=True)
     owner = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -21,9 +21,15 @@ class School(BaseModel):
     tag = models.SlugField(max_length=10, unique=True)
     website_url = models.URLField(null=True)
 
-    # def save(self, *args, **kwargs):
-    #     self.tag = slugify(self.name)
-    #     super().save(*args, **kwargs)
-
     def __str__(self):
         return self.name
+
+
+class Class(BaseModel):
+    class Meta:
+        db_table = "classes"
+
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    name = models.CharField(max_length=150)
+    description = models.TextField()
+    class_index = models.PositiveSmallIntegerField(default=0)

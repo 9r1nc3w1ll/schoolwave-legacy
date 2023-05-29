@@ -38,13 +38,12 @@ const Step2 = () => {
       onSuccess: async (data) => {
         MySwal.fire({
           confirmButtonText: 'Go to Dashboard',
-          html: <div className='w-3/5 mx-auto center'> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-12 h-12 text-success mx-auto">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        
-          <p className='text-success text-center'>School Created successfully </p></div> ,
-   
-        }).then(()=>{
+          html: (
+            <div className='w-3/5 mx-auto center'> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-12 h-12 text-success mx-auto">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg><p className='text-success text-center'>School Created successfully </p></div>
+          )
+        }).then(() => {
           router.push('/')
         });
       },
@@ -57,17 +56,17 @@ const Step2 = () => {
   );
 
   const { register, handleSubmit, getValues, formState } = useForm<FormValues>();
-  const { errors } : any = formState
+  const { errors }: any = formState
   const onSubmit: SubmitHandler<FormValues> = data => {
-    data.owner= 4
     console.log('llll', data)
-    mutate(data)};
+    mutate(data)
+  };
 
   return (
     <div className="panel m-6 w-full max-w-lg sm:w-[640px]">
       <h2 className="mb-5 text-2xl font-bold">
-      
-      School Information
+
+        School Information
       </h2>
       <p className="mb-7">Provide the information below so we can setup your school for you</p>
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
@@ -78,8 +77,9 @@ const Step2 = () => {
               <ellipse opacity="0.5" cx="12" cy="17" rx="7" ry="4" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </span>
-          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Name" {...register("name",  {
-            required: true })} />
+          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Name" {...register("name", {
+            required: true
+          })} />
         </div>
         <div className="relative">
           <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -88,15 +88,17 @@ const Step2 = () => {
             </svg>
 
           </span>
-          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="About your school"  {...register("description",  {
-            required: false })}/>
+          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="About your school"  {...register("description", {
+            required: false
+          })} />
         </div>
         <div className="relative">
-   
-         
+
+
           <label >Date of Establishment</label>
-          <input type="date" className="form-input "  placeholder="Date of Establishment" {...register("date_of_establishment",  {
-            required: true })}/>
+          <input type="date" className="form-input " placeholder="Date of Establishment" {...register("date_of_establishment", {
+            required: true
+          })} />
         </div>
         <div className="relative">
           <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -105,8 +107,9 @@ const Step2 = () => {
             </svg>
 
           </span>
-          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Website" {...register("website_url",  {
-            required: true })} />
+          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Website" {...register("website_url", {
+            required: true
+          })} />
         </div>
         <div className="relative">
           <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
@@ -131,12 +134,13 @@ const Step2 = () => {
               />
             </svg>
           </span>
-          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Motto" {...register("motto",  {
-            required: false })} />
+          <input type="text" className="form-input ltr:pl-8 rtl:pr-8" placeholder="School Motto" {...register("motto", {
+            required: false
+          })} />
         </div>
-     
+
         <button type="submit" className="btn btn-primary w-full">
-                        Create School 
+          Create School
         </button>
       </form>
     </div>
