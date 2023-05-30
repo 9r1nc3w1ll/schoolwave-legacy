@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "school",
     "session",
     "admission"
+    "attendance",
 ]
 
 AUTH_USER_MODEL = "account.User"
