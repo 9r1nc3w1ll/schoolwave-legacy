@@ -15,7 +15,7 @@ const LoginBoxed = () => {
 
   const { register, handleSubmit, formState: { errors } } = useForm();
   const onSubmit = async (data: any) => {
-    const result = await signIn('credentials', { username: data.email, password: data.password, redirect: true, callbackUrl: '/' })
+    const result = await signIn('credentials', { username: data.email, password: data.password, redirect: false, callbackUrl: '/' })
   };
 
   // const submitForm = (e: any) => {

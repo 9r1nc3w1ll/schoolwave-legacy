@@ -66,8 +66,17 @@ export const authOptions: NextAuthOptions = {
           }),
         })
 
+        if (!res.ok) {
+          throw Error(JSON.stringify({
+            message: await res.json(),
+            status: res.status,
+            statusText: res.statusText,
+          }))
+        }
+
         const { data: { user, access_token, refresh_token, school } }: TLoginResponse = await res.json()
-        if (!res.ok || !user) {
+
+        if (!(user && access_token)) {
           return null;
         }
 
@@ -99,7 +108,11 @@ export const authOptions: NextAuthOptions = {
         })
 
         if (!response.ok) {
-          throw Error(JSON.stringify({ message: await response.json(), status: response.status, statusText: response.statusText }))
+          throw Error(JSON.stringify({
+            message: await response.json(),
+            status: response.status,
+            statusText: response.statusText,
+          }))
         }
 
         const { data: { user, access_token, refresh_token, school } }: TLoginResponse = await response.json();
