@@ -9,7 +9,7 @@ import Sidebar from './Sidebar';
 import Setting from './Setting';
 import Portals from '../../components/Portals';
 import { useRouter } from 'next/router';
-import { SessionProvider, sessionProvider } from "next-auth/react"
+import { SessionProvider } from "next-auth/react"
 
 interface IProps {
   children: ReactNode;
@@ -127,8 +127,8 @@ const DefaultLayout = ({ children, session }: IProps) => {
             {/* END CONTENT AREA */}
           </div>
         </div>
-      </SessionProvider >
-    </App >
+      </SessionProvider>
+    </App>
   );
 };
 
