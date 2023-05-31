@@ -35,7 +35,7 @@ type TLoginResponse = {
 }
 
 
-const BACKEND_LOGIN_URL = `${process.env.BACKEND_URL}/account/login`;
+const BACKEND_LOGIN_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/login`;
 
 export const authOptions: NextAuthOptions = {
   secret: 'topsecret',
@@ -95,7 +95,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         const { username, first_name, last_name, email, password } = credentials as any;
 
-        const response = await fetch(`${process.env.BACKEND_URL}/school/register-admin`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/school/register-admin`, {
           method: "POST",
           body: JSON.stringify({
             username,

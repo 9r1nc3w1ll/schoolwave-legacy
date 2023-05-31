@@ -1,8 +1,4 @@
 import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
-
-import { useEffect } from 'react';
-
 import { useRouter } from 'next/router';
 import BlankLayout from '@/components/Layouts/BlankLayout';
 import { useForm } from 'react-hook-form';
@@ -15,7 +11,6 @@ const MySwal = withReactContent(Swal)
 
 const LoginBoxed = () => {
   const router = useRouter()
-
   const { register, handleSubmit, formState: { errors } } = useForm();
   const onSubmit = async (data: any) => {
     const result = await signIn('credentials', { username: data.email, password: data.password, redirect: false, callbackUrl: '/' })

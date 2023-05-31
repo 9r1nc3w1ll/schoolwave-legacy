@@ -29,7 +29,7 @@ const Step2 = () => {
   const router = useRouter();
   const { mutate, isLoading, error } = useMutation(
     (post) =>
-      fetch(`${process.env.backend_url}/api/auth/schools/`, {
+      fetch(`${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/api/auth/schools/`, {
         method: "POST",
         body: JSON.stringify(post),
         headers: { "Content-type": "application/json" }

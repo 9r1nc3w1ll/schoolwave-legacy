@@ -12,7 +12,6 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 const Header = () => {
   const router = useRouter();
   const { data: session } = useSession()
-
   useEffect(() => {
     const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');
     if (selector) {
@@ -420,6 +419,8 @@ const Header = () => {
             </div>
           </div>
         </div>
+
+
       </div>
     </header>
   );

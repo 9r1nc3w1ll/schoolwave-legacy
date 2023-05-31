@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
   }
 
 
-  const initCheckUrl = `${process.env.BACKEND_URL ?? 'http://localhost:8000'}/school/setup-status`
+  const initCheckUrl = `${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:8000'}/school/setup-status`
   const step1Path = '/onboarding/step1';
   const step2Path = '/onboarding/step2';
   const loginPath = '/login';

@@ -11,10 +11,13 @@ import Portals from '../../components/Portals';
 import { useRouter } from 'next/router';
 import { SessionProvider } from "next-auth/react"
 
+
 interface IProps {
   children: ReactNode;
   session: any
 }
+
+
 
 const DefaultLayout = ({ children, session }: IProps) => {
   const router = useRouter();
@@ -68,9 +71,8 @@ const DefaultLayout = ({ children, session }: IProps) => {
   return (
     <App>
       <SessionProvider session={session}>
-        {/* BEGIN MAIN CONTAINER */}
+
         <div className="relative">
-          {/* screen loader  */}
           {showLoader && (
             <div className="screen_loader animate__animated fixed inset-0 z-[60] grid place-content-center bg-[#fafafa] dark:bg-[#060818]">
               <svg width="64" height="64" viewBox="0 0 135 135" xmlns="http://www.w3.org/2000/svg" fill="#4361ee">
@@ -127,6 +129,7 @@ const DefaultLayout = ({ children, session }: IProps) => {
             {/* END CONTENT AREA */}
           </div>
         </div>
+
       </SessionProvider>
     </App>
   );
