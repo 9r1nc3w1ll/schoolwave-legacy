@@ -13,10 +13,6 @@ const Header = () => {
   const router = useRouter();
   const { data: session } = useSession()
   useEffect(() => {
-    console.log('yyy', session)
-  }, [session])
-
-  useEffect(() => {
     const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');
     if (selector) {
       const all: any = document.querySelectorAll('ul.horizontal-menu .nav-link.active');
