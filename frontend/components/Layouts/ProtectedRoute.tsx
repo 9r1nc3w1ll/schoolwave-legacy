@@ -2,6 +2,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import DefaultLayout from './DefaultLayout';
+import React from 'react';
 
 type Props = {
   children: React.ReactElement;
@@ -15,12 +16,16 @@ type Props = {
   export default OrderDetail;
  */
 
-export const ProtectedLayout = ({ children }: Props): JSX.Element => {
+export const ProtectedLayout = ({ children, session }: Props): JSX.Element => {
   const router = useRouter();
-  const { status: sessionStatus } = useSession();
+  const { status: sessionStatus, data } = useSession();
   const authorized = sessionStatus === 'authenticated';
   const unAuthorized = sessionStatus === 'unauthenticated';
   const loading = sessionStatus === 'loading';
+
+  let g = React.Children.toArray(children)
+  const el = React.cloneElement(g[0], {session:data})
+
 
   useEffect(() => {
     // check if the session is loading or the router is not ready
@@ -44,5 +49,5 @@ export const ProtectedLayout = ({ children }: Props): JSX.Element => {
 
   // if the user is authorized, render the page
   // otherwise, render nothing while the router redirects him to the login page
-  return authorized ? <DefaultLayout> {children}</DefaultLayout>: <></>;
+  return authorized ? <DefaultLayout> {el}</DefaultLayout>: <></>;
 };
