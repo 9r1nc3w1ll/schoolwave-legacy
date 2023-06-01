@@ -13,6 +13,8 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 
 import '../styles/tailwind.css';
 import { NextPage } from 'next';
+import { ProtectedLayout } from '@/components/Layouts/ProtectedRoute';
+import { SessionProvider } from "next-auth/react"
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
     getLayout?: (page: ReactElement) => ReactNode;
@@ -23,7 +25,7 @@ type AppPropsWithLayout = AppProps & {
 };
 
 const App = ({ Component, pageProps }: AppPropsWithLayout) => {
-  const getLayout = Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);
+  const getLayout = Component.getLayout ?? ((page) =><SessionProvider session={pageProps.session}><ProtectedLayout>{page}</ProtectedLayout></SessionProvider> );
 
   return (
     <Provider store={store}>
