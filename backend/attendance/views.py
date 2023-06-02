@@ -4,7 +4,6 @@ from .models import StudentAttendance
 from .serializers import StudentAttendanceSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from school.models import School
 
 class ListCreateStudentAttendance(ListCreateAPIView):
     permission_classes = [IsAuthenticated]

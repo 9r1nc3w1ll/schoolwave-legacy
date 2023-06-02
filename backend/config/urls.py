@@ -27,7 +27,10 @@ urlpatterns = [
     path("account/", include("account.urls")),
     path("school/", include("school.urls")),
     path("session/", include("session.urls")),
+<<<<<<< HEAD
     path("admission/", include("admission.urls")),
+=======
+>>>>>>> 6a8c99d (Student Attendance Testing)
     path("attendance/", include("attendance.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
