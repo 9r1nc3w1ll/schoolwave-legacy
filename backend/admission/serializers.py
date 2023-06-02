@@ -10,7 +10,6 @@ class StudentInformationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class AdmissionRequestSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = AdmissionRequest
         fields = "__all__"
