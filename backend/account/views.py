@@ -249,7 +249,7 @@ class RetrieveUpdateDestroyUser(RetrieveUpdateDestroyAPIView):
         resp = {
             "message": "User deleted successfully.",
         }
-        return Response(resp)
+        return Response(resp, status=status.HTTP_204_NO_CONTENT)
 
 
 class AdminResetPassword(APIView):
