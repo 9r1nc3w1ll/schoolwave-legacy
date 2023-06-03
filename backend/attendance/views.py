@@ -1,11 +1,12 @@
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import StudentAttendance
 from .serializers import StudentAttendanceSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
+from school.models import School
 
-class StudentAttendanceListCreateAPIView(ListCreateAPIView):
+class ListCreateStudentAttendance(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = StudentAttendance.objects.all()
     serializer_class = StudentAttendanceSerializer
@@ -18,37 +19,37 @@ class StudentAttendanceListCreateAPIView(ListCreateAPIView):
             return self.queryset.all()
 
     def create(self, request, *args, **kwargs):
-        serializer = StudentAttendanceSerializer(data=request.data)
-        if serializer.is_valid():
-            studentattendance = serializer.save()
-            message = "Student attendance created successfully."
-            data = StudentAttendanceSerializer(studentattendance).data
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-            resp = {
-                    "message": message,
-                    "data": data,
-                }
-            return Response(resp, status=status.HTTP_201_CREATED)
-        else:
-            resp = {
-                "message": "Invalid data.",
-                "errors": serializer.errors,
-            }
-            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        message = "Student attendance retrieved successfully."
+        headers = self.get_success_headers(serializer.data)
 
         resp = {
-            "message": message,
+                "message": "Student attendance created successfully.",
+                "data": serializer.data,
+            }
+        return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        resp = {
+            "message": "Student attendance fetched successfully.",
             "data": serializer.data,
         }
         return Response(resp)
 
 
-class StudentAttendanceRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = StudentAttendance.objects.all()
     serializer_class = StudentAttendanceSerializer

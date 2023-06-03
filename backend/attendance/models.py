@@ -6,6 +6,8 @@ from account.models import User
 
 # Create your models here.
 class StudentAttendance(models.Model):
+    class Meta:
+        db_table = "student attendance"
     """
     This is daily students attendance 
     """
@@ -24,5 +26,6 @@ class StudentAttendance(models.Model):
     remark = models.TextField()
     staff = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'staff'}, related_name='staff_attendances')
 
-    def __str__(self):
-        return f"Attendance for student {self.student} on {self.date}"
+    def save(self, *args, **kwargs):
+
+        return super().save(*args, **kwargs)
