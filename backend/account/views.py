@@ -208,7 +208,7 @@ class UserViewSet(ListCreateAPIView):
                 data = UserSerializer(user).data
                 message = "User retrieved successfully."
             except User.DoesNotExist:
-                return Response({"error": "User not found."})
+                return Response({"message": "User not found."})
         else:
             users = User.objects.all()
             data = UserSerializer(users, many=True).data
@@ -232,7 +232,7 @@ class RetrieveUpdateDestroyUser(RetrieveUpdateDestroyAPIView):
         try:
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
-            return Response({"error": "User not found."})
+            return Response({"message": "User not found."})
         return user
 
     def get(self, request, *args, **kwargs):
