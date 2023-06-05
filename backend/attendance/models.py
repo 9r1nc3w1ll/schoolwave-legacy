@@ -4,7 +4,6 @@ from django.db import models
 from school.models import Class
 from account.models import User
 
-# Create your models here.
 class StudentAttendance(models.Model):
     class Meta:
         db_table = "student attendance"
