@@ -177,7 +177,6 @@ class UserViewSet(ListCreateAPIView):
     def list(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")
         
-        # Retrieve user data based on the user_id parameter
         if user_id:
             try:
                 user = User.objects.get(id=user_id)
@@ -188,7 +187,6 @@ class UserViewSet(ListCreateAPIView):
                     'error': 'User not found.'
                     })
         else:
-            # Retrieve data for all users
             users = User.objects.all()
             data = UserSerializer(users, many=True).data
             message = "Users retrieved successfully."
@@ -203,7 +201,7 @@ class RetrieveUpdateDestroyUser(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    lookup_field = "user_id"  # Set the lookup field to match the URL parameter name
+    lookup_field = "user_id"
 
     def get_object(self):
         user_id = self.kwargs.get("user_id")
@@ -244,8 +242,8 @@ class RetrieveUpdateDestroyUser(RetrieveUpdateDestroyAPIView):
         })
 
     def delete(self, request, *args, **kwargs):
-        user = self.get_object()  # Retrieve the user object
-        user.delete()  # Call delete on the retrieved user object
+        user = self.get_object()
+        user.delete()
         resp = {
             "message": "User deleted successfully.",
         }
@@ -291,7 +289,6 @@ class UserRoles(APIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    # endpoint to get the roles assigned to a user
     def get(self, request, *args, **kwargs):
         user = self.get_object()
         roles = list(user.groups.values_list("name", flat=True))

@@ -15,7 +15,6 @@ class StudentAttendanceAPITestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
 
-        # Create a user
         self.user = User.objects.create(
             username="testowner", password="testpassword", role="staff"
         )
@@ -28,14 +27,12 @@ class StudentAttendanceAPITestCase(APITestCase):
             username="teststaff", password="testpassword", role="staff"
         )
 
-        # Create a school
         self.school = School.objects.create(
             name="chrisland",
             owner=self.user,
             date_of_establishment=datetime.now().date(),
         )
 
-        # Create a class
         self.class_obj = Class.objects.create(
             name="Test Class", school=self.school, description="Description"
         )
@@ -63,7 +60,7 @@ class StudentAttendanceAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             len(response.data["data"]), 1
-        )  # Assuming there is only one attendance in the database
+        )
 
     def test_create_student_attendance(self):
         url = reverse("student_attendance_list_create")

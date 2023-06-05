@@ -6,46 +6,46 @@ from rest_framework import status
 User = get_user_model()
 
 
-# class AuthenticationTestCase(APITestCase):
-#     def setUp(self):
-#         self.user = User.objects.create(username="username", password="password")
+class AuthenticationTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create(username="username", password="password")
 
-#     def test_user_login(self):
-#         data = {"username": "username", "password": "password"}
+    def test_user_login(self):
+        data = {"username": "username", "password": "password"}
 
-#         response = self.client.post(reverse("user_login"), data)
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(reverse("user_login"), data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-#     def test_user_login_with_incorrect_credentials(self):
-#         data = {"username": "username", "password": "wrongpassword"}
+    def test_user_login_with_incorrect_credentials(self):
+        data = {"username": "username", "password": "wrongpassword"}
 
-#         response = self.client.post(reverse("user_login"), data)
-#         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        response = self.client.post(reverse("user_login"), data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-#     def test_fetch_user_with_jwt(self):
-#         headers = {"Authorization": f'Bearer {self.user.tokens["access"]}'}
-#         response = self.client.get(reverse("fetch_user"), headers=headers)
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_fetch_user_with_jwt(self):
+        headers = {"Authorization": f'Bearer {self.user.tokens["access"]}'}
+        response = self.client.get(reverse("fetch_user"), headers=headers)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-#     def test_password_change_with_correct_password(self):
-#         data = {"old_password": "password", "new_password": "newpassword"}
+    def test_password_change_with_correct_password(self):
+        data = {"old_password": "password", "new_password": "newpassword"}
 
-#         headers = {"Authorization": f'Bearer {self.user.tokens["access"]}'}
+        headers = {"Authorization": f'Bearer {self.user.tokens["access"]}'}
 
-#         response = self.client.post(
-#             reverse("password_change"), data=data, headers=headers
-#         )
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.post(
+            reverse("password_change"), data=data, headers=headers
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-#     def test_password_change_with_incorrect_password(self):
-#         data = {"old_password": "22password", "new_password": "newpassword"}
+    def test_password_change_with_incorrect_password(self):
+        data = {"old_password": "22password", "new_password": "newpassword"}
 
-#         headers = {"Authorization": f'Bearer {self.user.tokens["access"]}'}
+        headers = {"Authorization": f'Bearer {self.user.tokens["access"]}'}
 
-#         response = self.client.post(
-#             reverse("password_change"), data=data, headers=headers
-#         )
-#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response = self.client.post(
+            reverse("password_change"), data=data, headers=headers
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class UserCRUDTestCase(APITestCase):
@@ -53,15 +53,15 @@ class UserCRUDTestCase(APITestCase):
         self.user = User.objects.create(username="username", password="password")
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
-    # def test_create_user(self):
-    #     url = reverse("users")
-    #     self.client.force_authenticate(user=self.user)
+    def test_create_user(self):
+        url = reverse("users")
+        self.client.force_authenticate(user=self.user)
 
-    #     data = {"username": "newuser", "password": "newpassword"}
+        data = {"username": "newuser", "password": "newpassword"}
 
-    #     response = self.client.post(url, data)
-    #     print(response)
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response = self.client.post(url, data)
+        print(response)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_retrieve_user(self):
         response = self.client.get(reverse("user-detail", args=[self.user.id]))
@@ -94,4 +94,4 @@ class UserCRUDTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             len(response.data["data"]), 1
-        )  # Assuming there is only one attendance in the database
+        )
