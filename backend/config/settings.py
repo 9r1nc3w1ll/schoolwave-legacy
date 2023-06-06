@@ -192,3 +192,5 @@ LOGGING = {
 }
 
 FRONTEND_URL = config("FRONTEND_URL")
+
+SITE_ID = 1

@@ -47,9 +47,7 @@ class BatchUploadAdmissionRequest(APIView):
                 )
             
             data = {
-                "status": "success",
                 "message": "Upload complete.",
-                "data": None,
             }
             return Response(data)
         except Exception as e:
@@ -64,8 +62,10 @@ class ListCreateAdmissionRequests(ListCreateAPIView):
     def get_queryset(self):
         school = School.objects.get(owner=self.request.user)
 
+        print("school", school)
+
         qs = self.queryset.filter(school=school)
-        return qs
+        return super().get_queryset()
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -75,7 +75,6 @@ class ListCreateAdmissionRequests(ListCreateAPIView):
 
         headers = self.get_success_headers(serializer.data)
         resp = {
-            "status": "success",
             "message": "Admission request created successfully.",
             "data": serializer.data,
         }
@@ -92,7 +91,6 @@ class ListCreateAdmissionRequests(ListCreateAPIView):
         serializer = self.get_serializer(queryset, many=True)
 
         resp = {
-            "status": "success",
             "message": "Admission requests fetched successfully.",
             "data": serializer.data,
         }
@@ -109,7 +107,6 @@ class RUDAdmissionRequests(RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance)
 
         resp = {
-            "status": "success",
             "message": "Admission request fetched successfully.",
             "data": serializer.data,
         }
@@ -123,7 +120,6 @@ class RUDAdmissionRequests(RetrieveUpdateDestroyAPIView):
         self.perform_update(serializer)
 
         resp = {
-            "status": "success",
             "message": "Admission request updated successfully.",
             "data": serializer.data,
         }
@@ -134,9 +130,7 @@ class RUDAdmissionRequests(RetrieveUpdateDestroyAPIView):
         self.perform_destroy(instance)
 
         resp = {
-            "status": "success",
             "message": "Admission request deleted successfully.",
-            "data": None,
         }
 
         return Response(resp, status=status.HTTP_204_NO_CONTENT)

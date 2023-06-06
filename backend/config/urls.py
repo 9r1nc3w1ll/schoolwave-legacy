@@ -27,7 +27,6 @@ urlpatterns = [
     path("account/", include("account.urls")),
     path("school/", include("school.urls")),
     path("session/", include("session.urls")),
-    # path("class/", include("class.urls")),
     path("admission/", include("admission.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

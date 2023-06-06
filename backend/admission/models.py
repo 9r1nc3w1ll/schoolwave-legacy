@@ -19,9 +19,7 @@ GENDERS = (
     ("female", "Female")
 )
 
-class StudentInformation(BaseModel):
-    #TODO: Get list of required fields, and add to User model; or create StudentProfile model.
-    
+class StudentInformation(BaseModel):    
     username = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     first_name = models.CharField(max_length=200)
