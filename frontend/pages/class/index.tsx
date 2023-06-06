@@ -6,30 +6,29 @@ import { Dialog, Transition } from '@headlessui/react';
 import DeleteClasses from '@/components/DeleteClasses';
 import CreateClassForm from '@/components/CreateClassForm';
 import EditClassForm from '@/components/EditClassForm';
-import { getClasses } from '@/apicalls/class';
-import LeftDropdown from '@/components/LeftDropdown';
+import { getClasses } from '@/apicalls/clas';
+import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 
 
 
 
 
-const Export =  ({session:user_session}) => {
+const Export =  (props:any) => {
  
   const [search, setSearch] = useState<string>('');
   const [activeToolTip, setActiveToolTip] = useState<string>('');
-  const [visible, setVisible] = useState<boolean>(false);
   const [sessions, setSessions] = useState([])
   const [filteredsessions, setFilteredsessions] = useState<any>(sessions);
   const [modal, setmodal] = useState(false);
-  const [selectedSession, setSelectedSession] = useState({});
-  const [duplicateClass, setDuplicateClass] = useState({});
+  const [selectedSession, setSelectedSession] = useState<any>({});
+  // const [duplicateClass, setDuplicateClass] = useState({});
   
 
 
   useEffect(()=>{
     if(activeToolTip != ''){
 
-      const x = sessions.find((t)=>{
+      const x:any = sessions.find((t:any)=>{
         return t.id == activeToolTip
       })
   
@@ -43,13 +42,13 @@ const Export =  ({session:user_session}) => {
   
   const {data:h, isSuccess, status, isLoading} = useQuery('classes', ()=>{
   
-    return getClasses(user_session.access_token)
+    return getClasses(props.user_session.access_token)
   })
 
   useEffect(() => {
-    // console.log(user_session.access_token)
+    // console.log(props.user_session.access_token)
     setFilteredsessions(() => {
-      return sessions.filter((item) => {
+      return sessions.filter((item:any) => {
         return item.name.toLowerCase().includes(search.toLowerCase());
       });
     });
@@ -64,7 +63,7 @@ const Export =  ({session:user_session}) => {
   }, [h, isSuccess, status])
   const displaySession: () => any=()=>{
     if(sessions.length > 0){
-      return filteredsessions.map((data) => {
+      return filteredsessions.map((data:any) => {
         return (
           <tr className={`${data.active? `bg-primary-light`: ''} !important`} key={data.id}>
             <td>
@@ -74,7 +73,7 @@ const Export =  ({session:user_session}) => {
             <td>{Math.round(Math.random() * 50)}</td>
             <td>John Doe</td>
             <td className="text-center ">
-              <LeftDropdown 
+              <DropDownWIthChildren 
                 trigger = {<button type="button" className='relative' onClick={()=>{
                   setActiveToolTip(data.id)
               
@@ -94,7 +93,7 @@ const Export =  ({session:user_session}) => {
                   {/* <DuplicateClass obj = {duplicateClass}  /> */}
                   <p className='mb-2 px-2  hover:bg-white'>Assign Students</p>
                   <p className='mb-2 px-2  hover:bg-white'>Assign Teacher</p>
-                  <DeleteClasses sessionID = {selectedSession.id} user_session={user_session}/>
+                  <DeleteClasses sessionID = {selectedSession.id} user_session={props.user_session}/>
                
                  
 
@@ -104,7 +103,7 @@ const Export =  ({session:user_session}) => {
                 </div>
 
 
-              </LeftDropdown>
+              </DropDownWIthChildren>
             
               
                     
@@ -125,7 +124,7 @@ const Export =  ({session:user_session}) => {
       <div className='panel col-span-2'>
         <div className='panel bg-[#f5f6f7]'>
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create New Class</h5>
-          <CreateClassForm create={true}  user_session={user_session} sessionID={selectedSession.id} exit={setmodal}  />
+          <CreateClassForm create={true}  user_session={props.user_session} sessionID={selectedSession.id} exit={setmodal}  />
         </div>
       </div>
       <div className='panel col-span-4 ' >
@@ -151,7 +150,7 @@ const Export =  ({session:user_session}) => {
           </form>
        
         </div>
-        <div className="table-responsive mb-5  pb-[120px] " onClick={(e)=>{
+        <div className="table-responsive mb-5  pb-[120px] " onClick={(e:any)=>{
       
           if(e.target.localName != 'svg' && e.target.localName != 'path'){
             setActiveToolTip('')
@@ -196,7 +195,7 @@ const Export =  ({session:user_session}) => {
                       <h5 className=" text-lg font-semibold dark:text-white-light">Edit Class</h5>
                       <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p>
                   
-                      <EditClassForm create={false} user_session={user_session} sessionData={selectedSession} exit={setmodal}  />
+                      <EditClassForm create={false} user_session={props.user_session} sessionData={selectedSession} exit={setmodal}  />
                     </div>
                   </Dialog.Panel>
                 </div>

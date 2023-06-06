@@ -1,6 +1,5 @@
-
-export const createSession= async(access_token: string, data: any)=>{
-  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session' , {
+export const createClass= async(access_token: string, data: any)=>{
+  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class' , {
     method: "POST",
     headers: {
       "content-Type": "application/json",
@@ -14,8 +13,8 @@ export const createSession= async(access_token: string, data: any)=>{
   return u
 }
 
-export const editSession= async(id: string, access_token: string, data: any)=>{
-  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id, {
+export const editClass= async(id: string, access_token: string, data: any)=>{
+  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class/' + id, {
     method: "PATCH",
     headers: {
       "content-Type": "application/json",
@@ -29,8 +28,8 @@ export const editSession= async(id: string, access_token: string, data: any)=>{
   return u
 }
 
-export const deleteSession= async (id: string, access_token: string)=>{
-  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id, {
+export const deleteClass= async (id: string, access_token: string)=>{
+  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class/' + id, {
     method: "DELETE",
     headers: {
       "content-Type": "application/json",
@@ -45,8 +44,10 @@ export const deleteSession= async (id: string, access_token: string)=>{
 }
 
 
-export const getSession= async (access_token: string)=>{
-  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session' , {
+
+
+export const getClasses= async (access_token: string)=>{
+  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class' , {
     method: "GET",
     headers: {
       "content-Type": "application/json",

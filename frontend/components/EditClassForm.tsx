@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { showAlert } from '@/utility_methods/alert';
-import { editClass } from '@/apicalls/class';
+import { editClass } from '@/apicalls/clas';
 
 
 
@@ -16,21 +16,21 @@ interface FormValues {
  
    };
 
+//  {  user_session, sessionData, exit}
 
-
-const EditClassForm = ({ children, create, user_session, sessionData, exit}: PropsWithChildren) => {
+const EditClassForm = (props:any) => {
 
   const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
  
   const queryClient = useQueryClient();
   useEffect(()=>{
-    reset(sessionData)
+    reset(props.sessionData)
   },[])
 
   // const { mutateAsync, isLoading, error } = useMutation(
   //   {
   //     async mutationFn(data: any) {
-  //       const gt = await axios.patch('http://127.0.0.1:8000/session/session/'+ sessionData.id, data, {
+  //       const gt = await axios.patch('http://127.0.0.1:8000/session/session/'+ props.sessionData.id, data, {
   //         headers: {
   //           "Content-Type": "application/json",
   //           "Authorization": 'Bearer '+ user_session.access_token, 
@@ -42,7 +42,7 @@ const EditClassForm = ({ children, create, user_session, sessionData, exit}: Pro
   //     },
   //     async onSuccess(data) {
   //       showAlert('success', 'Session Updated Successfuly')
-  //       exit(false)
+  //       props.exit(false)
   //       queryClient.invalidateQueries(['sessions'])
   //     },
   //    onError: (error) => {
@@ -61,16 +61,16 @@ const EditClassForm = ({ children, create, user_session, sessionData, exit}: Pro
 
 
   const { mutate, isLoading, error } = useMutation(
-    (data) => editClass(sessionData.id, user_session.access_token, data),
+    (data) => editClass(props.sessionData.id, props.user_session.access_token, data),
     {
       onSuccess: async (data) => {
         showAlert('success', 'Class Edited Successfuly')
-        exit(false)
+        props.exit(false)
         queryClient.invalidateQueries(['classes'])
   
       },
       onError: (error) => {
-          showAlert('error', 'An Error Occured' )
+        showAlert('error', 'An Error Occured' )
       }
     }
   );

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { showAlert } from '@/utility_methods/alert';
-import { createClass } from '@/apicalls/class';
+import { createClass } from '@/apicalls/clas';
 
 
 
@@ -18,21 +18,20 @@ interface FormValues {
 
 
 
-const CreateClassForm = ({ children, create, user_session, sessionID, exit, updateData}: PropsWithChildren) => {
+const CreateClassForm = (props:any) => {
 
   const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
  
   const queryClient = useQueryClient();
 
-// console.log(user_session.access_token)
 
   const { mutate, isLoading, error } = useMutation(
     (data) =>
-      createClass(user_session.access_token, data),
+      createClass(props.user_session.access_token, data),
     {
       onSuccess: async (data) => {
         showAlert('success', 'Class Created Successfuly')
-        exit(false)
+        props.exit(false)
         reset()
         queryClient.invalidateQueries(['classes'])
   

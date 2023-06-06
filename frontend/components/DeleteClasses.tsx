@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useQueryClient } from "react-query";
 import { showAlert } from "@/utility_methods/alert";
-import { deleteClass } from "@/apicalls/class";
+import { deleteClass } from "@/apicalls/clas";
 
-const DeleteSessions = ({sessionID, user_session}) => {
+const DeleteSessions = (props:any) => {
   const [del, TriggerDelete] = useState()
 
   const queryClient = useQueryClient();
  
  
   async function x  (){
-    const gt = await deleteClass(sessionID, user_session.access_token)
+    const gt = await deleteClass(props.sessionID, props.user_session.access_token)
    
     if(gt.status == 204){
       queryClient.invalidateQueries(['classes'])
