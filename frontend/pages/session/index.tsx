@@ -1,13 +1,12 @@
 import Link from 'next/link';
 import { useQuery } from 'react-query';
 import { useEffect, useState, Fragment, useCallback, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from 'react';
-import axios from 'axios';
 import { Dialog, Transition } from '@headlessui/react';
-import {dateInPast} from '@/utility_methods/date'
 import DeleteSessions from '@/components/DeleteSessions';
 import CreateSessionForm from '@/components/CreateSessionForm';
 import EditSessionForm from '@/components/EditSessionForm';
 import { getSession } from '@/apicalls/session';
+import {dateInPast} from '@/utility_methods/date'
 
 
 
