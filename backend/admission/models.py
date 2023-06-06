@@ -65,5 +65,3 @@ def create_user_on_approved_request(sender, instance: AdmissionRequest, created,
     if not created:
         if instance.status == "approved":
             instance.create_student_user()
-
-            # Delete student_info instance?
