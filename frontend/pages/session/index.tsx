@@ -6,7 +6,8 @@ import DeleteSessions from '@/components/DeleteSessions';
 import CreateSessionForm from '@/components/CreateSessionForm';
 import EditSessionForm from '@/components/EditSessionForm';
 import { getSession } from '@/apicalls/session';
-import {dateInPast} from '@/utility_methods/date'
+import { dateInPast } from '@/utility_methods/datey';
+
 
 
 
@@ -84,7 +85,7 @@ const Export =  (props:any) => {
                 {      activeToolTip == data.id && selectedSession ? 
                   (    
                     <div className='bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[70%] w-[110px] z-10'>
-                      {!dateInPast(new Date(data.end_date), new Date)  && !data.active ?  
+                      {!dateInPast (new Date(data.end_date), new Date)  && !data.active ?  
                         <>
                           <p className='mb-2 px-3 pt-2 hover:bg-white' onClick={() => {
                             setmodal(true)} 
