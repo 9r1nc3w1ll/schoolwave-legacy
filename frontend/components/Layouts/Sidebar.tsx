@@ -176,16 +176,10 @@ const Sidebar = () => {
                     <AnimateHeight duration={300} height={currentMenu === 'Classes' ? 'auto' : 0}>
                       <ul className="sub-menu text-gray-500">
                         <li>
-                          <Link href="/apps/invoice/list">{t('Class Lists')}</Link>
+                          <Link href="/class">{t('Class Lists')}</Link>
                         </li>
                         <li>
                           <Link href="/apps/invoice/preview">{t('Class Schedule')}</Link>
-                        </li>
-                        <li>
-                          <Link href="/apps/invoice/add">{t('Class Variant')}</Link>
-                        </li>
-                        <li>
-                          <Link href="/apps/invoice/edit">{t('New Class')}</Link>
                         </li>
                       </ul>
                     </AnimateHeight>
