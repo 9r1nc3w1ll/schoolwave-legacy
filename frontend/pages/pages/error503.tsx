@@ -24,6 +24,6 @@ const Error503 = () => {
   );
 };
 Error503.getLayout = (page: any) => {
-  return <BlankLayout>{page}</BlankLayout>;
+  return <BlankLayout session={{}}>{page}</BlankLayout>;
 };
 export default Error503;

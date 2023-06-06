@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2'
 
-export const showAlert = async (icon, title) => {
+export const showAlert = async (icon: any, title: any) => {
 
   const toast = Swal.mixin({
     toast: true,
@@ -9,8 +9,8 @@ export const showAlert = async (icon, title) => {
     timer: 3000,
     timerProgressBar: true,
     customClass: {
-        popup: 'bg-success'
-      },
+      popup: 'bg-success'
+    },
   });
   toast.fire({
     icon: icon,

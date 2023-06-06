@@ -57,8 +57,8 @@ const Step2 = () => {
 
   const { register, handleSubmit, getValues, formState } = useForm<FormValues>();
   const { errors }: any = formState
-  const onSubmit: SubmitHandler<FormValues> = data => {
-    console.log('llll', data)
+  const onSubmit: SubmitHandler<any> = data => {
+    // console.log('llll', data)
     mutate(data)
   };
 
@@ -153,5 +153,4 @@ Step2.getLayout = (page: any) => {
 };
 
 export default Step2;
-
 

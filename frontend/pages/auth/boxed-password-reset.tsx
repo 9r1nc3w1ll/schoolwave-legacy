@@ -37,6 +37,6 @@ const RecoverIdBox = () => {
   );
 };
 RecoverIdBox.getLayout = (page: any) => {
-  return <BlankLayout>{page}</BlankLayout>;
+  return <BlankLayout session={{}}>{page}</BlankLayout>;
 };
 export default RecoverIdBox;

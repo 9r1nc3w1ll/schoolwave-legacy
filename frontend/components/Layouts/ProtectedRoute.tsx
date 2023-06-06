@@ -16,15 +16,15 @@ type Props = {
   export default OrderDetail;
  */
 
-export const ProtectedLayout = ({ children, session }: Props): JSX.Element => {
+export const ProtectedLayout = (props:any) => {
   const router = useRouter();
   const { status: sessionStatus, data } = useSession();
   const authorized = sessionStatus === 'authenticated';
   const unAuthorized = sessionStatus === 'unauthenticated';
   const loading = sessionStatus === 'loading';
 
-  let g = React.Children.toArray(children)
-  const el = React.cloneElement(g[0], {session:data})
+  let g:any = React.Children.toArray(props.children)
+  const el = React.cloneElement(g[0], {user_session:data})
 
 
   useEffect(() => {
@@ -49,5 +49,5 @@ export const ProtectedLayout = ({ children, session }: Props): JSX.Element => {
 
   // if the user is authorized, render the page
   // otherwise, render nothing while the router redirects him to the login page
-  return authorized ? <DefaultLayout> {el}</DefaultLayout>: <></>;
+  return authorized ? <DefaultLayout session={data}> {el}</DefaultLayout>: <></>;
 };

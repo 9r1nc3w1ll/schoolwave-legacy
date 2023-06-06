@@ -16,25 +16,21 @@ type Props = {
 
 export const AuthenticationRoute = ({ children }: Props): JSX.Element => {
   const router = useRouter();
-  const { status: sessionStatus } = useSession();
-  const authorized = sessionStatus === 'authenticated';
+  const { status: sessionStatus, data } = useSession();
+  const authorized = sessionStatus === 'authenticated' && data !== null && Object.keys(data).length > 0;
   const unAuthorized = sessionStatus === 'unauthenticated';
   const loading = sessionStatus === 'loading';
 
   useEffect(() => {
-    // check if the session is loading or the router is not ready
     if (loading || !router.isReady) return;
-
-    // if the user is not authorized, redirect to the login page
-    // with a return url to the current page
-    if (authorized) {
-    //   console.log('not authorized');
+    if (authorized )  {
+  
       router.push({
         pathname: '/',
         query: { returnUrl: router.asPath },
       });
     }
-  }, [loading, unAuthorized, sessionStatus, router]);
+  }, [loading, unAuthorized, sessionStatus,data, router]);
 
   // if the user refreshed the page or somehow navigated to the protected page
   if (loading) {

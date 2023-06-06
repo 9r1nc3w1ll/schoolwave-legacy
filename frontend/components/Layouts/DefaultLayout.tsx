@@ -1,6 +1,6 @@
 import { IRootState } from '@/store';
 import { toggleSidebar } from '@/store/themeConfigSlice';
-import { ReactNode, useEffect, useState } from 'react';
+import {  ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import App from '../../App';
 import Footer from './Footer';
@@ -11,8 +11,7 @@ import Portals from '../../components/Portals';
 import { useRouter } from 'next/router';
 import { SessionProvider } from "next-auth/react"
 
-
-interface IProps {
+interface IProps{
   children: ReactNode;
   session: any
 }
@@ -71,7 +70,7 @@ const DefaultLayout = ({ children, session }: IProps) => {
   return (
     <App>
       <SessionProvider session={session}>
-
+     
         <div className="relative">
           {showLoader && (
             <div className="screen_loader animate__animated fixed inset-0 z-[60] grid place-content-center bg-[#fafafa] dark:bg-[#060818]">
@@ -116,7 +115,7 @@ const DefaultLayout = ({ children, session }: IProps) => {
             {/* BEGIN CONTENT AREA */}
             <div className="main-content">
               {/* BEGIN TOP NAVBAR */}
-              <Header />
+              <Header user_session={session} />
               {/* END TOP NAVBAR */}
               <div className={`${animation} animate__animated p-6`}>
                 {children}
@@ -129,7 +128,7 @@ const DefaultLayout = ({ children, session }: IProps) => {
             {/* END CONTENT AREA */}
           </div>
         </div>
-
+    
       </SessionProvider>
     </App>
   );

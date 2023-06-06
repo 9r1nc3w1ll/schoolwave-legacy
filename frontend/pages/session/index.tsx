@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { useQuery } from 'react-query';
-import { useEffect, useState, Fragment, useCallback } from 'react';
+import { useEffect, useState, Fragment, useCallback, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from 'react';
 import axios from 'axios';
 import { Dialog, Transition } from '@headlessui/react';
-import { dateInPast } from '@/utility_methods/date';
+import {dateInPast} from '@/utility_methods/date'
 import DeleteSessions from '@/components/DeleteSessions';
 import CreateSessionForm from '@/components/CreateSessionForm';
 import EditSessionForm from '@/components/EditSessionForm';
@@ -11,29 +11,29 @@ import { getSession } from '@/apicalls/session';
 
 
 
-
-const BACKEND_SESSION_URL = `${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/session/session`;
-const Export =  ({session:user_session}) => {
+const Export =  (props:any) => {
  
   const [search, setSearch] = useState<string>('');
   const [activeToolTip, setActiveToolTip] = useState<string>('');
   const [visible, setVisible] = useState<boolean>(false);
-  const [sessions, setSessions] = useState([])
+  const [sessions, setSessions] = useState<[]>([])
   const [filteredsessions, setFilteredsessions] = useState<any>(sessions);
   const [modal, setmodal] = useState(false);
-  const [selectedSession, setSelectedSession] = useState({});
+  const [selectedSession, setSelectedSession] = useState<any>();
   
 
 
   useEffect(()=>{
     if(activeToolTip != ''){
 
-      const x = sessions.find((t)=>{
+      const x = sessions.find((t:any)=>{
         return t.id == activeToolTip
       })
   
-     
-      setSelectedSession(x)
+      if(x){
+
+        setSelectedSession(x)
+      }
     }
     
   }, [activeToolTip])
@@ -42,13 +42,14 @@ const Export =  ({session:user_session}) => {
   
   const {data:h, isSuccess, status, isLoading} = useQuery('session', ()=>{
   
-  return getSession(user_session.access_token)
+    return getSession(props.user_session.access_token)
   })
 
   useEffect(() => {
-    // console.log(user_session.access_token)
+    // console.log(props.user_session.access_token)
+
     setFilteredsessions(() => {
-      return sessions.filter((item) => {
+      return sessions.filter((item:any) => {
         return item.name.toLowerCase().includes(search.toLowerCase()) || item.start_date.toLowerCase().includes(search.toLowerCase());
       });
     });
@@ -63,7 +64,7 @@ const Export =  ({session:user_session}) => {
   }, [h, isSuccess, status])
   const displaySession: () => any=()=>{
     if(sessions.length > 0){
-      return filteredsessions.map((data) => {
+      return filteredsessions.map((data:any) => {
         return (
           <tr className={`${data.active? `bg-primary-light`: ''} !important`} key={data.id}>
             <td>
@@ -81,7 +82,7 @@ const Export =  ({session:user_session}) => {
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                 </svg>
-                {      activeToolTip == data.id ? 
+                {      activeToolTip == data.id && selectedSession ? 
                   (    
                     <div className='bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[70%] w-[110px] z-10'>
                       {!dateInPast(new Date(data.end_date), new Date)  && !data.active ?  
@@ -91,7 +92,7 @@ const Export =  ({session:user_session}) => {
                         
                           }>Edit</p> 
                           <p className='mb-2 px-2  hover:bg-white'>Set as Current</p>
-                          <DeleteSessions sessionID = {selectedSession.id} user_session={user_session}/>
+                          <DeleteSessions sessionID = {selectedSession.id} user_session={props.user_session}/>
                         </>
                         : data.active ?
                       
@@ -128,7 +129,7 @@ const Export =  ({session:user_session}) => {
       <div className='panel col-span-2'>
         <div className='panel bg-[#f5f6f7]'>
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create New Session</h5>
-          <CreateSessionForm create={true}  user_session={user_session} sessionID={selectedSession.id} exit={setmodal}  />
+          <CreateSessionForm   user_session={props.user_session}  exit={setmodal}  />
         </div>
       </div>
       <div className='panel col-span-4 ' >
@@ -154,7 +155,7 @@ const Export =  ({session:user_session}) => {
           </form>
        
         </div>
-        <div className="table-responsive mb-5  pb-[100px] " onClick={(e)=>{
+        <div className="table-responsive mb-5  pb-[100px] " onClick={(e:any)=>{
       
           if(e.target.localName != 'svg' && e.target.localName != 'path'){
             setActiveToolTip('')
@@ -197,9 +198,9 @@ const Export =  ({session:user_session}) => {
                   <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                     <div className="w-4/5 mx-auto py-5">
                       <h5 className=" text-lg font-semibold dark:text-white-light">Edit Session</h5>
-                      <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p>
+                      <p className='text-primary mb-5 text-sm'>{selectedSession?selectedSession.name: ''}</p>
                   
-                      <EditSessionForm create={false} user_session={user_session} sessionData={selectedSession} exit={setmodal}  />
+                      <EditSessionForm create={false} user_session={props.user_session} sessionData={selectedSession} exit={setmodal}  />
                     </div>
                   </Dialog.Panel>
                 </div>

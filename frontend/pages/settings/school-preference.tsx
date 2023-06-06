@@ -7,7 +7,6 @@ import { useMutation } from 'react-query';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import Select from 'react-select';
-// import 'file-upload-with-preview/dist/file-upload-with-preview.min.css';
 import ImageUploading, { ImageListType } from 'react-images-uploading';
 import { getSession } from '@/apicalls/session';
 import { forEach } from 'lodash';
@@ -29,20 +28,18 @@ interface FormResponse {
   ok: boolean;
   token: string;
 }
-
-
-const Step1  = ({session:user_session}) => {
+const Step1  = (props:any) => {
   const dispatch = useDispatch();
   const [currentTab, setCurrentTab] = useState('basic')
-  const [SessionList, setSessionList] = useState([])
+  const [SessionList, setSessionList] = useState<any>([])
 
 
   useEffect(()=>{
     async function x (){
-      let y = await getSession(user_session.access_token)
+      let y = await getSession(props.user_session.access_token)
       if(y.status == 'success'){
-        let z = []
-        y.data.forEach(session=>{
+        let z:any = []
+        y.data.forEach((session:any)=>{
           z.push({value:session.name, label:session.name})
         })
       
@@ -50,8 +47,7 @@ const Step1  = ({session:user_session}) => {
       }
     }
     x()
-    // let SessionList= await x() 
-    // console.log('uuuuuu', SessionList)
+   
 
   }, [])
   const [images, setImages] = useState<any>([]);
@@ -107,8 +103,7 @@ const Step1  = ({session:user_session}) => {
     data.username = data.email
     const { token }: FormResponse = await  (await mutateAsync(data)).json();
     console.log({ token });
-    // TODO: Get token
-    // TODO: Store token in local storage
+
   }
 
   return (

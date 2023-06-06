@@ -1,57 +1,60 @@
 
-
-import axios from "axios"
-
-export const createSession= async(access_token, data)=>{
-  const x = axios.post('http://127.0.0.1:8000/session/session', data, {
+export const createSession= async(access_token: string, data: void)=>{
+  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session' , {
+    method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "content-Type": "application/json",
       "Authorization": 'Bearer '+ access_token, 
-    
-      
     },
+    body: JSON.stringify(data),
   })
-return x
+  let u= await x.json()
+ 
+  
+  return u
 }
 
-export const editSession= async(id, access_token, data)=>{
-  const x =axios.patch('http://127.0.0.1:8000/session/session/'+ id, data, {
+export const editSession= async(id: string, access_token: string, data: void)=>{
+  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id, {
+    method: "PATCH",
     headers: {
-      "Content-Type": "application/json",
+      "content-Type": "application/json",
       "Authorization": 'Bearer '+ access_token, 
     },
+    body: JSON.stringify(data),
   })
+  let u= await x.json()
+ 
+  
+  return u
+}
+
+export const deleteSession= async (id: string, access_token: string)=>{
+  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id, {
+    method: "DELETE",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": 'Bearer '+ access_token, 
+    },
+  
+  })
+ 
+ 
+  
   return x
 }
 
-export const deleteSession= async (id, access_token)=>{
-  const x = await axios.delete('http://127.0.0.1:8000/session/session/'+ id,  {
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": 'Bearer '+ access_token, 
-            
-              
-    },
-  })
 
+export const getSession= async (access_token: string)=>{
+  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session' , {
+    method: "GET",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": 'Bearer '+ access_token, 
+    }
+  })
+  let u= await x.json()
+ 
   
-
-  return  x
+  return u
 }
-
-
-export const getSession= async (access_token)=>{
-
-   
-  const x = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session',{
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": 'Bearer '+ access_token, 
-      
-        
-    },
-  })
-
-  return x.data
-}
-

@@ -23,6 +23,6 @@ const Error404 = () => {
   );
 };
 Error404.getLayout = (page: any) => {
-  return <BlankLayout>{page}</BlankLayout>;
+  return <BlankLayout session={{}}>{page}</BlankLayout>;
 };
 export default Error404;

@@ -4,17 +4,15 @@ import { useQueryClient } from "react-query";
 import { showAlert } from "@/utility_methods/alert";
 import { deleteSession } from "@/apicalls/session";
 
-const DeleteSessions = ({sessionID, user_session}) => {
-  const [del, TriggerDelete] = useState()
-
+const DeleteSessions = (props:any) => {
   const queryClient = useQueryClient();
  
  
   async function x  (){
-    const gt = await deleteSession(sessionID, user_session.access_token)
+    const gt = await deleteSession(props.sessionID, props.user_session.access_token)
    
     if(gt.status == 204){
-      queryClient.invalidateQueries(['sessions'])
+      queryClient.invalidateQueries(['session'])
       showAlert('success', 'Session Deleted Successfuly')
     }else{
       showAlert('error', 'An Error Occored')
@@ -22,13 +20,9 @@ const DeleteSessions = ({sessionID, user_session}) => {
     }
   }
 
-
- 
- 
   return (
      
     <p className=' px-2 pb-3 hover:bg-white text-danger' onClick={()=>{
-      // console.log('clicked')
       x()
     }}>Delete</p>
  
