@@ -27,7 +27,7 @@ const DeleteSessions = (props:any) => {
   return (
      
     <p className=' px-2 pb-3 hover:bg-white text-danger' onClick={()=>{
-      // console.log('clicked')
+  
       x()
     }}>Delete</p>
  

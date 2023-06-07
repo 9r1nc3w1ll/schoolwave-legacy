@@ -102,7 +102,7 @@ const Step1  = (props:any) => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     data.username = data.email
     const { token }: FormResponse = await  (await mutateAsync(data)).json();
-    console.log({ token });
+   
 
   }
 

@@ -11,9 +11,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 
 const Header = (props:any) => {
   const router = useRouter();
-  useEffect(()=>{
-    console.log(props.user_session)
-  },[])
+ 
  
   useEffect(() => {
     const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');

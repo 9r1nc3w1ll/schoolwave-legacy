@@ -41,11 +41,11 @@ const CreateClassForm = (props:any) => {
     }
   );
 
-  const onSubmit = async (x: any) => { 
+  const onSubmit = async (data: any) => { 
 
-    x.school = props.user_session.school.id
-    // console.log('aaaaaaaa', x)
-    mutate(x); 
+    data.school = props.user_session.school.id
+   
+    mutate(data); 
   };
   return (
     <div  className="">
