@@ -1,7 +1,5 @@
-import { PropsWithChildren, useEffect} from 'react';
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
 import { showAlert } from '@/utility_methods/alert';
 import { createSession } from '@/apicalls/session';
 
@@ -50,7 +48,7 @@ const CreateSessionForm = ( props:any) => {
 
   const onSubmit = async (x: any) => { 
     x.active = false
-    x.school = '04a2ded0-0551-45c2-b29e-bd8641d70455'
+    x.school = props.user_session.school.id
 
     mutate(x); 
   };

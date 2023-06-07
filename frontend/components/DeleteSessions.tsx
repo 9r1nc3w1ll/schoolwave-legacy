@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { useQueryClient } from "react-query";
 import { showAlert } from "@/utility_methods/alert";
 import { deleteSession } from "@/apicalls/session";

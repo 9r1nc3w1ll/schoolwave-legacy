@@ -158,6 +158,10 @@ export const authOptions: NextAuthOptions = {
         date_joined: token.date_joined,
         created_at: token.created_at,
         updated_at: token.updated_at,
+        ...token.school ? {
+          school: token.school
+        } : {},
+   
       };
     }
   },

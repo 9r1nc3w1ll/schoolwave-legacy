@@ -46,8 +46,6 @@ const Export =  (props:any) => {
   })
 
   useEffect(() => {
-    // console.log(props.user_session.access_token)
-
     setFilteredsessions(() => {
       return sessions.filter((item:any) => {
         return item.name.toLowerCase().includes(search.toLowerCase()) || item.start_date.toLowerCase().includes(search.toLowerCase());
@@ -57,7 +55,6 @@ const Export =  (props:any) => {
   useEffect(()=>{
 
     if (isSuccess ){
-      // console.log('yyy', h)
       setSessions(h.data)
     }
 

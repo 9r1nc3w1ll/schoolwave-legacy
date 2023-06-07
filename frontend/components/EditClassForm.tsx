@@ -1,7 +1,6 @@
 import { PropsWithChildren, useEffect} from 'react';
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
 import { showAlert } from '@/utility_methods/alert';
 import { editClass } from '@/apicalls/clas';
 
@@ -27,39 +26,6 @@ const EditClassForm = (props:any) => {
     reset(props.sessionData)
   },[])
 
-  // const { mutateAsync, isLoading, error } = useMutation(
-  //   {
-  //     async mutationFn(data: any) {
-  //       const gt = await axios.patch('http://127.0.0.1:8000/session/session/'+ props.sessionData.id, data, {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "Authorization": 'Bearer '+ user_session.access_token, 
-            
-              
-  //         },
-  //       })
-  //       return gt
-  //     },
-  //     async onSuccess(data) {
-  //       showAlert('success', 'Session Updated Successfuly')
-  //       props.exit(false)
-  //       queryClient.invalidateQueries(['sessions'])
-  //     },
-  //    onError: (error) => {
-  //     let x =error.response.data.message.split(' ')
-        
-  //     // console.log('qwqwqqwww',x)
-  //     if(x.indexOf('duplicate') >=0 && x.indexOf('key') >=0  && x.indexOf('constraint') >=0){
-
-  //       showAlert('error', 'A session with same Start Date or End Date already exist')
-  //     }else{
-  //       showAlert('error', 'An Error Occured' )
-  //     }
-  //     }
-  //   }
-  // );
-
-
   const { mutate, isLoading, error } = useMutation(
     (data) => editClass(props.sessionData.id, props.user_session.access_token, data),
     {
@@ -79,7 +45,7 @@ const EditClassForm = (props:any) => {
 
 
   const onSubmit = async (data: any) => { 
-    // console.log('rrr', data)
+   
     mutate(data); };
   return (
     <div  className="">

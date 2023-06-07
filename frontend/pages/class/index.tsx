@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useEffect, useState, Fragment, useCallback } from 'react';
-import axios from 'axios';
 import { Dialog, Transition } from '@headlessui/react';
 import DeleteClasses from '@/components/DeleteClasses';
 import CreateClassForm from '@/components/CreateClassForm';
@@ -48,7 +47,7 @@ const Export =  (props:any) => {
     b.name = x.name + '_copy'
     b.description =x.description
     b.class_index=x.class_index
-    b.school = '04a2ded0-0551-45c2-b29e-bd8641d70455'
+    b.school = props.user_session.school.id
 
     makeDuplicate.mutate(b)
   }
@@ -75,7 +74,7 @@ const Export =  (props:any) => {
   })
 
   useEffect(() => {
-    // console.log(props.user_session.access_token)
+
     setFilteredsessions(() => {
       return sessions.filter((item:any) => {
         return item.name.toLowerCase().includes(search.toLowerCase());
@@ -85,7 +84,7 @@ const Export =  (props:any) => {
   useEffect(()=>{
 
     if (isSuccess ){
-      // console.log('yyy', h)
+
       setSessions(h.data)
     }
 
@@ -113,7 +112,6 @@ const Export =  (props:any) => {
                 </button> }>
 
 
-                {/* <div className='bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[70%] w-[130px] z-10'> */}
                 <div className="bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[100%] w-[130px] z-10">
                   <p className='mb-2 px-3 pt-2 hover:bg-white' onClick={() => {
                     setmodal(true)} 

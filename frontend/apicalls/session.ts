@@ -1,6 +1,6 @@
 
 export const createSession= async(access_token: string, data: any)=>{
-  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session' , {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session' , {
     method: "POST",
     headers: {
       "content-Type": "application/json",
@@ -8,14 +8,14 @@ export const createSession= async(access_token: string, data: any)=>{
     },
     body: JSON.stringify(data),
   })
-  let u= await x.json()
+  let u= await res.json()
  
   
   return u
 }
 
 export const editSession= async(id: string, access_token: string, data: any)=>{
-  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id, {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id, {
     method: "PATCH",
     headers: {
       "content-Type": "application/json",
@@ -23,14 +23,14 @@ export const editSession= async(id: string, access_token: string, data: any)=>{
     },
     body: JSON.stringify(data),
   })
-  let u= await x.json()
+  let u= await res.json()
  
   
   return u
 }
 
 export const deleteSession= async (id: string, access_token: string)=>{
-  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id, {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id, {
     method: "DELETE",
     headers: {
       "content-Type": "application/json",
@@ -41,19 +41,19 @@ export const deleteSession= async (id: string, access_token: string)=>{
  
  
   
-  return x
+  return res
 }
 
 
 export const getSession= async (access_token: string)=>{
-  const x = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session' , {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session' , {
     method: "GET",
     headers: {
       "content-Type": "application/json",
       "Authorization": 'Bearer '+ access_token, 
     }
   })
-  let u= await x.json()
+  let u= await res.json()
  
   
   return u
