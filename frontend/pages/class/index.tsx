@@ -1,13 +1,14 @@
 import Link from 'next/link';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useEffect, useState, Fragment, useCallback } from 'react';
 import axios from 'axios';
 import { Dialog, Transition } from '@headlessui/react';
 import DeleteClasses from '@/components/DeleteClasses';
 import CreateClassForm from '@/components/CreateClassForm';
 import EditClassForm from '@/components/EditClassForm';
-import { getClasses } from '@/apicalls/clas';
+import { createClass, getClasses } from '@/apicalls/clas';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
+import { showAlert } from '@/utility_methods/alert';
 
 
 
@@ -21,8 +22,36 @@ const Export =  (props:any) => {
   const [filteredsessions, setFilteredsessions] = useState<any>(sessions);
   const [modal, setmodal] = useState(false);
   const [selectedSession, setSelectedSession] = useState<any>({});
-  // const [duplicateClass, setDuplicateClass] = useState({});
+
+
+  const queryClient = useQueryClient();
+
   
+  const makeDuplicate = useMutation(
+    (data:any) =>
+      createClass(props.user_session.access_token, data),
+    {
+      onSuccess: async () => {
+        showAlert('success', 'Class Created Successfuly')
+        queryClient.invalidateQueries(['classes'])
+  
+      },
+      onError: () => {
+      
+        showAlert('error', 'An Error Occured' )
+      }
+    }
+  );
+
+  const duplicate =(x:any)=>{
+    const b:any = {}
+    b.name = x.name + '_copy'
+    b.description =x.description
+    b.class_index=x.class_index
+    b.school = '04a2ded0-0551-45c2-b29e-bd8641d70455'
+
+    makeDuplicate.mutate(b)
+  }
 
 
   useEffect(()=>{
@@ -90,7 +119,9 @@ const Export =  (props:any) => {
                     setmodal(true)} 
                      
                   }>Edit</p> 
-                  {/* <DuplicateClass obj = {duplicateClass}  /> */}
+                  <p className='mb-2 px-2  hover:bg-white' onClick={()=>{
+                    duplicate(data)
+                  }}>Duplicate</p>
                   <p className='mb-2 px-2  hover:bg-white'>Assign Students</p>
                   <p className='mb-2 px-2  hover:bg-white'>Assign Teacher</p>
                   <DeleteClasses sessionID = {selectedSession.id} user_session={props.user_session}/>
