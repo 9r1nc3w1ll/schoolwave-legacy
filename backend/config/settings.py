@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "account",
     "school",
     "session",
-    "admission"
+    "admission",
     "attendance",
 ]
 
