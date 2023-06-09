@@ -32,3 +32,4 @@ class Term(BaseModel):
     active = models.BooleanField(null=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    code = models.CharField(max_length=150, unique=True)

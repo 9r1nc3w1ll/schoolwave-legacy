@@ -49,3 +49,15 @@ class ClassFactory(factory.django.DjangoModelFactory):
     name = factory.Faker("word")
     description = factory.Faker("paragraph")
     class_index = factory.Sequence(lambda n: n)
+    code = factory.LazyFunction(lambda: fk.unique.random_number(digits=6, fix_len=True))
+
+class TermFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "session.Term"
+
+    name = factory.Faker("word")
+    active = factory.Faker("boolean")
+    school = factory.SubFactory(SchoolFactory)
+    session = factory.SubFactory(SessionFactory)
+    code = factory.LazyFunction(lambda: fk.unique.random_number(digits=6, fix_len=True))
+
