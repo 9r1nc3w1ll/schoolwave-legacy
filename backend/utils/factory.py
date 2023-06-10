@@ -61,3 +61,12 @@ class TermFactory(factory.django.DjangoModelFactory):
     session = factory.SubFactory(SessionFactory)
     code = factory.LazyFunction(lambda: fk.unique.random_number(digits=6, fix_len=True))
 
+class SubjectFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "subject.Subject"
+
+    name = factory.Faker("word")
+    description = factory.Faker("paragraph")
+    class_id = factory.SubFactory(ClassFactory)
+    term = factory.SubFactory(TermFactory)
+    code = factory.LazyFunction(lambda: fk.unique.random_number(digits=6, fix_len=True))

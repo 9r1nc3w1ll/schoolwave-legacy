@@ -205,7 +205,7 @@ class RetrieveUpdateDestroySubjectSelection(RetrieveUpdateDestroyAPIView):
             })
         
         return Response({
-            "error": "Student attendance not found.",
+            "error": "Subject Selection not found.",
             "errors": serializer.errors
             })
 
@@ -214,9 +214,9 @@ class RetrieveUpdateDestroySubjectSelection(RetrieveUpdateDestroyAPIView):
         if subjectselection:
             subjectselection.delete()
             resp = {
-                "message": "Student attendance deleted successfully.",
+                "message": "Subject Selection deleted successfully.",
             }
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"error": "Student attendance not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Subject Selection not found."}, status=status.HTTP_404_NOT_FOUND)
     

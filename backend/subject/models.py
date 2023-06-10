@@ -10,6 +10,7 @@ class Subject(models.Model):
     description = models.TextField()
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
+    code = models.CharField(max_length=150, unique=True)
 
     def __str__(self):
         return self.name

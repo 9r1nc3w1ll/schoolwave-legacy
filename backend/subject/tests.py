@@ -27,7 +27,7 @@ class SubjectCRUDTestCase(APITestCase):
         )
 
         self.class_obj = Class.objects.create(
-            name="Test Class", school=self.school, description="Description"
+            name="Test Class", school=self.school, description="Description", code="Prim43"
         )
 
         self.session = Session.objects.create(
@@ -38,14 +38,15 @@ class SubjectCRUDTestCase(APITestCase):
         )
 
         self.term = Term.objects.create(
-            name="1st Term", active="True", school=self.school, session=self.session
+            name="1st Term", active="True", school=self.school, session=self.session, code="Term45"
         )
 
         self.subject = Subject.objects.create(
             name="Math",
             description="Mathematics subject",
             term=self.term,
-            class_id=self.class_obj
+            class_id=self.class_obj,
+            code="Subj98"
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
@@ -66,7 +67,8 @@ class SubjectCRUDTestCase(APITestCase):
         data = {
             "name": "Science",
             "description": "Science subject",
-            "term":self.term
+            "term":self.term,
+            "code":"Subj65"
         }
 
         response = self.client.post(url, data)
@@ -86,7 +88,8 @@ class SubjectCRUDTestCase(APITestCase):
         data = {
             "name": "Updated Science",
             "description": "Updated Science subject",
-            "term":self.term.id
+            "term":self.term.id,
+            "code":"Subj111"
         }
 
         response = self.client.patch(url, data)
@@ -120,7 +123,7 @@ class SubjectSelectionCRUDTestCase(APITestCase):
         )
 
         self.class_obj = Class.objects.create(
-            name="Test Class", school=self.school, description="Description"
+            name="Test Class", school=self.school, description="Description", code="Class321"
         )
 
         self.session = Session.objects.create(
@@ -131,14 +134,15 @@ class SubjectSelectionCRUDTestCase(APITestCase):
         )
 
         self.term = Term.objects.create(
-            name="1st Term", active="True", school=self.school, session=self.session
+            name="1st Term", active="True", school=self.school, session=self.session, code="Term122"
         )
 
         self.subject = Subject.objects.create(
             name="Math",
             description="Mathematics subject",
             term=self.term,
-            class_id=self.class_obj
+            class_id=self.class_obj,
+            code="Subj231"
         )
 
         self.subject_selection = SubjectSelection.objects.create(
