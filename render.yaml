@@ -1,5 +1,5 @@
 services:
-  - name: backend-staging
+  - name: sw-api-staging
     type: web
     runtime: python
     plan: free
@@ -33,7 +33,7 @@ services:
           name: staging-db
           property: port
 databases:
-  - name: staging-db
+  - name: sw-db-staging
     user: sw_root
     databaseName: schoolwave
     ipAllowList: []
