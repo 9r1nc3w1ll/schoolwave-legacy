@@ -13,7 +13,6 @@ const AccountSetting = (props:any) => {
   const router = useRouter()
   const {data:student, isSuccess, status, isLoading} = useQuery('getStudent', ()=>{
     if(router){
-      console.log('lll', student)
       return getStudent (props.user_session.access_token, router.query )
     }
   })
