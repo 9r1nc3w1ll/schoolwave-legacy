@@ -14,23 +14,23 @@ services:
         value: 3.9.10
       - key: DATABASE_NAME
         fromDatabase:
-          name: staging-db
+          name: sw-db-staging
           property: database
       - key: DATABASE_USER
         fromDatabase:
-          name: staging-db
+          name: sw-db-staging
           property: user
       - key: DATABASE_PASSWORD
         fromDatabase:
-          name: staging-db
+          name: sw-db-staging
           property: password
       - key: DATABASE_HOST
         fromDatabase:
-          name: staging-db
+          name: sw-db-staging
           property: host
       - key: DATABASE_PORT
         fromDatabase:
-          name: staging-db
+          name: sw-db-staging
           property: port
 databases:
   - name: sw-db-staging
