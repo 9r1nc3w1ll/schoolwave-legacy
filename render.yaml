@@ -5,7 +5,7 @@ services:
     plan: free
     region: frankfurt
     buildCommand: ./build.sh
-    startCommand: gunicorn config.wsgi
+    startCommand: . ./.venv/bin/activate && gunicorn config.wsgi
     autoDeploy: true
     rootDir: ./backend
     healthCheckPath: /healthz
