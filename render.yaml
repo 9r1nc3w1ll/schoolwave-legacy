@@ -5,7 +5,7 @@ services:
     buildCommand: ./build.sh
     startCommand: gunicorn config.wsgi
     autoDeploy: true
-    rootDir: /backend
+    rootDir: ./backend
     healthCheckPath: /healthz
     envVars:
       - key: PYTHON_VERSION
