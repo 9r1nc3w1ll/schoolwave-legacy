@@ -1,0 +1,12 @@
+services:
+  - name: backend
+    runtime: python
+    healthCheckPath: /healthz
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn config.wsgi
+    autoDeploy: false
+
+databases:
+  - name: schoolwave-staging
+    user: schoolwave
+    databaseName: schoolwave
