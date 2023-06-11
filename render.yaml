@@ -1,0 +1,8 @@
+services:
+  - name: backend-staging
+    runtime: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn config.wsgi
+    autoDeploy: true
+    rootDir: /backend
+    healthCheckPath: /healthz

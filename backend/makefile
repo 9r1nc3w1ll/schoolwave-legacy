@@ -1,8 +1,8 @@
 env:
 	python3 -m venv .venv
-activate:
+activate-env:
 	. ./.venv/bin/activate
-install:
+install-dependencies:
 	pip install -r requirements.txt
 migrate:
 	manage.py migrate
