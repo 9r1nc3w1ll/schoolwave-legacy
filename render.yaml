@@ -32,6 +32,9 @@ services:
         fromDatabase:
           name: sw-db-staging
           property: port
+      - key: SECRET_KEY
+        generateValue: true
+      - fromGroup: staging
 databases:
   - name: sw-db-staging
     user: sw_root
