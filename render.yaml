@@ -3,6 +3,7 @@ services:
     type: web
     runtime: python
     plan: free
+    region: frankfurt
     buildCommand: ./build.sh
     startCommand: gunicorn config.wsgi
     autoDeploy: true
@@ -11,3 +12,30 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.10
+      - key: DATABASE_NAME
+        fromDatabase:
+          name: staging-db
+          property: database
+      - key: DATABASE_USER
+        fromDatabase:
+          name: staging-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: staging-db
+          property: password
+      - key: DATABASE_HOST
+        fromDatabase:
+          name: staging-db
+          property: host
+      - key: DATABASE_PORT
+        fromDatabase:
+          name: staging-db
+          property: port
+databases:
+  - name: staging-db
+    user: sw_root
+    databaseName: schoolwave
+    ipAllowList: []
+    plan: free
+    region: frankfurt
