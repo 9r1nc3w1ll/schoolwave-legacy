@@ -2,6 +2,7 @@ services:
   - name: backend-staging
     type: web
     runtime: python
+    plan: free
     buildCommand: ./build.sh
     startCommand: gunicorn config.wsgi
     autoDeploy: true
