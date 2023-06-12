@@ -9,7 +9,6 @@ export const getStudents= async (access_token: string)=>{
   let u= await res.json()
    
   let students = u.data.filter((x:any)=> x.role == 'student')
-  // console.log('pppppp', students)
   return students
 }
 

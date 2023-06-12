@@ -150,6 +150,7 @@ export const authOptions: NextAuthOptions = {
         ...session,
         access_token: token.access_token,
         username: token.username,
+        id: token.id,
         first_name: token.first_name,
         last_name: token.last_name,
         email: token.email,

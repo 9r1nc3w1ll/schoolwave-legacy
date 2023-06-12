@@ -59,14 +59,19 @@ const Export = (props:any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      return students?.filter((item: any) => {
-        return (
-          item.id.toString().includes(search.toLowerCase()) ||
-                    item.first_name.toLowerCase().includes(search.toLowerCase()) ||
-                    item.last_name.toLowerCase().includes(search.toLowerCase()) 
-                
-        );
-      });
+      if(students){
+
+        return students.filter((item: any) => {
+          return (
+            item.id.toString().includes(search.toLowerCase()) ||
+                      item.first_name.toLowerCase().includes(search.toLowerCase()) ||
+                      item.last_name.toLowerCase().includes(search.toLowerCase()) 
+                  
+          );
+        });
+      }else{
+        setInitialRecords([])
+      }
     });
   }, [search, students]);
 

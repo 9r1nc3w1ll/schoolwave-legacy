@@ -7,6 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from 'react-query';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { SessionProvider } from 'next-auth/react';
 
 const MySwal = withReactContent(Swal)
 
@@ -28,17 +29,20 @@ const Step2 = (props:any) => {
   });
   const router = useRouter();
   const { mutate, isLoading, error } = useMutation(
-    (post) =>
-      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/school`, {
+    (post) =>{
+
+      return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/school`, {
         method: "POST",
         body: JSON.stringify(post),
         headers: { 
           "Content-type": "application/json",
           "Authorization": 'Bearer '+ props.user_session.access_token, 
         }
-      }),
+      })
+    },
     {
       onSuccess: async (data) => {
+        // console.log('iiii', data)
         MySwal.fire({
           confirmButtonText: 'Go to Dashboard',
           html: (
@@ -61,7 +65,8 @@ const Step2 = (props:any) => {
   const { register, handleSubmit, getValues, formState } = useForm<FormValues>();
   const { errors }: any = formState
   const onSubmit: SubmitHandler<any> = data => {
-    // console.log('llll', data)
+    data.tag = 'yryrnryry'
+    data.owner= props.user_session.id
     mutate(data)
   };
 
@@ -152,7 +157,7 @@ const Step2 = (props:any) => {
 };
 
 Step2.getLayout = (page: any) => {
-  return <OnboardingLayout>{page}</OnboardingLayout>;
+  return <SessionProvider session={page.props.session}> <OnboardingLayout>{page}</OnboardingLayout> </SessionProvider>;
 };
 
 export default Step2;

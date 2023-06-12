@@ -50,7 +50,7 @@ const CreateSessionForm = ( props:any) => {
     x.active = false
     x.school = props.user_session.school.id
 
-    mutate(x); 
+    mutate(x);                                                                  
   };
   return (
     <div  className="">
