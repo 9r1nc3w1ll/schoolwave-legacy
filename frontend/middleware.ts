@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
   }
 
 
-  const initCheckUrl = `${process.env.BACKEND_URL ?? 'http://localhost:8000'}/school/setup-status`
+  const initCheckUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:8000'}/school/setup-status`
   const step1Path = '/onboarding/step1';
   const step2Path = '/onboarding/step2';
   const loginPath = '/login';
@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
 
   // check if a user is logged in then ensure user cannot visit authentication route
 
-  // Allow step1, /api, /_next and assets to get through
+  // Allow step1, /api, /_next and assets to get through // TODO: Check status for step 1
   if (request.nextUrl.pathname.startsWith(step1Path) || request.nextUrl.pathname.match(/(^(\/_next)|(\/api))|(\.(png)|(ico)|(svg)|(json)|(jp(e)?g)$)/)) {
     return;
   }

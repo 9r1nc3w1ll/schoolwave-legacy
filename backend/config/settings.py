@@ -22,6 +22,8 @@ DEBUG = config("DEBUG")
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
+APPEND_SLASH = False
+
 
 # Application definition
 INSTALLED_APPS = [

@@ -25,20 +25,20 @@ from drf_spectacular.views import (
 from config.views import HealthCheck
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("account/", include("account.urls")),
-    path("school/", include("school.urls")),
-    path("session/", include("session.urls")),
-    path("admission/", include("admission.urls")),
-    path("attendance/", include("attendance.urls")),
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("admin", admin.site.urls),
+    path("account", include("account.urls")),
+    path("school", include("school.urls")),
+    path("session", include("session.urls")),
+    path("admission", include("admission.urls")),
+    path("attendance", include("attendance.urls")),
+    path("api/schema", SpectacularAPIView.as_view(), name="schema"),
     path(
-        "api/docs/",
+        "api/docs",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
     path(
-        "api/docs-redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"
+        "api/docs-redoc", SpectacularRedocView.as_view(url_name="schema"), name="redoc"
     ),
     path("healthz", HealthCheck.as_view(), name="health_check"),
 ]
