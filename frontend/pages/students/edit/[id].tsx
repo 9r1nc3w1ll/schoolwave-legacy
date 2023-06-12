@@ -1,22 +1,10 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { setPageTitle } from '@/store/themeConfigSlice';
+import { setPageTitle } from '../../../store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
-import { getStudent } from '@/apicalls/users';
-import { useQuery } from 'react-query';
-import { useRouter } from 'next/router';
-import { toUpper } from 'lodash';
 
-
-const AccountSetting = (props:any) => {
+const AccountSetting = () => {
   const dispatch = useDispatch();
-  const router = useRouter()
-  const {data:student, isSuccess, status, isLoading} = useQuery('getStudent', ()=>{
-    if(router){
-      console.log('lll', student)
-      return getStudent (props.user_session.access_token, router.query )
-    }
-  })
   useEffect(() => {
     dispatch(setPageTitle('Account Setting'));
   });
@@ -34,12 +22,12 @@ const AccountSetting = (props:any) => {
           </Link>
         </li>
         <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-          <span>Student Details</span>
+          <span>Account Settings</span>
         </li>
       </ul>
       <div className="pt-5">
         <div className="mb-5 flex items-center justify-between">
-          <h5 className="text-lg font-semibold dark:text-white-light">Student Details</h5>
+          <h5 className="text-lg font-semibold dark:text-white-light">Settings</h5>
         </div>
         <div>
           <ul className="mb-5 overflow-y-auto whitespace-nowrap border-b border-[#ebedf2] font-semibold dark:border-[#191e3a] sm:flex">
@@ -57,7 +45,7 @@ const AccountSetting = (props:any) => {
                   />
                   <path d="M12 15L12 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
-                                Basic Information
+                                Home
               </button>
             </li>
             <li className="inline-block">
@@ -115,38 +103,151 @@ const AccountSetting = (props:any) => {
         </div>
         {tabs === 'home' ? (
           <div>
-            {
-              student ?
-                <div className="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-black">
-                  <h6 className="mb-5 text-lg font-bold">General Information</h6>
-                  <div className='md:grid grid-cols-3 gap-1'>
-                    <img className="w-3/4 rounded-md overflow-hidden object-cover col-span-1" src="/assets/images/profile-12.jpeg" alt="img" />
-                    <div className='col-span-2'> 
-                      <h1 className='text-4xl text-primary '>{toUpper( student.first_name) + ' ' + toUpper(student.last_name)}</h1>
-                      <div className='md:grid grid-cols-2 w-full gap-6 ml-[-35%]'>
-                        <div >
-                          <p className='text-right mt-4 '>Gender:  </p>
-                          <p className='text-right mt-4 '>Date of Birth:  </p>
-                          <p className='text-right mt-4 '>Religion:  </p>
-                          <p className='text-right mt-4 '>Class:  </p>
-                          <p className='text-right mt-4 '>Parent:  </p>
-                          <p className='text-right mt-4 '> Phone No.: </p>
-                          <p className='text-right mt-4 '>Address.:  </p>
-                        </div>
-                        <div className=''  >  
-                          <p className='text-left mt-4 '>{student.gender}</p>
-                          <p className='text-left mt-4 '>{student.date_of_birth}</p>
-                          <p className='text-left mt-4 '>{student.religion}</p>
-                          <p className='text-left mt-4 '>Basic Two Jade</p>
-                          <p className='text-left  mt-4'>{student.guardian_name}</p>
-                          <p className=' text-left mt-4 '>{student.guardian_phone_number + ', ' + student.phone_number}</p>
-                          <p className='text-left  mt-4'>{student.address}</p></div> 
-                      </div>
-                    </div>
+            <form className="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-black">
+              <h6 className="mb-5 text-lg font-bold">General Information</h6>
+              <div className="flex flex-col sm:flex-row">
+                <div className="mb-5 w-full sm:w-2/12 ltr:sm:mr-4 rtl:sm:ml-4">
+                  <img src="/assets//images/profile-34.jpeg" alt="img" className="mx-auto h-20 w-20 rounded-full object-cover md:h-32 md:w-32" />
+                </div>
+                <div className="grid flex-1 grid-cols-1 gap-5 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="name">Full Name</label>
+                    <input id="name" type="text" placeholder="Jimmy Turner" className="form-input" />
                   </div>
-                </div> : <p> Loading Student Data </p>
-            }
-          
+                  <div>
+                    <label htmlFor="profession">Profession</label>
+                    <input id="profession" type="text" placeholder="Web Developer" className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="country">Country</label>
+                    <select id="country" className="form-select text-white-dark" name="country" defaultValue="United States">
+                      <option value="All Countries">All Countries</option>
+                      <option value="United States">United States</option>
+                      <option value="India">India</option>
+                      <option value="Japan">Japan</option>
+                      <option value="China">China</option>
+                      <option value="Brazil">Brazil</option>
+                      <option value="Norway">Norway</option>
+                      <option value="Canada">Canada</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="address">Address</label>
+                    <input id="address" type="text" placeholder="New York" className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="location">Location</label>
+                    <input id="location" type="text" placeholder="Location" className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="phone">Phone</label>
+                    <input id="phone" type="text" placeholder="+1 (530) 555-12121" className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="email">Email</label>
+                    <input id="email" type="email" placeholder="Jimmy@gmail.com" className="form-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="web">Website</label>
+                    <input id="web" type="text" placeholder="Enter URL" className="form-input" />
+                  </div>
+                  <div>
+                    <label className="inline-flex cursor-pointer">
+                      <input type="checkbox" className="form-checkbox" />
+                      <span className="relative text-white-dark checked:bg-none">Make this my default address</span>
+                    </label>
+                  </div>
+                  <div className="mt-3 sm:col-span-2">
+                    <button type="button" className="btn btn-primary">
+                                            Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <form className="rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-black">
+              <h6 className="mb-5 text-lg font-bold">Social</h6>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div className="flex">
+                  <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold ltr:mr-2 rtl:ml-2 dark:bg-[#1b2e4b]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24px"
+                      height="24px"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-5 w-5"
+                    >
+                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                      <rect x="2" y="9" width="4" height="12"></rect>
+                      <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                  </div>
+                  <input type="text" placeholder="jimmy_turner" className="form-input" />
+                </div>
+                <div className="flex">
+                  <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold ltr:mr-2 rtl:ml-2 dark:bg-[#1b2e4b]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24px"
+                      height="24px"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-5 w-5"
+                    >
+                      <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                    </svg>
+                  </div>
+                  <input type="text" placeholder="jimmy_turner" className="form-input" />
+                </div>
+                <div className="flex">
+                  <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold ltr:mr-2 rtl:ml-2 dark:bg-[#1b2e4b]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24px"
+                      height="24px"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-5 w-5"
+                    >
+                      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
+                  </div>
+                  <input type="text" placeholder="jimmy_turner" className="form-input" />
+                </div>
+                <div className="flex">
+                  <div className="flex items-center justify-center rounded bg-[#eee] px-3 font-semibold ltr:mr-2 rtl:ml-2 dark:bg-[#1b2e4b]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24px"
+                      height="24px"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-5 w-5"
+                    >
+                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                  </div>
+                  <input type="text" placeholder="jimmy_turner" className="form-input" />
+                </div>
+              </div>
+            </form>
           </div>
         ) : (
           ''

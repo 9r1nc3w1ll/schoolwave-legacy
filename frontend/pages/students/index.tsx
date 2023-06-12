@@ -1,12 +1,17 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import sortBy from 'lodash/sortBy';
 import { downloadExcel } from 'react-export-table-to-excel';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useQuery } from 'react-query';
-import { getStudents } from '@/apicalls/students';
+import { getStudents } from '@/apicalls/users';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { Dialog, Transition } from '@headlessui/react';
+import EditUser from '@/components/EditUser';
+
+
 
 
 const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'phone', 'date_of_birth' ];
@@ -15,6 +20,11 @@ const Export = (props:any) => {
   const router = useRouter()
   const dispatch = useDispatch();
   const [selectedRecords, setSelectedRecords] = useState<any>([]);
+  const [modal, setModal] = useState(false);
+
+  const canEdit = () =>{
+    return selectedRecords.length === 1
+  }
 
   const {data:students, isSuccess, status, isLoading} = useQuery('session', ()=>{
  
@@ -235,10 +245,47 @@ const Export = (props:any) => {
               </svg>
                             PRINT
             </button>
+
+            
+            <p className={`btn ${canEdit() ?'btn-primary btn-sm ': 'bg-[#f2f5f7] shadow-sm text-sm'} m-1`} onClick={() => {
+              if(canEdit()){
+
+                setModal(true)
+              }
+            }}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+              </svg>
+
+                            EDIT
+            </p>
+     
           </div>
 
           <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
+        <Transition appear show={modal} as={Fragment}>
+          <Dialog as="div" open={modal} onClose={() => setModal(false)}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0" />
+            </Transition.Child>
+            <div id="slideIn_down_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+              <div className="flex items-start justify-center min-h-screen px-4">
+                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__slideInDown">
+                  <EditUser type='student' data= {selectedRecords[0]} />
+                </Dialog.Panel>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
         <div className="datatables">
           <DataTable
             highlightOnHover
