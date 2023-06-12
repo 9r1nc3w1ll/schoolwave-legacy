@@ -21,7 +21,7 @@ type FormValues = {
 };
 
 
-const Step2 = () => {
+const Step2 = (props:any) => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setPageTitle('Contact Form'));
@@ -32,7 +32,10 @@ const Step2 = () => {
       fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/school`, {
         method: "POST",
         body: JSON.stringify(post),
-        headers: { "Content-type": "application/json" }
+        headers: { 
+          "Content-type": "application/json",
+          "Authorization": 'Bearer '+ props.user_session.access_token, 
+        }
       }),
     {
       onSuccess: async (data) => {

@@ -8,6 +8,8 @@ import { useMutation } from 'react-query';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { signIn } from 'next-auth/react';
+import { SessionProvider } from "next-auth/react"
+
 
 const MySwal = withReactContent(Swal)
 
@@ -26,7 +28,7 @@ interface FormResponse {
 }
 
 
-const Step1 = () => {
+const Step1 = (props:any) => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setPageTitle('Owner Setup'));
@@ -213,7 +215,7 @@ const Step1 = () => {
 };
 
 Step1.getLayout = (page: any) => {
-  return <OnboardingLayout>{page}</OnboardingLayout>;
+  return <SessionProvider session={page.props.session}> <OnboardingLayout>{page}</OnboardingLayout> </SessionProvider>;
 };
 
 export default Step1;

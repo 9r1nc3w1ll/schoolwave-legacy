@@ -1,6 +1,6 @@
 
 
-const EditUser = ()=>{
+const EditUser = (type:any, data:any)=>{
 
 
   return(

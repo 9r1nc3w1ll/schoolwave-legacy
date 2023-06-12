@@ -35,7 +35,7 @@ type TLoginResponse = {
 }
 
 
-const BACKEND_LOGIN_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/login`;
+const BACKEND_LOGIN_URL = `${process.env.BACKEND_URL}/account/login`;
 
 export const authOptions: NextAuthOptions = {
   secret: 'topsecret',
