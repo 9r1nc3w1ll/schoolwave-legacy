@@ -95,7 +95,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         const { username, first_name, last_name, email, password } = credentials as any;
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/school/register-admin`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/school/register-admin`, {
           method: "POST",
           body: JSON.stringify({
             username,
@@ -161,7 +161,7 @@ export const authOptions: NextAuthOptions = {
         ...token.school ? {
           school: token.school
         } : {},
-   
+
       };
     }
   },
