@@ -7,7 +7,7 @@ const OnboardingLayout = ({ children }: PropsWithChildren) =>{
   const session = useSession();
 
   let g:any = React.Children.toArray(children)
-  const el = React.cloneElement(g[0], {user_session:session.data? session.data : {}})
+  const el = React.cloneElement(g[0], {user_session:session? session.data : {}})
 
   return(
 
