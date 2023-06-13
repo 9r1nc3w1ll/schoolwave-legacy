@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import React from 'react';
 
 const OnboardingLayout = ({ children }: PropsWithChildren) =>{
-  const { status: sessionStatus, data } = useSession();
+  const { data } = useSession();
 
   let g:any = React.Children.toArray(children)
   const el = React.cloneElement(g[0], {user_session:data})
