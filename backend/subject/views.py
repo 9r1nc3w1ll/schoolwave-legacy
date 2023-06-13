@@ -20,43 +20,33 @@ class BatchUploadSubjects(APIView):
         csv_file = request.FILES.get('csv')
         term_id = request.data.get('term_id')
 
-        if not csv_file:
-            raise ValidationError("No CSV file provided")
+        term = Term.objects.get(id=term_id)
+        data = csv_file.read().decode('utf-8')
 
-        if not csv_file.name.endswith('.csv'):
-            raise ValidationError("Invalid file type. Only CSV files are allowed")
+        reader = csv.DictReader(io.StringIO(data))
 
-        try:
-            term = Term.objects.get(id=term_id)
-            data = csv_file.read().decode('utf-8')
+        created_subjects = []
+        for row in reader:
+            class_code = row.get('Class Code')
+            subject_name = row.get('Subject Name')
+            subject_description = row.get('Subject Description')
+            subject_code = row.get('Subject Code')
 
-            reader = csv.DictReader(io.StringIO(data))
+            class_info, created = Class.objects.get_or_create(code=class_code)
+            subject = Subject.objects.create(
+                name=subject_name,
+                description=subject_description,
+                class_id=class_info,
+                term=term,
+                code=subject_code
+            )
+            created_subjects.append(subject)
 
-            created_subjects = []
-            for row in reader:
-                class_code = row.get('Class Code')
-                subject_name = row.get('Subject Name')
-                subject_description = row.get('Subject Description')
-                subject_code = row.get('Subject Code')
-
-                class_info, created = Class.objects.get_or_create(code=class_code)
-                subject = Subject.objects.create(
-                    name=subject_name,
-                    description=subject_description,
-                    class_id=class_info,
-                    term=term,
-                    code=subject_code
-                )
-                created_subjects.append(subject)
-
-            data = {
-                "message": "Batch upload complete.",
-                "created_subjects": [str(subject) for subject in created_subjects]
-            }
-            return Response(data)
-
-        except Exception as e:
-            raise ValidationError(str(e))
+        data = {
+            "message": "Batch upload complete.",
+            "created_subjects": [str(subject) for subject in created_subjects]
+        }
+        return Response(data)
 
 class ListCreateSubject(ListCreateAPIView):
     permission_classes = [IsAuthenticated]

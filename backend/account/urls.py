@@ -19,7 +19,7 @@ urlpatterns = [
     path("/token/refresh", TokenRefreshView.as_view()),
     path("/password/change", ChangePassword.as_view(), name="password_change"),
     path(
-        "password/admin_reset",
+        "/password/admin_reset",
         AdminResetPassword.as_view(),
         name="admin_password_reset",
     ),
