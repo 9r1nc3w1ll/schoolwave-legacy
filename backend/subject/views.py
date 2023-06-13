@@ -3,7 +3,6 @@ from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Subject, SubjectSelection
 from .serializers import SubjectSerializer, SubjectSelectionSerializer
-from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
@@ -110,7 +109,7 @@ class RetrieveUpdateDestroySubject(RetrieveUpdateDestroyAPIView):
             subject = Subject.objects.get(id=subject_id)
         except Subject.DoesNotExist:
             return Response({
-                    'error': 'Subject not found.'
+                    'message': 'Subject not found.'
                     })
         return subject
 
@@ -139,8 +138,8 @@ class RetrieveUpdateDestroySubject(RetrieveUpdateDestroyAPIView):
             })
         
         return Response({
-            "error": "Subject not found.",
-            "errors": serializer.errors
+            "message": "Subject not found.",
+            "error": serializer.errors
             })
 
     def delete(self, request, *args, **kwargs):
@@ -152,7 +151,7 @@ class RetrieveUpdateDestroySubject(RetrieveUpdateDestroyAPIView):
             }
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"error": "Subject not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Subject not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ListCreateSubjectSelection(ListCreateAPIView):
@@ -219,7 +218,7 @@ class RetrieveUpdateDestroySubjectSelection(RetrieveUpdateDestroyAPIView):
             subjectselection = SubjectSelection.objects.get(id=subjectselection_id)
         except SubjectSelection.DoesNotExist:
             return Response({
-                    'error': 'Subject Selection not found.'
+                    'message': 'Subject Selection not found.'
                     })
         return subjectselection
 
@@ -248,7 +247,7 @@ class RetrieveUpdateDestroySubjectSelection(RetrieveUpdateDestroyAPIView):
             })
         
         return Response({
-            "error": "Subject Selection not found.",
+            "message": "Subject Selection not found.",
             "errors": serializer.errors
             })
 
@@ -261,5 +260,5 @@ class RetrieveUpdateDestroySubjectSelection(RetrieveUpdateDestroyAPIView):
             }
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"error": "Subject Selection not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Subject Selection not found."}, status=status.HTTP_404_NOT_FOUND)
     
