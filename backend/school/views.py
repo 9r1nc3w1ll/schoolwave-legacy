@@ -9,8 +9,13 @@ from rest_framework.views import APIView
 
 from account.models import User
 from account.serializers import OwnerSerializer, UserSerializer
+<<<<<<< HEAD
 from school.models import Class, School, ClassMember
 from school.serializers import ClassSerializer, SchoolSerializer, ClassMemberSerializer
+=======
+from school.models import Class, School, ClassStaff
+from school.serializers import ClassSerializer, SchoolSerializer, ClassStaffSerializer
+>>>>>>> Completed staff assignment
 from utils.permissions import IsSchoolOwner
 from django.db.models import Q
 import uuid
@@ -189,6 +194,7 @@ class RetrieveUpdateDestoryClass(RetrieveUpdateDestroyAPIView):
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
 
 
+<<<<<<< HEAD
 class ListCreateClassMember(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = ClassMember.objects.all()
@@ -200,6 +206,18 @@ class ListCreateClassMember(ListCreateAPIView):
             return self.queryset.filter(id=class_user_id)
         else:
             return self.queryset.all()
+=======
+class ListCreateClassStaffAssignment(ListCreateAPIView):
+    permission_classes = [IsAuthenticated, IsSchoolOwner]
+    queryset = ClassStaff.objects.all()
+    serializer_class = ClassStaffSerializer
+
+    def get_queryset(self):
+        school = School.objects.get(owner=self.request.user)
+
+        qs = self.queryset.filter(school=school)
+        return qs
+>>>>>>> Completed staff assignment
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -210,7 +228,11 @@ class ListCreateClassMember(ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         resp = {
             "status": "success",
+<<<<<<< HEAD
             "message": "Class member created successfully.",
+=======
+            "message": "Staff assigned successfully.",
+>>>>>>> Completed staff assignment
             "data": serializer.data,
         }
         return Response(resp, status=status.HTTP_201_CREATED, headers=headers)

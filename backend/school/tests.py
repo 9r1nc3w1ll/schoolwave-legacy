@@ -70,6 +70,10 @@ class ClassTests(APITestCase):
         self.class_obj = Class.objects.create(
             name="Test Class", school=self.school, description="Description", code="class12"
         )
+        self.session = Session.objects.create(
+            name="Test Session", school=self.school, active=True, start_date="2023", end_date="2024",
+            resumption_date=datetime.now().date()
+        )
 
     def test_create_class(self):
         url = reverse("list_create_class")
