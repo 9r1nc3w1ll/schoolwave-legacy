@@ -27,7 +27,7 @@ const Export = (props:any) => {
   }
 
   const {data:students, isSuccess, status, isLoading} = useQuery('session', ()=>{
- 
+
     return getStudents(props.user_session.access_token)
   })
 
@@ -59,7 +59,7 @@ const Export = (props:any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      if(students){
+      if(isSuccess ){
 
         return students.filter((item: any) => {
           return (
@@ -73,7 +73,7 @@ const Export = (props:any) => {
         setInitialRecords([])
       }
     });
-  }, [search, students]);
+  }, [search, students, status]);
 
   useEffect(() => {
     const data = sortBy(initialRecords, sortStatus.columnAccessor);
