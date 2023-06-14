@@ -4,6 +4,7 @@ from .models import StudentAttendance
 from .serializers import StudentAttendanceSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import status
 
 class ListCreateStudentAttendance(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -69,7 +70,7 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
             studentattendance = StudentAttendance.objects.get(id=studentattendance_id)
         except StudentAttendance.DoesNotExist:
             return Response({
-                    'error': 'Student attendance not found.'
+                    'message': 'Student attendance not found.'
                     })
         return studentattendance
 
@@ -98,7 +99,7 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
             })
         
         return Response({
-            "error": "Student attendance not found.",
+            "message": "Student attendance not found.",
             "errors": serializer.errors
             })
 
@@ -111,4 +112,4 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
             }
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"error": "Student attendance not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Student attendance not found."}, status=status.HTTP_404_NOT_FOUND)
