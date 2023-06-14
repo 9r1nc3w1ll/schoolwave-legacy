@@ -6,6 +6,7 @@ from account.views import (
     ChangePassword,
     FetchUser,
     LoginView,
+    RefreshAuthUser,
     RetrieveUpdateDestroyUser,
     UserRoles,
     UserViewSet,
@@ -14,6 +15,7 @@ from account.views import (
 urlpatterns = [
     path("/login", LoginView.as_view(), name="user_login"),
     path("/user", FetchUser.as_view(), name="fetch_user"),
+    path("/refresh-auth-user", RefreshAuthUser.as_view(), name="refresh_auth_user"),
     path("/token/refresh", TokenRefreshView.as_view()),
     path("/password/change", ChangePassword.as_view(), name="password_change"),
     path(

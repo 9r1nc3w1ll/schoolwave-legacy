@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from pyotp import TOTP
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -23,7 +24,7 @@ from .serializers import (
     PasswordResetRequestSerializer,
     UserSerializer,
 )
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+
 
 # Create your views here.
 class LoginView(APIView):
@@ -33,7 +34,6 @@ class LoginView(APIView):
 
         if not serializer.is_valid():
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
-
 
         authUser = authenticate(
             request=request,
@@ -49,6 +49,8 @@ class LoginView(APIView):
         user: User = User.objects.get(username=authUser.get_username())
 
         try:
+            # TODO: Fetch the school that the user is trying to access
+            # from a request header
             school = School.objects.get(owner=user)
             schoolData = SchoolSerializer(school).data
         except School.DoesNotExist:
@@ -80,6 +82,33 @@ class FetchUser(APIView):
         return Response(data)
 
 
+class RefreshAuthUser(APIView):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # TODO: Fetch the school that the user is trying to access
+            # from a request header
+            school = School.objects.get(owner=request.user)
+            schoolData = SchoolSerializer(school).data
+        except School.DoesNotExist:
+            schoolData = None
+
+        data = {
+            "message": "User refresh successful",
+            "data": {
+                # NB: Do not refresh or return new tokens here
+                # Return a fresh copy of the JWT data excluding tokens
+                "user": UserSerializer(request.user).data,
+                "school": schoolData,
+            },
+        }
+
+        return Response(data)
+
+
 class ChangePassword(APIView):
     serializer_class = PasswordChangeSerializer
 
@@ -104,9 +133,7 @@ class ChangePassword(APIView):
 
         request.user.save()
 
-        resp = {
-            "message": "Password changed successfully."
-        }
+        resp = {"message": "Password changed successfully."}
         return Response(resp)
 
 
@@ -134,9 +161,7 @@ class PasswordResetRequestView(APIView):
         # Send reset_link to email here.
         send_user_mail(email, reset_link)
 
-        resp = {
-            "message": "Reset link sent to user's email"
-        }
+        resp = {"message": "Reset link sent to user's email"}
 
         return Response(resp)
 
@@ -163,9 +188,9 @@ class UserViewSet(ListCreateAPIView):
             data = UserSerializer(user).data
 
             resp = {
-                    "message": message,
-                    "data": data,
-                }
+                "message": message,
+                "data": data,
+            }
             return Response(resp, status=status.HTTP_201_CREATED)
         else:
             resp = {
@@ -176,16 +201,14 @@ class UserViewSet(ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")
-        
+
         if user_id:
             try:
                 user = User.objects.get(id=user_id)
                 data = UserSerializer(user).data
                 message = "User retrieved successfully."
             except User.DoesNotExist:
-                return Response({
-                    'error': 'User not found.'
-                    })
+                return Response({"error": "User not found."})
         else:
             users = User.objects.all()
             data = UserSerializer(users, many=True).data
@@ -196,6 +219,7 @@ class UserViewSet(ListCreateAPIView):
             "data": data,
         }
         return Response(resp)
+
 
 class RetrieveUpdateDestroyUser(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
@@ -208,18 +232,15 @@ class RetrieveUpdateDestroyUser(RetrieveUpdateDestroyAPIView):
         try:
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
-            return Response({
-                    'error': 'User not found.'
-                    })
+            return Response({"error": "User not found."})
         return user
 
     def get(self, request, *args, **kwargs):
         user = self.get_object()
         serializer = UserSerializer(user)
-        return Response({
-            "message": "User retrieved successfully.",
-            "data": serializer.data
-        })
+        return Response(
+            {"message": "User retrieved successfully.", "data": serializer.data}
+        )
 
     def patch(self, request, *args, **kwargs):
         data = request.data
@@ -231,15 +252,9 @@ class RetrieveUpdateDestroyUser(RetrieveUpdateDestroyAPIView):
             message = "User updated successfully."
             data = UserSerializer(user).data
 
-            return Response({
-                "message": message,
-                "data": data
-            })
-        
-        return Response({
-            "message": "Invalid data.",
-            "errors": serializer.errors
-        })
+            return Response({"message": message, "data": data})
+
+        return Response({"message": "Invalid data.", "errors": serializer.errors})
 
     def delete(self, request, *args, **kwargs):
         user = self.get_object()

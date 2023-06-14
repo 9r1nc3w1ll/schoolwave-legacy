@@ -1,5 +1,6 @@
 import { method } from "lodash"
 import NextAuth, { NextAuthOptions } from "next-auth"
+import { JWT } from "next-auth/jwt"
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 interface TAuthUser {
@@ -34,8 +35,49 @@ type TLoginResponse = {
   }
 }
 
+type TRefreshUserResponse = {
+  message: string;
+  data: {
+    user: TAuthUser;
+    school?: TSchool;
+  }
+}
 
-const BACKEND_LOGIN_URL = `${process.env.BACKEND_URL}/account/login`;
+class RefreshUserError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = "RefreshTokenError";
+  }
+}
+
+const BACKEND_LOGIN_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/login`;
+const REFRESH_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/refresh`;
+
+const refreshToken = async (token: JWT): Promise<JWT> => {
+  const accessToken = (token.access_token as string);
+
+  const res = await fetch(REFRESH_URL, {
+    method: "POST",
+    headers: {
+      "content-Type": "application/json",
+      ...(accessToken ? { "authorization": `Bearer ${accessToken}` } : {}),
+    },
+  })
+
+  if (!res.ok) {
+    const error = new RefreshUserError("Failed to fetch refresh data");
+    return { ...token, error };
+  }
+
+  const { data: { user, school } }: TRefreshUserResponse = await res.json()
+
+  return {
+    ...token,
+    ...user,
+    ...(school ? { school } : {}),
+    name: `${user.first_name} ${user.last_name}`,
+  };
+};
 
 export const authOptions: NextAuthOptions = {
   secret: 'topsecret',
@@ -139,7 +181,7 @@ export const authOptions: NextAuthOptions = {
        * - To keep the token size small, expose only the necessary fields
        * - For security reasons, do not return sensitive information eg. passwords
        */
-      return { ...token, ...user };
+      return { ...user, ...(await refreshToken(token)) };
     },
     async session({ session, token }) {
       return {
