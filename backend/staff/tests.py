@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from account.models import User
-from school.models import Staff
+from staff.models import Staff
 
 User = get_user_model()
 
