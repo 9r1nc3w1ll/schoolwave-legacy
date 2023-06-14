@@ -1,6 +1,6 @@
 from django.db import models
 
-# from subject.models import Subject
+from subject.models import Subject
 from school.models import Class
 from account.models import User
 
@@ -13,7 +13,7 @@ class StudentAttendance(models.Model):
     date = models.DateField()
     student = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'student'}, related_name='student_attendances')
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
-    # subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     ATTENDANCE_TYPE_CHOICES = [
