@@ -15,7 +15,7 @@ interface FormValues {
  
    };
 
-//  {  user_session, sessionData, exit}
+
 
 const EditClassForm = (props:any) => {
 

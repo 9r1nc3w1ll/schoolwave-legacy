@@ -21,7 +21,6 @@ const Export = (props: any) => {
   const { status: sessionStatus, data: session } = useSession();
 
   const [selectedRecords, setSelectedRecords] = useState<any>([]);
-  const [modal, setModal] = useState(false);
 
   const canEdit = () => {
     return selectedRecords.length === 1
