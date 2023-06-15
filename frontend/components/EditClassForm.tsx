@@ -27,7 +27,6 @@ const EditClassForm = (props:any) => {
   useEffect(()=>{
     reset(props.sessionData)
   },[])
-
   const { mutate, isLoading, error } = useMutation(
     (data) => editClass(props.sessionData.id, props.user_session.access_token, data),
     {
