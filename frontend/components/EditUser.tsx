@@ -1,53 +1,106 @@
-
+import AnimateHeight from 'react-animate-height';
+import { useState } from 'react';
 
 const EditUser = (type:any, data:any)=>{
+
+  const [active, setActive] = useState<string>('1');
+  const togglePara = (value: string) => {
+    setActive((oldValue) => {
+      return oldValue === value ? '' : value;
+    });
+  };
+
   return(
-    <form className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="gridEmail">Email</label>
-          <input id="gridEmail" type="email" placeholder="Enter Email" className="form-input" />
+    <div className="mb-5 p-5">
+      <div className="space-y-2 font-semibold">
+        <div className="border border-[#d3d3d3] rounded dark:border-[#1b2e4b]">
+          <button
+            type="button"
+            className={`p-4 w-full flex items-center text-white-dark dark:bg-[#1b2e4b] `}
+            onClick={() => togglePara('1')}
+          >
+                Collapsible Group Item #1
+            <div className={`ltr:ml-auto rtl:mr-auto `}>
+              <svg>...</svg>
+            </div>
+          </button>
+          <div>
+            <AnimateHeight duration={300} height={active === '1' ? 'auto' : 0}>
+              <div className="space-y-2 p-4 text-white-dark text-[13px] border-t border-[#d3d3d3] dark:border-[#1b2e4b]">
+                <p>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+                <p>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+              </div>
+            </AnimateHeight>
+          </div>
         </div>
-        <div>
-          <label htmlFor="gridPassword">Password</label>
-          <input id="gridPassword" type="Password" placeholder="Enter Password" className="form-input" />
+        <div className="border border-[#d3d3d3] dark:border-[#1b2e4b] rounded">
+          <button
+            type="button"
+            className={`p-4 w-full flex items-center text-white-dark dark:bg-[#1b2e4b] `}
+            onClick={() => togglePara('2')}
+          >
+                Collapsible Group Item #2
+            <div className={`ltr:ml-auto rtl:mr-auto `}>
+              <svg>...</svg>
+            </div>
+          </button>
+          <div>
+            <AnimateHeight duration={300} height={active === '2' ? 'auto' : 0}>
+              <div className="p-4 text-[13px] border-t border-[#d3d3d3] dark:border-[#1b2e4b]">
+                <ul className="space-y-1">
+                  <li>
+                    <button type="button">Apple</button>
+                  </li>
+                  <li>
+                    <button type="button">Orange</button>
+                  </li>
+                  <li>
+                    <button type="button">Banana</button>
+                  </li>
+                  <li>
+                    <button type="button">list</button>
+                  </li>
+                </ul>
+              </div>
+            </AnimateHeight>
+          </div>
+        </div>
+        <div className="border border-[#d3d3d3] dark:border-[#1b2e4b] rounded">
+          <button
+            type="button"
+            className={`p-4 w-full flex items-center text-white-dark dark:bg-[#1b2e4b] !text-primary`}
+            onClick={() => togglePara('3')}
+          >
+                Collapsible Group Item #3
+            <div className={`ltr:ml-auto rtl:mr-auto rotate-180`}>
+              <svg>...</svg>
+            </div>
+          </button>
+          <div>
+            <AnimateHeight duration={300} height={active === '3' ? 'auto' : 0}>
+              <div className="p-4 text-[13px] border-t border-[#d3d3d3] dark:border-[#1b2e4b]">
+                <p>
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
+                            dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
+                            assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
+                            butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus
+                            labore sustainable VHS.
+                </p>
+                <button type="button" className="btn btn-primary mt-4">
+                            Accept
+                </button>
+              </div>
+            </AnimateHeight>
+          </div>
         </div>
       </div>
-      <div>
-        <label htmlFor="gridAddress1">Address</label>
-        <input id="gridAddress1" type="text" placeholder="Enter Address" defaultValue="1234 Main St" className="form-input" />
-      </div>
-      <div>
-        <label htmlFor="gridAddress2">Address2</label>
-        <input id="gridAddress2" type="text" placeholder="Enter Address2" defaultValue="Apartment, studio, or floor" className="form-input" />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <div className="md:col-span-2">
-          <label htmlFor="gridCity">City</label>
-          <input id="gridCity" type="text" placeholder="Enter City" className="form-input" />
-        </div>
-        <div>
-          <label htmlFor="gridState">State</label>
-          <select id="gridState" className="form-select text-white-dark">
-            <option>Choose...</option>
-            <option>...</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="gridZip">Zip</label>
-          <input id="gridZip" type="text" placeholder="Enter Zip" className="form-input" />
-        </div>
-      </div>
-      <div>
-        <label className="flex items-center mt-1 cursor-pointer">
-          <input type="checkbox" className="form-checkbox" />
-          <span className="text-white-dark">Check me out</span>
-        </label>
-      </div>
-      <button type="submit" className="btn btn-primary !mt-6">
-        Submit
-      </button>
-    </form>
+    </div>
   )
 }
 

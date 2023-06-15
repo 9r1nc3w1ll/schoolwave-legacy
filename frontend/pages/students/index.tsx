@@ -32,7 +32,6 @@ const Export = (props: any) => {
     return getStudents(props.user_session.access_token)
   })
 
-
   useEffect(() => {
     dispatch(setPageTitle('Schoolwave | Students'));
   });
@@ -60,7 +59,7 @@ const Export = (props: any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      if (isSuccess) {
+      if(isSuccess && students.length ){
 
         return students.filter((item: any) => {
           return (
@@ -312,7 +311,7 @@ const Export = (props: any) => {
 
               { accessor: 'guardian_phone_number', title: 'Phone', sortable: true },
             ]}
-            totalRecords={initialRecords.length}
+            totalRecords={initialRecords? initialRecords.length : 0}
             recordsPerPage={pageSize}
             page={page}
             onPageChange={(p) => setPage(p)}

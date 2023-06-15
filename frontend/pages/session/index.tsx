@@ -47,7 +47,7 @@ const Export =  (props:any) => {
 
   useEffect(() => {
     setFilteredsessions(() => {
-      return sessions.filter((item:any) => {
+      return sessions?.filter((item:any) => {
         return item.name.toLowerCase().includes(search.toLowerCase()) || item.start_date.toLowerCase().includes(search.toLowerCase());
       });
     });
@@ -60,7 +60,7 @@ const Export =  (props:any) => {
 
   }, [h, isSuccess, status])
   const displaySession: () => any=()=>{
-    if(sessions.length > 0){
+    if(sessions?.length > 0){
       return filteredsessions.map((data:any) => {
         return (
           <tr className={`${data.active? `bg-primary-light`: ''} !important`} key={data.id}>
