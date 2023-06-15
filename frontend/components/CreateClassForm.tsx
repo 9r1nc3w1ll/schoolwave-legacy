@@ -82,6 +82,15 @@ const CreateClassForm = (props: any) => {
           <label htmlFor="name"> Description</label>
           <input id="Description" type="text"  className="form-input" {...register("description", { required: "This field is required" })} />
         </div>
+       
+        <div>
+          <label htmlFor="name">Class Short Code</label>
+          <input id="code" type="text" placeholder="e.g Pry1A"  className="form-input" {...register("code", { required: "This field is required" })} />
+        </div>
+        <div>
+          <label htmlFor="name"> Description</label>
+          <input id="Description" type="text"  className="form-input" {...register("description", { required: "This field is required" })} />
+        </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
 
           <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
