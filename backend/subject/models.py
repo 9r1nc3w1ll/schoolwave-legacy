@@ -1,9 +1,11 @@
 from django.db import models
+from config.models import BaseModel
 
 from school.models import Class
 from session.models import Term
+from staff.models import Staff, StaffRole
 
-class Subject(models.Model):
+class Subject(BaseModel):
     class Meta:
         db_table = "subject"
     name = models.CharField(max_length=255)
@@ -16,7 +18,7 @@ class Subject(models.Model):
         return self.name
 
 
-class SubjectSelection(models.Model):
+class SubjectSelection(BaseModel):
     class Meta:
         db_table = "subject selection"
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
@@ -25,3 +27,13 @@ class SubjectSelection(models.Model):
 
     def __str__(self):
         return f"Subject Selection for Term: {self.term}, Subject: {self.subject}"
+
+
+class SubjectStaffAssignment(BaseModel):
+    class Meta:
+        db_table = 'subject staff assignment'
+
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    role = models.ForeignKey(StaffRole, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    active = models.BooleanField(null=True)

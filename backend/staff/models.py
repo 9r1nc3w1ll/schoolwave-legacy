@@ -3,14 +3,15 @@ from account.models import User
 
 from config.models import BaseModel
 
-class StaffRole(models.Model):
+class StaffRole(BaseModel):
     class Meta:
         db_table = "staff role"
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
 
-    def __str__(self):
-        return self.name
+    def save(self, *args, **kwargs):
+
+        return super().save(*args, **kwargs)
     
 
 class Staff(BaseModel):
@@ -22,5 +23,6 @@ class Staff(BaseModel):
     title = models.CharField(max_length=255)
     role = models.ManyToManyField(StaffRole)  # Array of roles (e.g., ["Teacher", "Principal"])
 
-    def __str__(self):
-        return f"{self.user} - {self.title}"
+    def save(self, *args, **kwargs):
+
+        return super().save(*args, **kwargs)

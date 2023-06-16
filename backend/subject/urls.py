@@ -4,7 +4,9 @@ from .views import (
     RetrieveUpdateDestroySubject,
     ListCreateSubjectSelection,
     RetrieveUpdateDestroySubjectSelection,
-    BatchUploadSubjects
+    BatchUploadSubjects,
+    ListCreateSubjectStaffAssignment,
+    RetrieveUpdateDestroySubjectStaffAssignment,
 )
 
 urlpatterns = [
@@ -13,4 +15,6 @@ urlpatterns = [
     path('/subject-selections', ListCreateSubjectSelection.as_view(), name='subject_selection_list_create'),
     path('/subject-selections/<int:pk>', RetrieveUpdateDestroySubjectSelection.as_view(), name='subject_selection_retrieve_update_destroy'),
     path("/batch_upload_requests", BatchUploadSubjects.as_view(), name="batch_upload_requests"),
+    path('/subject-staff-assignment', ListCreateSubjectStaffAssignment.as_view(), name='subject_staff_assignment_list_create'),
+    path('/subject-staff-assignment/<uuid:pk>', RetrieveUpdateDestroySubjectStaffAssignment.as_view(), name='subject_staff_assignment_retrieve_update_destroy'),
 ]
