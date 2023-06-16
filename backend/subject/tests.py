@@ -13,200 +13,200 @@ from staff.models import Staff, StaffRole
 
 User = get_user_model()
 
-# class SubjectCRUDTestCase(APITestCase):
-#     def setUp(self):
-#         self.client = APIClient()
+class SubjectCRUDTestCase(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
         
-#         self.user = User.objects.create(
-#             username="testowner", password="testpassword"
-#         )
+        self.user = User.objects.create(
+            username="testowner", password="testpassword"
+        )
 
-#         self.school = School.objects.create(
-#             name="chrisland",
-#             owner=self.user,
-#             date_of_establishment=datetime.now().date(),
-#         )
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
 
-#         self.class_obj = Class.objects.create(
-#             name="Test Class", school=self.school, description="Description", code="Prim43"
-#         )
+        self.class_obj = Class.objects.create(
+            name="Test Class", school=self.school, description="Description", code="Prim43"
+        )
 
-#         self.session = Session.objects.create(
-#             school=self.school,
-#             resumption_date=datetime.now().date(),
-#             start_date="2040",
-#             end_date="2050"
-#         )
+        self.session = Session.objects.create(
+            school=self.school,
+            resumption_date=datetime.now().date(),
+            start_date="2040",
+            end_date="2050"
+        )
 
-#         self.term = Term.objects.create(
-#             name="1st Term", active="True", school=self.school, session=self.session, code="Term45"
-#         )
+        self.term = Term.objects.create(
+            name="1st Term", active="True", school=self.school, session=self.session, code="Term45"
+        )
 
-#         self.subject = Subject.objects.create(
-#             name="Math",
-#             description="Mathematics subject",
-#             term=self.term,
-#             class_id=self.class_obj,
-#             code="Subj98"
-#         )
-#         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
+        self.subject = Subject.objects.create(
+            name="Math",
+            description="Mathematics subject",
+            term=self.term,
+            class_id=self.class_obj,
+            code="Subj98"
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
-#     def test_list_subjects(self):
-#         url = reverse("subject_list_create")
-#         self.client.force_authenticate(user=self.user)
-#         response = self.client.get(url)
+    def test_list_subjects(self):
+        url = reverse("subject_list_create")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
 
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(
-#             len(response.data["data"]), 1
-#         )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            len(response.data["data"]), 1
+        )
 
-#     def test_create_subject(self):
-#         url = reverse("subject_list_create")
-#         self.client.force_authenticate(user=self.user)
+    def test_create_subject(self):
+        url = reverse("subject_list_create")
+        self.client.force_authenticate(user=self.user)
 
-#         data = {
-#             "name": "Science",
-#             "description": "Science subject",
-#             "term":self.term,
-#             "code":"Subj65"
-#         }
+        data = {
+            "name": "Science",
+            "description": "Science subject",
+            "term":self.term,
+            "code":"Subj65"
+        }
 
-#         response = self.client.post(url, data)
+        response = self.client.post(url, data)
 
-#     def test_retrieve_subject(self):
-#         url = reverse("subject_retrieve_update_destroy", kwargs={"pk":self.subject.id})
-#         self.client.force_authenticate(user=self.user)
-#         response = self.client.get(url)
+    def test_retrieve_subject(self):
+        url = reverse("subject_retrieve_update_destroy", kwargs={"pk":self.subject.id})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
 
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(response.data["message"], "Subject retrieved successfully.")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], "Subject retrieved successfully.")
 
-#     def test_update_subject(self):
-#         url = reverse("subject_retrieve_update_destroy", kwargs={"pk": self.subject.id})
-#         self.client.force_authenticate(user=self.user)
+    def test_update_subject(self):
+        url = reverse("subject_retrieve_update_destroy", kwargs={"pk": self.subject.id})
+        self.client.force_authenticate(user=self.user)
 
-#         data = {
-#             "name": "Updated Science",
-#             "description": "Updated Science subject",
-#             "term":self.term.id,
-#             "code":"Subj111"
-#         }
+        data = {
+            "name": "Updated Science",
+            "description": "Updated Science subject",
+            "term":self.term.id,
+            "code":"Subj111"
+        }
 
-#         response = self.client.patch(url, data)
+        response = self.client.patch(url, data)
 
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(response.data["message"], "Subject updated successfully.")
-#         self.assertEqual(response.data["data"]["name"], "Updated Science")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], "Subject updated successfully.")
+        self.assertEqual(response.data["data"]["name"], "Updated Science")
 
-#     def test_delete_subject(self):
-#         url = reverse("subject_retrieve_update_destroy", kwargs={"pk": self.subject.id})
-#         self.client.force_authenticate(user=self.user)
-#         response = self.client.delete(url)
+    def test_delete_subject(self):
+        url = reverse("subject_retrieve_update_destroy", kwargs={"pk": self.subject.id})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
 
-#         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-#         self.assertEqual(response.data["message"], "Subject deleted successfully.")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.data["message"], "Subject deleted successfully.")
 
-# class SubjectSelectionCRUDTestCase(APITestCase):
-#     def setUp(self):
-#         self.client = APIClient()
+class SubjectSelectionCRUDTestCase(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
 
-#         self.client = APIClient()
+        self.client = APIClient()
         
-#         self.user = User.objects.create(
-#             username="testowner", password="testpassword"
-#         )
+        self.user = User.objects.create(
+            username="testowner", password="testpassword"
+        )
 
-#         self.school = School.objects.create(
-#             name="chrisland",
-#             owner=self.user,
-#             date_of_establishment=datetime.now().date(),
-#         )
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
 
-#         self.class_obj = Class.objects.create(
-#             name="Test Class", school=self.school, description="Description", code="Class321"
-#         )
+        self.class_obj = Class.objects.create(
+            name="Test Class", school=self.school, description="Description", code="Class321"
+        )
 
-#         self.session = Session.objects.create(
-#             school=self.school,
-#             resumption_date=datetime.now().date(),
-#             start_date="2040",
-#             end_date="2050"
-#         )
+        self.session = Session.objects.create(
+            school=self.school,
+            resumption_date=datetime.now().date(),
+            start_date="2040",
+            end_date="2050"
+        )
 
-#         self.term = Term.objects.create(
-#             name="1st Term", active="True", school=self.school, session=self.session, code="Term122"
-#         )
+        self.term = Term.objects.create(
+            name="1st Term", active="True", school=self.school, session=self.session, code="Term122"
+        )
 
-#         self.subject = Subject.objects.create(
-#             name="Math",
-#             description="Mathematics subject",
-#             term=self.term,
-#             class_id=self.class_obj,
-#             code="Subj231"
-#         )
+        self.subject = Subject.objects.create(
+            name="Math",
+            description="Mathematics subject",
+            term=self.term,
+            class_id=self.class_obj,
+            code="Subj231"
+        )
 
-#         self.subject_selection = SubjectSelection.objects.create(
-#             term=self.term,
-#             subject=self.subject,
-#             score=80
-#         )
-#         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
+        self.subject_selection = SubjectSelection.objects.create(
+            term=self.term,
+            subject=self.subject,
+            score=80
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
-#     def test_list_subject_selections(self):
-#         url = reverse("subject_selection_list_create")
-#         self.client.force_authenticate(user=self.user)
-#         response = self.client.get(url)
+    def test_list_subject_selections(self):
+        url = reverse("subject_selection_list_create")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
 
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(
-#             len(response.data["data"]), 1
-#         )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            len(response.data["data"]), 1
+        )
 
-#     def test_create_subject_selection(self):
-#         url = reverse("subject_selection_list_create")
-#         self.client.force_authenticate(user=self.user)
+    def test_create_subject_selection(self):
+        url = reverse("subject_selection_list_create")
+        self.client.force_authenticate(user=self.user)
 
-#         data = {
-#             "term":self.term,
-#             "subject": self.subject.id,
-#             "score": 90
-#         }
+        data = {
+            "term":self.term,
+            "subject": self.subject.id,
+            "score": 90
+        }
 
-#         response = self.client.post(url, data)
+        response = self.client.post(url, data)
 
-#     def test_retrieve_subject_selection(self):
-#         url = reverse("subject_selection_retrieve_update_destroy", kwargs={"pk":self.subject_selection.id})
-#         self.client.force_authenticate(user=self.user)
-#         response = self.client.get(url)
+    def test_retrieve_subject_selection(self):
+        url = reverse("subject_selection_retrieve_update_destroy", kwargs={"pk":self.subject_selection.id})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
 
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
-#         self.assertEqual(response.data["message"], "Subject Selection retrieved successfully.")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], "Subject Selection retrieved successfully.")
 
-#     def test_update_subject_selection(self):
-#         url = reverse("subject_selection_retrieve_update_destroy", kwargs={"pk": self.subject_selection.id})
-#         self.client.force_authenticate(user=self.user)
+    def test_update_subject_selection(self):
+        url = reverse("subject_selection_retrieve_update_destroy", kwargs={"pk": self.subject_selection.id})
+        self.client.force_authenticate(user=self.user)
 
-#         data = {
-#             "term": self.term.id,
-#             "subject": self.subject,
-#             "score": 95
-#         }
+        data = {
+            "term": self.term.id,
+            "subject": self.subject,
+            "score": 95
+        }
 
-#         response = self.client.patch(url, data)
+        response = self.client.patch(url, data)
 
-#         self.assertEqual(response.status_code, status.HTTP_200_OK)
-#         print(f"Here -- {response.data} ")
-#         self.assertEqual(response.data["message"], "Subject Selection updated successfully.")
-#         self.assertEqual(response.data["data"]["subject"], "Math")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        print(f"Here -- {response.data} ")
+        self.assertEqual(response.data["message"], "Subject Selection updated successfully.")
+        self.assertEqual(response.data["data"]["subject"], "Math")
 
-#     def test_delete_subject_selection(self):
-#         url = reverse("subject_selection_retrieve_update_destroy", kwargs={"pk": self.subject_selection.id})
-#         self.client.force_authenticate(user=self.user)
-#         response = self.client.delete(url)
+    def test_delete_subject_selection(self):
+        url = reverse("subject_selection_retrieve_update_destroy", kwargs={"pk": self.subject_selection.id})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
 
-#         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-#         self.assertEqual(response.data["message"], "Subject Selection deleted successfully.")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.data["message"], "Subject Selection deleted successfully.")
 
 class SubjectStaffAssignmentCRUDTestCase(APITestCase):
     def setUp(self):
