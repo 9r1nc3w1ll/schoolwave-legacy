@@ -68,9 +68,7 @@ class RetrieveUpdateDestoryStaff(RetrieveUpdateDestroyAPIView):
         try:
             staff = Staff.objects.get(id=staff_id)
         except Staff.DoesNotExist:
-            return Response({
-                    'error': 'Staff not found.'
-                    })
+            return Response({"message": "Staff not found."}, status=status.HTTP_404_NOT_FOUND)
         return staff
 
     def retrieve(self, request, *args, **kwargs):
@@ -110,7 +108,7 @@ class RetrieveUpdateDestoryStaff(RetrieveUpdateDestroyAPIView):
             }
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"error": "Staff not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Staff not found."}, status=status.HTTP_404_NOT_FOUND)
         
 
 class ListCreateStaffRole(ListCreateAPIView):
@@ -176,9 +174,7 @@ class RetrieveUpdateDestoryStaffRole(RetrieveUpdateDestroyAPIView):
         try:
             staff = StaffRole.objects.get(name=staff_role)
         except StaffRole.DoesNotExist:
-            return Response({
-                    'error': 'Staff role not found.'
-                    })
+            return Response({"message": "Staff role not found."}, status=status.HTTP_404_NOT_FOUND)
         return staff
 
     def retrieve(self, request, *args, **kwargs):
@@ -218,4 +214,4 @@ class RetrieveUpdateDestoryStaffRole(RetrieveUpdateDestroyAPIView):
             }
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"error": "Staff not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Staff not found."}, status=status.HTTP_404_NOT_FOUND)
