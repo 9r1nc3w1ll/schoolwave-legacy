@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useForm } from 'react-hook-form';
-import { useMutation, useQueryClient, useQuery } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { createUser } from '@/apicalls/users';
 
@@ -11,18 +11,15 @@ import { createUser } from '@/apicalls/users';
 
 
 
+
+
 const CreateEmployee  = (props:any) => {
-
-  
-
   const dispatch = useDispatch();
+ 
   useEffect(() => {
     dispatch(setPageTitle('Create Staff'));
   });
- 
-
         
-         
   const { register, handleSubmit } = useForm({ shouldUseNativeValidation: true });
 
           type FormData = {
@@ -63,6 +60,7 @@ const CreateEmployee  = (props:any) => {
               onSuccess: async (data) => {
                 showAlert('success', 'Saved Successfuly')
                 queryClient.invalidateQueries('getStaffs')
+                props.setmodal(false)
   
               },
               onError: (error:any) => {
@@ -75,13 +73,12 @@ const CreateEmployee  = (props:any) => {
   
           const onSubmit = async (data: any) => { 
             const transData = {...data}
+            transData.is_staff = true
             transData.password = data.email
-            console.log(JSON.stringify(transData))
-          
-       
+            mutate(transData)
           };
-        
 
+ 
           return (
 
             <div className='panel flex-1 px-3 py-6 ltr:xl:mr-6 rtl:xl:ml-6' > 
@@ -128,11 +125,10 @@ const CreateEmployee  = (props:any) => {
                       <label htmlFor="bloogGroup"> Staff Role <span className='text-red-500'>*</span></label>
                       <select {...register('role', {})}  className='form-input'>
                         <option value= ''>-- select an option --</option>
-                        <option value= 'teacher'>Teacher</option> 
-                        <option value= 'accountant'>Accountant </option>
-                        <option value= 'teaching_ssistant'>Teaching Assistant</option>
-                        <option value= 'non_teaching_staff'>Non-Teaching Staff</option>
-                        <option value= 'administrator'>Administrator</option>
+                        <option value= 'admin'>Admin </option>
+                        <option value= 'teacher'>Teacher </option>
+                        <option value= 'staff'>Staff </option>
+
                        
                       </select>
                     </div>

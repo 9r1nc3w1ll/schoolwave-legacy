@@ -6,21 +6,20 @@ import { setPageTitle } from '@/store/themeConfigSlice';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
-import { EditUser, getStdnt } from '@/apicalls/users';
-import Flatpickr from 'react-flatpickr';
-import 'flatpickr/dist/flatpickr.css';
+import { EditUser, getUser } from '@/apicalls/users';
+
 import { useRouter } from 'next/router';
 import { dirtyValues } from '@/utility_methods/form';
 
 
 
 
-const Admission  = (props:any) => {
+const EditEmployee  = (props:any) => {
 
   const router = useRouter()
   const {data:studentData, isSuccess:studentDataSuccessful, status:studentDataStatus, isLoading:studentDataLoading} = useQuery('getStudent', ()=>{
     if(router){
-      return getStdnt(props.user_session.access_token, router.query )
+      return getUser(props.access_token, {"id":props.id} )
     }
   })
 
@@ -32,7 +31,7 @@ const Admission  = (props:any) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setPageTitle('Admission Request'));
+    dispatch(setPageTitle('Edit Employee'));
   });
   const [date1, setDate1] = useState<any>('2022-07-05');
 
@@ -62,22 +61,18 @@ const Admission  = (props:any) => {
             // Define other form fields here
           };
           
-          
-          const genderOptions = [
-            { value: 'male', label: 'Male' },
-            { value: 'female', label: 'Female' },
-            
-          ];
+   
          
         
           const queryClient = useQueryClient();
           const { mutate, isLoading, error } = useMutation(
             (data) =>
-              EditUser(props.user_session.access_token, data, router.query),
+              EditUser(props.access_token, data, props.id),
             {
               onSuccess: async (data) => {
                 showAlert('success', 'Saved Successfuly')
                 queryClient.invalidateQueries(['getStaffs'])
+                props.seteditModal(false)
   
               },
               onError: (error:any) => {
@@ -97,6 +92,7 @@ const Admission  = (props:any) => {
             let updatedValue: any = dirtyValues(formState.dirtyFields, data)
             mutate(updatedValue)
           
+          
     
           };
         
@@ -110,10 +106,10 @@ const Admission  = (props:any) => {
               <form onSubmit={handleSubmit(onSubmit)}>
 
                 <div className='px-2 py-4 '>
-                  <div className='font-bold py-6  text-lg'> Employee Details</div>
-       
+                  <div className='font-bold py-6  text-lg'> Basic Details</div>
+
                   <div className=' grid grid-cols-2 gap-5 md:grid-cols-3 md:gap-5'>
-     
+
                     <div className='my-3'> 
                       <label htmlFor="first_name"> First Name <span className='text-red-500'>*</span></label>
                       <input {...register("first_name", {})}    className='form-input'/>
@@ -134,32 +130,24 @@ const Admission  = (props:any) => {
 
 
                     <div className='my-3'> 
-                      <label htmlFor="date_of_birth"> Date of Birth <span className='text-red-500'>*</span> </label>
-                      <Flatpickr value={date1} {...register("date_of_birth",{})}  options={{ dateFormat: 'Y-m-d' }} className="form-input" onChange={(date) => setDate1(date)} />
-            
-                    </div>
-      
-
-                    <div className='my-3'> 
                       <label htmlFor="gender"> Gender <span className='text-red-500'>*</span></label>
-            
-                      <select {...register('gender', {})}  className='form-input' placeholder='Choose' >
+
+                      <select {...register('gender', {})}  className='form-input' >
+                        <option value= ''>-- select an option --</option>
                         <option value="male">male</option>
                         <option value="female">female</option>
                       </select>
                     </div>
 
                     <div className='my-3'> 
-                      <label htmlFor="bloogGroup"> Blood group <span className='text-red-500'>*</span></label>
-                      <select {...register('blood_group', {})}  className='form-input' placeholder='Choose'>
-                        <option value= 'O+'>O+</option> 
-                        <option value= 'O+'>O+ </option>
-                        <option value= 'A+'>A+</option>
-                        <option value= 'A-'>A-</option>
-                        <option value= 'B+'>B+</option>
-                        <option value= 'B-'>B- </option>
-                        <option value= 'AB+'>AB+</option> 
-                        <option value= 'AB-'>AB-</option> 
+                      <label htmlFor="bloogGroup"> Staff Role <span className='text-red-500'>*</span></label>
+                      <select {...register('role', {})}  className='form-input'>
+                        <option value= ''>-- select an option --</option>
+                        <option value= 'admin'>Admin </option>
+                        <option value= 'teacher'>Teacher </option>
+                        <option value= 'staff'>Staff </option>
+
+       
                       </select>
                     </div>
 
@@ -188,13 +176,13 @@ const Admission  = (props:any) => {
                     <textarea id="ctnTextarea" rows={3} className="form-textarea" {...register("address", {})} placeholder="Enter Address" required></textarea>
                   </div>
 
-        
+
 
                   <button type="submit" className="btn btn-primary !mt-6 w-[15%] ">
-        Save
+Save
                   </button>
-          
-           
+
+
 
                 </div>
               </form>
@@ -202,4 +190,4 @@ const Admission  = (props:any) => {
     
           )};
 
-export default Admission;
+export default EditEmployee;

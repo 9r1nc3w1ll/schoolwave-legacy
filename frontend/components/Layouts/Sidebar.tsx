@@ -465,6 +465,9 @@ const Sidebar = () => {
                           <Link href="/employees">{t('Employee List')}</Link>
                         </li>
                         <li>
+                          <Link href="/employees#create_new">{t('Create Employee')}</Link>
+                        </li>
+                        <li>
                           <Link href="#">{t('Payrol Management')}</Link>
                         </li>
                         <li>
