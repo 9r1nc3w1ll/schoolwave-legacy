@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from 'react-query';
 import OnboardingLayout from '@/components/Layouts/OnboardingLayout';
-import { useSession } from 'next-auth/react';
+import { useSession, } from 'next-auth/react';
 
 type FormValues = {
   description: string;
@@ -23,10 +23,6 @@ const Step2 = (props: any) => {
   const router = useRouter();
   const { data: sessionData } = useSession();
 
-  useEffect(() => {
-    console.log(sessionData)
-  }, [sessionData])
-
   const { mutate, isLoading, error } = useMutation(
     (post) => {
 
@@ -35,7 +31,7 @@ const Step2 = (props: any) => {
         body: JSON.stringify(post),
         headers: {
           "Content-type": "application/json",
-          "Authorization": 'Bearer ' + props.user_session.access_token,
+          "Authorization": `Bearer ${sessionData?.access_token}`,
         }
       })
     },
