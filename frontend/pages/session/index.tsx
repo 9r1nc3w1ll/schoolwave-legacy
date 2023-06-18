@@ -61,7 +61,7 @@ const Export =  (props:any) => {
   }, [h, isSuccess, status])
   const displaySession: () => any=()=>{
     if(sessions?.length ){
-      return filteredsessions.map((data:any) => {
+      return filteredsessions?.map((data:any) => {
         return (
           <tr className={`${data.active? `bg-primary-light`: ''} !important`} key={data.id}>
             <td>
