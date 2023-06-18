@@ -1,15 +1,11 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useRouter } from 'next/router';
-import OnboardingLayout from '@/components/Layouts/OnboardingLayout';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from 'react-query';
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
-import { SessionProvider } from 'next-auth/react';
-
-const MySwal = withReactContent(Swal)
+import OnboardingLayout from '@/components/Layouts/OnboardingLayout';
+import { useSession } from 'next-auth/react';
 
 type FormValues = {
   description: string;
@@ -22,51 +18,47 @@ type FormValues = {
 };
 
 
-const Step2 = (props:any) => {
+const Step2 = (props: any) => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setPageTitle('Contact Form'));
-  });
   const router = useRouter();
+  const { data: sessionData } = useSession();
+
+  useEffect(() => {
+    console.log(sessionData)
+  }, [sessionData])
+
   const { mutate, isLoading, error } = useMutation(
-    (post) =>{
+    (post) => {
 
       return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/school`, {
         method: "POST",
         body: JSON.stringify(post),
-        headers: { 
+        headers: {
           "Content-type": "application/json",
-          "Authorization": 'Bearer '+ props.user_session.access_token, 
+          "Authorization": 'Bearer ' + props.user_session.access_token,
         }
       })
     },
     {
       onSuccess: async (data) => {
-        // console.log('iiii', data)
-        MySwal.fire({
-          confirmButtonText: 'Go to Dashboard',
-          html: (
-            <div className='w-3/5 mx-auto center'> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-12 h-12 text-success mx-auto">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg><p className='text-success text-center'>School Created successfully </p></div>
-          )
-        }).then(() => {
-          router.push('/')
-        });
+        router.push('/')
       },
       onError: (error) => {
-        MySwal.fire({
-          title: "An Error Occured"
-        })
+        console.error(error)
       }
     }
   );
+
+  useEffect(() => {
+    dispatch(setPageTitle('Setup School'));
+  }, [dispatch]);
+
 
   const { register, handleSubmit, getValues, formState } = useForm<FormValues>();
   const { errors }: any = formState
   const onSubmit: SubmitHandler<any> = data => {
     data.tag = 'yryrnryry'
-    data.owner= props.user_session.id
+    data.owner = props.user_session.id
     mutate(data)
   };
 
@@ -157,7 +149,7 @@ const Step2 = (props:any) => {
 };
 
 Step2.getLayout = (page: any) => {
-  return <SessionProvider session={page.props.session}> <OnboardingLayout>{page}</OnboardingLayout> </SessionProvider>;
+  return <OnboardingLayout>{page}</OnboardingLayout>;
 };
 
 export default Step2;

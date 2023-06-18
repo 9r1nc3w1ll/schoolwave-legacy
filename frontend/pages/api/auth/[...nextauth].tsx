@@ -1,82 +1,30 @@
-import { method } from "lodash"
-import NextAuth, { NextAuthOptions } from "next-auth"
-import { JWT } from "next-auth/jwt"
+import NextAuth, { NextAuthOptions, User } from "next-auth"
 import CredentialsProvider from 'next-auth/providers/credentials'
-
-interface TAuthUser {
-  id: string
-  username: string
-  first_name: string
-  last_name: string
-  email: string
-  role: string
-  is_active: boolean
-  date_joined: string
-  created_at: string
-  updated_at: string
-};
-
-interface TRegisterCredentials {
-  access_token: string;
-  refresh_token: string;
-  user: TAuthUser;
-  school?: TSchool;
-}
-
-type TSchool = any; // TODO: Refactor to actual school type
+import { type JWT } from "next-auth/jwt"
+import api from "@/helpers/api";
+import { TSchool } from "@/models";
 
 type TLoginResponse = {
   message: string;
   data: {
     access_token: string;
     refresh_token: string;
-    user: TAuthUser;
+    user: User;
     school?: TSchool;
   }
 }
 
-type TRefreshUserResponse = {
-  message: string;
-  data: {
-    user: TAuthUser;
-    school?: TSchool;
-  }
-}
 
-class RefreshUserError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = "RefreshTokenError";
-  }
-}
+const refreshToken = async (token: User): Promise<JWT> => {
+  const { data: { user, school } } = await api.getSessionUser(token?.access_token)
 
-const BACKEND_LOGIN_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/login`;
-const REFRESH_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/refresh`;
-
-const refreshToken = async (token: JWT): Promise<JWT> => {
-  const accessToken = (token.access_token as string);
-
-  const res = await fetch(REFRESH_URL, {
-    method: "POST",
-    headers: {
-      "content-Type": "application/json",
-      ...(accessToken ? { "authorization": `Bearer ${accessToken}` } : {}),
-    },
-  })
-
-  if (!res.ok) {
-    const error = new RefreshUserError("Failed to fetch refresh data");
-    return { ...token, error };
-  }
-
-  const { data: { user, school } }: TRefreshUserResponse = await res.json()
-
-  return {
+  const res = {
     ...token,
     ...user,
     ...(school ? { school } : {}),
     name: `${user.first_name} ${user.last_name}`,
   };
+  return res
 };
 
 export const authOptions: NextAuthOptions = {
@@ -97,44 +45,27 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         const { username, password } = credentials as any
-        const res = await fetch(BACKEND_LOGIN_URL, {
-          method: "POST",
-          headers: {
-            "content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username,
-            password,
-          }),
-        })
-
-        if (!res.ok) {
-          throw Error(JSON.stringify({
-            message: await res.json(),
-            status: res.status,
-            statusText: res.statusText,
-          }))
-        }
-
-        const { data: { user, access_token, refresh_token, school } }: TLoginResponse = await res.json()
+        const { data: { user, access_token, refresh_token, school } } = await api.loginWithCredentials(username, password)
 
         if (!(user && access_token)) {
           return null;
         }
 
-        return {
+        const res = {
           ...user,
           ...(school ? { school } : {}),
           name: `${user.first_name} ${user.last_name}`,
           access_token,
           refresh_token,
         }
+
+        return res;
       }
     }),
     CredentialsProvider({
       id: "register",
       credentials: {},
-      async authorize(credentials, req) {
+      async authorize(credentials, req): Promise<User | null> {
         const { username, first_name, last_name, email, password } = credentials as any;
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/school/register-admin`, {
@@ -174,14 +105,14 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ user, token }) {
+    async jwt({ user, token }): Promise<JWT> {
       /**
        * [NOTICE]
        * Everything returned from here will be encoded in the JWT
        * - To keep the token size small, expose only the necessary fields
        * - For security reasons, do not return sensitive information eg. passwords
        */
-      return { ...user, ...(await refreshToken(token)) };
+      return refreshToken((user ?? token));
     },
     async session({ session, token }) {
       return {
@@ -190,21 +121,7 @@ export const authOptions: NextAuthOptions = {
          * Only expose NECESSARY and NON-SENSITIVE fields.
          */
         ...session,
-        access_token: token.access_token,
-        username: token.username,
-        id: token.id,
-        first_name: token.first_name,
-        last_name: token.last_name,
-        email: token.email,
-        role: token.role,
-        is_active: token.is_active,
-        date_joined: token.date_joined,
-        created_at: token.created_at,
-        updated_at: token.updated_at,
-        ...token.school ? {
-          school: token.school
-        } : {},
-
+        ...token,
       };
     }
   },

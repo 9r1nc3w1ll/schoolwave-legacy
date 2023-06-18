@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getToken } from "next-auth/jwt"
 
 
 
@@ -10,17 +11,28 @@ export async function middleware(request: NextRequest) {
     step2: boolean;
   }
 
-
   const initCheckUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:8000'}/school/setup-status`
   const step1Path = '/onboarding/step1';
   const step2Path = '/onboarding/step2';
   const loginPath = '/login';
   const DashboardPath = '/';
 
-  // check if a user is logged in then ensure user cannot visit authentication route
 
-  // Allow step1, /api, /_next and assets to get through // TODO: Check status for step 1
-  if (request.nextUrl.pathname.startsWith(step1Path) || request.nextUrl.pathname.match(/(^(\/_next)|(\/api))|(\.(png)|(ico)|(svg)|(json)|(jp(e)?g)$)/)) {
+  if (request.nextUrl.pathname.match(/(^(\/_next)|(\/locales)|(\/api))|(\.(png)|(ico)|(svg)|(json)|(jp(e)?g)$)|(^\/$)/)) {
+    return;
+  }
+
+  const token = await getToken({ req: request, secret: 'topsecret' });
+
+  if (!token) {
+    if (!request.nextUrl.pathname.startsWith(loginPath)) {
+      return NextResponse.redirect(new URL(loginPath, request.url));
+    }
+
+    return;
+  }
+
+  if (token && (request.nextUrl.pathname.startsWith(step1Path))) {
     return;
   }
 

@@ -23,14 +23,14 @@ export const AuthenticationRoute = ({ children }: Props): JSX.Element => {
 
   useEffect(() => {
     if (loading || !router.isReady) return;
-    if (authorized )  {
-  
+    if (authorized) {
+
       router.push({
         pathname: '/',
         query: { returnUrl: router.asPath },
       });
     }
-  }, [loading, unAuthorized, sessionStatus,data, router]);
+  }, [loading, unAuthorized, sessionStatus, data, router, authorized]);
 
   // if the user refreshed the page or somehow navigated to the protected page
   if (loading) {
