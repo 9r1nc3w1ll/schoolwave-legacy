@@ -13,7 +13,7 @@ export const getStudents= async (access_token: string)=>{
 }
 
 
-export const getStudent= async (access_token: string, id: any)=>{
+export const getUser= async (access_token: string, id: any)=>{
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/account/users/${id.id}` , {
     method: "GET",

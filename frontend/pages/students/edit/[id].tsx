@@ -6,7 +6,7 @@ import { setPageTitle } from '@/store/themeConfigSlice';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
-import { EditUser, getStdnt } from '@/apicalls/users';
+import { EditUser, getUser } from '@/apicalls/users';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import { useRouter } from 'next/router';
@@ -20,7 +20,7 @@ const Admission  = (props:any) => {
   const router = useRouter()
   const {data:studentData, isSuccess:studentDataSuccessful, status:studentDataStatus, isLoading:studentDataLoading} = useQuery('getStudent', ()=>{
     if(router){
-      return getStdnt(props.user_session.access_token, router.query )
+      return getUser(props.user_session.access_token, router.query )
     }
   })
 

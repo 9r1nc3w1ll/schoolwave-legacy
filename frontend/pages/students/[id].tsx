@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
-import { getStudent } from '@/apicalls/users';
+import { getUser } from '@/apicalls/users';
 import { useQuery } from 'react-query';
 import { useRouter } from 'next/router';
 import { toUpper } from 'lodash';
@@ -14,7 +14,7 @@ const AccountSetting = (props:any) => {
   const {data:student, isSuccess, status, isLoading} = useQuery('getStudent', ()=>{
     if(router){
       
-      return getStudent(props.user_session.access_token, router.query )
+      return getUser(props.user_session.access_token, router.query )
     }
   })
   useEffect(() => {
