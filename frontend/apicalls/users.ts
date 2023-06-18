@@ -8,9 +8,9 @@ export const getStudents= async (access_token: any)=>{
       "Authorization": 'Bearer '+ access_token, 
     }
   })
-  let u= await res.json()
+  let tempData= await res.json()
    
-  let students = u.data.filter((x:any)=> x.role == 'student')
+  let students = tempData.data.filter((x:any)=> x.role == 'student')
   return students
 }
 
@@ -22,9 +22,9 @@ export const getStaffs= async (access_token: string)=>{
       "Authorization": 'Bearer '+ access_token, 
     }
   })
-  let u= await res.json()
+  let tempData= await res.json()
    
-  let staffs = u.data.filter((x:any)=> x.is_staff )
+  let staffs = tempData.data.filter((x:any)=> x.is_staff )
   return staffs
 }
 
@@ -37,10 +37,10 @@ export const getUser= async (access_token: any, id: any)=>{
       "Authorization": 'Bearer '+ access_token, 
     }
   })
-  let u= await res.json()
+  let tempData= await res.json()
    
 
-  return u.data
+  return tempData.data
 }
 
 export const EditUser= async (access_token: any, data: any, id: any)=>{
@@ -53,10 +53,10 @@ export const EditUser= async (access_token: any, data: any, id: any)=>{
  
     body: JSON.stringify(data),
   })
-  let u= await res.json()
+  let tempData= await res.json()
 
 
-  return u
+  return tempData
 }
 
 
@@ -71,8 +71,8 @@ export const createUser= async ( data: any, access_token: string)=>{
  
     body: JSON.stringify(data),
   })
-  let u= await res.json()
+  let tempData= await res.json()
 
 
-  return u
+  return tempData
 }

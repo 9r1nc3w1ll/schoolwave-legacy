@@ -9,9 +9,9 @@ export const getRoles= async (access_token: string)=>{
       "Authorization": 'Bearer '+ access_token, 
     }
   })
-  let u= await res.json()
+  let tempData= await res.json()
      
   
-  return u.data
+  return tempData.data
 }
   

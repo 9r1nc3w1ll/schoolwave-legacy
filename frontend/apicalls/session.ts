@@ -8,10 +8,10 @@ export const createSession= async(access_token: string, data: any)=>{
     },
     body: JSON.stringify(data),
   })
-  let u= await res.json()
+  let tempData= await res.json()
  
   
-  return u
+  return tempData
 }
 
 export const editSession= async(id: string, access_token: string, data: any)=>{
@@ -23,10 +23,10 @@ export const editSession= async(id: string, access_token: string, data: any)=>{
     },
     body: JSON.stringify(data),
   })
-  let u= await res.json()
+  let tempData= await res.json()
  
   
-  return u
+  return tempData
 }
 
 export const deleteSession= async (id: string, access_token: string)=>{
@@ -53,8 +53,8 @@ export const getSession= async (access_token: any)=>{
       "Authorization": 'Bearer '+ access_token, 
     }
   })
-  let u= await res.json()
+  let tempData= await res.json()
  
   
-  return u
+  return tempData
 }
