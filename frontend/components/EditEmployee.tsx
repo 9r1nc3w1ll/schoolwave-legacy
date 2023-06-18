@@ -9,7 +9,6 @@ import { showAlert } from '@/utility_methods/alert';
 import { EditUser, getUser } from '@/apicalls/users';
 
 import { useRouter } from 'next/router';
-import { dirtyValues } from '@/utility_methods/form';
 
 
 
@@ -72,6 +71,7 @@ const EditEmployee  = (props:any) => {
               onSuccess: async (data) => {
                 showAlert('success', 'Saved Successfuly')
                 queryClient.invalidateQueries(['getStaffs'])
+                queryClient.invalidateQueries(['getUser'])
                 props.seteditModal(false)
   
               },
@@ -89,8 +89,7 @@ const EditEmployee  = (props:any) => {
           );
   
           const onSubmit = async (data: any) => { 
-            let updatedValue: any = dirtyValues(formState.dirtyFields, data)
-            mutate(updatedValue)
+            mutate(data)
           
           
     
