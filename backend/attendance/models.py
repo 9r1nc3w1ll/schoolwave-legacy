@@ -1,10 +1,11 @@
 from django.db import models
+from config.models import BaseModel
 
 from subject.models import Subject
 from school.models import Class
 from account.models import User
 
-class StudentAttendance(models.Model):
+class StudentAttendance(BaseModel):
     class Meta:
         db_table = "student attendance"
     """
