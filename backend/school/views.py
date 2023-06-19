@@ -55,12 +55,8 @@ class CreateOwner(APIView):
 
         return Response(
             {
-                "message": "User created successfully.",
-                "data": {
-                    "user": UserSerializer(user).data,
-                    "access_token": user.tokens["access"],
-                    "refresh_token": user.tokens["refresh"],
-                },
+                "message": "Owner created successfully.",
+                "data": UserSerializer(user).data,
             }
         )
 
@@ -74,6 +70,7 @@ class CreateSchool(APIView):
                 {"message": "School already created."}, status=status.HTTP_409_CONFLICT
             )
 
+        request.data.update({"owner": request.user.id})
         serializer = SchoolSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)

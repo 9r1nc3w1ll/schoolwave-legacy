@@ -1,20 +1,19 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setPageTitle } from '../../store/themeConfigSlice';
-import { useRouter } from 'next/router';
-import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from 'react-query';
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
+import { setPageTitle } from '@/store/themeConfigSlice';
 import OnboardingLayout from '@/components/Layouts/OnboardingLayout';
-import { useSession, } from 'next-auth/react';
 
 type FormValues = {
-  description: string;
   name: string;
   motto: string;
   website_url: string;
   date_of_establishment: string;
   owner: number
-
+  description: string;
 };
 
 
@@ -26,6 +25,7 @@ const Step2 = (props: any) => {
   const { mutate, isLoading, error } = useMutation(
     (post) => {
 
+      // TODO: Use api method
       return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/school`, {
         method: "POST",
         body: JSON.stringify(post),
@@ -36,7 +36,7 @@ const Step2 = (props: any) => {
       })
     },
     {
-      onSuccess: async (data) => {
+      onSuccess: async () => {
         router.push('/')
       },
       onError: (error) => {
@@ -53,8 +53,6 @@ const Step2 = (props: any) => {
   const { register, handleSubmit, getValues, formState } = useForm<FormValues>();
   const { errors }: any = formState
   const onSubmit: SubmitHandler<any> = data => {
-    data.tag = 'yryrnryry'
-    data.owner = props.user_session.id
     mutate(data)
   };
 

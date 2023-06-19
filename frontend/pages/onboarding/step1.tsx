@@ -1,17 +1,13 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setPageTitle } from '../../store/themeConfigSlice';
+import { setPageTitle } from '@/store/themeConfigSlice';
 import { useRouter } from 'next/router';
-import OnboardingLayout from '@/components/Layouts/OnboardingLayout';
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useMutation } from 'react-query';
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 import { signIn } from 'next-auth/react';
 import { SessionProvider } from "next-auth/react"
-
-
-const MySwal = withReactContent(Swal)
+import OnboardingLayout from '@/components/Layouts/OnboardingLayout';
+import api from '@/helpers/api';
 
 interface FormValues {
   first_name: string;
@@ -28,40 +24,33 @@ interface FormResponse {
 }
 
 
-const Step1 = (props:any) => {
+const Step1 = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setPageTitle('Owner Setup'));
   });
   const router = useRouter();
-  const { mutateAsync, isLoading, error } = useMutation(
+  const createOwnerMutation = useMutation(
     {
       async mutationFn(data: any) {
-        const { ok, error }: any = await signIn('register', { ...data, redirect: false });
+        await api.createOwner({
+          username: data.username,
+          email: data.email,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          password: data.password,
+        });
+
+        const { ok, error }: any = await signIn('credentials', { username: data.email, password: data.password, redirect: false });
         if (!ok) {
-          return Promise.reject(JSON.parse(error))
+          console.error(error);
         }
       },
       async onSuccess(data) {
-        MySwal.fire({
-          confirmButtonText: 'Next Step',
-          html: (
-            <div className='w-3/5 mx-auto center'>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-12 h-12 text-success mx-auto">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p className='text-success text-center'>User Created successfully</p>
-            </div>
-          ),
-
-        }).then(() => {
-          router.push('/onboarding/step2')
-        });
+        router.push('/onboarding/step2')
       },
       onError: (error) => {
-        MySwal.fire({
-          title: "An Error Occured"
-        })
+        console.error(error)
       }
     }
   );
@@ -69,7 +58,7 @@ const Step1 = (props:any) => {
   const { register, handleSubmit, getValues, formState: { errors } } = useForm<FormValues>();
   const onSubmit = async (data: any) => {
     data.username = data.email
-    await mutateAsync(data)
+    await createOwnerMutation.mutateAsync(data)
   }
 
   return (
@@ -77,7 +66,7 @@ const Step1 = (props:any) => {
       <h2 className="mb-5 text-2xl font-bold">School Owner/Admin Information</h2>
       <p className="mb-7">Provide the information below so we can setup your school admin account </p>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <fieldset className="space-y-4" disabled={isLoading}>
+        <fieldset className="space-y-4" disabled={createOwnerMutation.isLoading}>
           <div className="relative">
             <span className="absolute top-2.5 text-primary ltr:left-2 rtl:right-2">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

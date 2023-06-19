@@ -62,47 +62,6 @@ export const authOptions: NextAuthOptions = {
         return res;
       }
     }),
-    CredentialsProvider({
-      id: "register",
-      credentials: {},
-      async authorize(credentials, req): Promise<User | null> {
-        const { username, first_name, last_name, email, password } = credentials as any;
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/school/register-admin`, {
-          method: "POST",
-          body: JSON.stringify({
-            username,
-            first_name,
-            last_name,
-            email,
-            password,
-          }),
-          headers: { "Content-Type": "application/json" }
-        })
-
-        if (!response.ok) {
-          throw Error(JSON.stringify({
-            message: await response.json(),
-            status: response.status,
-            statusText: response.statusText,
-          }))
-        }
-
-        const { data: { user, access_token, refresh_token, school } }: TLoginResponse = await response.json();
-
-        if (!user) {
-          return null;
-        }
-
-        return {
-          ...user,
-          ...(school ? { school } : {}),
-          name: `${user.first_name} ${user.last_name}`,
-          access_token,
-          refresh_token,
-        }
-      }
-    })
   ],
   callbacks: {
     async jwt({ user, token }): Promise<JWT> {

@@ -1,11 +1,12 @@
-import { TAuthUser, TSchool } from "@/models";
+import { TSchool } from "@/models";
+import { User } from "next-auth";
 
 type TLoginResponse = {
   message: string;
   data: {
     access_token: string;
     refresh_token: string;
-    user: TAuthUser;
+    user: User;
     school?: TSchool;
   }
 }
@@ -13,7 +14,7 @@ type TLoginResponse = {
 type TRefreshUserResponse = {
   message: string;
   data: {
-    user: TAuthUser;
+    user: User;
     school?: TSchool;
   }
 }
@@ -70,7 +71,7 @@ export const loginWithCredentials = async (username: string, password: string): 
   })
 }
 
-const createOwner = async (input: TCreateOwnerInput): ApiCall<TLoginResponse, ApiError> => {
+export const createOwner = async (input: TCreateOwnerInput): ApiCall<TLoginResponse, ApiError> => {
   return new ApiCall<TLoginResponse, ApiError>((resolve, reject) => {
     fetch(CREATE_OWNER_URL, {
       method: "POST",
@@ -102,7 +103,8 @@ const getTypedJson = async <T>(response: Response): Promise<T> => {
 
 const api = {
   loginWithCredentials,
-  getSessionUser
+  getSessionUser,
+  createOwner,
 }
 
 export default api
