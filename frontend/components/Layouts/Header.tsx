@@ -9,10 +9,9 @@ import { toggleSidebar } from '../../store/themeConfigSlice';
 import Dropdown from '../Dropdown';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
-const Header = (props:any) => {
+const Header = (props: any) => {
   const router = useRouter();
- 
- 
+
   useEffect(() => {
     const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');
     if (selector) {
@@ -47,7 +46,7 @@ const Header = (props:any) => {
   const [flag, setFlag] = useState('');
   useEffect(() => {
     setFlag(localStorage.getItem('i18nextLng') || themeConfig.locale);
-  });
+  }, [themeConfig.locale]);
   const dispatch = useDispatch();
 
   function createMarkup(messages: any) {
@@ -139,9 +138,9 @@ const Header = (props:any) => {
             </button>
           </div>
 
-         
+
           <div className="flex justify-end items-center space-x-1.5 ltr:ml-auto rtl:mr-auto rtl:space-x-reverse dark:text-[#d0d2d6] sm:flex-1 ltr:sm:ml-0 sm:rtl:mr-0 lg:space-x-2">
-            
+
             <div>
               {themeConfig.theme === 'light' ? (
                 <button
@@ -342,7 +341,7 @@ const Header = (props:any) => {
                   </span>
                 }
               >
-               
+
               </Dropdown>
             </div>
             <div className="dropdown flex shrink-0">
@@ -358,46 +357,46 @@ const Header = (props:any) => {
                       <img className="h-10 w-10 rounded-md object-cover" src="/assets/images/user-profile.jpeg" alt="userProfile" />
                       <div className="ltr:pl-4 rtl:pr-4">
                         <h4 className="text-base">
-                          {props. user_session?.user.name}
-                          <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">{props. user_session?.role}</span>
+                          {props.user_session?.user.name}
+                          <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">{props.user_session?.role}</span>
                         </h4>
                         <button type="button" className="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
-                          {props. user_session?.user.email}
+                          {props.user_session?.user.email}
                         </button>
                       </div>
                     </div>
                   </li>
-                  {props.user_session?    <>    <li>
-                    <Link href="#" className="dark:hover:text-white">
-                      <svg className="ltr:mr-2 rtl:ml-2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="6" r="4" stroke="currentColor" strokeWidth="1.5" />
-                        <path
-                          opacity="0.5"
-                          d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                        />
-                      </svg>
-                      My Profile
-                    </Link>
-                  </li>:
-                 
-                
-                  <li className="border-t border-white-light dark:border-white-light/10" onClick={()=>{signOut()}}>
-                    <Link href="#" className="dark:hover:text-white">
-                      <svg className="rotate-90 ltr:mr-2 rtl:ml-2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          opacity="0.5"
-                          d="M17 9.00195C19.175 9.01406 20.3529 9.11051 21.1213 9.8789C22 10.7576 22 12.1718 22 15.0002V16.0002C22 18.8286 22 20.2429 21.1213 21.1215C20.2426 22.0002 18.8284 22.0002 16 22.0002H8C5.17157 22.0002 3.75736 22.0002 2.87868 21.1215C2 20.2429 2 18.8286 2 16.0002L2 15.0002C2 12.1718 2 10.7576 2.87868 9.87889C3.64706 9.11051 4.82497 9.01406 7 9.00195"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                        <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                      Sign Out
-                    </Link>
-                  </li> </> :
+                  {props.user_session ? <>
+                    <li>
+                      <Link href="#" className="dark:hover:text-white">
+                        <svg className="ltr:mr-2 rtl:ml-2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="6" r="4" stroke="currentColor" strokeWidth="1.5" />
+                          <path
+                            opacity="0.5"
+                            d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          />
+                        </svg>
+                        My Profile
+                      </Link>
+                    </li> :
+                    <li className="border-t border-white-light dark:border-white-light/10" onClick={() => { signOut() }}>
+                      <Link href="#" className="dark:hover:text-white">
+                        <svg className="rotate-90 ltr:mr-2 rtl:ml-2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            opacity="0.5"
+                            d="M17 9.00195C19.175 9.01406 20.3529 9.11051 21.1213 9.8789C22 10.7576 22 12.1718 22 15.0002V16.0002C22 18.8286 22 20.2429 21.1213 21.1215C20.2426 22.0002 18.8284 22.0002 16 22.0002H8C5.17157 22.0002 3.75736 22.0002 2.87868 21.1215C2 20.2429 2 18.8286 2 16.0002L2 15.0002C2 12.1718 2 10.7576 2.87868 9.87889C3.64706 9.11051 4.82497 9.01406 7 9.00195"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                          />
+                          <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        Sign Out
+                      </Link>
+                    </li>
+                  </> :
                     <li className="border-t border-white-light dark:border-white-light/10" >
                       <Link href="/login" className="dark:hover:text-white">
                         <svg className="rotate-90 ltr:mr-2 rtl:ml-2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -410,18 +409,17 @@ const Header = (props:any) => {
                           />
                           <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
-                    Log In
+                        Log In
                       </Link>
                     </li>
                   }
-
                 </ul>
               </Dropdown>
             </div>
           </div>
         </div>
 
-     
+
       </div>
     </header>
   );

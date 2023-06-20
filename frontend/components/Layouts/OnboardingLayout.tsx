@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import App from '../../App';
+import App from '@/App';
 import React from 'react';
 
 const OnboardingLayout = ({ children }: PropsWithChildren) => {

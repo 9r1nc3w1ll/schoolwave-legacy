@@ -1,32 +1,33 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState, Fragment } from 'react';
 import sortBy from 'lodash/sortBy';
-import { downloadExcel } from 'react-export-table-to-excel';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useQuery } from 'react-query';
 import { getStudents } from '@/apicalls/users';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { Dialog, Transition } from '@headlessui/react';
 import EditUser from '@/components/EditUser';
+import { useSession } from 'next-auth/react';
 
 
 
 
-const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'phone', 'date_of_birth' ];
+const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'phone', 'date_of_birth'];
 
-const Export = (props:any) => {
+const Export = (props: any) => {
   const router = useRouter()
   const dispatch = useDispatch();
+  const { status: sessionStatus, data: session } = useSession();
+
   const [selectedRecords, setSelectedRecords] = useState<any>([]);
   const [modal, setModal] = useState(false);
 
-  const canEdit = () =>{
+  const canEdit = () => {
     return selectedRecords.length === 1
   }
 
-  const {data:students, isSuccess, status, isLoading} = useQuery('session', ()=>{
+  const { data: students, isSuccess, status, isLoading } = useQuery('session', () => {
 
     return getStudents(props.user_session.access_token)
   })
@@ -59,17 +60,17 @@ const Export = (props:any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      if(isSuccess ){
+      if (isSuccess) {
 
         return students.filter((item: any) => {
           return (
             item.id.toString().includes(search.toLowerCase()) ||
-                      item.first_name.toLowerCase().includes(search.toLowerCase()) ||
-                      item.last_name.toLowerCase().includes(search.toLowerCase()) 
-                  
+            item.first_name.toLowerCase().includes(search.toLowerCase()) ||
+            item.last_name.toLowerCase().includes(search.toLowerCase())
+
           );
         });
-      }else{
+      } else {
         setInitialRecords([])
       }
     });
@@ -94,7 +95,7 @@ const Export = (props:any) => {
 
   const exportTable = (type: any) => {
     let columns: any = col;
-    let records = students? students: [];
+    let records = students ? students : [];
     let filename = 'table';
 
     let newVariable: any;
@@ -136,7 +137,7 @@ const Export = (props:any) => {
     } else if (type === 'print') {
       var rowhtml = '<p>' + filename + '</p>';
       rowhtml +=
-                '<table style="width: 100%; " cellpadding="0" cellcpacing="0"><thead><tr style="color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; "> ';
+        '<table style="width: 100%; " cellpadding="0" cellcpacing="0"><thead><tr style="color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; "> ';
       columns.map((d: any) => {
         rowhtml += '<th>' + capitalize(d) + '</th>';
       });
@@ -151,7 +152,7 @@ const Export = (props:any) => {
         rowhtml += '</tr>';
       });
       rowhtml +=
-                '<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>';
+        '<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>';
       rowhtml += '</tbody></table>';
       var winPrint: any = window.open('', '', 'left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0');
       winPrint.document.write('<title>Print</title>' + rowhtml);
@@ -218,9 +219,9 @@ const Export = (props:any) => {
                 />
                 <path opacity="0.5" d="M13 2.5V5C13 7.35702 13 8.53553 13.7322 9.26777C14.4645 10 15.643 10 18 10H22" stroke="currentColor" strokeWidth="1.5" />
               </svg>
-                            CSV
+              CSV
             </button>
-      
+
 
 
             <button type="button" onClick={() => exportTable('print')} className="btn btn-primary btn-sm m-1">
@@ -248,12 +249,12 @@ const Export = (props:any) => {
                 <path opacity="0.5" d="M15 16.5H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 <path opacity="0.5" d="M13 19H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
-                            PRINT
+              PRINT
             </button>
 
-            
-            <p className={`btn ${canEdit() ?'btn-primary btn-sm ': 'bg-[#f2f5f7] shadow-sm text-sm'} m-1`} onClick={() => {
-              if(canEdit()){
+
+            <p className={`btn ${canEdit() ? 'btn-primary btn-sm ' : 'bg-[#f2f5f7] shadow-sm text-sm'} m-1`} onClick={() => {
+              if (canEdit()) {
 
                 setModal(true)
               }
@@ -262,9 +263,9 @@ const Export = (props:any) => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
               </svg>
 
-                            EDIT
+              EDIT
             </p>
-     
+
           </div>
 
           <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -285,7 +286,7 @@ const Export = (props:any) => {
             <div id="slideIn_down_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
               <div className="flex items-start justify-center min-h-screen px-4">
                 <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__slideInDown">
-                  <EditUser type='student' data= {selectedRecords[0]} />
+                  <EditUser type='student' data={selectedRecords[0]} />
                 </Dialog.Panel>
               </div>
             </div>
@@ -308,7 +309,7 @@ const Export = (props:any) => {
                 sortable: true,
                 render: ({ date_of_birth }) => <div>{formatDate(date_of_birth)}</div>,
               },
-            
+
               { accessor: 'guardian_phone_number', title: 'Phone', sortable: true },
             ]}
             totalRecords={initialRecords.length}
@@ -322,8 +323,8 @@ const Export = (props:any) => {
             minHeight={200}
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
 
-            onRowClick={(x:any) =>
-              router.push('/students/'+x.id)
+            onRowClick={(x: any) =>
+              router.push('/students/' + x.id)
             }
 
             selectedRecords={selectedRecords}

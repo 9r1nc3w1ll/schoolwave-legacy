@@ -1,19 +1,16 @@
-import { ReactNode } from 'react';
-import App from '../../App';
-
-import { SessionProvider } from "next-auth/react"
-
-interface IProps{
+import { useSession } from 'next-auth/react';
+import App from '@/App';
+import { type ReactNode } from 'react';
+interface IProps {
   children: ReactNode;
-  session: any
 }
 
-const BlankLayout = ({ children, session }: IProps) => {
+const BlankLayout = ({ children }: IProps) => {
+  const { data } = useSession();
+
   return (
     <App>
-      <SessionProvider session={session}>
-        <div className="min-h-screen text-black dark:text-white-dark">{children} </div>
-      </SessionProvider>
+      <div className="min-h-screen text-black dark:text-white-dark">{children} </div>
     </App>
   );
 };

@@ -25,7 +25,6 @@ const Export = (props: any) => {
 
   const queryClient = useQueryClient();
 
-
   const makeDuplicate = useMutation(
     (data: any) =>
       createClass(props.user_session.access_token, data),

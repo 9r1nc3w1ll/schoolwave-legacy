@@ -1,17 +1,16 @@
 import type { AppProps } from 'next/app';
-import { ReactElement, ReactNode, Suspense } from 'react';
-import DefaultLayout from '../components/Layouts/DefaultLayout';
+import { ReactElement, ReactNode } from 'react';
 import { Provider } from 'react-redux';
-import Head from 'next/head';
 import { appWithI18Next } from 'ni18n';
 import { ni18nConfig } from 'ni18n.config.ts';
-import store from '../store/index';
-
-import 'react-perfect-scrollbar/dist/css/styles.css';
-
-import '../styles/tailwind.css';
 import { NextPage } from 'next';
 import { SessionProvider } from "next-auth/react"
+import Head from 'next/head';
+import DefaultLayout from '@/components/Layouts/DefaultLayout';
+import store from '@/store/index';
+
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import '@/styles/tailwind.css';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -22,17 +21,13 @@ type AppPropsWithLayout = AppProps & {
 };
 
 const App = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) => {
-  const getLayout = Component.getLayout ?? ((page) => (
-    <SessionProvider session={session}>
-      <DefaultLayout>{page}</DefaultLayout>
-    </SessionProvider>
-  ));
+  const getLayout = Component.getLayout ?? ((page) => (<DefaultLayout>{page}</DefaultLayout>));
 
   return (
     <Provider store={store}>
       <SessionProvider session={session}>
         <Head>
-          <title>VRISTO - Multipurpose Tailwind Dashboard Template</title>
+          <title>Schoolwave</title>
           <meta charSet="UTF-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -44,4 +39,5 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLa
     </Provider>
   );
 };
+
 export default appWithI18Next(App, ni18nConfig);
