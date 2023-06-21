@@ -45,7 +45,7 @@ export const deleteSession= async (id: string, access_token: string)=>{
 }
 
 
-export const getSession= async (access_token: string)=>{
+export const getSession= async (access_token: any)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session' , {
     method: "GET",
     headers: {

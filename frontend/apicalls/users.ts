@@ -1,4 +1,6 @@
-export const getStudents= async (access_token: string)=>{
+import { AnyAsyncThunk } from "@reduxjs/toolkit/dist/matchers"
+
+export const getStudents= async (access_token: any)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users' , {
     method: "GET",
     headers: {
@@ -13,7 +15,7 @@ export const getStudents= async (access_token: string)=>{
 }
 
 
-export const getUser= async (access_token: string, id: any)=>{
+export const getUser= async (access_token: any, id: any)=>{
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/account/users/${id.id}` , {
     method: "GET",
@@ -28,7 +30,7 @@ export const getUser= async (access_token: string, id: any)=>{
   return u.data
 }
 
-export const EditUser= async (access_token: string, data: any, id: any)=>{
+export const EditUser= async (access_token: any, data: any, id: any)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users/' + id.id , {
     method: "PATCH",
     headers: {

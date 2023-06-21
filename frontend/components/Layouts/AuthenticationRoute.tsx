@@ -26,5 +26,6 @@ export const AuthenticationRoute = ({ children }: Props): JSX.Element => {
   }
 
   // TODO: Redirect to 403 or 404
-  return sessionStatus == 'authenticated' ? <>{children}</> : <></>;
+  
+  return sessionStatus !== 'authenticated' ? <>{children}</> : <></>;
 };

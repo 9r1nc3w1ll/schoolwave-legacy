@@ -208,7 +208,7 @@ const ComingSoon = () => {
   );
 };
 ComingSoon.getLayout = (page: any) => {
-  return <BlankLayout session={{}}>{page}</BlankLayout>;
+  return <BlankLayout >{page}</BlankLayout>;
 };
 
 export default ComingSoon;

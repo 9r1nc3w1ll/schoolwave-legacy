@@ -141,6 +141,6 @@ const RegisterCover = () => {
   );
 };
 RegisterCover.getLayout = (page: any) => {
-  return <BlankLayout session={{}}>{page}</BlankLayout>;
+  return <BlankLayout >{page}</BlankLayout>;
 };
 export default RegisterCover;

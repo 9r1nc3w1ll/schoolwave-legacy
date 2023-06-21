@@ -45,5 +45,5 @@ export const ProtectedLayout = (props:any) => {
     return <>Loading schoolwave...</>;
   }
 
-  return authorized ? <DefaultLayout session={data}> {el}</DefaultLayout>: <></>;
+  return authorized ? <DefaultLayout> {el}</DefaultLayout>: <></>;
 };

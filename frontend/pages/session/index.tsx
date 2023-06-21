@@ -21,7 +21,7 @@ const Export =  (props:any) => {
   const [filteredsessions, setFilteredsessions] = useState<any>(sessions);
   const [modal, setmodal] = useState(false);
   const [selectedSession, setSelectedSession] = useState<any>();
-  const { data: sessionData } = useSession();
+  const { data: sessionData , status:sessionStatus} = useSession();
   
 
 
@@ -42,15 +42,13 @@ const Export =  (props:any) => {
 
 
   
-  const {data:h, isSuccess, status, isLoading} = useQuery('session', ()=>{
-    if(sessionData){
+  const {data, isSuccess, status, isLoading, refetch} = useQuery('session', ()=> getSession(sessionData?.access_token), {enabled: false })
 
-      return getSession(sessionData.access_token)
-    }else {
-      return []
+  useEffect(()=>{
+    if(sessionStatus == 'authenticated'){
+      refetch()
     }
-  })
-
+  }, [sessionStatus])
   useEffect(() => {
     setFilteredsessions(() => {
       return sessions?.filter((item:any) => {
@@ -61,43 +59,43 @@ const Export =  (props:any) => {
   useEffect(()=>{
 
     if (isSuccess ){
-      setSessions(h.data)
+      setSessions(data.data)
     }
 
-  }, [h, isSuccess, status])
+  }, [data, isSuccess, status])
   const displaySession: () => any=()=>{
     if(sessions?.length ){
-      return filteredsessions?.map((data:any) => {
+      return filteredsessions?.map((item:any) => {
         return (
-          <tr className={`${data.active? `bg-primary-light`: ''} !important`} key={data.id}>
+          <tr className={`${item.active? `bg-primary-light`: ''} !important`} key={item.id}>
             <td>
-              <div className="whitespace-nowrap"><Link href={`/session/${data.name}`}>{data.name} </Link></div>
+              <div className="whitespace-nowrap"><Link href={`/session/${item.id}`}>{item.name} </Link></div>
             </td>
-            <td>{data.start_date}</td>
-            <td>{data.end_date}</td>
-            <td><input type='checkBox' checked={data.active} readOnly /></td>
+            <td>{item.start_date}</td>
+            <td>{item.end_date}</td>
+            <td><input type='checkBox' checked={item.active} readOnly /></td>
             <td className="text-center ">
              
               <button type="button" className='relative' onClick={()=>{
-                setActiveToolTip(data.id)
+                setActiveToolTip(item.id)
                 
               }}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                 </svg>
-                {      activeToolTip == data.id && selectedSession ? 
+                {      activeToolTip == item.id && selectedSession ? 
                   (    
                     <div className='bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[70%] w-[110px] z-10'>
-                      {!dateInPast (new Date(data.end_date), new Date)  && !data.active ?  
+                      {!dateInPast (new Date(item.end_date), new Date)  && !item.active ?  
                         <>
                           <p className='mb-2 px-3 pt-2 hover:bg-white' onClick={() => {
                             setmodal(true)} 
                         
                           }>Edit</p> 
                           <p className='mb-2 px-2  hover:bg-white'>Set as Current</p>
-                          <DeleteSessions sessionID = {selectedSession.id} user_session={props.user_session}/>
+                          <DeleteSessions sessionID = {selectedSession.id} user_session={sessionData}/>
                         </>
-                        : data.active ?
+                        : item.active ?
                       
                           <>
                             <p className='mb-2 px-3 pt-2 hover:bg-white' onClick={() => {
@@ -132,7 +130,7 @@ const Export =  (props:any) => {
       <div className='panel col-span-2'>
         <div className='panel bg-[#f5f6f7]'>
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create New Session</h5>
-          <CreateSessionForm   user_session={props.user_session}  exit={setmodal}  />
+          <CreateSessionForm   user_session={sessionData}  exit={setmodal} refreshList={refetch}  />
         </div>
       </div>
       <div className='panel col-span-4 ' >

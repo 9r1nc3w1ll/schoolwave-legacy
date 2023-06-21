@@ -23,6 +23,6 @@ const Error500 = () => {
   );
 };
 Error500.getLayout = (page: any) => {
-  return <BlankLayout session={{}}>{page}</BlankLayout>;
+  return <BlankLayout >{page}</BlankLayout>;
 };
 export default Error500;

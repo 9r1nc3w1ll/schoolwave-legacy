@@ -46,6 +46,6 @@ const LoginBoxed = () => {
   );
 };
 LoginBoxed.getLayout = (page: any) => {
-  return <BlankLayout session={{}}>{page}</BlankLayout>;
+  return <BlankLayout>{page}</BlankLayout>;
 };
 export default LoginBoxed;

@@ -11,24 +11,19 @@ import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import { useRouter } from 'next/router';
 import { dirtyValues } from '@/utility_methods/form';
+import { useSession } from 'next-auth/react';
 
 
 
 
-const Admission  = (props:any) => {
-
+const Edit  = (props:any) => {
   const router = useRouter()
-  const {data:studentData, isSuccess:studentDataSuccessful, status:studentDataStatus, isLoading:studentDataLoading} = useQuery('getStudent', ()=>{
-    if(router){
-      return getUser(props.user_session.access_token, router.query )
-    }
-  })
-
+  const { status: sessionStatus, data: session } = useSession();
   useEffect(()=>{
-    if(studentData){
-      reset(studentData)
-    }
-  }, [studentData, studentDataStatus])
+
+    reset(props.studentData)
+ 
+  }, [])
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -80,15 +75,15 @@ const Admission  = (props:any) => {
             { value: 'AB -', label: 'AB-' },
             
           ];
-        
-          const queryClient = useQueryClient();
+     
           const { mutate, isLoading, error } = useMutation(
             (data) =>
-              EditUser(props.user_session.access_token, data, router.query),
+              EditUser(session?.access_token, data,{id:props.studentData.id}),
             {
               onSuccess: async (data) => {
                 showAlert('success', 'Saved Successfuly')
-                queryClient.invalidateQueries(['getStudent'])
+                props.refreshStudents()
+                props.setModal(false)
   
               },
               onError: (error:any) => {
@@ -105,16 +100,13 @@ const Admission  = (props:any) => {
           );
   
           const onSubmit = async (data: any) => { 
-            let updatedValue: any = dirtyValues(formState.dirtyFields, data)
-            mutate(updatedValue)
-          
-    
+            mutate(data)
           };
         
 
           return (
 
-            <div className='panel flex-1 px-3 py-6 ltr:xl:mr-6 rtl:xl:ml-6' > 
+            <div className='panel flex-1 px-3 py-6 ltr:xl:mr-6 rtl:xl:ml-6 ' > 
               <div className="w-full pt-0 mt-0 border-b-2 "> 
                 <div className='pl-3 font-bold text-lg'> Edit Student Details</div> 
               </div>
@@ -244,4 +236,4 @@ const Admission  = (props:any) => {
     
           )};
 
-export default Admission;
+export default Edit;
