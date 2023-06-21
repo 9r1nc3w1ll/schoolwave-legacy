@@ -16,13 +16,13 @@ const Error404 = () => {
         <h4 className="mb-5 text-xl font-semibold text-primary sm:text-5xl">Ooops!</h4>
         <p className="text-base">The page you requested was not found!</p>
         <Link href="/" className="btn btn-primary mx-auto mt-10 w-max">
-                    Home
+          Home
         </Link>
       </div>
     </div>
   );
 };
 Error404.getLayout = (page: any) => {
-  return <BlankLayout >{page}</BlankLayout>;
+  return <BlankLayout>{page}</BlankLayout>;
 };
 export default Error404;

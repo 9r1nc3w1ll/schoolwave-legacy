@@ -33,11 +33,11 @@ const Clipboard = () => {
       showConfirmButton: false,
       timer: 3000,
     });
-    toast.fire({
-      icon: 'success',
-      title: message || 'Copied successfully.',
-      padding: '10px 20px',
-    });
+    // toast.fire({
+    //   icon: 'success',
+    //   title: message || 'Copied successfully.',
+    //   padding: '10px 20px',
+    // });
   };
 
   return (
@@ -45,7 +45,7 @@ const Clipboard = () => {
       <ul className="flex space-x-2 rtl:space-x-reverse">
         <li>
           <Link href="#" className="text-primary hover:underline">
-                        Forms
+            Forms
           </Link>
         </li>
         <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
@@ -66,7 +66,7 @@ const Clipboard = () => {
           </div>
           <span className="ltr:mr-3 rtl:ml-3">Documentation: </span>
           <a href="https://www.npmjs.com/package/react-copy-to-clipboard" target="_blank" className="block hover:underline" rel="noreferrer">
-                        https://www.npmjs.com/package/react-copy-to-clipboard
+            https://www.npmjs.com/package/react-copy-to-clipboard
           </a>
         </div>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -91,7 +91,7 @@ const Clipboard = () => {
                       strokeLinecap="round"
                     />
                   </svg>{' '}
-                                    Code
+                  Code
                 </span>
               </button>
             </div>
@@ -123,7 +123,7 @@ const Clipboard = () => {
                             strokeWidth="1.5"
                           />
                         </svg>
-                                                Copy from Input
+                        Copy from Input
                       </button>
                     </CopyToClipboard>
                     <CopyToClipboard
@@ -148,7 +148,7 @@ const Clipboard = () => {
                             strokeWidth="1.5"
                           />
                         </svg>
-                                                Cut from Input
+                        Cut from Input
                       </button>
                     </CopyToClipboard>
                   </div>
@@ -217,7 +217,7 @@ const [message1, setMessage1] = useState<any>('http://www.admin-dashboard.com');
                       strokeLinecap="round"
                     />
                   </svg>{' '}
-                                    Code
+                  Code
                 </span>
               </button>
             </div>
@@ -248,7 +248,7 @@ const [message1, setMessage1] = useState<any>('http://www.admin-dashboard.com');
                             strokeWidth="1.5"
                           />
                         </svg>
-                                                Copy from Input
+                        Copy from Input
                       </button>
                     </CopyToClipboard>
                     <CopyToClipboard
@@ -273,7 +273,7 @@ const [message1, setMessage1] = useState<any>('http://www.admin-dashboard.com');
                             strokeWidth="1.5"
                           />
                         </svg>
-                                                Cut from Input
+                        Cut from Input
                       </button>
                     </CopyToClipboard>
                   </div>
@@ -342,7 +342,7 @@ const [message2, setMessage2] = useState<any>('Lorem ipsum dolor sit amet, conse
                       strokeLinecap="round"
                     />
                   </svg>{' '}
-                                    Code
+                  Code
                 </span>
               </button>
             </div>
@@ -350,11 +350,11 @@ const [message2, setMessage2] = useState<any>('Lorem ipsum dolor sit amet, conse
               <div className="rounded bg-[#f1f2f3] p-5 dark:bg-[#060818]">
                 <form>
                   <p className="mb-3 font-semibold">
-                                        Here is your OTP
+                    Here is your OTP
                     <span className="text-2xl" id="copyOTP" defaultValue={message3}>
-                                            22991
+                      22991
                     </span>
-                                        .
+                    .
                   </p>
                   <p className="font-semibold">Please do not share it to anyone</p>
                   <div className="mt-5 space-y-2 rtl:space-x-reverse sm:flex sm:space-y-0 sm:space-x-2">
@@ -380,7 +380,7 @@ const [message2, setMessage2] = useState<any>('Lorem ipsum dolor sit amet, conse
                             strokeWidth="1.5"
                           />
                         </svg>
-                                                Copy from Paragraph
+                        Copy from Paragraph
                       </button>
                     </CopyToClipboard>
                   </div>
@@ -443,7 +443,7 @@ const message3 = '22991';
                       strokeLinecap="round"
                     />
                   </svg>{' '}
-                                    Code
+                  Code
                 </span>
               </button>
             </div>
@@ -455,7 +455,7 @@ const message3 = '22991';
                     <span id="copyLink"> http://www.admin-dashboard.com/code</span>
                   </p>
                   <span className="absolute opacity-0" id="copyHiddenCode">
-                                        2291
+                    2291
                   </span>
                   <div className="mt-5 space-y-2 rtl:space-x-reverse sm:flex sm:space-y-0 sm:space-x-2">
                     <CopyToClipboard
@@ -480,7 +480,7 @@ const message3 = '22991';
                             strokeWidth="1.5"
                           />
                         </svg>
-                                                Copy Link
+                        Copy Link
                       </button>
                     </CopyToClipboard>
                     <CopyToClipboard
@@ -505,7 +505,7 @@ const message3 = '22991';
                             strokeWidth="1.5"
                           />
                         </svg>
-                                                Copy Hidden Code
+                        Copy Hidden Code
                       </button>
                     </CopyToClipboard>
                   </div>

@@ -29,7 +29,7 @@ const RecoverIdBox = () => {
             <input id="email" type="email" className="form-input" placeholder="Enter Email" />
           </div>
           <button type="submit" className="btn btn-primary w-full">
-                        RECOVER
+            RECOVER
           </button>
         </form>
       </div>
@@ -37,6 +37,6 @@ const RecoverIdBox = () => {
   );
 };
 RecoverIdBox.getLayout = (page: any) => {
-  return <BlankLayout >{page}</BlankLayout>;
+  return <BlankLayout>{page}</BlankLayout>;
 };
 export default RecoverIdBox;

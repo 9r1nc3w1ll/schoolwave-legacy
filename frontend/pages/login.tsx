@@ -33,8 +33,6 @@ const LoginBoxed = () => {
               <label htmlFor="password">Password</label>
               <input id="password" type="password" className="form-input" placeholder="Enter Password"  {...register("password", { required: true, maxLength: 80 })} />
             </div>
-
-
             <button type="submit" className="btn btn-primary w-full">
               SIGN IN
             </button>

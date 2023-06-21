@@ -35,7 +35,7 @@ const RecoverIdCover = () => {
               <input id="email" type="email" className="form-input" placeholder="Enter Email" />
             </div>
             <button type="submit" className="btn btn-primary w-full">
-                            RECOVER
+              RECOVER
             </button>
           </form>
         </div>
@@ -44,6 +44,6 @@ const RecoverIdCover = () => {
   );
 };
 RecoverIdCover.getLayout = (page: any) => {
-  return <BlankLayout >{page}</BlankLayout>;
+  return <BlankLayout>{page}</BlankLayout>;
 };
 export default RecoverIdCover;
