@@ -7,7 +7,7 @@ from rest_framework.test import APIClient, APITestCase
 
 from school.models import School
 
-from .models import Session
+from .models import Session, Term
 
 User = get_user_model()
 
@@ -97,3 +97,90 @@ class SessionAPITestCase(APITestCase):
         self.assertEqual(response.data["status"], "success")
         self.assertEqual(response.data["message"], "Session updated successfully.")
         self.assertIsNone(response.data["data"])
+
+
+class TermCRUDTestCase(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword"
+        )
+
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
+
+        self.session = Session.objects.create(
+            school=self.school,
+            resumption_date=datetime.now().date(),
+            start_date="2040",
+            end_date="2050"
+        )
+
+        self.term = Term.objects.create(
+            name="1st Term",
+            active="True",
+            school=self.school,
+            session=self.session,
+            code="Term45"
+        )
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
+
+    def test_list_terms(self):
+        url = reverse("list_create_term")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            len(response.data["data"]), 1
+        )
+
+    def test_create_term(self):
+        url = reverse("list_create_term")
+        self.client.force_authenticate(user=self.user)
+
+        data = {
+            "name":"2nd Term",
+            "active":"True",
+            "school":self.school,
+            "session":self.session,
+            "code":"Term46"
+        }
+
+        response = self.client.post(url, data)
+
+    def test_retrieve_term(self):
+        url = reverse("retrieve_update_destroy_term", kwargs={"pk":self.term.id})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], "Term retrieved successfully.")
+
+    def test_update_term(self):
+        url = reverse("retrieve_update_destroy_term", kwargs={"pk": self.term.id})
+        self.client.force_authenticate(user=self.user)
+
+        data = {
+            "name": "3rd Term",
+            "active": "True",
+        }
+
+        response = self.client.patch(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], "Term updated successfully.")
+        self.assertEqual(response.data["data"]["name"], "3rd Term")
+
+    def test_delete_term(self):
+        url = reverse("retrieve_update_destroy_term", kwargs={"pk": self.term.id})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.data["message"], "Term deleted successfully.")
