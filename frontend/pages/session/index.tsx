@@ -7,6 +7,7 @@ import CreateSessionForm from '@/components/CreateSessionForm';
 import EditSessionForm from '@/components/EditSessionForm';
 import { getSession } from '@/apicalls/session';
 import { dateInPast } from '@/utility_methods/datey';
+import { useSession } from 'next-auth/react';
 
 
 
@@ -20,6 +21,7 @@ const Export =  (props:any) => {
   const [filteredsessions, setFilteredsessions] = useState<any>(sessions);
   const [modal, setmodal] = useState(false);
   const [selectedSession, setSelectedSession] = useState<any>();
+  const { data: sessionData } = useSession();
   
 
 
@@ -41,8 +43,12 @@ const Export =  (props:any) => {
 
   
   const {data:h, isSuccess, status, isLoading} = useQuery('session', ()=>{
-  
-    return getSession(props.user_session.access_token)
+    if(sessionData){
+
+      return getSession(sessionData.access_token)
+    }else {
+      return []
+    }
   })
 
   useEffect(() => {

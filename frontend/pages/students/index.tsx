@@ -17,6 +17,7 @@ const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'p
 
 const Export = (props: any) => {
   const router = useRouter()
+  const { data: sessionData } = useSession();
   const dispatch = useDispatch();
   const { status: sessionStatus, data: session } = useSession();
 
@@ -33,8 +34,8 @@ const Export = (props: any) => {
 
   useEffect(() => {
     dispatch(setPageTitle('Schoolwave | Students'));
-    console.log(props.user_session.access_token)
-  });
+   console.log(sessionData)
+  }, []);
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
