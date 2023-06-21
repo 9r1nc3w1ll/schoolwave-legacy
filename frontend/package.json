@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --fix"
+    "lint": "next lint --fix",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -76,6 +77,7 @@
     "@types/react-text-mask": "^5.4.11",
     "@types/sortablejs": "^1.15.0",
     "autoprefixer": "^10.4.13",
+    "cypress": "^12.15.0",
     "postcss": "^8.4.21",
     "prettier": "^2.8.0",
     "prettier-plugin-tailwindcss": "^0.2.0",
