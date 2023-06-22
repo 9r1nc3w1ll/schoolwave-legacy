@@ -11,6 +11,7 @@ import Link from 'next/link';
 import CreateEmployee from '@/components/CreateEmployee';
 import { Dialog, Transition } from '@headlessui/react';
 import EditEmployee from '@/components/EditEmployee';
+import { useSession } from 'next-auth/react';
 
 
 
@@ -19,7 +20,19 @@ const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'p
 
 const Export = (props:any) => {
   const router = useRouter()
+  const { status: sessionStatus, data: user_session } = useSession();
 
+  const {data:students, isSuccess, status, refetch} = useQuery('getStaffs', async ()=> {
+    console.log('user_session', user_session?.access_token)
+    return getStaffs(user_session?.access_token)
+  }, {enabled:false})
+
+  useEffect(() => {
+    if(sessionStatus == 'authenticated'){
+      refetch()
+    }
+
+  }, [sessionStatus, refetch]);
     
   useEffect(() => {
     let path = router.asPath.split('#')
@@ -33,7 +46,7 @@ const Export = (props:any) => {
   const [modal, setmodal] = useState(false);
   const [editModal, seteditModal] = useState(false);
   const canEdit = () => selectedRecords.length === 1
-  const {data:students, isSuccess, status, isLoading} = useQuery('getStaffs', ()=> getStaffs(props.user_session.access_token))
+
 
   useEffect(() => {
     dispatch(setPageTitle('Schoolwave | Students'));
@@ -249,7 +262,7 @@ const Export = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <CreateEmployee access_token={props.user_session.access_token} setmodal={setmodal} />
+                        <CreateEmployee access_token={user_session?.access_token} setmodal={setmodal} refreshEmployee={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -286,7 +299,7 @@ const Export = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <EditEmployee access_token={props.user_session.access_token} id={selectedRecords[0]?.id} seteditModal={seteditModal} />
+                        <EditEmployee access_token={user_session?.access_token} id={selectedRecords[0]?.id} seteditModal={seteditModal} refreshEmployee={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>

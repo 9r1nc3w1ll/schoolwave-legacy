@@ -1,5 +1,3 @@
-import { AnyAsyncThunk } from "@reduxjs/toolkit/dist/matchers"
-
 export const getStudents= async (access_token: any)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users' , {
     method: "GET",
@@ -14,12 +12,12 @@ export const getStudents= async (access_token: any)=>{
   return students
 }
 
-export const getStaffs= async (access_token: string)=>{
+export const getStaffs= async (access_token ?: string)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users' , {
     method: "GET",
     headers: {
       "content-Type": "application/json",
-      "Authorization": 'Bearer '+ access_token, 
+      "Authorization": 'Bearer '+ access_token , 
     }
   })
   let tempData= await res.json()

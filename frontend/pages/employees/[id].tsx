@@ -8,18 +8,24 @@ import { useRouter } from 'next/router';
 import { toUpper } from 'lodash';
 import { Dialog, Transition } from '@headlessui/react';
 import EditEmployee from '@/components/EditEmployee';
+import { useSession } from 'next-auth/react';
 
 
 const AccountSetting = (props:any) => {
+  const { status: sessionStatus, data: user_session } = useSession();
   const dispatch = useDispatch();
+  const {data:student, isSuccess, refetch } = useQuery('getUser', ()=>{
+    return getUser(user_session?.access_token, router.query )
+  }, {enabled: false})
+  useEffect(() => {
+    if(sessionStatus == 'authenticated'){
+      refetch()
+    }
+
+  }, [sessionStatus, refetch]);
   const [editModal, seteditModal] = useState(false);
   const router = useRouter()
-  const {data:student, isSuccess, status, isLoading} = useQuery('getUser', ()=>{
-    if(router){
-      
-      return getUser(props.user_session.access_token, router.query )
-    }
-  })
+
   useEffect(() => {
     dispatch(setPageTitle('Account Setting'));
   });
@@ -172,7 +178,7 @@ const AccountSetting = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <EditEmployee access_token={props.user_session.access_token} id={ router.query?.id} seteditModal={seteditModal} />
+                        <EditEmployee access_token={user_session?.access_token} id={ router.query?.id} seteditModal={seteditModal} refreshEmployee={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>

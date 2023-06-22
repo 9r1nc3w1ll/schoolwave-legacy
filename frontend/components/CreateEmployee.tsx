@@ -59,7 +59,7 @@ const CreateEmployee  = (props:any) => {
             {
               onSuccess: async (data) => {
                 showAlert('success', 'Saved Successfuly')
-                queryClient.invalidateQueries('getStaffs')
+                props.refreshEmployee()
                 props.setmodal(false)
   
               },

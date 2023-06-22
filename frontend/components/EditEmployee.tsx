@@ -66,12 +66,11 @@ const EditEmployee  = (props:any) => {
           const queryClient = useQueryClient();
           const { mutate, isLoading, error } = useMutation(
             (data) =>
-              EditUser(props.access_token, data, props.id),
+              EditUser(props.access_token, data,{ id: props.id}),
             {
               onSuccess: async (data) => {
                 showAlert('success', 'Saved Successfuly')
-                queryClient.invalidateQueries(['getStaffs'])
-                queryClient.invalidateQueries(['getUser'])
+                props.refreshEmployee()
                 props.seteditModal(false)
   
               },
