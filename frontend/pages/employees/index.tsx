@@ -257,7 +257,7 @@ const Export = (props:any) => {
                 >
                   <div className="fixed inset-0" />
                 </Transition.Child>
-                <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto" data-cy='createEmployeeModal' >
                   <div className="flex items-start justify-center min-h-screen px-4">
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
