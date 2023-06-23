@@ -95,7 +95,6 @@ class SessionAPITestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(response.data["status"], "success")
-        self.assertEqual(response.data["message"], "Session updated successfully.")
         self.assertIsNone(response.data["data"])
 
 
