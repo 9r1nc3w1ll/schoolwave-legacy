@@ -7,7 +7,7 @@ class StudentNameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentInformation
-        fields = ("id", "name")
+        fields = ("id", "first_name", "last_name")
 
 class StudentInformationSerializer(serializers.ModelSerializer):
 
