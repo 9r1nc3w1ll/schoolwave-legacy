@@ -59,7 +59,7 @@ const CreateParent  = (props:any) => {
             {
               onSuccess: async (data) => {
                 showAlert('success', 'Saved Successfuly')
-                queryClient.invalidateQueries('getParents')
+                props.refreshParents()
                 props.setmodal(false)
   
               },

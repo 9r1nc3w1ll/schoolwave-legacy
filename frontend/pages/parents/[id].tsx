@@ -7,19 +7,25 @@ import { useQuery } from 'react-query';
 import { useRouter } from 'next/router';
 import { toUpper } from 'lodash';
 import { Dialog, Transition } from '@headlessui/react';
-import EditParent from '@/components/EditParent';
+import EditEmployee from '@/components/EditEmployee';
+import { useSession } from 'next-auth/react';
 
 
 const AccountSetting = (props:any) => {
+  const { status: sessionStatus, data: user_session } = useSession();
   const dispatch = useDispatch();
+  const {data:student, isSuccess, refetch } = useQuery('getUser', ()=>{
+    return getUser(user_session?.access_token, router.query )
+  }, {enabled: false})
+  useEffect(() => {
+    if(sessionStatus == 'authenticated'){
+      refetch()
+    }
+
+  }, [sessionStatus, refetch]);
   const [editModal, seteditModal] = useState(false);
   const router = useRouter()
-  const {data:student, isSuccess, status, isLoading} = useQuery('getUser', ()=>{
-    if(router){
-      
-      return getUser(props.user_session.access_token, router.query )
-    }
-  })
+
   useEffect(() => {
     dispatch(setPageTitle('Account Setting'));
   });
@@ -33,16 +39,16 @@ const AccountSetting = (props:any) => {
       <ul className="flex space-x-2 rtl:space-x-reverse">
         <li>
           <Link href="/employees" className="text-primary hover:underline">
-          Employees
+          Parents
           </Link>
         </li>
         <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-          <span>Employee Details</span>
+          <span>Parent Details</span>
         </li>
       </ul>
       <div className="pt-5">
         <div className="mb-5 flex items-center justify-between">
-          <h5 className="text-lg font-semibold dark:text-white-light">Employee Details</h5>
+          <h5 className="text-lg font-semibold dark:text-white-light">Parent Details</h5>
         </div>
         <div>
           <ul className="mb-5 overflow-y-auto whitespace-nowrap border-b border-[#ebedf2] font-semibold dark:border-[#191e3a] sm:flex">
@@ -119,7 +125,7 @@ const AccountSetting = (props:any) => {
         {tabs === 'home' ? (
           <div>
             {
-              student ?
+              student && student.role == 'parent' ?
                 <div className="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-black">
                   <h6 className="mb-5 text-lg font-bold">General Information</h6>
                   <div className='md:grid grid-cols-3 gap-1'>
@@ -172,7 +178,7 @@ const AccountSetting = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <EditParent access_token={props.user_session.access_token} id={ router.query?.id} seteditModal={seteditModal} />
+                        <EditEmployee access_token={user_session?.access_token} id={ router.query?.id} seteditModal={seteditModal} refreshEmployee={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>

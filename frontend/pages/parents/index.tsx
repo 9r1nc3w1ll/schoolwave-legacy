@@ -11,6 +11,7 @@ import Link from 'next/link';
 import CreateParent from '@/components/CreateParent';
 import { Dialog, Transition } from '@headlessui/react';
 import EditParent from '@/components/EditParent';
+import { useSession } from 'next-auth/react';
 
 
 
@@ -19,7 +20,8 @@ const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'p
 
 const Export = (props:any) => {
   const router = useRouter()
-
+  const { status: sessionStatus, data: user_session } = useSession();
+  const {data:students, isSuccess, status, refetch} = useQuery('getParents', ()=> getParents(user_session?.access_token), {enabled: false})
     
   useEffect(() => {
     let path = router.asPath.split('#')
@@ -28,12 +30,19 @@ const Export = (props:any) => {
     }
   }, [router]);
 
+  useEffect(() => {
+    if(sessionStatus == 'authenticated'){
+      refetch()
+    }
+
+  }, [sessionStatus, refetch]);
+
   const dispatch = useDispatch();
   const [selectedRecords, setSelectedRecords] = useState<any>([]);
   const [modal, setmodal] = useState(false);
   const [editModal, seteditModal] = useState(false);
   const canEdit = () => selectedRecords.length === 1
-  const {data:students, isSuccess, status, isLoading} = useQuery('getParents', ()=> getParents(props.user_session.access_token))
+
 
   useEffect(() => {
     dispatch(setPageTitle('Schoolwave | Parents'));
@@ -249,7 +258,7 @@ const Export = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <CreateParent access_token={props.user_session.access_token} setmodal={setmodal} />
+                        <CreateParent access_token={user_session?.access_token} setmodal={setmodal}  refreshParents={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -286,7 +295,7 @@ const Export = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <EditParent access_token={props.user_session.access_token} id={selectedRecords[0]?.id} seteditModal={seteditModal} />
+                        <EditParent access_token={user_session?.access_token} id={selectedRecords[0]?.id} seteditModal={seteditModal} refreshParents={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -324,7 +333,7 @@ const Export = (props:any) => {
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
 
             onRowClick={(x:any) =>
-              router.push('/employees/'+x.id)
+              router.push('/parents/'+x.id)
             }
 
             selectedRecords={selectedRecords}
