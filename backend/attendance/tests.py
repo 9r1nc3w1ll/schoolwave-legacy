@@ -75,11 +75,15 @@ class StudentAttendanceAPITestCase(APITestCase):
             "present": "False",
             "remark": "Poor",
             "student" : self.student_obj.id,
-            "class_id" : self.class_obj,
+            "class_id" : self.class_obj.id,
             "staff" : self.staff_obj.id
 
         }
         response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Student attendance created successfully.")
+
+
 
 
     def test_retrieve_student_attendance(self):

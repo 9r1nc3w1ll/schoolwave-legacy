@@ -129,7 +129,7 @@ class ListCreateStaffRole(ListCreateAPIView):
         serializer = StaffRoleSerializer(data=request.data)
         if serializer.is_valid():
             staff_role = serializer.save()
-            message = "Staff role created successfully."
+            message = "Staff role assignment created successfully."
             data = StaffRoleSerializer(staff_role)
 
             headers = self.get_success_headers(serializer.data)

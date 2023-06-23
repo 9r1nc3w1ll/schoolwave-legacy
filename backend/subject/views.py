@@ -16,8 +16,8 @@ class BatchUploadSubjects(APIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request, *args, **kwargs):
-        csv_file = request.FILES.get('csv')
-        term_id = request.data.get('term_id')
+        csv_file = request.FILES['csv']
+        term_id = request.POST['term_id']
 
         term = Term.objects.get(id=term_id)
         data = csv_file.read().decode('utf-8')
@@ -171,9 +171,9 @@ class ListCreateSubjectSelection(ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = SubjectSelectionSerializer(data=request.data)
         if serializer.is_valid():
-            student = serializer.save()
+            subject_selection = serializer.save()
             message = "Subject Selection created successfully."
-            data = SubjectSelectionSerializer(student)
+            data = SubjectSelectionSerializer(subject_selection)
 
             headers = self.get_success_headers(serializer.data)
 

@@ -15,30 +15,35 @@ class BatchUploadAdmissionRequestTestCase(TestCase):
         self.client = APIClient()
         self.user = User.objects.create_user(username="testuser", password="testpass")
         self.school = School.objects.create(name="Test School", owner=self.user)
-        self.url = reverse("batch_upload_requests")
+        # self.url = reverse("batch_upload_requests")
 
-        self.client.force_authenticate(user=self.user)
+        # self.client.force_authenticate(user=self.user)
     
     def test_batch_upload_admission_request(self):
+        url = reverse("batch_upload_requests")
+        self.client.force_authenticate(user=self.user)
         csv_data = """
         username,password,first_name,last_name,email,date_of_birth,gender,blood_group,religion,phone_number,city,state,address,guardian_name,relation,guardian_occupation,guardian_phone_number,guardian_address
         student1,testpass,John,Doe,john@example.com,1990-01-01,male,O+,Christian,1234567890,New York,NY,123 ABC Street,Guardian1,Father,Engineer,9876543210,456 XYZ Street
         student2,testpass,Jane,Doe,jane@example.com,1992-01-01,female,A-,Christian,0987654321,Los Angeles,CA,789 DEF Street,Guardian2,Mother,Doctor,1234567890,789 UVW Street
         """
 
-        csv_file = io.BytesIO(csv_data.encode())
+        csv_file = io.StringIO(csv_data)
         csv_file.name = "admission_requests.csv"
 
-        csv = SimpleUploadedFile(
-                      "requests.csv", csv_file.read(), content_type="")
-
+        csv = SimpleUploadedFile("admission_requests.csv", csv_file.read().encode())
+        print("data", csv)
         response = self.client.post(
-            self.url,
+            url,
             data={"school_id": self.school.id},
-            files={"csv": csv}
+              
+            files={"csv": csv},
         )
 
-        print("data", response.content_type)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(AdmissionRequest.objects.count(), 2)
+        
+        
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(AdmissionRequest.objects.count(), 2)

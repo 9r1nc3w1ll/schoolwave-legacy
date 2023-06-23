@@ -1,4 +1,6 @@
 from datetime import datetime
+import io
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from django.contrib.auth import get_user_model
 from rest_framework.reverse import reverse
@@ -12,6 +14,72 @@ from session.models import Session, Term
 from staff.models import Staff, StaffRole
 
 User = get_user_model()
+
+class BatchUploadSubjectsTestCase(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.url = reverse("batch_upload_subjects")
+        
+        self.user = User.objects.create(
+            username="testowner", password="testpassword"
+        )
+
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
+
+        self.class_obj = Class.objects.create(
+            name="Test Class", school=self.school, description="Description", code="Prim43"
+        )
+
+        self.session = Session.objects.create(
+            school=self.school,
+            resumption_date=datetime.now().date(),
+            start_date="2040",
+            end_date="2050"
+        )
+
+        self.term = Term.objects.create(
+            name="1st Term", active="True", school=self.school, session=self.session, code="Term45"
+        )
+
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
+
+    def test_batch_upload_subjects(self):
+        url = reverse("batch_upload_subjects")
+        self.client.force_authenticate(user=self.user)
+        csv_data = """Class Code,Subject Name,Subject Description,Subject Code
+                        Math101,Mathematics,Mathematics Subject,MATH101
+                        Science101,Science,Science Subject,SCI101
+                        """
+
+        csv_file = io.StringIO(csv_data)
+        csv_file.name = 'subjects_upload.csv'
+
+        csv = SimpleUploadedFile("subjects_upload.csv", csv_file.read().encode())
+        print(f"csv file--{csv_file.read().encode()}")
+
+        data = {
+            'term_id': self.term.id,
+        }
+
+        response = self.client.post(
+            url,
+            data=data,
+            format='multipart',
+            files={'csv': csv}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['message'], "Batch upload complete.")
+        self.assertEqual(len(response.data['created_subjects']), 2)
+        self.assertListEqual(
+            response.data['created_subjects'],
+            ['Mathematics (MATH101)', 'Science (SCI101)']
+        )
 
 class SubjectCRUDTestCase(APITestCase):
     def setUp(self):
@@ -68,11 +136,15 @@ class SubjectCRUDTestCase(APITestCase):
         data = {
             "name": "Science",
             "description": "Science subject",
-            "term":self.term,
+            "term":self.term.id,
+            "class_id":self.class_obj.id,
             "code":"Subj65"
         }
 
         response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Subject created successfully.")
+
 
     def test_retrieve_subject(self):
         url = reverse("subject_retrieve_update_destroy", kwargs={"pk":self.subject.id})
@@ -146,8 +218,15 @@ class SubjectSelectionCRUDTestCase(APITestCase):
             code="Subj231"
         )
 
-        self.subject_selection = SubjectSelection.objects.create(
+        self.subject_1 = Subject.objects.create(
+            name="Bio",
+            description="Biology subject",
             term=self.term,
+            class_id=self.class_obj,
+            code="Subj232"
+        )
+
+        self.subject_selection = SubjectSelection.objects.create(
             subject=self.subject,
             score=80
         )
@@ -168,12 +247,15 @@ class SubjectSelectionCRUDTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         data = {
-            "term":self.term,
-            "subject": self.subject.id,
+            "subject": self.subject_1.id,
+            "subject_name": self.subject_1.name,
             "score": 90
         }
 
         response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Subject Selection created successfully.")
+
 
     def test_retrieve_subject_selection(self):
         url = reverse("subject_selection_retrieve_update_destroy", kwargs={"pk":self.subject_selection.id})
@@ -188,17 +270,16 @@ class SubjectSelectionCRUDTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         data = {
-            "term": self.term.id,
-            "subject": self.subject,
+            "subject": self.subject.id,
+            "subject_name": self.subject.name,
             "score": 95
         }
 
         response = self.client.patch(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        print(f"Here -- {response.data} ")
         self.assertEqual(response.data["message"], "Subject Selection updated successfully.")
-        self.assertEqual(response.data["data"]["subject"], "Math")
+        self.assertEqual(response.data["data"]["subject"], self.subject.id)
 
     def test_delete_subject_selection(self):
         url = reverse("subject_selection_retrieve_update_destroy", kwargs={"pk": self.subject_selection.id})
@@ -248,7 +329,6 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
         )
 
         self.subject_selection = SubjectSelection.objects.create(
-            term=self.term,
             subject=self.subject,
             score=80
         )
@@ -289,6 +369,7 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
         url = reverse("subject_staff_assignment_list_create")
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
+        print(response.data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -300,13 +381,16 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         data = {
-            "staff":self.staff,
-            "role": self.staff_role,
+            "staff":self.staff.id,
+            "role": self.staff_role.id,
             "subject":self.subject.id,
             "active":"True"
         }
 
         response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Subject staff assignment created successfully.")
+
 
     def test_retrieve_subject_selection(self):
         url = reverse("subject_staff_assignment_retrieve_update_destroy", kwargs={"pk":self.subject_staff_assignment.id})
@@ -323,11 +407,12 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
         data = {
             "staff":self.staff.id,
             "role": self.staff_role.id,
-            "subject":self.subject,
-            "active":"False"
+            "subject":self.subject.id,
+            "active":False
         }
 
         response = self.client.patch(url, data)
+        print(response.data)
         self.assertEqual(response.data["message"], "Subject staff assignment updated successfully.")
         self.assertEqual(response.data["data"]["active"], False)
 
@@ -338,3 +423,5 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(response.data["message"], "Subject staff assignment deleted successfully.")
+
+

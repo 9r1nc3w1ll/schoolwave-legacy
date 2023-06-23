@@ -146,13 +146,17 @@ class TermCRUDTestCase(APITestCase):
 
         data = {
             "name":"2nd Term",
-            "active":"True",
-            "school":self.school,
-            "session":self.session,
+            "active":True,
+            "school":self.school.id,
+            "session":self.session.id,
             "code":"Term46"
         }
 
         response = self.client.post(url, data)
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Term created successfully.")
+
 
     def test_retrieve_term(self):
         url = reverse("retrieve_update_destroy_term", kwargs={"pk":self.term.id})

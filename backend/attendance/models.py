@@ -7,7 +7,7 @@ from account.models import User
 
 class StudentAttendance(BaseModel):
     class Meta:
-        db_table = "student attendance"
+        db_table = "student_attendances"
     """
     This is daily students attendance 
     """

@@ -35,10 +35,12 @@ class SchoolAPITestCase(APITestCase):
             "role": "admin",
         }
         response = self.client.post(url, data)
+        print(f"This is the user {response.data}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_school(self):
         url = reverse("create_school")
+        self.client.force_authenticate(user=self.user)
         data = {
             "name": "Example School",
             "description": "This is an example school.",
@@ -47,11 +49,10 @@ class SchoolAPITestCase(APITestCase):
             "motto": "Learning is fun!",
             "website_url": "https://www.example.com",
             "tag": "example",
-        }
+        }      
 
-        self.client.force_authenticate(user=self.user)
-
-        response = self.client.post(url, data)
+        response = self.client.post(url, data=data)
+        print(f"This is the school {response.data}")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -67,22 +68,24 @@ class ClassTests(APITestCase):
             date_of_establishment=datetime.now().date(),
         )
         self.class_obj = Class.objects.create(
-            name="Test Class", school=self.school, description="Description"
+            name="Test Class", school=self.school, description="Description", code="class12"
         )
 
     def test_create_class(self):
         url = reverse("list_create_class")
+        self.client.force_authenticate(user=self.user)
         data = {
             "name": "New Class",
             "school": self.school.id,
             "description": "Description",
             "class_index": 1,
+            "code": "class43"
         }
-        self.client.force_authenticate(user=self.user)
-        response = self.client.post(url, data, format="json")
-
+        
+        response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Class.objects.count(), 2)
+        self.assertEqual(response.data["message"], "Class created successfully.")
+
 
     def test_list_classes(self):
         url = reverse("list_create_class")
