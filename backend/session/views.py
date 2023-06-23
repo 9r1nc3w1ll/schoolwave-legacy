@@ -102,8 +102,7 @@ class RetrieveUpdateDestorySession(RetrieveUpdateDestroyAPIView):
 
         resp = {
             "status": "success",
-            "message": "Session updated successfully.",
-            "data": None,
+            "message": "Session deleted successfully.",
         }
 
         return Response(resp, status=status.HTTP_204_NO_CONTENT)

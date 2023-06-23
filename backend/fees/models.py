@@ -4,7 +4,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
 from account.models import User
-from school.models import Class
+from school.models import Class, School
 from config.models import BaseModel
 
 
@@ -16,6 +16,7 @@ class Discount(BaseModel):
     discount_type = models.CharField(max_length=20, default="percentage")
     amount = models.IntegerField(default=0)
     percentage = models.IntegerField(default=10)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
 
 
 class FeeItem(BaseModel):
@@ -27,13 +28,16 @@ class FeeItem(BaseModel):
     amount = models.IntegerField(default=0)
     tax = models.IntegerField(default=0)
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+
 
 class FeeTemplate(BaseModel):
     class Meta:
         db_table = "fee_templates"
 
-    required_items = models.ManyToManyField(FeeItem)
-    optional_items = models.ManyToManyField(FeeItem)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    required_items = models.ManyToManyField(FeeItem, related_name="required")
+    optional_items = models.ManyToManyField(FeeItem, related_name="optional")
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     tax = models.IntegerField(default=0)
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE)
@@ -44,6 +48,7 @@ class FeePayment(BaseModel):
     class Meta:
         db_table = "fee_payment"
 
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
     template = models.ForeignKey(FeeTemplate, on_delete=models.CASCADE)
     amount_paid = models.IntegerField(default=0)
     items = models.ManyToManyField(FeeItem)
@@ -57,9 +62,9 @@ class Invoice(BaseModel):
         db_table = "invoice"
 
     INVOICE_STATUSES = (
-        "pending", "pending",
-        "paid", "paid",
-        "cancelled", "cancelled"
+        ("pending", "pending"),
+        ("paid", "paid"),
+        ("cancelled", "cancelled")
     )
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -67,3 +72,4 @@ class Invoice(BaseModel):
     instance = GenericForeignKey("content_type", "instance_id")
     reversed_invoice_id = models.PositiveIntegerField(null=True, blank=True)
     status = models.CharField(default="pending", max_length=20, choices=INVOICE_STATUSES)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)

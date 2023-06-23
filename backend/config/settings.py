@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     "attendance",
     "subject",
     "staff",
+
+    "fees",
 ]
 
 AUTH_USER_MODEL = "account.User"
