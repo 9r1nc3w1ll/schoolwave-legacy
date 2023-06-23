@@ -72,7 +72,7 @@ export const EditUser= async (access_token: any, data: any, id: any)=>{
 }
 
 
-export const createUser= async ( data: any, access_token: string)=>{
+export const createUser= async ( data: any, access_token ?: string)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users', {
     method: "POST",
     headers: {
