@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
 
 
-export default function UploadFile(props: { useFile: (arg0: any) => void; }) {
+export default function UploadFile(props) {
   // drag state
   const [dragActive, setDragActive] = useState(false);
-  const inputRef = useRef(null);
+  const inputRef = useRef<any>(null);
     
   // handle drag events
-  const handleDrag = function(e: { preventDefault: () => void; stopPropagation: () => void; type: string; }) {
+  const handleDrag = function(e) {
     e.preventDefault();
     e.stopPropagation();
     if (e.type === "dragenter" || e.type === "dragover") {
@@ -16,11 +16,11 @@ export default function UploadFile(props: { useFile: (arg0: any) => void; }) {
       setDragActive(false);
     }
   };
-  function handleFile(files:any) {
+  function handleFile(files) {
     props.useFile(files[0]);
   }
   // triggers when file is selected with click
-  const handleChange = function(e: { preventDefault: () => void; target: { files: any[]; }; }) {
+  const handleChange = function(e) {
     e.preventDefault();
     if (e.target.files && e.target.files[0]) {
       handleFile(e.target.files);
@@ -28,9 +28,12 @@ export default function UploadFile(props: { useFile: (arg0: any) => void; }) {
   };
 
   const onButtonClick = () => {
-    inputRef?.current.click();
+    if(inputRef?.current?.click){
+
+      inputRef?.current?.click();
+    }
   };
-  const handleDrop = function(e: { preventDefault: () => void; stopPropagation: () => void; dataTransfer: { files: any[]; }; }) {
+  const handleDrop = function(e) {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);

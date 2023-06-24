@@ -31,7 +31,7 @@
         "**/*.tsx",
         "pages/ui-template/apps/todolist.tsx",
         "utility_methods/date.js"
-    ],
+, "components/UploadFile.jsx"    ],
     "exclude": [
         "node_modules",
         "cypress"
