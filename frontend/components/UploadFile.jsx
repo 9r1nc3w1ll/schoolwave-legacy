@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 export default function UploadFile(props) {
   // drag state
   const [dragActive, setDragActive] = useState(false);
-  const inputRef = useRef<any>(null);
+  const inputRef = useRef(null);
     
   // handle drag events
   const handleDrag = function(e) {
