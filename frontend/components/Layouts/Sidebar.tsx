@@ -774,7 +774,7 @@ const Sidebar = () => {
                 <AnimateHeight duration={300} height={currentMenu === 'Settings' ? 'auto' : 0}>
                   <ul className="sub-menu text-gray-500">
                     <li>
-                      <Link href="/settings/school_preference">{t('School Preference')}</Link>
+                      <Link href="/settings/school-preference">{t('School Preference')}</Link>
                     </li>
                   
                   </ul>
