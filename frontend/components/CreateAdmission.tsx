@@ -8,9 +8,10 @@ import { showAlert } from '@/utility_methods/alert';
 import { createUser } from '@/apicalls/users';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
-import Select from 'react-select';
+import {parse} from 'json2csv'
 import { useSession } from 'next-auth/react';
-import { Console } from 'console';
+import { BulkAdmissionUpload } from '@/apicalls/admissions';
+
 
 
 
@@ -70,30 +71,27 @@ const CreateAdmission  = (props:any) => {
           const queryClient = useQueryClient();
           const { mutate, isLoading, error } = useMutation(
             (data:any) =>{
-              console.log(data)
+           
               return createUser( data, user_session?.access_token)},
             {
               onSuccess: async (data) => {
-                showAlert('success', 'Student Created Successfuly')
-                queryClient.invalidateQueries(['student'])
+                showAlert('success', 'Admission created Successfully')
+                reset();
+                props.refreshAdmission()
+                props.setmodal(false)
 
               },
               onError: (error:any) => {
-                let x =error.response.data.message.split(' ')
-
-                if(x.indexOf('duplicate') >=0 && x.indexOf('key') >=0  && x.indexOf('constraint') >=0){
-
-                  showAlert('error', 'A session with same Start Date or End Date already exist')
-                }else{
-                  showAlert('error', 'An Error Occured' )
-                }
+                showAlert('error', 'An Error Occured' )
+             
               }
             }
           );
 
           const onSubmit = async (data: any) => { 
-            mutate(data); 
-            reset();
+               
+            console.log(data)
+           
           };
 
 

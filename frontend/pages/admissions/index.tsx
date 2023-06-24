@@ -4,13 +4,18 @@ import sortBy from 'lodash/sortBy';
 import { downloadExcel } from 'react-export-table-to-excel';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { getParents } from '@/apicalls/users';
 import { useRouter } from 'next/router';
 import CreateAdmission from '@/components/CreateAdmission';
 import { Dialog, Transition } from '@headlessui/react';
 import EditParent from '@/components/EditParent';
 import { useSession } from 'next-auth/react';
+import UploadAdmission from '@/components/UploadFile';
+import BulkAdmission from '@/components/BulkAdmission';
+import { getAdmissions, updateAdmission } from '@/apicalls/admissions';
+import { formatDate } from '@/utility_methods/datey';
+import { showAlert } from '@/utility_methods/alert';
 
 
 
@@ -20,31 +25,49 @@ const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'p
 const Export = (props:any) => {
   const router = useRouter()
   const { status: sessionStatus, data: user_session } = useSession();
-  const {data:students, isSuccess, status, refetch} = useQuery('getParents', ()=> getParents(user_session?.access_token), {enabled: false})
-    
+  const {data:students, isSuccess, status, refetch} = useQuery('getAdmission', ()=> getAdmissions(user_session?.access_token), {enabled: false})
+  const { mutate, isLoading, error } = useMutation(
+    (data:boolean) =>{
+   
+      return updateAdmission(selectedRecords[0].id, data, user_session?.access_token)},
+    {
+      onSuccess: async (data) => {
+        showAlert('success', 'Admission updated Successfully')
+        refetch()
+      },
+      onError: (error:any) => {
+        showAlert('error', 'An Error Occured' )
+     
+      }
+    }
+  );
+
   useEffect(() => {
     let path = router.asPath.split('#')
-    if(path[1] == 'create_new'){
+    if(path[1] == 'create-admission'){
       setmodal(true)
+    }else if(path[1] == 'create-bulk-upload'){
+      setuploadModal(true)
     }
   }, [router]);
-
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
       refetch()
+  
     }
 
   }, [sessionStatus, refetch]);
 
-  const dispatch = useDispatch();
+
+  const dispatch = useDispatch();                          
   const [selectedRecords, setSelectedRecords] = useState<any>([]);
   const [modal, setmodal] = useState(false);
-  const [editModal, seteditModal] = useState(false);
+  const [uploadModal, setuploadModal] = useState(false);
   const canEdit = () => selectedRecords.length === 1
 
 
   useEffect(() => {
-    dispatch(setPageTitle('Schoolwave | Parents'));
+    dispatch(setPageTitle('Schoolwave | Admissions'));
    
   });
   const [page, setPage] = useState(1);
@@ -76,8 +99,10 @@ const Export = (props:any) => {
         return students.filter((item: any) => {
           return (
             item.id.toString().includes(search.toLowerCase()) ||
-                      item.first_name.toLowerCase().includes(search.toLowerCase()) ||
-                      item.last_name.toLowerCase().includes(search.toLowerCase()) 
+                      item.student_info.first_name.toLowerCase().includes(search.toLowerCase()) ||
+                      item.student_info.last_name.toLowerCase().includes(search.toLowerCase()) ||
+                      item.status.toLowerCase().includes(search.toLowerCase())
+
                   
           );
         });
@@ -212,20 +237,36 @@ const Export = (props:any) => {
 
           <h5 className=" text-3xl font-semibold dark:text-white-light">Admissions</h5>
           <div className="flex flex-wrap items-center">
-            <button type="button" onClick={() => exportTable('csv')} className="btn btn-primary btn-sm m-1 ">
+            <button type="button" onClick={()=>{
+              if(canEdit()){
+                mutate(true)
+              }
+            }} className={`btn ${canEdit()? 'btn-success':' bg-grey' } btn-sm m-1 `}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" />
+              </svg>
+
+
+                           Approve
+            </button>
+            <button type="button"  onClick={()=>{
+              if(canEdit()){
+                mutate(false)
+              }
+            }} className={`btn ${canEdit()? 'btn-danger':' bg-grey' } btn-sm m-1 `}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+              </svg>
+
+
+                           Decline
+            </button>
+            <button type="button" onClick={() => setuploadModal(true)} className="btn btn-primary btn-sm m-1">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
               </svg>
 
-                           Export
-            </button>
-      
-            <button type="button" onClick={() => exportTable('print')} className="btn btn-primary btn-sm m-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" />
-              </svg>
-
-                            Import
+                            Bulk Admission
             </button>
      
             <button type="button"  className="btn btn-primary btn-sm m-1" onClick={()=>{
@@ -257,7 +298,7 @@ const Export = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <CreateAdmission access_token={user_session?.access_token} setmodal={setmodal}  refreshParents={refetch} />
+                        <CreateAdmission user_session={user_session} setmodal={setmodal}  refreshAdmission={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -265,19 +306,10 @@ const Export = (props:any) => {
               </Dialog>
             </Transition>
 
-           
-            <button className={`btn ${canEdit() ?'btn-primary btn-sm ': 'bg-[#f2f5f7] shadow-sm text-sm'} m-1`} onClick={()=>{
-              seteditModal(true)
-            }} >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-              </svg>
-
-                            EDIT
-            </button>
+   
      
-            <Transition appear show={editModal} as={Fragment}>
-              <Dialog as="div" open={editModal} onClose={() => seteditModal(false)}>
+            <Transition appear show={uploadModal} as={Fragment}>
+              <Dialog as="div" open={uploadModal} onClose={() => setuploadModal(false)}>
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -291,10 +323,10 @@ const Export = (props:any) => {
                 </Transition.Child>
                 <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
                   <div className="flex items-start justify-center min-h-screen px-4">
-                    <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
+                    <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <EditParent access_token={user_session?.access_token} id={selectedRecords[0]?.id} seteditModal={seteditModal} refreshParents={refetch} />
+                        <BulkAdmission user_session={user_session} closeModal={setuploadModal} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -313,12 +345,19 @@ const Export = (props:any) => {
             records={recordsData}
             columns={[
               { accessor: 'id', title: 'Staff No.', sortable: true },
-              { accessor: 'first_name', title: 'First Name', sortable: true },
-              { accessor: 'last_name', title: 'Last Name', sortable: true },
-              { accessor: 'role', title: 'Role', sortable: true },
+              { accessor: 'student_info.first_name', title: 'First Name', sortable: true },
+              { accessor: 'student_info.last_name', title: 'Last Name', sortable: true },
+              { accessor: 'status', 
+                render: ({ status }) => <div className={status=='approved'? 'badge bg-success': status=='denied'? 'badge bg-danger': 'badge bg-warning' }>{status}</div>,
+                sortable: true },
+              {
+                accessor: 'created_at',
+                title: 'Request Date',
+                sortable: true,
+                render: ({ created_at }) => <div>{formatDate(created_at)}</div>,
+              },
                          
-              { accessor: 'phone_number', title: 'Phone', sortable: true },
-              { accessor: 'email', title: 'Email', sortable: true },
+           
             ]}
             totalRecords={initialRecords? initialRecords.length : 0}
             recordsPerPage={pageSize}
@@ -332,7 +371,7 @@ const Export = (props:any) => {
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
 
             onRowClick={(x:any) =>
-              router.push('/parents/'+x.id)
+              router.push('#')
             }
 
             selectedRecords={selectedRecords}

@@ -19,3 +19,23 @@ export const showAlert = async (icon: any, title: any) => {
   });
 
 }
+
+export const showPrompt = async (icon: any, title: string, text:string, confirmButton:string, callBack:any) => {
+
+
+  Swal.fire({
+    icon: icon,
+    title: title,
+    text: text,
+    showCancelButton: true,
+    confirmButtonText: confirmButton,
+    padding: '2em',
+    customClass: 'sweet-alerts',
+  }).then((result) => {
+    if (result.value) {
+      callBack()
+    }
+  });
+
+
+}

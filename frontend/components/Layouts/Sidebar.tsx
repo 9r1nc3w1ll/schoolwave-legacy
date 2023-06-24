@@ -126,19 +126,16 @@ const Sidebar = () => {
                     <AnimateHeight duration={300} height={currentMenu === 'Admissions' ? 'auto' : 0}>
                       <ul className="sub-menu text-gray-500">
                         <li>
-                          <Link href="/admissions">{t('Create Admission')}</Link>
+                          <Link href="/admissions">{t('Admission List')}</Link>
                         </li>
                         <li>
-                          <Link href="/apps/invoice/preview">{t('Admission List')}</Link>
+                          <Link href="/admissions#create-admission">{t('Create Admission')}</Link>
                         </li>
                         <li>
-                          <Link href="/apps/invoice/add">{t('Bulk Upload')}</Link>
+                          <Link href="/admissions#create-bulk-upload">{t('Bulk Upload')}</Link>
                         </li>
                         <li>
-                          <Link href="/apps/invoice/edit">{t('Admission Category')}</Link>
-                        </li>
-                        <li>
-                          <Link href="/apps/invoice/edit">{t('E-Admission')}</Link>
+                          <Link href="#">{t('E-Admission')}</Link>
                         </li>
                       </ul>
                     </AnimateHeight>

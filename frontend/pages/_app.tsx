@@ -8,7 +8,7 @@ import { SessionProvider } from "next-auth/react"
 import Head from 'next/head';
 import DefaultLayout from '@/components/Layouts/DefaultLayout';
 import store from '@/store/index';
-
+import '../styles/drag-form.css'
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import '@/styles/tailwind.css';
 
