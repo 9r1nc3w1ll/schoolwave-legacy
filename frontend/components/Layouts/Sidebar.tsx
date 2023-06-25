@@ -378,10 +378,7 @@ const Sidebar = () => {
                           <Link href="/students">{t('Students List')}</Link>
                         </li>
                         <li>
-                          <Link href="#">{t('Student Types')}</Link>
-                        </li>
-                        <li>
-                          <Link href="#">{t('Student Attendance')}</Link>
+                          <Link href="/attendance">{t('Student Attendance')}</Link>
                         </li>
                      
                       </ul>
