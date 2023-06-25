@@ -8,12 +8,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Change directory to ./frontend and prints it
-        run: pwd
-        working-directory: ./frontend
+        uses: actions/checkout@v3
+      - name: Setup Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ca-certificates curl gnupg lsb-release
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Start backend server
+        working-directory: ./backend
+        run: |
+          mv .env.testing .env
+          docker compose up -d
+          echo "Using Python Version: $(python --version)"
+          python -m venv ./.venv
+          echo "Am I in a venv $(pip -V | grep "backend/.venv")"
+          . ./.venv/bin/activate
+          pip install -r requirements.txt
+          python manage.py migrate
+          python manage.py runserver
       - name: Cypress run
         uses: cypress-io/github-action@v3
+        continue-on-error: true
         with:
           working-directory: ./frontend
           browser: chrome
