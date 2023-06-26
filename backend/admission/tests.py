@@ -55,40 +55,59 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
         self.school = School.objects.create(name="Test School", owner=self.user)
         self.url = reverse("list_create_requests")
 
+        self.student_info = StudentInformation.objects.create(
+            username="student1", password="testpass", first_name="John", last_name="Doe",
+            date_of_birth=datetime.now()
+        )
+
+        self.student_info = StudentInformation.objects.create(
+            username="student1", password="testpass", first_name="John", last_name="Doe",
+            date_of_birth=datetime.now()
+        )
+
+        self.student_info_2 = StudentInformation.objects.create(
+            username="student2", password="testpass", first_name="John", last_name="Doe",
+            date_of_birth=datetime.now()
+        )
+
+        # Create an admission request
+        self.addmission_request_1 = AdmissionRequest.objects.create(
+            status="approved", 
+            student_info=self.student_info, 
+            school=self.school
+            )
+        
+        self.addmission_request_2 =  AdmissionRequest.objects.create(
+            status="denied", 
+            student_info=self.student_info_2, 
+            school=self.school
+            )
+
         self.client.force_authenticate(user=self.user)        
 
     
     def test_list_admission_requests(self):
-        student_info = StudentInformation.objects.create(
-            username="student1", password="testpass", first_name="John", last_name="Doe",
-            date_of_birth=datetime.now()
-        )
-        student_info_2 = StudentInformation.objects.create(
-            username="student2", password="testpass", first_name="John", last_name="Doe",
-            date_of_birth=datetime.now()
-        )
-        AdmissionRequest.objects.create(status="approved", student_info=student_info, school=self.school)
-        AdmissionRequest.objects.create(status="denied", student_info=student_info_2, school=self.school)
 
         response = self.client.get(self.url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["data"]), 2)
 
+    
+
     def test_create_admission_request(self):
-        student_info = StudentInformation.objects.create(
-            username="student1", password="testpass", first_name="John", last_name="Doe",
-            date_of_birth=datetime.now()
-        )
+        url = reverse("list_create_requests")
+        self.client.force_authenticate(user=self.user)
+        
 
         data = {
             "status": "pending",
-            "student_info": student_info.id,
-            "school": self.school.id
+            "student_info": self.student_info_2.id,
+            "school": self.school.id,
+            "comment_if_declined": "No comment"
         }
 
-        response = self.client.post(self.url, data=data, format="json")
-
+        response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(AdmissionRequest.objects.count(), 1)
@@ -122,8 +141,6 @@ class RUDAdmissionRequestsTestCase(TestCase):
 
         response = self.client.patch(self.url, data=data, format="json")
         updated_admission_request = AdmissionRequest.objects.get(id=self.admission_request.id)
-
-        print("update", response.data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(updated_admission_request.status, "approved")

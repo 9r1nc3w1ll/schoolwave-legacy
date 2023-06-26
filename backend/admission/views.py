@@ -62,8 +62,6 @@ class ListCreateAdmissionRequests(ListCreateAPIView):
     def get_queryset(self):
         school = School.objects.get(owner=self.request.user)
 
-        print("school", school)
-
         qs = self.queryset.filter(school=school)
         return super().get_queryset()
     
