@@ -141,7 +141,7 @@ class ClassUserTests(APITestCase):
         )
 
         self.student_user = User.objects.create_user(
-            username="studentuser", password="testpassword"
+            username="studentuser", password="testpassword", first_name="firstname", last_name="lastname"
         )
 
         self.class_user_obj = ClassUser.objects.create(
