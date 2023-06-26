@@ -8,7 +8,9 @@ User = get_user_model()
 
 class AuthenticationTestCase(APITestCase):
     def setUp(self):
-        self.user = User.objects.create(username="username", password="password")
+        self.user = User.objects.create(username="username")
+        self.user.set_password("password")
+        self.user.save()
 
     def test_user_login(self):
         data = {"username": "username", "password": "password"}
@@ -57,10 +59,13 @@ class UserCRUDTestCase(APITestCase):
         url = reverse("users")
         self.client.force_authenticate(user=self.user)
 
-        data = {"username": "newuser", "password": "newpassword"}
+        data = {"username": "newuser", 
+                "password": "newpassword", 
+                "first_name":"user_firstname", 
+                "last_name":"User_last_name"}
 
         response = self.client.post(url, data)
-        print(response)
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_retrieve_user(self):

@@ -5,7 +5,7 @@ from config.models import BaseModel
 
 class StaffRole(BaseModel):
     class Meta:
-        db_table = "staff role"
+        db_table = "staff_roles"
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
 
@@ -16,7 +16,7 @@ class StaffRole(BaseModel):
 
 class Staff(BaseModel):
     class Meta:
-        db_table = "staff"
+        db_table = "staffs"
 
     # Additional fields specific to staff
     user = models.OneToOneField(User, on_delete=models.CASCADE)

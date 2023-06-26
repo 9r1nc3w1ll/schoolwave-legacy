@@ -30,6 +30,10 @@ class StaffAPITestCase(APITestCase):
             username="staffuser", password="staffpassword", role="staff"
         )
 
+        self.staff_user_1 = User.objects.create(
+            username="staffuser1", password="staffpassword", role="staff"
+        )
+
         self.staff_role1 = StaffRole.objects.create(
             name = "Class Teacher",
             description = "Primary 4 class teacher"
@@ -66,12 +70,15 @@ class StaffAPITestCase(APITestCase):
         url = reverse("staff_list_create")
         self.client.force_authenticate(user=self.user)
         data = {
-            "user": self.staff_user.id,
+            "user": self.staff_user_1.id,
             "title": "Staff Title",
-            "role": self.staff_role2,
+            "role": self.staff_role2.id,
         }
              
         response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Staff created successfully.")
+
 
     def test_retrieve_staff(self):
         url = reverse("staff_retrieve_update_destroy", kwargs={"pk": self.staff.id})
@@ -135,7 +142,7 @@ class StaffRoleAPITestCase(APITestCase):
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
-    def test_list_subjects(self):
+    def test_list_staff_role(self):
         url = reverse("staff_role_list_create")
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
@@ -149,11 +156,14 @@ class StaffRoleAPITestCase(APITestCase):
         url = reverse("staff_role_list_create")
         self.client.force_authenticate(user=self.user)
         data = {
-            "name" : "Lesson Teacher",
+            "name" : "Nursery Teacher",
             "description" : "Nusery lesson teacher"
         }
              
         response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Staff role assignment created successfully.")
+
 
     def test_retrieve_staff_role(self):
         url = reverse("staff_role_retrieve_update_destroy", kwargs={"name": self.staff_role2.name})

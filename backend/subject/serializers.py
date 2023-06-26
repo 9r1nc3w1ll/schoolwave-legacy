@@ -7,13 +7,14 @@ class SubjectSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SubjectSelectionSerializer(serializers.ModelSerializer):
-    subject = serializers.StringRelatedField()
+    subject = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all())
+    subject_name = serializers.StringRelatedField(source='subject')
     class Meta:
         model = SubjectSelection
         fields = '__all__'
 
 class SubjectStaffAssignmentSerializer(serializers.ModelSerializer):
-    subject = serializers.StringRelatedField()
+    subject_name = serializers.StringRelatedField()
     class Meta:
         model = SubjectStaffAssignment
         fields = '__all__'

@@ -11,7 +11,8 @@ class SessionSerializer(serializers.ModelSerializer):
 
 
 class TermSerializer(serializers.ModelSerializer):
-    session = serializers.StringRelatedField()
+    session = serializers.PrimaryKeyRelatedField(queryset=Session.objects.all())
+    session_name = serializers.StringRelatedField(source='session')
 
     class Meta:
         model = Term

@@ -79,7 +79,7 @@ class PasswordResetRequest(BaseModel):
 
 class AuditLog(BaseModel):
     class Meta:
-        db_table = "audit_log"
+        db_table = "audit_logs"
 
     actor = models.ForeignKey(User, on_delete=models.CASCADE)
     action = models.CharField(max_length=10)

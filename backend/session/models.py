@@ -33,3 +33,7 @@ class Term(BaseModel):
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     code = models.CharField(max_length=150, unique=True)
+
+    def save(self, *args, **kwargs):
+
+        return super().save(*args, **kwargs)
