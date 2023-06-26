@@ -224,15 +224,16 @@ class RetrieveUpdateDestoryClass(RetrieveUpdateDestroyAPIView):
 
 
 class ListCreateClassUser(ListCreateAPIView):
-    permission_classes = [IsAuthenticated, IsSchoolOwner]
+    permission_classes = [IsAuthenticated]
     queryset = ClassUser.objects.all()
     serializer_class = ClassUserSerializer
 
     def get_queryset(self):
-        user = self.request.user
-
-        qs = self.queryset.filter(user=user)
-        return qs
+        class_user_id = self.kwargs.get("class_user_id")
+        if class_user_id:
+            return self.queryset.filter(id=class_user_id)
+        else:
+            return self.queryset.all()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -270,45 +271,51 @@ class RetrieveUpdateDestoryClassUser(RetrieveUpdateDestroyAPIView):
     queryset = ClassUser.objects.all()
     serializer_class = ClassSerializer
 
-    def get_queryset(self):
-       user = self.request.user
-       
-       qs = self.queryset.filter(user=user)
-       return qs
+    def get_object(self):
+        class_user_id= self.kwargs.get("pk")
+        try:
+           class_user = ClassUser.objects.get(id=class_user_id)
+        except ClassUser.DoesNotExist:
+            return Response({"message": "Class user not found."}, status=status.HTTP_404_NOT_FOUND)
+        return class_user
 
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
+        class_user = self.get_object()
+        serializer = ClassUserSerializer(class_user)
 
         resp = {
-            "status": "success",
             "message": "Class user fetched successfully.",
             "data": serializer.data,
         }
         return Response(resp)
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop("partial", False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        class_user = self.get_object()
 
-        resp = {
-            "status": "success",
-            "message": "Class user updated successfully.",
-            "data": serializer.data,
-        }
-        return Response(resp)
+        serializer = ClassUserSerializer(class_user, data=data, partial=True)
+        if serializer.is_valid(): 
+            class_user = serializer.save()
+            data = ClassUserSerializer(class_user).data
+
+            resp = {
+                "message": "Class user updated successfully.",
+                "data": serializer.data,
+            }
+            return Response(resp)
+        
+        return Response({
+            "message": "Class user not found.",
+            "errors": serializer.errors
+            })
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-
-        resp = {
-            "status": "success",
-            "message": "Class user destroyed successfully.",
-            "data": None,
-        }
-
-        return Response(resp, status=status.HTTP_204_NO_CONTENT)
+        class_user = self.get_object()
+        if class_user:
+            class_user.delete()
+            resp = {
+                "message": "Class user deleted successfully.",
+            }
+            return Response(resp, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message": "Class user not found."}, status=status.HTTP_404_NOT_FOUND)
