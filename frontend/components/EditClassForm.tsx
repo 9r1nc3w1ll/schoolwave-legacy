@@ -33,7 +33,7 @@ const EditClassForm = (props:any) => {
       onSuccess: async (data) => {
         showAlert('success', 'Class Edited Successfuly')
         props.exit(false)
-        queryClient.invalidateQueries(['classes'])
+        props.refreshClasses()
   
       },
       onError: (error) => {

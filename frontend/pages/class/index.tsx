@@ -8,13 +8,14 @@ import EditClassForm from '@/components/EditClassForm';
 import { createClass, getClasses } from '@/apicalls/clas';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 import { showAlert } from '@/utility_methods/alert';
+import { useSession } from 'next-auth/react';
 
 
 
 
 
 const Export = (props: any) => {
-
+  const { status: sessionStatus, data: user_session } = useSession();
   const [search, setSearch] = useState<string>('');
   const [activeToolTip, setActiveToolTip] = useState<string>('');
   const [sessions, setSessions] = useState([])
@@ -27,7 +28,7 @@ const Export = (props: any) => {
 
   const makeDuplicate = useMutation(
     (data: any) =>
-      createClass(props.user_session.access_token, data),
+      createClass(data, user_session?.access_token),
     {
       onSuccess: async () => {
         showAlert('success', 'Class Created Successfuly')
@@ -46,7 +47,7 @@ const Export = (props: any) => {
     b.name = x.name + '_copy'
     b.description = x.description
     b.class_index = x.class_index
-    b.school = props.user_session.school.id
+    b.school = user_session?.school.id
 
     makeDuplicate.mutate(b)
   }
@@ -67,10 +68,7 @@ const Export = (props: any) => {
 
 
 
-  const { data: h, isSuccess, status, isLoading } = useQuery('classes', () => {
-
-    return getClasses(props.user_session.access_token)
-  })
+  const { data: h, isSuccess, status, isLoading, refetch } = useQuery('classes', () => getClasses(user_session?.access_token), {enabled: false})
 
   useEffect(() => {
 
@@ -80,6 +78,13 @@ const Export = (props: any) => {
       });
     });
   }, [search, sessions, status]);
+
+  useEffect(() => {
+    if(sessionStatus == 'authenticated'){
+      refetch()
+    }
+
+  }, [sessionStatus, refetch]);
   useEffect(() => {
 
     if (isSuccess) {
@@ -122,7 +127,7 @@ const Export = (props: any) => {
                   }}>Duplicate</p>
                   <p className='mb-2 px-2  hover:bg-white'>Assign Students</p>
                   <p className='mb-2 px-2  hover:bg-white'>Assign Teacher</p>
-                  <DeleteClasses sessionID={selectedSession.id} user_session={props.user_session} />
+                  <DeleteClasses sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch}/>
 
 
 
@@ -153,7 +158,7 @@ const Export = (props: any) => {
       <div className='panel col-span-2'>
         <div className='panel bg-[#f5f6f7]'>
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create New Class</h5>
-          <CreateClassForm create={true} user_session={props.user_session} sessionID={selectedSession.id} exit={setmodal} />
+          <CreateClassForm create={true} user_session={user_session} sessionID={selectedSession.id} exit={setmodal} refreshClasses={refetch} />
         </div>
       </div>
       <div className='panel col-span-4 ' >
@@ -224,7 +229,7 @@ const Export = (props: any) => {
                       <h5 className=" text-lg font-semibold dark:text-white-light">Edit Class</h5>
                       <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p>
 
-                      <EditClassForm create={false} user_session={props.user_session} sessionData={selectedSession} exit={setmodal} />
+                      <EditClassForm create={false} user_session={user_session} sessionData={selectedSession} exit={setmodal} refreshClasses={refetch}/>
                     </div>
                   </Dialog.Panel>
                 </div>

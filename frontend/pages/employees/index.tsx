@@ -23,7 +23,7 @@ const Export = (props:any) => {
   const { status: sessionStatus, data: user_session } = useSession();
 
   const {data:students, isSuccess, status, refetch} = useQuery('getStaffs', async ()=> {
-    console.log('user_session', user_session?.access_token)
+    
     return getStaffs(user_session?.access_token)
   }, {enabled:false})
 

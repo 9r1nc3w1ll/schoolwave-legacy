@@ -1,4 +1,5 @@
-export const createClass= async(access_token: string, data: any)=>{
+export const createClass= async(data: any, access_token?: string)=>{
+  console.log(access_token)
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class' , {
     method: "POST",
     headers: {
@@ -46,7 +47,7 @@ export const deleteClass= async (id: string, access_token: string)=>{
 
 
 
-export const getClasses= async (access_token: string)=>{
+export const getClasses= async (access_token?: string)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class' , {
     method: "GET",
     headers: {

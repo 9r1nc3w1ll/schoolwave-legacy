@@ -25,14 +25,15 @@ const CreateClassForm = (props: any) => {
 
 
   const { mutate, isLoading, error } = useMutation(
-    (data) =>
-      createClass(props.user_session.access_token, data),
+    (data:any) =>{
+      console.log('data', props.user_session.access_token)
+      return createClass(data, props.user_session.access_token)},
     {
       onSuccess: async (data) => {
         showAlert('success', 'Class Created Successfuly')
         props.exit(false)
         reset()
-        queryClient.invalidateQueries(['classes'])
+        props.refreshClasses()
 
       },
       onError: (error) => {
@@ -57,32 +58,9 @@ const CreateClassForm = (props: any) => {
           <input id="name" type="text" className="form-input" {...register("name", { required: "This field is required" })} />
         </div>
         <div>
-          <label htmlFor="name"> Description</label>
-          <input id="Description" type="text" className="form-input" {...register("description", { required: "This field is required" })} />
-        </div>
-        <div>
           <label htmlFor="name">Class Index</label>
           <input id="class_index" type="number" className="form-input" {...register("class_index", { required: "This field is required" })} />
         </div>
-       
-        <div>
-          <label htmlFor="name">Class Short Code</label>
-          <input id="code" type="text" placeholder="e.g Pry1A"  className="form-input" {...register("code", { required: "This field is required" })} />
-        </div>
-        <div>
-          <label htmlFor="name"> Description</label>
-          <input id="Description" type="text"  className="form-input" {...register("description", { required: "This field is required" })} />
-        </div>
-       
-        <div>
-          <label htmlFor="name">Class Short Code</label>
-          <input id="code" type="text" placeholder="e.g Pry1A"  className="form-input" {...register("code", { required: "This field is required" })} />
-        </div>
-        <div>
-          <label htmlFor="name"> Description</label>
-          <input id="Description" type="text"  className="form-input" {...register("description", { required: "This field is required" })} />
-        </div>
-       
         <div>
           <label htmlFor="name">Class Short Code</label>
           <input id="code" type="text" placeholder="e.g Pry1A"  className="form-input" {...register("code", { required: "This field is required" })} />
