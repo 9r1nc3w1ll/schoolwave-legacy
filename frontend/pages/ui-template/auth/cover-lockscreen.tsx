@@ -42,7 +42,7 @@ const UnlockCover = () => {
               <input id="password" type="password" className="form-input" placeholder="Enter Password" />
             </div>
             <button type="submit" className="btn btn-primary w-full">
-                            UNLOCK
+              UNLOCK
             </button>
           </form>
         </div>
@@ -51,6 +51,6 @@ const UnlockCover = () => {
   );
 };
 UnlockCover.getLayout = (page: any) => {
-  return <BlankLayout session={{}}>{page}</BlankLayout>;
+  return <BlankLayout>{page}</BlankLayout>;
 };
 export default UnlockCover;

@@ -19,12 +19,13 @@ export const AuthenticationRoute = ({ children }: Props): JSX.Element => {
         query: { returnUrl: router.asPath },
       });
     }
-  }, [sessionStatus, data, router]);
+  }, [sessionStatus, router]);
 
   if (sessionStatus == 'loading') {
     return <>Loading schoolwave...</>;
   }
 
   // TODO: Redirect to 403 or 404
-  return sessionStatus == 'authenticated' ? <>{children}</> : <></>;
+  
+  return sessionStatus !== 'authenticated' ? <>{children}</> : <></>;
 };

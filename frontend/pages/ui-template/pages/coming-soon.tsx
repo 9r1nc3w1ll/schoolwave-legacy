@@ -111,7 +111,7 @@ const ComingSoon = () => {
                 </span>
                 <input type="email" placeholder="Email" className="form-input py-3 ltr:pl-9 ltr:pr-[100px] rtl:pr-9 rtl:pl-[100px]" />
                 <button type="submit" className="btn btn-primary absolute top-0 rounded-bl-3xl py-2.5 ltr:right-0 rtl:left-0">
-                                    Subscribe
+                  Subscribe
                 </button>
               </div>
             </form>
@@ -192,11 +192,11 @@ const ComingSoon = () => {
               </li>
             </ul>
             <p className="text-center">
-                            © 2022.
+              © 2022.
               <Link href="/" className="router-link-active mx-1 text-primary">
-                                VRISTO
+                VRISTO
               </Link>
-                            All Rights Reserved.
+              All Rights Reserved.
             </p>
           </div>
         </div>
@@ -208,7 +208,7 @@ const ComingSoon = () => {
   );
 };
 ComingSoon.getLayout = (page: any) => {
-  return <BlankLayout session={{}}>{page}</BlankLayout>;
+  return <BlankLayout>{page}</BlankLayout>;
 };
 
 export default ComingSoon;

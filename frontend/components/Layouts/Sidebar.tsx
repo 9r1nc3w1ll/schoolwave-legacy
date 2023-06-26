@@ -423,7 +423,10 @@ const Sidebar = () => {
                     <AnimateHeight duration={300} height={currentMenu === 'Parents' ? 'auto' : 0}>
                       <ul className="sub-menu text-gray-500">
                         <li>
-                          <Link href="/apps/invoice/list">{t('Parents')}</Link>
+                          <Link href="/parents">{t('Parents')}</Link>
+                        </li>
+                        <li>
+                          <Link href="/parents#create_new">{t('Create Parent')}</Link>
                         </li>
                        
                       </ul>
@@ -462,25 +465,19 @@ const Sidebar = () => {
                     <AnimateHeight duration={300} height={currentMenu === 'Employees' ? 'auto' : 0}>
                       <ul className="sub-menu text-gray-500">
                         <li>
-                          <Link href="/apps/invoice/list">{t('Teaching Staffs')}</Link>
+                          <Link href="/employees">{t('Employee List')}</Link>
                         </li>
                         <li>
-                          <Link href="/apps/invoice/preview">{t('Non-Teaching Staffs')}</Link>
+                          <Link href="/employees#create_new">{t('Create Employee')}</Link>
                         </li>
                         <li>
-                          <Link href="/apps/invoice/preview">{t('Departments')}</Link>
+                          <Link href="#">{t('Payrol Management')}</Link>
                         </li>
                         <li>
-                          <Link href="/apps/invoice/preview">{t('Designation')}</Link>
+                          <Link href="#">{t('Leave Management')}</Link>
                         </li>
                         <li>
-                          <Link href="/apps/invoice/preview">{t('Payrol Management')}</Link>
-                        </li>
-                        <li>
-                          <Link href="/apps/invoice/preview">{t('Leave Management')}</Link>
-                        </li>
-                        <li>
-                          <Link href="/apps/invoice/preview">{t('ID Cards')}</Link>
+                          <Link href="#">{t('ID Cards')}</Link>
                         </li>
                        
                       </ul>

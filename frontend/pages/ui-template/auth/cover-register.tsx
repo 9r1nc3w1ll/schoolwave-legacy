@@ -47,15 +47,15 @@ const RegisterCover = () => {
               <label className="cursor-pointer">
                 <input type="checkbox" className="form-checkbox" />
                 <span className="text-white-dark">
-                                    I agree the{' '}
+                  I agree the{' '}
                   <button type="button" className="text-primary hover:underline">
-                                        Terms and Conditions
+                    Terms and Conditions
                   </button>
                 </span>
               </label>
             </div>
             <button type="submit" className="btn btn-primary w-full">
-                            SIGN UP
+              SIGN UP
             </button>
           </form>
           <div className="relative my-7 h-5 text-center before:absolute before:inset-0 before:m-auto before:h-[1px] before:w-full before:bg-[#ebedf2]  dark:before:bg-[#253b5c]">
@@ -93,7 +93,7 @@ const RegisterCover = () => {
                     ></path>
                   </g>
                 </svg>
-                                Google
+                Google
               </button>
             </li>
             <li>
@@ -109,7 +109,7 @@ const RegisterCover = () => {
                     ></path>
                   </g>
                 </svg>
-                                Github
+                Github
               </button>
             </li>
             <li>
@@ -125,14 +125,14 @@ const RegisterCover = () => {
                     ></path>
                   </g>
                 </svg>
-                                Twitter
+                Twitter
               </button>
             </li>
           </ul>
           <p className="text-center">
-                        Already have an account ?
+            Already have an account ?
             <Link href="/auth/cover-login" className="font-bold text-primary hover:underline ltr:ml-1 rtl:mr-1">
-                            Sign In
+              Sign In
             </Link>
           </p>
         </div>
@@ -141,6 +141,6 @@ const RegisterCover = () => {
   );
 };
 RegisterCover.getLayout = (page: any) => {
-  return <BlankLayout session={{}}>{page}</BlankLayout>;
+  return <BlankLayout>{page}</BlankLayout>;
 };
 export default RegisterCover;

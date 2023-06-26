@@ -1,21 +1,33 @@
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
-import { getStudent } from '@/apicalls/users';
+import { getUser } from '@/apicalls/users';
 import { useQuery } from 'react-query';
 import { useRouter } from 'next/router';
 import { toUpper } from 'lodash';
+import { useSession } from 'next-auth/react';
+import { Dialog, Transition } from '@headlessui/react';
+import  EditUser from '@/components/EditUser'
 
 
 const AccountSetting = (props:any) => {
   const dispatch = useDispatch();
+  const [editModal, seteditModal]= useState(false)
   const router = useRouter()
-  const {data:student, isSuccess, status, isLoading} = useQuery('getStudent', ()=>{
-    if(router){
-      return getStudent (props.user_session.access_token, router.query )
-    }
+  const { status: sessionStatus, data: session } = useSession();
+  const {data:student, refetch} = useQuery('getStudent', ()=>{
+    return getUser(session?.access_token, router.query )
+  
+  }, {
+    enabled: false
   })
+
+  useEffect(() => {
+    if(sessionStatus == 'authenticated'){
+      refetch()
+    }
+  }, [sessionStatus]);
   useEffect(() => {
     dispatch(setPageTitle('Account Setting'));
   });
@@ -28,8 +40,8 @@ const AccountSetting = (props:any) => {
     <div>
       <ul className="flex space-x-2 rtl:space-x-reverse">
         <li>
-          <Link href="#" className="text-primary hover:underline">
-                        Users
+          <Link href="/students" className="text-primary hover:underline">
+                        Students
           </Link>
         </li>
         <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
@@ -143,9 +155,42 @@ const AccountSetting = (props:any) => {
                       </div>
                     </div>
                   </div>
+                  <div className='mt-8'>
+                    <button className= 'block w-[20%] bg-primary text-white mx-auto flex justify-center px-5 py-3 text-lg' onClick={()=>{
+                      seteditModal(true)
+                    }} >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="w-6 h-6 mr-2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                      </svg>
+
+                            Edit
+                    </button> </div> 
                 </div> : <p> Loading Student Data </p>
             }
           
+
+            <Transition appear show={editModal} as={Fragment}>
+              <Dialog as="div" open={editModal} onClose={() => seteditModal(false)}>
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0" />
+                </Transition.Child>
+                <div id="slideIn_down_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                  <div className="flex items-start justify-center min-h-screen px-4">
+                    <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__slideInDown">
+                      <EditUser type='student' studentData={student} setModal={seteditModal} refreshStudents={refetch} />
+                    </Dialog.Panel>
+                  </div>
+                </div>
+              </Dialog>
+            </Transition>
           </div>
         ) : (
           ''

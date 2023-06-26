@@ -46,7 +46,7 @@ const LoginCover = () => {
               </label>
             </div>
             <button type="submit" className="btn btn-primary w-full">
-                            SIGN IN
+              SIGN IN
             </button>
           </form>
           <div className="relative my-7 h-5 text-center before:absolute before:inset-0 before:m-auto before:h-[1px] before:w-full before:bg-[#ebedf2]  dark:before:bg-[#253b5c]">
@@ -84,7 +84,7 @@ const LoginCover = () => {
                     ></path>
                   </g>
                 </svg>
-                                Google
+                Google
               </button>
             </li>
             <li>
@@ -100,7 +100,7 @@ const LoginCover = () => {
                     ></path>
                   </g>
                 </svg>
-                                Github
+                Github
               </button>
             </li>
             <li>
@@ -116,14 +116,14 @@ const LoginCover = () => {
                     ></path>
                   </g>
                 </svg>
-                                Twitter
+                Twitter
               </button>
             </li>
           </ul>
           <p className="text-center">
-                        Dont&apos;t have an account ?
+            Dont&apos;t have an account ?
             <Link href="/auth/cover-register" className="font-bold text-primary hover:underline ltr:ml-1 rtl:mr-1">
-                            Sign Up
+              Sign Up
             </Link>
           </p>
         </div>
@@ -132,6 +132,6 @@ const LoginCover = () => {
   );
 };
 LoginCover.getLayout = (page: any) => {
-  return <BlankLayout session={{}}>{page}</BlankLayout>;
+  return <BlankLayout>{page}</BlankLayout>;
 };
 export default LoginCover;

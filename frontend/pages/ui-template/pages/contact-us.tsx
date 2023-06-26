@@ -34,7 +34,7 @@ const ContactForm = () => {
               strokeLinecap="round"
             />
           </svg>
-                    Contact Us
+          Contact Us
         </h2>
         <p className="mb-7">Submit your queries and we will get back to you as soon as possible.</p>
         <form className="space-y-4" onSubmit={submitForm}>
@@ -136,7 +136,7 @@ const ContactForm = () => {
             <textarea rows={4} className="form-textarea resize-none ltr:pl-8 rtl:pr-8" placeholder="Message"></textarea>
           </div>
           <button type="submit" className="btn btn-primary w-full">
-                        SUBMIT
+            SUBMIT
           </button>
         </form>
       </div>
@@ -145,7 +145,7 @@ const ContactForm = () => {
 };
 
 ContactForm.getLayout = (page: any) => {
-  return <BlankLayout session={{}}>{page}</BlankLayout>;
+  return <BlankLayout>{page}</BlankLayout>;
 };
 
 export default ContactForm;

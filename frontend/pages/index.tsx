@@ -12,7 +12,7 @@ const Index = () => {
 
   return (
     <>
-      Landing Page
+      <span data-cy="content">Landing Page</span>
     </>
   );
 };

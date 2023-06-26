@@ -1,0 +1,23 @@
+name: e2e
+
+on: [push]
+
+jobs:
+  run:
+    name: Run e2e tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Change directory to ./frontend and prints it
+        run: pwd
+        working-directory: ./frontend
+      - name: Cypress run
+        uses: cypress-io/github-action@v3
+        with:
+          working-directory: ./frontend
+          browser: chrome
+          install: true
+          build: npm run build
+          start: npm start
+          wait-on: "http://localhost:3000"

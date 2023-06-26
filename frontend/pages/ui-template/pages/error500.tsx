@@ -16,13 +16,13 @@ const Error500 = () => {
         <h4 className="mb-5 text-xl font-semibold text-primary sm:text-5xl">Ooops!</h4>
         <p className="text-base">Internal Server Error!</p>
         <Link href="/" className="btn btn-primary mx-auto mt-10 w-max">
-                    Home
+          Home
         </Link>
       </div>
     </div>
   );
 };
 Error500.getLayout = (page: any) => {
-  return <BlankLayout session={{}}>{page}</BlankLayout>;
+  return <BlankLayout>{page}</BlankLayout>;
 };
 export default Error500;

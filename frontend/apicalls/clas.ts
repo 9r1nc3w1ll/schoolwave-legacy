@@ -7,10 +7,10 @@ export const createClass= async(access_token: string, data: any)=>{
     },
     body: JSON.stringify(data),
   })
-  let u= await res.json()
+  let tempData= await res.json()
  
   
-  return u
+  return tempData
 }
 
 export const editClass= async(id: string, access_token: string, data: any)=>{
@@ -22,10 +22,10 @@ export const editClass= async(id: string, access_token: string, data: any)=>{
     },
     body: JSON.stringify(data),
   })
-  let u= await res.json()
+  let tempData= await res.json()
  
   
-  return u
+  return tempData
 }
 
 export const deleteClass= async (id: string, access_token: string)=>{
@@ -54,8 +54,8 @@ export const getClasses= async (access_token: string)=>{
       "Authorization": 'Bearer '+ access_token, 
     }
   })
-  let u= await res.json()
+  let tempData= await res.json()
  
   
-  return u
+  return tempData
 }

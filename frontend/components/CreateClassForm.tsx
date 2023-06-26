@@ -8,11 +8,12 @@ import { createClass } from '@/apicalls/clas';
 
 
 interface FormValues {
-  name: string;
-  description: string;
-  class_index: string;
-
-};
+    name: string;
+    description: string;
+    class_index: string;
+    code: string;
+ 
+   };
 
 
 
@@ -62,6 +63,33 @@ const CreateClassForm = (props: any) => {
         <div>
           <label htmlFor="name">Class Index</label>
           <input id="class_index" type="number" className="form-input" {...register("class_index", { required: "This field is required" })} />
+        </div>
+       
+        <div>
+          <label htmlFor="name">Class Short Code</label>
+          <input id="code" type="text" placeholder="e.g Pry1A"  className="form-input" {...register("code", { required: "This field is required" })} />
+        </div>
+        <div>
+          <label htmlFor="name"> Description</label>
+          <input id="Description" type="text"  className="form-input" {...register("description", { required: "This field is required" })} />
+        </div>
+       
+        <div>
+          <label htmlFor="name">Class Short Code</label>
+          <input id="code" type="text" placeholder="e.g Pry1A"  className="form-input" {...register("code", { required: "This field is required" })} />
+        </div>
+        <div>
+          <label htmlFor="name"> Description</label>
+          <input id="Description" type="text"  className="form-input" {...register("description", { required: "This field is required" })} />
+        </div>
+       
+        <div>
+          <label htmlFor="name">Class Short Code</label>
+          <input id="code" type="text" placeholder="e.g Pry1A"  className="form-input" {...register("code", { required: "This field is required" })} />
+        </div>
+        <div>
+          <label htmlFor="name"> Description</label>
+          <input id="Description" type="text"  className="form-input" {...register("description", { required: "This field is required" })} />
         </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
 

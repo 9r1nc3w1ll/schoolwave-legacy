@@ -4,46 +4,27 @@ import { useEffect } from 'react';
 import DefaultLayout from './DefaultLayout';
 import React from 'react';
 
-type Props = {
-  children: React.ReactElement;
+type ProtectedLayoutProps = {
+  children: React.ReactNode;
 };
 
-/*
-  add the requireAuth property to the page component
-  to protect the page from unauthenticated users
-  e.g.:
-  OrderDetail.requireAuth = true;
-  export default OrderDetail;
- */
-
-export const ProtectedLayout = (props:any) => {
+export const ProtectedLayout = ({ children }: ProtectedLayoutProps) => {
   const router = useRouter();
-  const { status: sessionStatus, data } = useSession();
-  const authorized = sessionStatus === 'authenticated';
-  const unAuthorized = sessionStatus === 'unauthenticated';
-  const loading = sessionStatus === 'loading';
-
-  let g:any = React.Children.toArray(props.children)
-  const el = React.cloneElement(g[0], {user_session:data})
-
+  const { status: sessionStatus } = useSession();
 
   useEffect(() => {
- 
-    if (loading || !router.isReady) return;
-
- 
-    if (unAuthorized) {
-    
+    if (sessionStatus == 'loading' || !router.isReady) return;
+    if (sessionStatus == 'unauthenticated') {
       router.push({
         pathname: '/login',
         query: { returnUrl: router.asPath },
       });
     }
-  }, [loading, unAuthorized, sessionStatus, router]);
+  }, [sessionStatus, router]);
 
-  if (loading) {
+  if (sessionStatus == 'loading') {
     return <>Loading schoolwave...</>;
   }
 
-  return authorized ? <DefaultLayout session={data}> {el}</DefaultLayout>: <></>;
+  return sessionStatus == 'authenticated' ? <DefaultLayout>{children}</DefaultLayout> : <></>;
 };

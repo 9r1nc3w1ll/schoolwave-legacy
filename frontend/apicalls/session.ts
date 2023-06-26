@@ -8,10 +8,10 @@ export const createSession= async(access_token: string, data: any)=>{
     },
     body: JSON.stringify(data),
   })
-  let u= await res.json()
+  let tempData= await res.json()
  
   
-  return u
+  return tempData
 }
 
 export const editSession= async(id: string, access_token: string, data: any)=>{
@@ -23,10 +23,10 @@ export const editSession= async(id: string, access_token: string, data: any)=>{
     },
     body: JSON.stringify(data),
   })
-  let u= await res.json()
+  let tempData= await res.json()
  
   
-  return u
+  return tempData
 }
 
 export const deleteSession= async (id: string, access_token: string)=>{
@@ -45,7 +45,7 @@ export const deleteSession= async (id: string, access_token: string)=>{
 }
 
 
-export const getSession= async (access_token: string)=>{
+export const getSession= async (access_token: any)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session' , {
     method: "GET",
     headers: {
@@ -53,8 +53,8 @@ export const getSession= async (access_token: string)=>{
       "Authorization": 'Bearer '+ access_token, 
     }
   })
-  let u= await res.json()
+  let tempData= await res.json()
  
   
-  return u
+  return tempData
 }

@@ -12,6 +12,7 @@ USER_TYPES = (
     ("staff", "Staff"),
     ("parent", "Parent"),
     ("student", "Student"),
+    ("guest", "Guest"),
     ("teacher", "Teacher"),
     ("admin", "Admin"),
     ("super_admin", "Super_Admin"),

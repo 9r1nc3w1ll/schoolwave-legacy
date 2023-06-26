@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { createSession } from '@/apicalls/session';
+import {useEffect} from 'react'
 
 
 
@@ -18,8 +19,9 @@ interface FormValues {
 
 const CreateSessionForm = ( props:any) => {
 
+
   const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
- 
+
   const queryClient = useQueryClient();
 
   const { mutate, isLoading, error } = useMutation(
@@ -30,7 +32,7 @@ const CreateSessionForm = ( props:any) => {
         showAlert('success', 'Session Created Successfuly')
         props.exit(false)
         reset()
-        queryClient.invalidateQueries(['session'])
+        props.refreshList()
   
       },
       onError: (error:any) => {
@@ -46,11 +48,10 @@ const CreateSessionForm = ( props:any) => {
     }
   );
 
-  const onSubmit = async (x: any) => { 
-    x.active = false
-    x.school = props.user_session.school.id
-
-    mutate(x);                                                                  
+  const onSubmit = async (tempData: any) => { 
+    tempData.active = false
+    tempData.school = props.user_session?.school.id
+    mutate(tempData);                                                                  
   };
   return (
     <div  className="">
