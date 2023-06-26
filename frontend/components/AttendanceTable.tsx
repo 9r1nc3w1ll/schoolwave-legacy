@@ -609,7 +609,7 @@ const AttendanceTable = () => {
                   btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
                   button={
                     <>
-                      <span className="ltr:mr-1 rtl:ml-1">Columns</span>
+                      <span className="ltr:mr-1 rtl:ml-1">Weeks</span>
                       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M19 9L12 15L5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>

@@ -23,7 +23,7 @@ export default function AttendanceOption(){
 
         { showOptions && isComponentVisible &&  <ul ref={ref} className="absolute left-0 top-0 mt-5 z-[20000]  bg-white shadow p-2 text-sm">
           <li>-- choose a remark --</li>
-          <li>Unexcused</li>
+          <li className="" >Unexcused</li>
           <li>Excused</li>
           <li>Late</li>
           <li>Punctual</li>
