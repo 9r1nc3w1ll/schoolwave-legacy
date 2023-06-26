@@ -6,6 +6,8 @@ from school.views import (
     ListCreateClass,
     RetrieveUpdateDestoryClass,
     SetupStatus,
+    ListCreateClassUser,
+    RetrieveUpdateDestoryClassUser,
 )
 
 urlpatterns = [
@@ -17,5 +19,11 @@ urlpatterns = [
         "/class/<uuid:pk>",
         RetrieveUpdateDestoryClass.as_view(),
         name="retrieve_update_destroy_class",
+    ),
+    path("/class-user", ListCreateClassUser.as_view(), name="list_create_class_user"),
+    path(
+        "/class-user/<uuid:pk>",
+        RetrieveUpdateDestoryClassUser.as_view(),
+        name="retrieve_update_destroy_class_user",
     ),
 ]

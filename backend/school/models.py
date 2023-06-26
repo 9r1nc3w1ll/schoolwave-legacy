@@ -34,3 +34,14 @@ class Class(BaseModel):
     description = models.TextField()
     class_index = models.PositiveSmallIntegerField(default=0)
     code = models.CharField(max_length=150, unique=True)
+
+class ClassUser(models.Model):
+    class Meta:
+        db_table = "class_users"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
+    role = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"User: {self.user_id}, Class: {self.class_id}, Role: {self.role}"
