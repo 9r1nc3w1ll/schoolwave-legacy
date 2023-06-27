@@ -51,14 +51,11 @@ class AdmissionRequest(BaseModel):
     comment_if_declined = models.TextField(blank=True, null=True)
 
     def create_student_user(self, **kwargs):
-
-        try:
-            User.objects.create_user(
-                **dict(StudentInformation.objects.filter(username=self.student_info.username).values()[0])
-            )
-        except Exception as e:
-            print(e)
-            pass
+        
+        User.objects.create_user(
+            **dict(StudentInformation.objects.filter(username=self.student_info.username).values()[0])
+        )
+        
         
 
 
