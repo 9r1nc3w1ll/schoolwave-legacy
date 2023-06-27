@@ -1,7 +1,28 @@
-name: e2
+name: integration
 on: [push]
 jobs:
-  run:
+  unit-test:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ca-certificates curl gnupg lsb-release
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      - name: Run Unit Tests
+        working-directory: ./backend
+        run: |
+          mv .env.testing .env
+          docker compose up -d
+          docker compose exec -it app bash -c ". ./.venv/bin/activate &&  python manage.py test"
+  e2e:
     name: Run e2e tests
     runs-on: ubuntu-latest
     steps:
@@ -16,14 +37,13 @@ jobs:
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-      - name: Start backend server
+      - name: Start backend stack
         working-directory: ./backend
         run: |
           mv .env.testing .env
           docker compose up -d
-      - name: Cypress run
+      - name: Run e2e tests
         uses: cypress-io/github-action@v3
-        continue-on-error: false
         with:
           working-directory: ./frontend
           browser: chrome
