@@ -27,13 +27,6 @@ jobs:
         run: |
           mv .env.testing .env
           docker compose up -d
-          echo "Using Python Version: $(python --version)"
-          python -m venv ./.venv
-          echo "Am I in a venv $(pip -V | grep "backend/.venv")"
-          . ./.venv/bin/activate
-          pip install -r requirements.txt
-          python manage.py migrate
-          python manage.py runserver
       - name: Cypress run
         uses: cypress-io/github-action@v3
         continue-on-error: true

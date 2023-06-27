@@ -1,0 +1,11 @@
+.git/
+.venv/
+.mypy_cache/
+.vscode/*
+.python-version
+.dockerignore
+.history
+*.pyc
+Dockerfile
+dockerfile
+docker-compose.y*
