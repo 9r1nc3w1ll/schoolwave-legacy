@@ -94,6 +94,22 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
         self.assertEqual(len(response.data["data"]), 2)
 
     
+    def create_single_admission_request(self):
+        url = reverse("create_single_admission")
+        self.client.force_authenticate(user=self.user)
+
+        data = {
+            "username" : "testnewuser",
+            "password" : "testnewpassword",
+            "first_name" : "Test",
+            "last_name" : "TestLast",
+            "date_of_birth" : "1998-01-20",
+            "gender" : "male"
+        }
+
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_admission_request(self):
         url = reverse("list_create_requests")
