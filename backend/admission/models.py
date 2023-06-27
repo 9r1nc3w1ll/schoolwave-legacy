@@ -53,7 +53,9 @@ class AdmissionRequest(BaseModel):
     def create_student_user(self, **kwargs):
 
         try:
-            User.objects.create_user(**StudentInformation.objects.filter(username=self.student_info.username).values())
+            User.objects.create_user(
+                **dict(StudentInformation.objects.filter(username=self.student_info.username).values()[0])
+            )
         except Exception as e:
             print(e)
             pass

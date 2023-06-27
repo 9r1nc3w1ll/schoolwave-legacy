@@ -7,7 +7,7 @@ from rest_framework import status
 class MyExceptionFormatter(ExceptionFormatter):
     def format_error_response(self, error_response: ErrorResponse):
         error = error_response.errors[0]
-        return {"status": "error", "message": error.detail, "data": None}
+        return {"status": "error", "message": error.detail, "field_name": error.attr, "data": None}
 
 
 class ConflictError(APIException):

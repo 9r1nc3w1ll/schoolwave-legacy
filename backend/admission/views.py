@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser
 import csv
 import io
-from admission.serializers import AdmissionRequestSerializer
+from admission.serializers import AdmissionRequestSerializer, StudentInformationSerializer
 from school.models import School
 from utils.permissions import IsSchoolOwner
 from admission.models import AdmissionRequest, StudentInformation
@@ -52,6 +52,34 @@ class BatchUploadAdmissionRequest(APIView):
             return Response(data)
         except Exception as e:
             raise ValidationError(e)
+
+
+class CreateSingleAdmission(CreateAPIView):
+    serializer_class = StudentInformationSerializer
+    permission_classes = [IsSchoolOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        school = School.objects.get(owner=self.request.user)
+
+        qs = self.queryset.filter(school=school)
+        return super().get_queryset()
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        student_info = serializer.save()
+
+        admission_request_instance = AdmissionRequest.objects.get(student_info=student_info)
+
+        headers = self.get_success_headers(serializer.data)
+        resp = {
+            "message": "Admission request created successfully.",
+            "data": AdmissionRequestSerializer(admission_request_instance).data,
+        }
+        return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
+
+    
 
 
 class ListCreateAdmissionRequests(ListCreateAPIView):
