@@ -9,6 +9,7 @@ import Sidebar from './Sidebar';
 import Setting from './Setting';
 import Portals from '../../components/Portals';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 interface IProps {
   children: ReactNode;
@@ -17,6 +18,7 @@ interface IProps {
 
 
 const DefaultLayout = ({ children }: IProps) => {
+  const { status: sessionStatus, data: user_session } = useSession();
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(true);
   const [showTopButton, setShowTopButton] = useState(false);
@@ -111,7 +113,7 @@ const DefaultLayout = ({ children }: IProps) => {
           {/* BEGIN CONTENT AREA */}
           <div className="main-content">
             {/* BEGIN TOP NAVBAR */}
-            <Header />
+            <Header user_session={user_session} />
             {/* END TOP NAVBAR */}
             <div className={`${animation} animate__animated p-6`}>
               {children}

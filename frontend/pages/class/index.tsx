@@ -9,6 +9,7 @@ import { createClass, getClasses } from '@/apicalls/clas';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 import { showAlert } from '@/utility_methods/alert';
 import { useSession } from 'next-auth/react';
+import ClassUserAssignment from '@/components/ClassUserAssignment';
 
 
 
@@ -21,6 +22,7 @@ const Export = (props: any) => {
   const [sessions, setSessions] = useState([])
   const [filteredsessions, setFilteredsessions] = useState<any>(sessions);
   const [modal, setmodal] = useState(false);
+  const [usermodal, setusermodal] = useState(false);
   const [selectedSession, setSelectedSession] = useState<any>({});
 
 
@@ -126,7 +128,9 @@ const Export = (props: any) => {
                     duplicate(data)
                   }}>Duplicate</p>
                   <p className='mb-2 px-2  hover:bg-white'>Assign Students</p>
-                  <p className='mb-2 px-2  hover:bg-white'>Assign Teacher</p>
+                  <p className='mb-2 px-2  hover:bg-white' onClick={()=>{
+                    setusermodal(true)
+                  }}>Assign Teacher</p>
                   <DeleteClasses sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch}/>
 
 
@@ -208,6 +212,31 @@ const Export = (props: any) => {
 
 
         <div>
+          <Transition appear show={usermodal} as={Fragment}>
+            <Dialog as="div" open={usermodal} onClose={() => setusermodal(false)}>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0" />
+              </Transition.Child>
+              <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                <div className="flex items-start justify-center min-h-screen px-4">
+                  <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
+                    <div className="w-4/5 mx-auto py-5 text-center">
+                      <h5 className=" text-lg font-semibold dark:text-white-light">Assign Teacher to a class <span className='text-sm'>{`(${selectedSession.name})`}</span></h5>
+                      <ClassUserAssignment student={false} user_session={user_session} sessionData={selectedSession} exit={setusermodal} refreshClasses={refetch}/>
+                    </div>
+                  </Dialog.Panel>
+                </div>
+              </div>
+            </Dialog>
+          </Transition>
 
           <Transition appear show={modal} as={Fragment}>
             <Dialog as="div" open={modal} onClose={() => setmodal(false)}>
