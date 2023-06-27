@@ -34,7 +34,6 @@ class StudentInformation(BaseModel):
     city = models.CharField(max_length=200, null=True, blank=True)
     state = models.CharField(max_length=200, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
-    
 
     guardian_name = models.CharField(max_length=200, null=True, blank=True)
     relation = models.CharField(max_length=200, null=True, blank=True)
