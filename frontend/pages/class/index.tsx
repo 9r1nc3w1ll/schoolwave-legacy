@@ -130,16 +130,16 @@ const Export = (props: any) => {
                   }}>Duplicate</p>
                   <p className='mb-2 px-2 cursor-pointer  hover:bg-white'
                     onClick={()=>{
-                      // setassignStudent(true)
-                      // setusermodal(true)
-                      console.log('Assign Students')
+                      setassignStudent(true)
+                      setusermodal(true)
+                      // console.log('Assign Students')
 
                     }}
                   >Assign Students</p>
                   <p className='mb-2 px-2  cursor-pointer hover:bg-white' onClick={()=>{
-                    // setassignStudent(false)
+                    setassignStudent(false)
                     setusermodal(true)
-                    console.log('Assign Staffs')
+              
 
                   }}>Assign Teacher</p>
                   <DeleteClasses sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch}/>
@@ -241,7 +241,7 @@ const Export = (props: any) => {
                   <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                     <div className="w-4/5 mx-auto py-5 text-center">
                       <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a class <span className='text-sm'>{`(${selectedSession.name})`}</span></h5>
-                      <ClassUserAssignment student={assignStudent} user_session={user_session} classData={selectedSession} exit={setusermodal} refreshClasses={refetch}/>
+                      <ClassUserAssignment student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch}/>
                     </div>
                   </Dialog.Panel>
                 </div>

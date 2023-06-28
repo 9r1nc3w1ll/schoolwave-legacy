@@ -118,7 +118,7 @@ const ClassUserAssignment =(props: any)=>{
           }): <p>{`${isLoading?'Loading items ...':'xxx'}`}</p>}
         </div>
       </div>
-      <button onClick={props.exit(false)}>Done</button>
+      {/* <button onClick={props.closeIt(false)}>Done</button> */}
     </div>
   )
 }
