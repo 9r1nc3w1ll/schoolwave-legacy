@@ -45,7 +45,7 @@ const ClassUserAssignment =(props: any)=>{
     });
   }, [search, items]);
   const roles: any = [
-    { value: 'Class Teacher', label: 'Class Teacher' },
+    { value: 'Class Teachr', label: 'Class Teacher' },
     { value: 'Staff Assistant', label: 'Staff Assistant' },
     { value: 'Counselor', label: 'Counselor' },
   ];
