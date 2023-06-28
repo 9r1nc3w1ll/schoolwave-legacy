@@ -230,7 +230,7 @@ const Export = (props: any) => {
                   <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                     <div className="w-4/5 mx-auto py-5 text-center">
                       <h5 className=" text-lg font-semibold dark:text-white-light">Assign Teacher to a class <span className='text-sm'>{`(${selectedSession.name})`}</span></h5>
-                      <ClassUserAssignment student={false} user_session={user_session} sessionData={selectedSession} exit={setusermodal} refreshClasses={refetch}/>
+                      <ClassUserAssignment student={false} user_session={user_session} classData={selectedSession} exit={setusermodal} refreshClasses={refetch}/>
                     </div>
                   </Dialog.Panel>
                 </div>

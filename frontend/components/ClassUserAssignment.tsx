@@ -1,46 +1,10 @@
+import { AssignUserToClass } from '@/apicalls/clas';
 import { getStaffs } from '@/apicalls/users';
+import { showAlert } from '@/utility_methods/alert';
 import { useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import Select from 'react-select';
 
-
-// const items = [
-//   {
-//     thumb: 'profile-5.jpeg',
-//     name: 'Alan Green',
-//     email: 'alan@mail.com',
-//     status: 'Active',
-//     statusClass: 'badge badge-outline-primary',
-//   },
-//   {
-//     thumb: 'profile-11.jpeg',
-//     name: 'Linda Nelson',
-//     email: 'Linda@mail.com',
-//     status: 'Busy',
-//     statusClass: 'badge badge-outline-danger',
-//   },
-//   {
-//     thumb: 'profile-12.jpeg',
-//     name: 'Lila Perry',
-//     email: 'Lila@mail.com',
-//     status: 'Closed',
-//     statusClass: 'badge badge-outline-warning',
-//   },
-//   {
-//     thumb: 'profile-3.jpeg',
-//     name: 'Andy King',
-//     email: 'Andy@mail.com',
-//     status: 'Active',
-//     statusClass: 'badge badge-outline-primary',
-//   },
-//   {
-//     thumb: 'profile-15.jpeg',
-//     name: 'Jesse Cory',
-//     email: 'Jesse@mail.com',
-//     status: 'Busy',
-//     statusClass: 'badge badge-outline-danger',
-//   },
-// ];
 const ClassUserAssignment =(props: any)=>{
   const [search, setSearch] = useState<string>('');
   const [items, setItems] = useState([]);
@@ -49,6 +13,24 @@ const ClassUserAssignment =(props: any)=>{
     return getStaffs(props.user_session?.access_token)
   })
 
+  const queryClient = useQueryClient();
+  const { mutate, error } = useMutation(
+    (data: any) =>
+      AssignUserToClass(data, props.user_session.access_token),
+    {
+      onSuccess: async (data) => {
+        showAlert('success', 'User assigned to class Successfuly')
+        queryClient.invalidateQueries(['getStaff'])
+        // props.setmodal(false)
+        console.log(data)
+      },
+      onError: (error:any) => {
+                 
+        showAlert('error', 'An Error Occured' )
+        
+      }
+    }
+  );
   useEffect(()=>{
     if(isSuccess){
       setItems(data)
@@ -103,7 +85,15 @@ const ClassUserAssignment =(props: any)=>{
                   <div>{item.first_name + ' ' + item.last_name}</div>
                 </div>
                 <div className='w-full'>
-                  <Select defaultValue='Select a Role' options={roles} isSearchable={false}/>
+                  <Select defaultValue='Select a Role' options={roles} isSearchable={false} onChange={(e:any)=>{
+                    let data = {
+                      user: item.id,
+                      class_id: props.classData.id,
+                      role:e.value,
+                      // first_name: item.first_name,
+                      // last_name: item.last_name,
+                    }
+                    mutate(data)}}/>
 
                 </div>
         

@@ -1,5 +1,4 @@
 export const createClass= async(data: any, access_token?: string)=>{
-  console.log(access_token)
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class' , {
     method: "POST",
     headers: {
@@ -54,6 +53,24 @@ export const getClasses= async (access_token?: string)=>{
       "content-Type": "application/json",
       "Authorization": 'Bearer '+ access_token, 
     }
+  })
+  let tempData= await res.json()
+ 
+  
+  return tempData
+}
+
+
+
+
+export const AssignUserToClass= async(data: any, access_token?: string)=>{
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class-user' , {
+    method: "POST",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": 'Bearer '+ access_token, 
+    },
+    body: JSON.stringify(data),
   })
   let tempData= await res.json()
  
