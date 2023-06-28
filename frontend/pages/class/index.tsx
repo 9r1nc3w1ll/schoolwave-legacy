@@ -22,7 +22,8 @@ const Export = (props: any) => {
   const [sessions, setSessions] = useState([])
   const [filteredsessions, setFilteredsessions] = useState<any>(sessions);
   const [modal, setmodal] = useState(false);
-  const [usermodal, setusermodal] = useState(false);
+  const [usermodal,setusermodal ] = useState(false);
+  const [assignStudent, setassignStudent] = useState(false);
   const [selectedSession, setSelectedSession] = useState<any>({});
 
 
@@ -119,17 +120,27 @@ const Export = (props: any) => {
 
 
                 <div className="bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[100%] w-[130px] z-10">
-                  <p className='mb-2 px-3 pt-2 hover:bg-white' onClick={() => {
+                  <p className='mb-2 px-3 pt-2 cursor-pointer hover:bg-white' onClick={() => {
                     setmodal(true)
                   }
 
                   }>Edit</p>
-                  <p className='mb-2 px-2  hover:bg-white' onClick={() => {
+                  <p className='mb-2 px-2  cursor-pointer hover:bg-white' onClick={() => {
                     duplicate(data)
                   }}>Duplicate</p>
-                  <p className='mb-2 px-2  hover:bg-white'>Assign Students</p>
-                  <p className='mb-2 px-2  hover:bg-white' onClick={()=>{
+                  <p className='mb-2 px-2 cursor-pointer  hover:bg-white'
+                    onClick={()=>{
+                      // setassignStudent(true)
+                      // setusermodal(true)
+                      console.log('Assign Students')
+
+                    }}
+                  >Assign Students</p>
+                  <p className='mb-2 px-2  cursor-pointer hover:bg-white' onClick={()=>{
+                    // setassignStudent(false)
                     setusermodal(true)
+                    console.log('Assign Staffs')
+
                   }}>Assign Teacher</p>
                   <DeleteClasses sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch}/>
 
@@ -229,8 +240,8 @@ const Export = (props: any) => {
                 <div className="flex items-start justify-center min-h-screen px-4">
                   <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                     <div className="w-4/5 mx-auto py-5 text-center">
-                      <h5 className=" text-lg font-semibold dark:text-white-light">Assign Teacher to a class <span className='text-sm'>{`(${selectedSession.name})`}</span></h5>
-                      <ClassUserAssignment student={false} user_session={user_session} classData={selectedSession} exit={setusermodal} refreshClasses={refetch}/>
+                      <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a class <span className='text-sm'>{`(${selectedSession.name})`}</span></h5>
+                      <ClassUserAssignment student={assignStudent} user_session={user_session} classData={selectedSession} exit={setusermodal} refreshClasses={refetch}/>
                     </div>
                   </Dialog.Panel>
                 </div>

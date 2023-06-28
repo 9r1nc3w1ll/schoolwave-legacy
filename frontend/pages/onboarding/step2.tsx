@@ -53,6 +53,7 @@ const Step2 = (props: any) => {
   const { register, handleSubmit, getValues, formState } = useForm<FormValues>();
   const { errors }: any = formState
   const onSubmit: SubmitHandler<any> = data => {
+    data.tag = 'schlwave'
     mutate(data)
   };
 

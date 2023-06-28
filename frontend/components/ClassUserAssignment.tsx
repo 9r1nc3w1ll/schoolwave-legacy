@@ -1,21 +1,26 @@
 import { AssignUserToClass } from '@/apicalls/clas';
-import { getStaffs } from '@/apicalls/users';
+import { getStaffs, getStudents } from '@/apicalls/users';
 import { showAlert } from '@/utility_methods/alert';
 import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import Select from 'react-select';
+import { active } from 'sortablejs';
+import CheckboxWithState from './CheckboxWithState';
+
 
 const ClassUserAssignment =(props: any)=>{
   const [search, setSearch] = useState<string>('');
   const [items, setItems] = useState([]);
-  const {data, isSuccess, status, isLoading} = useQuery('getStaffs', async ()=> {
-    
-    return getStaffs(props.user_session?.access_token)
+  const [selectedOption, setSelectedOption] = useState<number>()
+  const {data, isSuccess, status, isLoading} = useQuery('getUsers', async ()=> {
+    const api = props.student? getStudents : getStaffs
+    return api(props.user_session?.access_token)
   })
 
   const queryClient = useQueryClient();
   const { mutate, error } = useMutation(
     (data: any) =>
+    
       AssignUserToClass(data, props.user_session.access_token),
     {
       onSuccess: async (data) => {
@@ -52,7 +57,7 @@ const ClassUserAssignment =(props: any)=>{
     
   return(
 
-    <div className="mb-5 space-y-5 mt-8">
+    <div className="mb-5 space-y-5 mt-8 min-h-[60vh] overflow-y-auto">
       <form className="mx-auto w-full sm:w-1/2 mb-5">
         <div className="relative">
           <input
@@ -72,8 +77,8 @@ const ClassUserAssignment =(props: any)=>{
         </div>
       </form>
       <div>
-        <div className="p-4 space-y-4 overflow-x-auto w-full block">
-          {filteredItems?filteredItems.map((item: any) => {
+        <div className="p-4 space-y-4  w-full block">
+          {filteredItems?filteredItems.map((item: any, i: number) => {
             return (
               <div
                 key={item.id}
@@ -85,16 +90,27 @@ const ClassUserAssignment =(props: any)=>{
                   <div>{item.first_name + ' ' + item.last_name}</div>
                 </div>
                 <div className='w-full'>
-                  <Select defaultValue='Select a Role' options={roles} isSearchable={false} onChange={(e:any)=>{
-                    let data = {
-                      user: item.id,
-                      class_id: props.classData.id,
-                      role:e.value,
+                  {!props.student? <Select defaultValue='Select a Role' options={roles} isSearchable={false} 
+                    onChange={(e:any)=>{
+                      let data = {
+                        user: item.id,
+                        class_id: props.classData.id,
+                        role:e.value,
                       // first_name: item.first_name,
                       // last_name: item.last_name,
-                    }
-                    mutate(data)}}/>
-
+                      }
+                      mutate(data)}}
+                    onFocus={()=>{
+                      setSelectedOption(i)
+                    }}
+                    onBlur={()=>{
+                      setSelectedOption(-5)
+                    }}
+             
+                    className={`${selectedOption == (i -1) || selectedOption == (i - 2) ? 'hidden':''}`}
+                  /> :
+                    <CheckboxWithState click={()=>{mutate(data)}} />
+                  }
                 </div>
         
               </div>
@@ -102,7 +118,7 @@ const ClassUserAssignment =(props: any)=>{
           }): <p>{`${isLoading?'Loading items ...':'xxx'}`}</p>}
         </div>
       </div>
-    
+      <button onClick={props.exit(false)}>Done</button>
     </div>
   )
 }
