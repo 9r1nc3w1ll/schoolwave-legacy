@@ -74,7 +74,7 @@ const Export = (props: any) => {
   const { data: h, isSuccess, status, isLoading, refetch } = useQuery('classes', () => getClasses(user_session?.access_token), {enabled: false})
 
   useEffect(() => {
-
+ 
     setFilteredsessions(() => {
       return sessions.filter((item: any) => {
         return item.name.toLowerCase().includes(search.toLowerCase());
@@ -102,7 +102,7 @@ const Export = (props: any) => {
         return (
           <tr className={`${data.active ? `bg-primary-light` : ''} !important`} key={data.id}>
             <td>
-              <div className="whitespace-nowrap"><Link href={`/session/${data.id}`}>{data.name} </Link></div>
+              <div className="whitespace-nowrap"><Link href={`/class/${data.id}`}>{data.name} </Link></div>
             </td>
             <td>{data.class_index}</td>
             <td>{Math.round(Math.random() * 50)}</td>
