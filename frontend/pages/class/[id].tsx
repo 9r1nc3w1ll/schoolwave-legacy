@@ -147,22 +147,52 @@ const AccountSetting = (props:any) => {
                     <img className="w-3/4 rounded-md overflow-hidden object-cover col-span-1" src="/assets/images/profile-12.jpeg" alt="img" />
                     <div className='col-span-2'> 
                       <h1 className='text-4xl text-primary '>{toUpper( classDetails.name) }</h1>
-                      <div className='md:grid grid-cols-2 w-full gap-6 ml-[-35%]'>
-                        <div >
-                        <p className='text-right mt-4 '>ID:  </p>
-                          <p className='text-right mt-4 '>Description:  </p>
-                          <p className='text-right mt-4 '>Level:  </p>
-                          <p className='text-right mt-4 '> Number of Students: </p>
-                          <p className='text-right mt-4 '>Teacher:  </p>
-                        </div>
-                        <div className=''  >  
-                        <p className='text-left mt-4 '>{classDetails.id}</p>
-                          <p className='text-left mt-4 '>{classDetails.description}</p>
-                          <p className='text-left mt-4 '>{classDetails.class_index}</p>
-                          <p className='text-left mt-4 '>{classDetails.code}</p>
-                          {/* <p className='text-left mt-4 '>{classDetails.level}</p>
-                          <p className=' text-left mt-4 '>{classDetails.number}</p>
-                          <p className='text-left  mt-4'>{student.address}</p> */}
+                      <div className='md:grid grid-cols-2 w-full gap-6 ml-[-45%]  '>
+                        
+                        <div className='sm:ml-[70%] md:ml-[90%]' >  
+
+
+                        
+      <table className='text-left mt-5 md:flex-wrap '>
+        <thead >
+            <tr>
+                <th>ID: </th>
+                <td><div className="whitespace-nowrap">{classDetails.id}</div></td>
+                
+            </tr>
+            </thead>
+
+        
+        <tbody>
+          <tr>
+            <th>Description:</th>
+            <td>{classDetails.description}</td>
+          </tr>
+          <tr>
+          <th>Level:</th>
+          <td>{classDetails.class_index}</td>
+          </tr>
+          <tr>
+          <th>Number of Students:</th>
+          
+          </tr>
+          <tr>
+          <th>Class code:</th>
+          <td> {classDetails.code}</td>
+          </tr>
+
+          <tr>
+          <th>Teacher:</th>
+
+          </tr>
+          
+          
+                
+                  
+            
+        </tbody>
+    </table>
+
                           </div> 
                       </div>
                     </div>
