@@ -6,12 +6,13 @@ const CreateTerm =(props: any)=>{
 
 
   const { mutate, isLoading, error } = useMutation(
-    (data: any) =>
-      createTerm(props.user_session.access_token, data),
+    (data: any) =>{
+
+      return createTerm(data, props.userSession.access_token)},
     {
       onSuccess: async (data) => {
         showAlert('success', 'Term updated Successfuly')
-        props.exit(false)
+        // props.exit(false)
       
     
       },
@@ -28,7 +29,7 @@ const CreateTerm =(props: any)=>{
       name: name,
       active: false,
       session: props.selectedSession,
-      school: props.user_session?.school.id,
+      school: props.userSession?.school.id,
       code: code
     }
     mutate(termData)

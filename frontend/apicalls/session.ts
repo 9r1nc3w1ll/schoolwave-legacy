@@ -85,6 +85,7 @@ export const getTerms= async (access_token: any)=>{
  
   
   return tempData.data
+
 }
 
 
