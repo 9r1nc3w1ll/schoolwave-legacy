@@ -10,7 +10,7 @@ const DeleteSessions = (props:any) => {
     const gt = await deleteSession(props.sessionID, props.user_session.access_token)
    
     if(gt.status == 204){
-      queryClient.invalidateQueries(['session'])
+      props.refreshSession()
       showAlert('success', 'Session Deleted Successfuly')
     }else{
       showAlert('error', 'An Error Occored')

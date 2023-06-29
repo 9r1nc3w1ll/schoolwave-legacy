@@ -8,6 +8,7 @@ import EditSessionForm from '@/components/EditSessionForm';
 import { getSession } from '@/apicalls/session';
 import { dateInPast } from '@/utility_methods/datey';
 import { useSession } from 'next-auth/react';
+import ActivateSessions from '@/components/ActivateSessions';
 
 
 
@@ -92,8 +93,9 @@ const Export =  (props:any) => {
                             setmodal(true)} 
                         
                           }>Edit</p> 
-                          <p className='mb-2 px-2  hover:bg-white'>Set as Current</p>
-                          <DeleteSessions sessionID = {selectedSession.id} user_session={sessionData}/>
+                          <ActivateSessions sessionData={item} user_session={sessionData} refreshSession={refetch} />
+                          {/* props.sessionData.id, props.user_session.access_token */}
+                          <DeleteSessions sessionID = {item.id} user_session={sessionData} refreshSession={refetch}/>
                         </>
                         : item.active ?
                       
