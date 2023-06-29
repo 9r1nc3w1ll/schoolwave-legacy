@@ -213,10 +213,14 @@ const StaffList = (props:any) => {
   return (
     <div>
       <div className="panel">
-        <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
+        <div className="mb-4.5 flex justify-self-stretch gap-5 md:flex-row md:items-center ">
+         
 
-          <h5 className=" text-3xl font-semibold dark:text-white-light">Employees</h5>
-          <div className="flex flex-wrap items-center">
+          <h5 className=" text-3xl font-semibold dark:text-white-light">Staffs</h5>
+          <div className="   gap-5  md:items-center flex justify-end w-full"> 
+
+          
+          <div className=" ">
             <button type="button" onClick={() => exportTable('csv')} className="btn btn-primary btn-sm m-1 ">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
@@ -225,90 +229,15 @@ const StaffList = (props:any) => {
                            Export
             </button>
       
-            <button type="button" onClick={() => exportTable('print')} className="btn btn-primary btn-sm m-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" />
-              </svg>
+            
+          </div>
+          <div>
+          <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
 
-                            Import
-            </button>
-     
-            <button type="button"  className="btn btn-primary btn-sm m-1" onClick={()=>{
-              setmodal(true)
-            }}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-
-
-                            Create Employee
-            </button>
-  
-            <Transition appear show={modal} as={Fragment}>
-              <Dialog as="div" open={modal} onClose={() => setmodal(false)}>
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <div className="fixed inset-0" />
-                </Transition.Child>
-                <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto" data-cy='createEmployeeModal' >
-                  <div className="flex items-start justify-center min-h-screen px-4">
-                    <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
-                      <div className="w-4/5 mx-auto py-5">
-                                         
-                        <CreateEmployee access_token={user_session?.access_token} setmodal={setmodal} refreshEmployee={refetch} />
-                      </div>
-                    </Dialog.Panel>
-                  </div>
-                </div>
-              </Dialog>
-            </Transition>
-
-           
-            <button className={`btn ${canEdit() ?'btn-primary btn-sm ': 'bg-[#f2f5f7] shadow-sm text-sm'} m-1`} onClick={()=>{
-              seteditModal(true)
-            }} >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-              </svg>
-
-                            EDIT
-            </button>
-     
-            <Transition appear show={editModal} as={Fragment}>
-              <Dialog as="div" open={editModal} onClose={() => seteditModal(false)}>
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <div className="fixed inset-0" />
-                </Transition.Child>
-                <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
-                  <div className="flex items-start justify-center min-h-screen px-4">
-                    <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
-                      <div className="w-4/5 mx-auto py-5">
-                                         
-                        <EditEmployee access_token={user_session?.access_token} id={selectedRecords[0]?.id} seteditModal={seteditModal} refreshEmployee={refetch} />
-                      </div>
-                    </Dialog.Panel>
-                  </div>
-                </div>
-              </Dialog>
-            </Transition>
+          </div>
           </div>
 
-          <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          
         </div>
    
         <div className="datatables">

@@ -106,8 +106,8 @@ const AccountSetting = (props:any) => {
             </li>
             <li className="inline-block">
               <button
-                onClick={() => toggleTabs('payment-details')}
-                className={`flex gap-2 border-b border-transparent p-4 hover:border-primary hover:text-primary ${tabs === 'payment-details' ? '!border-primary text-primary' : ''}`}
+                onClick={() => toggleTabs('list-of-students')}
+                className={`flex gap-2 border-b border-transparent p-4 hover:border-primary hover:text-primary ${tabs === 'list-of-students' ? '!border-primary text-primary' : ''}`}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5">
                   <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
@@ -124,15 +124,15 @@ const AccountSetting = (props:any) => {
             </li>
             <li className="inline-block">
               <button
-                onClick={() => toggleTabs('preferences')}
-                className={`flex gap-2 border-b border-transparent p-4 hover:border-primary hover:text-primary ${tabs === 'preferences' ? '!border-primary text-primary' : ''}`}
+                onClick={() => toggleTabs('list-of-staffs')}
+                className={`flex gap-2 border-b border-transparent p-4 hover:border-primary hover:text-primary ${tabs === 'list-of-staffs' ? '!border-primary text-primary' : ''}`}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="12" cy="6" r="4" stroke="currentColor" strokeWidth="1.5" />
                   <ellipse opacity="0.5" cx="12" cy="17" rx="7" ry="4" stroke="currentColor" strokeWidth="1.5" />
                 </svg>
                                 Staff
-              </button>
+              </button> 
             </li>
             
           </ul>
@@ -167,56 +167,20 @@ const AccountSetting = (props:any) => {
                       </div>
                     </div>
                   </div>
-                  <div className='mt-8'>
-                    <button className= 'block w-[20%] bg-primary text-white mx-auto flex justify-center px-5 py-3 text-lg' onClick={()=>{
-                      seteditModal(true)
-                    }} >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="w-6 h-6 mr-2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                      </svg>
-
-                            Edit
-                    </button> </div> 
+                  
                 </div> : <p> Loading Student Data </p>
             }
           
-            <Transition appear show={editModal} as={Fragment}>
-              <Dialog as="div" open={editModal} onClose={() => seteditModal(false)}>
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <div className="fixed inset-0" />
-               </Transition.Child>
-              <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
-                <div className="flex items-start justify-center min-h-screen px-4">
-                  <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
-                    <div className="w-4/5 mx-auto py-5">
-                      <h5 className=" text-lg font-semibold dark:text-white-light">Edit Class</h5>
-                      <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p>
-
-                      <EditClassForm create={false} user_session={user_session} sessionData={selectedSession} exit={setmodal} refreshClasses={refetch}/>
-                    </div>
-                  </Dialog.Panel>
-                </div>
-              </div>
-            </Dialog>
-          </Transition>
           </div>
         ) : (
           ''
         )}
-        {tabs === 'payment-details' ? (
+        {tabs === 'list-of-students' ? (
           <StudentList/>
         ) : (
           ''
         )}
-        {tabs === 'preferences' ? (
+        {tabs === 'list-of-staffs' ? (
           <StaffList/>
         ) : (
           ''
