@@ -58,7 +58,7 @@ export const getSession= async (access_token: any)=>{
   
   return tempData
 }
-export const getSingleSession= async (access_token?: string, id ?: string)=>{
+export const getSingleSession= async (id: any, access_token?: string)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' +id , {
     method: "GET",
     headers: {

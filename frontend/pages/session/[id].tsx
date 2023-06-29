@@ -15,7 +15,7 @@ export default function Basic ( props: any) {
   const router = useRouter()
 
   const { data: currentSession, refetch:refetchSession } = useQuery('getSession', () => {
-    return getSingleSession(user_session?.access_token, router.query.id)
+    return getSingleSession(router? router.query?.id : '', user_session?.access_token)
   }, {
     enabled: false
   })
@@ -37,7 +37,7 @@ export default function Basic ( props: any) {
     }
 
   }, [sessionStatus, user_session, tableData, refetchSession, currentSession])
-  const tableElements: ReactI18NextChildren = () =>{
+  const tableElements = () =>{
     return  tableData?.map((data: { active: any; id: Key | null | undefined; name: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; start_date: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; end_date: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined; }) => {
       return (
         <tr className={`${data.active? `bg-primary-light`: ''} !important`} key={data.id}>

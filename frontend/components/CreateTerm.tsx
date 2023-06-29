@@ -12,7 +12,7 @@ const CreateTerm =(props: any)=>{
     {
       onSuccess: async (data) => {
         showAlert('success', 'Term updated Successfuly')
-        // props.exit(false)
+        props.exit(false)
       
     
       },
