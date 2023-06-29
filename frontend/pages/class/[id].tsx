@@ -187,6 +187,7 @@ const AccountSetting = (props:any) => {
         )}
       </div>
     </div>
+    
   );
 };
 
