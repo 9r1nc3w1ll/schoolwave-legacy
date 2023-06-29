@@ -132,7 +132,7 @@ const Export = (props: any) => {
                     onClick={()=>{
                       setassignStudent(true)
                       setusermodal(true)
-                      // console.log('Assign Students')
+                  
 
                     }}
                   >Assign Students</p>
