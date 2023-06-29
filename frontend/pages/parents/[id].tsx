@@ -132,19 +132,38 @@ const AccountSetting = (props:any) => {
                     <img className="w-3/4 rounded-md overflow-hidden object-cover col-span-1" src="/assets/images/profile-12.jpeg" alt="img" />
                     <div className='col-span-2'> 
                       <h1 className='text-4xl text-primary '>{toUpper( student.first_name) + ' ' + toUpper(student.last_name)}</h1>
-                      <div className='md:grid grid-cols-2 w-full gap-6 ml-[-35%]'>
+                      <div className='md:grid grid-cols-2 w-full gap-6 '>
                         <div >
-                          <p className='text-right mt-4 '>Gender:  </p>
-                          <p className='text-right mt-4 '>Role:  </p>
-                          <p className='text-right mt-4 '> Phone No.: </p>
-                          <p className='text-right mt-4 '>Address.:  </p>
+                         
+                          <table className='text-left mt-5 md:flex-wrap '>
+                      <thead >
+                    <tr>
+                      <th>ID: </th>
+                      <td><div className="whitespace-nowrap">{student.id}</div></td>
+                
+                    </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>Gender: </th>
+                          <td>{student.gender}</td>
+                        </tr>
+                        <tr>
+                        <th>Role: </th>
+                        <td>{student.role}</td>
+                        </tr>
+                        <tr>
+                        <th>Phone No.:</th>
+                        <td>{student.phone_number }</td>
+                        </tr>
+                        <tr>
+                        <th>Address.: </th>
+                        <td> {student.address}</td>
+                        </tr>
+                    </tbody>
+                  </table>
                         </div>
-                        <div className=''  >  
-                          <p className='text-left mt-4 '>{student.gender}</p>
-                          <p className='text-left mt-4 '>{student.role}</p>
-                          <p className=' text-left mt-4 '>{student.phone_number }</p>
-                          <p className='text-left  mt-4'>{student.address}</p></div> 
-                      </div>
+                        </div>
                     </div>
                   </div>
                   <div className='mt-8'>
@@ -194,11 +213,9 @@ const AccountSetting = (props:any) => {
             <div className="mb-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
               <div className="panel">
                 <div className="mb-5">
-                  <h5 className="mb-4 text-lg font-semibold">Billing Address</h5>
-                  <p>
-                                        Changes to your <span className="text-primary">Billing</span> information will take effect starting with scheduled payment and will be refelected on your next
-                                        invoice.
-                  </p>
+                  <h5 className="mb-4 text-lg font-semibold">Parent Details</h5>
+                  <p>  Changes to your <span className="text-primary">Billing</span> information will take effect starting with scheduled payment and will be refelected on your next
+                                        invoice.</p>
                 </div>
                 <div className="mb-5">
                   <div className="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
