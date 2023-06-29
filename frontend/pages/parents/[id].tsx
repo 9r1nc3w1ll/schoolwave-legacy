@@ -10,6 +10,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import EditEmployee from '@/components/EditEmployee';
 import { useSession } from 'next-auth/react';
 import ChildrenList from '@/components/ChildrenList';
+import FeesList from '@/components/FeesList';
+import ParentLogin from '@/components/FeesList';
 
 
 const AccountSetting = (props:any) => {
@@ -118,7 +120,7 @@ const AccountSetting = (props:any) => {
                     strokeWidth="1.5"
                   />
                 </svg>
-                                Danger Zone
+                                Login Details
               </button>
             </li>
           </ul>
@@ -191,7 +193,7 @@ const AccountSetting = (props:any) => {
         {tabs === 'fees' ? (
           <div className="switch">
             <div className="mb-5 grid grid-cols-1 gap-5 lg:grid-cols-1">
-              <ChildrenList/>
+              <FeesList/>
               
             </div>
           </div>
@@ -201,7 +203,8 @@ const AccountSetting = (props:any) => {
         {tabs === 'login-info' ? (
           <div className="switch">
             <div className="grid grid-cols-1 gap-5 md:grid-cols-1">
-              
+
+              <ParentLogin/>
             </div>
           </div>
         ) : (
