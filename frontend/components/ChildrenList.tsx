@@ -8,7 +8,6 @@ import { setPageTitle } from '../store/themeConfigSlice';
 
 const ChildrenList = () => {
 
-
   const rowData = [
     {
       id: 1,
