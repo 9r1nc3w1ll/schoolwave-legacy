@@ -145,11 +145,11 @@ const AccountSetting = (props:any) => {
                   <h6 className="mb-5 text-lg font-bold">General Information</h6>
                   <div className='md:grid grid-cols-3 gap-1'>
                     <img className="w-3/4 rounded-md overflow-hidden object-cover col-span-1" src="/assets/images/profile-12.jpeg" alt="img" />
-                    <div className='col-span-2'> 
+                    <div className='col-span-2 '> 
                       <h1 className='text-4xl text-primary '>{toUpper( classDetails.name) }</h1>
-                      <div className='md:grid grid-cols-2 w-full gap-6 ml-[-45%]  '>
+                      <div className='md:grid grid-cols-2 w-full gap-6  '>
                         
-                        <div className='sm:ml-[70%] md:ml-[90%]' >  
+                        <div className=' ' >  
 
 
                         
