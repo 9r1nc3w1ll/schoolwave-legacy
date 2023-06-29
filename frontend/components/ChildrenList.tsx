@@ -7,10 +7,7 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../store/themeConfigSlice';
 
 const ChildrenList = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setPageTitle('Advanced Table'));
-  });
+
 
   const rowData = [
     {
@@ -101,7 +98,7 @@ const ChildrenList = () => {
               },
               {
                 accessor: 'firstName',
-                title: 'Ward',
+                title: 'Child',
                 sortable: true,
                 render: ({ firstName, lastName }) => (
                   <div className="flex items-center gap-2">
