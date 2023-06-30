@@ -131,33 +131,6 @@ class ListCreateClass(ListCreateAPIView):
         }
         return Response(resp)
 
-
-
-#     def retrieve(self, request, *args, **kwargs):
-#         instance = self.get_object()
-#         serializer = self.get_serializer(instance)
-
-#         # Get the number of students in the class
-#         student_count = instance.student_set.count()
-
-#         # Get the class teacher details
-#         teacher = instance.class_teacher
-
-#         resp = {
-#             "status": "success",
-#             "message": "Class fetched successfully.",
-#             "data": {
-#                 "class": serializer.data,
-#                 "student_count": student_count,
-#                 "class_teacher": {
-#                     "id": teacher.id,
-#                     "name": teacher.name,
-#                     # Include other relevant details of the class teacher
-#                 },
-#             },
-#         }
-#         return Response(resp)
-
 class RetrieveUpdateDestoryClass(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Class.objects.all()
