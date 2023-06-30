@@ -1,15 +1,11 @@
 import Link from 'next/link';
-import { useEffect, useState, Fragment } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
-import { getUser } from '@/apicalls/users';
-import { getClasses } from '@/apicalls/clas';
+import { getClass } from '@/apicalls/clas';
 import { useQuery } from 'react-query';
 import { useRouter } from 'next/router';
 import { toUpper } from 'lodash';
-import { Dialog, Transition } from '@headlessui/react';
-import EditClassForm from '@/components/EditClassForm';
 import { useSession } from 'next-auth/react';
 import StudentList from '@/components/StudentList';
 import StaffList from '@/components/StaffList';
@@ -20,6 +16,7 @@ const AccountSetting = (props:any) => {
 
   interface Class {
     id: number;
+    name: string;
     description: string;
     class_index:number;
     code:number;
@@ -29,13 +26,15 @@ const AccountSetting = (props:any) => {
     const [selectedSession, setSelectedSession] = useState<any>({});
     const [modal, setmodal] = useState(false);
 
+  const router = useRouter()
+  const classId = router?.query?.id
   
   const [classDetails, setClassDetails] = useState<Class | null>(null);
 
   const { status: sessionStatus, data: user_session } = useSession();
   const dispatch = useDispatch();
   const { data: classes, isSuccess, status, isLoading, refetch } = useQuery('classes', () => 
-  getClasses(user_session?.access_token), {enabled: false})
+  getClass(classId, user_session?.access_token), {enabled: false})
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
       refetch()
@@ -44,7 +43,7 @@ const AccountSetting = (props:any) => {
 
   }, [sessionStatus, refetch]);
   const [editModal, seteditModal] = useState(false);
-  const router = useRouter()
+
 
   useEffect(() => {
     dispatch(setPageTitle('Account Setting'));
@@ -54,12 +53,11 @@ const AccountSetting = (props:any) => {
     setTabs(name);
   };
 
-  const classId = router.query.id
+ 
   
   useEffect(() =>{
-       if (isSuccess && classes.data) {
-        const selectedClass = classes.data.find((cls:Class) => cls.id === classId);
-        setClassDetails(selectedClass || null);
+       if (isSuccess && classes) {
+        setClassDetails(classes || null)
          }
        }, [isSuccess, classes, classId]);
 

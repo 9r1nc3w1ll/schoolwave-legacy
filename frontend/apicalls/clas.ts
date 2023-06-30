@@ -46,6 +46,7 @@ export const deleteClass= async (id: string, access_token: string)=>{
 
 
 
+
 export const getClasses= async (access_token?: string)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class' , {
     method: "GET",
@@ -59,6 +60,23 @@ export const getClasses= async (access_token?: string)=>{
   
   return tempData
 }
+
+
+
+export const getClass= async ( id : any, access_token?: string )=>{
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class/'+id , {
+    method: "GET",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": 'Bearer '+ access_token, 
+    }
+  })
+  let tempData= await res.json()
+ 
+  
+  return tempData.data
+}
+
 
 
 
