@@ -17,9 +17,10 @@ class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = ('id', 'name', 'description', 'class_index', 'code', 'school', 'student_count', 'class_teacher')
-
+    
     def get_student_count(self, obj):
-        return obj.classmember_set.count()
+        return obj.classmember_set.filter(user__role="student").count()
+
 
     def get_class_teacher(self, obj):
         class_teacher = obj.classmember_set.filter(role="Class Teacher").first()
