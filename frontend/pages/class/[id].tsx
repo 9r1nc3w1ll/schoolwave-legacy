@@ -85,6 +85,7 @@ const AccountSetting = (props:any) => {
           <h5 className="text-lg font-semibold dark:text-white-light">Class Details</h5>
         </div>
         <div>
+          
           <ul className="mb-5 overflow-y-auto whitespace-nowrap border-b border-[#ebedf2] font-semibold dark:border-[#191e3a] sm:flex">
             <li className="inline-block">
               <button
