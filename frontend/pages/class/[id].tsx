@@ -16,6 +16,7 @@ const AccountSetting = (props:any) => {
 
   interface Class {
     id: number;
+    
     name: string;
     description: string;
     class_index:number;
