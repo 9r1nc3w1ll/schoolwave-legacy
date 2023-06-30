@@ -1,50 +1,83 @@
-import FormGroup from '@mui/material/FormGroup';
-import { FormControlLabel } from '@mui/material';
-import { Switch } from '@mui/material';
 
-const ParentLogin = () => {
 
-   
+const FeesList = () => {
+
+    const tableData = [
+       
+        {
+            id: 4,
+            invoice_no: "12201",
+            term: "2022-2023",
+            name: 'Godi Ebenizer',
+            status: 'Paid',
+            
+        },
+        {
+            id: 4,
+            invoice_no: "102201",
+            term: "2022-2023",
+            name: 'Solanke Rose',
+            status: 'Partial Payment',
+            
+        },
+        {
+            id: 4,
+            invoice_no: "52201",
+            term: "2022-2023",
+            name: 'Vincent Carpenter',
+            status: 'Failed',
+            
+        },
+    ];
 
     return(
         <div className="panel">
-                    <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Login details</h5>
-
-                    <FormGroup className="space-y-5">
-                        <div>
-                            <label htmlFor="groupFname">First Name</label>
-                            <input id="groupFname" type="text" placeholder="Enter First Name" className="form-input" />
-                        </div>
-                        <div>
-                            <label htmlFor="groupLname">Last Name</label>
-                            <input id="groupLname" type="text" placeholder="Enter Last Name" className="form-input" />
-                        </div>
-                        <div>
-                            <label htmlFor="groupLname">Email</label>
-                            <input id="groupLname" type="email" placeholder="Enter Last Name" className="form-input" />
-                        </div>
-                        <div>
-                            <label htmlFor="groupLname">Password</label>
-                            <input id="groupLname" type="password" placeholder="Enter Last Name" className="form-input" />
-                        </div>
-                        <div className=' flex gap-5 justify-items-stretch'>
-                        <button type="button" className="btn btn-primary !mt-6">
-                            Submit
-                        </button>
-
-                        <FormControlLabel control={<Switch defaultChecked />} label="Disable" className='justify-end  w-full mt-5' />
-
-                        </div>
-                       
-                       
-
+                    <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Fees Details</h5>
+        <div className="table-responsive mb-5">
+    <table>
+        <thead>
+            <tr>
+                <th>Invoice No</th>
+                <th>Term</th>
+                <th>Student</th>
+                <th>Status</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {tableData.map((data) => {
+                return (
+                    
+                    <tr key={data.id}>
+                        <td>{data.invoice_no}</td>
+                        <td>{data.term}</td>
+                        <td>
+                            <div className="whitespace-nowrap">{data.name}</div>
+                        </td>
+                        <td>
+                            <span
+                                className={`badge whitespace-nowrap ${
+                                    data.status === 'Paid'
+                                        ? 'badge-outline-primary'
+                                        : data.status === 'Partial Payment'
+                                        ? 'badge-outline-secondary'
+                                        : data.status === 'Failed'
+                                        ? 'badge-outline-danger'
+                                        : 'badge-outline-primary'
+                                }`}
+                            >
+                                {data.status}
+                            </span>
+                        </td>
                         
-
-                    </FormGroup>
-       
-
+                    </tr>
+                );
+            })}
+        </tbody>
+    </table>
+</div>
 </div>
 );
 };
-export default ParentLogin
+export default FeesList
 
