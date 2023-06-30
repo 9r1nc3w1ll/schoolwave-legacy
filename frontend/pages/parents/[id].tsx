@@ -11,7 +11,7 @@ import EditEmployee from '@/components/EditEmployee';
 import { useSession } from 'next-auth/react';
 import ChildrenList from '@/components/ChildrenList';
 import FeesList from '@/components/FeesList';
-import ParentLogin from '@/components/FeesList';
+import ParentLog from '@/components/Parentlog';
 
 
 const AccountSetting = (props:any) => {
@@ -204,7 +204,7 @@ const AccountSetting = (props:any) => {
           <div className="switch">
             <div className="grid grid-cols-1 gap-5 md:grid-cols-1">
 
-              <ParentLogin/>
+              <ParentLog/>
             </div>
           </div>
         ) : (
