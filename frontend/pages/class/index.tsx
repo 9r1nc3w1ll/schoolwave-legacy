@@ -144,11 +144,6 @@ const Export = (props: any) => {
                   }}>Assign Teacher</p>
                   <DeleteClasses sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch}/>
 
-
-
-
-
-
                 </div>
 
 
