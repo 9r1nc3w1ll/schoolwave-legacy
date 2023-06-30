@@ -33,8 +33,8 @@ const ParentLog = () => {
                         </button>
 
                             </div>
-                            <div className="mb-5">
-                                <Switches/>
+                            <div className="pt-2  flex gap-4 w-full justify-end"> 
+                                <Switches /> <span className="text-lg py-5"> Disable</span>
                             </div>
 
 
