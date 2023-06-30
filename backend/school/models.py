@@ -35,9 +35,9 @@ class Class(BaseModel):
     class_index = models.PositiveSmallIntegerField(default=0)
     code = models.CharField(max_length=150, unique=True)
 
-class ClassUser(BaseModel):
+class ClassMember(BaseModel):
     class Meta:
-        db_table = "class_users"
+        db_table = "class_members"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)

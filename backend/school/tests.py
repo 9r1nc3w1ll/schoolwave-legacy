@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from school.models import Class, School, ClassUser
+from school.models import Class, School, ClassMember
 
 User = get_user_model()
 
@@ -122,7 +122,7 @@ class ClassTests(APITestCase):
         self.assertEqual(Class.objects.count(), 0)
 
 
-class ClassUserTests(APITestCase):
+class ClassMemberTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             username="testuser", password="testpassword"
@@ -144,14 +144,14 @@ class ClassUserTests(APITestCase):
             username="studentuser", password="testpassword", first_name="firstname", last_name="lastname"
         )
 
-        self.class_user_obj = ClassUser.objects.create(
+        self.class_member_obj = ClassMember.objects.create(
             user= self.student_user,
             class_id= self.class_obj,
             role= "student"
         )
 
-    def test_create_class_user(self):
-        url = reverse("list_create_class_user")
+    def test_create_class_member(self):
+        url = reverse("list_create_class_member")
         self.client.force_authenticate(user=self.user)
         data = {
             "user": self.teacher_user.id,
@@ -161,11 +161,11 @@ class ClassUserTests(APITestCase):
         
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["message"], "Class user created successfully.")
+        self.assertEqual(response.data["message"], "Class member created successfully.")
 
 
-    def test_list_class_user(self):
-        url = reverse("list_create_class_user")
+    def test_list_class_member(self):
+        url = reverse("list_create_class_member")
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
@@ -176,16 +176,16 @@ class ClassUserTests(APITestCase):
             len(response.data["data"]), 1
         )
 
-    def test_retrieve_class_user(self):
-        url = reverse("retrieve_update_destroy_class_user", kwargs={"pk":self.class_user_obj.id})
+    def test_retrieve_class_member(self):
+        url = reverse("retrieve_update_destroy_class_member", kwargs={"pk":self.class_member_obj.id})
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["data"]["role"], "student")
 
-    def test_update_class_user(self):
-        url = reverse("retrieve_update_destroy_class_user", kwargs={"pk":self.class_user_obj.id})
+    def test_update_class_member(self):
+        url = reverse("retrieve_update_destroy_class_member", kwargs={"pk":self.class_member_obj.id})
         self.client.force_authenticate(user=self.user)
         data = {
                 "user": self.student_user.id,
@@ -196,10 +196,10 @@ class ClassUserTests(APITestCase):
         response = self.client.patch(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "Class user updated successfully.")
+        self.assertEqual(response.data["message"], "Class member updated successfully.")
 
-    def test_delete_class_user(self):
-        url = reverse("retrieve_update_destroy_class_user", kwargs={"pk":self.class_user_obj.id})
+    def test_delete_class_member(self):
+        url = reverse("retrieve_update_destroy_class_member", kwargs={"pk":self.class_member_obj.id})
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(url)
 

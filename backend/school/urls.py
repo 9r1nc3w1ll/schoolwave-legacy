@@ -6,8 +6,8 @@ from school.views import (
     ListCreateClass,
     RetrieveUpdateDestoryClass,
     SetupStatus,
-    ListCreateClassUser,
-    RetrieveUpdateDestoryClassUser,
+    ListCreateClassMember,
+    RetrieveUpdateDestoryClassMember,
 )
 
 urlpatterns = [
@@ -20,10 +20,10 @@ urlpatterns = [
         RetrieveUpdateDestoryClass.as_view(),
         name="retrieve_update_destroy_class",
     ),
-    path("/class-user", ListCreateClassUser.as_view(), name="list_create_class_user"),
+    path("/class-member", ListCreateClassMember.as_view(), name="list_create_class_member"),
     path(
-        "/class-user/<uuid:pk>",
-        RetrieveUpdateDestoryClassUser.as_view(),
-        name="retrieve_update_destroy_class_user",
+        "/class-member/<uuid:pk>",
+        RetrieveUpdateDestoryClassMember.as_view(),
+        name="retrieve_update_destroy_class_member",
     ),
 ]

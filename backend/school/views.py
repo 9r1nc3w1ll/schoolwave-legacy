@@ -9,9 +9,11 @@ from rest_framework.views import APIView
 
 from account.models import User
 from account.serializers import OwnerSerializer, UserSerializer
-from school.models import Class, School, ClassUser
-from school.serializers import ClassSerializer, SchoolSerializer, ClassUserSerializer
+from school.models import Class, School, ClassMember
+from school.serializers import ClassSerializer, SchoolSerializer, ClassMemberSerializer
 from utils.permissions import IsSchoolOwner
+from django.db.models import Q
+import uuid
 
 logger = logging.getLogger(__name__)
 
@@ -92,13 +94,11 @@ class ListCreateClass(ListCreateAPIView):
     serializer_class = ClassSerializer
 
     def get_queryset(self):
-        """
-        Modify in case user can have more than one school
-        """
-        school = School.objects.get(owner=self.request.user)
-
-        qs = self.queryset.filter(school=school)
-        return qs
+        class_id = self.kwargs.get("class_id")
+        if class_id:
+            return self.queryset.filter(id=class_id)
+        else:
+            return self.queryset.all()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -126,25 +126,12 @@ class ListCreateClass(ListCreateAPIView):
 
         resp = {
             "status": "success",
-            "message": "Classs fetched successfully.",
+            "message": "Class fetched successfully.",
             "data": serializer.data,
         }
         return Response(resp)
 
 
-# class RetrieveUpdateDestoryClass(RetrieveUpdateDestroyAPIView):
-#     permission_classes = [IsAuthenticated, IsSchoolOwner]
-#     queryset = Class.objects.all()
-#     serializer_class = ClassSerializer
-
-#     def get_queryset(self):
-#         """
-#         Modify in case user can have more than one school
-#         """
-#         school = School.objects.get(owner=self.request.user)
-
-#         qs = self.queryset.filter(school=school)
-#         return qs
 
 #     def retrieve(self, request, *args, **kwargs):
 #         instance = self.get_object()
@@ -176,14 +163,18 @@ class RetrieveUpdateDestoryClass(RetrieveUpdateDestroyAPIView):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
 
-    def get_queryset(self):
-        """
-        Modify in case user can have more than one school
-        """
-        school = School.objects.get(owner=self.request.user)
+    def get_object(self):
+        pk = self.kwargs.get("pk")
+        try:
+            if isinstance(pk, uuid.UUID):
+                return Class.objects.get(
+                    Q(id=pk) | Q(school_id=pk)
+                )
+            else:
+                return Response({"message": "Class not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Class.DoesNotExist:
+            return Response({"message": "Class not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        qs = self.queryset.filter(school=school)
-        return qs
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -223,10 +214,10 @@ class RetrieveUpdateDestoryClass(RetrieveUpdateDestroyAPIView):
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
 
 
-class ListCreateClassUser(ListCreateAPIView):
+class ListCreateClassMember(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = ClassUser.objects.all()
-    serializer_class = ClassUserSerializer
+    queryset = ClassMember.objects.all()
+    serializer_class = ClassMemberSerializer
 
     def get_queryset(self):
         class_user_id = self.kwargs.get("class_user_id")
@@ -244,7 +235,7 @@ class ListCreateClassUser(ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         resp = {
             "status": "success",
-            "message": "Class user created successfully.",
+            "message": "Class member created successfully.",
             "data": serializer.data,
         }
         return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
@@ -261,30 +252,34 @@ class ListCreateClassUser(ListCreateAPIView):
 
         resp = {
             "status": "success",
-            "message": "Class users fetched successfully.",
+            "message": "Class members fetched successfully.",
             "data": serializer.data,
         }
         return Response(resp)
 
-class RetrieveUpdateDestoryClassUser(RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsSchoolOwner]
-    queryset = ClassUser.objects.all()
-    serializer_class = ClassSerializer
+class RetrieveUpdateDestoryClassMember(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = ClassMember.objects.all()
+    serializer_class = ClassMemberSerializer
 
     def get_object(self):
-        class_user_id= self.kwargs.get("pk")
+        pk = self.kwargs.get("pk")
         try:
-           class_user = ClassUser.objects.get(id=class_user_id)
-        except ClassUser.DoesNotExist:
-            return Response({"message": "Class user not found."}, status=status.HTTP_404_NOT_FOUND)
-        return class_user
+            if isinstance(pk, uuid.UUID):
+                return ClassMember.objects.get(
+                    Q(id=pk) | Q(class_id=pk) | Q(user=pk)
+                )
+            else:
+                return Response({"message": "Class member not found."}, status=status.HTTP_404_NOT_FOUND)
+        except ClassMember.DoesNotExist:
+            return Response({"message": "Class member not found."}, status=status.HTTP_404_NOT_FOUND)
 
     def retrieve(self, request, *args, **kwargs):
         class_user = self.get_object()
-        serializer = ClassUserSerializer(class_user)
+        serializer = ClassMemberSerializer(class_user)
 
         resp = {
-            "message": "Class user fetched successfully.",
+            "message": "Class member fetched successfully.",
             "data": serializer.data,
         }
         return Response(resp)
@@ -293,19 +288,19 @@ class RetrieveUpdateDestoryClassUser(RetrieveUpdateDestroyAPIView):
         data = request.data
         class_user = self.get_object()
 
-        serializer = ClassUserSerializer(class_user, data=data, partial=True)
+        serializer = ClassMemberSerializer(class_user, data=data, partial=True)
         if serializer.is_valid(): 
             class_user = serializer.save()
-            data = ClassUserSerializer(class_user).data
+            data = ClassMemberSerializer(class_user).data
 
             resp = {
-                "message": "Class user updated successfully.",
+                "message": "Class member updated successfully.",
                 "data": serializer.data,
             }
             return Response(resp)
         
         return Response({
-            "message": "Class user not found.",
+            "message": "Class member not found.",
             "errors": serializer.errors
             })
 
@@ -314,8 +309,9 @@ class RetrieveUpdateDestoryClassUser(RetrieveUpdateDestroyAPIView):
         if class_user:
             class_user.delete()
             resp = {
-                "message": "Class user deleted successfully.",
+                "message": "Class member deleted successfully.",
             }
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"message": "Class user not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "Class member not found."}, status=status.HTTP_404_NOT_FOUND)
+        
