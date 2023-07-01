@@ -1,9 +1,11 @@
 from django.db import models
 from config.models import BaseModel
+from datetime import date
 
 from subject.models import Subject
 from school.models import Class
 from account.models import User
+from staff.models import Staff
 
 class StudentAttendance(BaseModel):
     class Meta:
@@ -11,7 +13,7 @@ class StudentAttendance(BaseModel):
     """
     This is daily students attendance 
     """
-    date = models.DateField()
+    date = models.DateField(default=date.today)
     student = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'student'}, related_name='student_attendances')
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)
@@ -24,7 +26,7 @@ class StudentAttendance(BaseModel):
     attendance_type = models.CharField(max_length=10, choices=ATTENDANCE_TYPE_CHOICES)
     present = models.BooleanField()
     remark = models.TextField()
-    staff = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'staff'}, related_name='staff_attendances')
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
 
