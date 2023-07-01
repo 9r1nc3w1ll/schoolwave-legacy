@@ -50,7 +50,7 @@ const ClassUserAssignment =(props: any)=>{
     });
   }, [search, items]);
   const roles: any = [
-    { value: 'Class Teachr', label: 'Class Teacher' },
+    { value: 'Class Teacher', label: 'Class Teacher' },
     { value: 'Staff Assistant', label: 'Staff Assistant' },
     { value: 'Counselor', label: 'Counselor' },
   ];
@@ -109,7 +109,16 @@ const ClassUserAssignment =(props: any)=>{
              
                     className={`${selectedOption == (i -1) || selectedOption == (i - 2) ? 'hidden':''}`}
                   /> :
-                    <CheckboxWithState click={()=>{mutate(data)}} />
+                    <CheckboxWithState click={()=>{
+                      let data = {
+                        user: item.id,
+                        class_id: props.classData.id,
+                        role:'student',
+                      // first_name: item.first_name,
+                      // last_name: item.last_name,
+                      }
+                      mutate(data)
+                    }} />
                   }
                 </div>
         

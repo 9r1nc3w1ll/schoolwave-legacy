@@ -82,7 +82,8 @@ export const getClass= async ( id : any, access_token?: string )=>{
 
 
 export const AssignUserToClass= async(data: any, access_token?: string)=>{
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class-user' , {
+  console.log(data)
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class-member' , {
     method: "POST",
     headers: {
       "content-Type": "application/json",
