@@ -5,13 +5,13 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from attendance.models import StudentAttendance
+from attendance.models import AttendanceRecord
 
 from school.models import Class, School
 
 User = get_user_model()
 
-class StudentAttendanceAPITestCase(APITestCase):
+class AttendanceRecordAPITestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
 
@@ -37,7 +37,7 @@ class StudentAttendanceAPITestCase(APITestCase):
             name="Test Class", school=self.school, description="Description"
         )
 
-        self.attendance = StudentAttendance.objects.create(
+        self.attendance = AttendanceRecord.objects.create(
             date="2023-05-30",
             student_id=self.student_obj.id,
             class_id=self.class_obj,
