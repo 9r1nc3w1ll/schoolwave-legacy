@@ -102,3 +102,34 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
             "data": serializer.data,
         }
         return Response(resp)
+        
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        studentattendance = self.get_object()
+
+        serializer = AttendanceRecordSerializer(studentattendance, data=data, partial=True)
+        if serializer.is_valid(): 
+            studentattendance = serializer.save() 
+            message = "Student attendance updated successfully."
+            data = AttendanceRecordSerializer(studentattendance).data    
+        
+            return Response({
+                "message": message,
+                "data": data
+            })
+        
+        return Response({
+            "message": "Student attendance not found.",
+            "errors": serializer.errors
+            })
+
+    def delete(self, request, *args, **kwargs):
+        studentattendance = self.get_object()
+        if studentattendance:
+            studentattendance.delete()
+            resp = {
+                "message": "Student attendance deleted successfully.",
+            }
+            return Response(resp, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message": "Student attendance not found."}, status=status.HTTP_404_NOT_FOUND)

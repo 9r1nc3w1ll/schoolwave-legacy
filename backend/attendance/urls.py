@@ -18,9 +18,4 @@ urlpatterns = [
         RetrieveUpdateDestoryStudentAttendance.as_view(),
         name="student_attendance_retrieve_update_destroy",
     ),
-    path(
-        "/student-class-attendance/<uuid:pk>",
-        RetrieveUpdateDestoryStudentAttendance.as_view(),
-        name="student_class_attendance_retrieve",
-    ),
 ]
