@@ -118,28 +118,3 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "Student attendance not found."}, status=status.HTTP_404_NOT_FOUND)
-
-
-class RetrieveStudentClassAttendance(RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = StudentAttendance.objects.all()
-    serializer_class = StudentAttendanceSerializer
-
-    def get_object(self):
-        studentclassattendance_id = self.kwargs.get("pk")
-        try:
-            studentclassattendance = StudentAttendance.objects.get(class_id=studentclassattendance_id)
-        except StudentAttendance.DoesNotExist:
-            return Response({
-                    'message': 'Student class attendance not found.'
-                    })
-        return studentclassattendance
-    
-    def retrieve(self, request, *args, **kwargs):
-        student_class_attendance = self.get_object()
-        serializer = StudentAttendanceSerializer(student_class_attendance)
-        resp = {
-            "message": "Student class attendance retrieved successfully.",
-            "data": serializer.data,
-        }
-        return Response(resp)
