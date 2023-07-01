@@ -7,9 +7,9 @@ from school.models import Class
 from account.models import User
 from staff.models import Staff
 
-class StudentAttendance(BaseModel):
+class AttendanceRecord(BaseModel):
     class Meta:
-        db_table = "student_attendances"
+        db_table = "attendance_records"
     """
     This is daily students attendance 
     """
@@ -26,7 +26,7 @@ class StudentAttendance(BaseModel):
     attendance_type = models.CharField(max_length=10, choices=ATTENDANCE_TYPE_CHOICES)
     present = models.BooleanField()
     remark = models.TextField()
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE, blank=True, null=True)
+    staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, blank=True, null=True)
 
     def save(self, *args, **kwargs):
 

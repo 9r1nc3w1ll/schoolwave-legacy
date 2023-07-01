@@ -33,8 +33,9 @@ const Export = (props: any) => {
     (data: any) =>
       createClass(data, user_session?.access_token),
     {
-      onSuccess: async () => {
+      onSuccess: async (data) => {
         showAlert('success', 'Class Created Successfuly')
+      
         queryClient.invalidateQueries(['classes'])
 
       },
@@ -76,7 +77,7 @@ const Export = (props: any) => {
   useEffect(() => {
  
     setFilteredsessions(() => {
-      return sessions.filter((item: any) => {
+      return sessions?.filter((item: any) => {
         return item.name.toLowerCase().includes(search.toLowerCase());
       });
     });
@@ -98,15 +99,16 @@ const Export = (props: any) => {
   }, [h, isSuccess, status])
   const displaySession: () => any = () => {
     if (sessions) {
-      return filteredsessions.map((data: any) => {
+      return filteredsessions?.map((data: any) => {
+
         return (
           <tr className={`${data.active ? `bg-primary-light` : ''} !important`} key={data.id}>
             <td>
               <div className="whitespace-nowrap"><Link href={`/class/${data.id}`}>{data.name} </Link></div>
             </td>
             <td>{data.class_index}</td>
-            <td>{Math.round(Math.random() * 50)}</td>
-            <td>John Doe</td>
+            <td>{data.student_count? data.student_count: 0}</td>
+            <td>{data.class_teacher? data.class_teacher.name: 'Teacher not Assigned ' }</td>
             <td className="text-center ">
               <DropDownWIthChildren
                 trigger={<button type="button" className='relative' onClick={() => {

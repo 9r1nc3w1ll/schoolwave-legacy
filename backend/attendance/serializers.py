@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import StudentAttendance
+from .models import AttendanceRecord
 
-class StudentAttendanceSerializer(serializers.ModelSerializer):
+class AttendanceRecordSerializer(serializers.ModelSerializer):
     class Meta:
-        model = StudentAttendance
+        model = AttendanceRecord
         fields = '__all__'

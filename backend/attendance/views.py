@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import StudentAttendance
-from .serializers import StudentAttendanceSerializer
+from .models import AttendanceRecord
+from .serializers import AttendanceRecordSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from school.models import School
@@ -10,8 +10,8 @@ import uuid
 
 class ListCreateStudentAttendance(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = StudentAttendance.objects.all()
-    serializer_class = StudentAttendanceSerializer
+    queryset = AttendanceRecord.objects.all()
+    serializer_class = AttendanceRecordSerializer
 
     def get_queryset(self):
         studentattendance_id = self.kwargs.get("studentattendance_id")
@@ -23,11 +23,11 @@ class ListCreateStudentAttendance(ListCreateAPIView):
         
 
     def create(self, request, *args, **kwargs):
-        serializer = StudentAttendanceSerializer(data=request.data)
+        serializer = AttendanceRecordSerializer(data=request.data)
         if serializer.is_valid():
             student = serializer.save()
             message = "Student attendance created successfully."
-            data = StudentAttendanceSerializer(student)
+            data = AttendanceRecordSerializer(student)
 
             headers = self.get_success_headers(serializer.data)
 
@@ -63,19 +63,19 @@ class ListCreateStudentAttendance(ListCreateAPIView):
 
 class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = StudentAttendance.objects.all()
-    serializer_class = StudentAttendanceSerializer
+    queryset = AttendanceRecord.objects.all()
+    serializer_class = AttendanceRecordSerializer
 
     def get_object(self):
         pk = self.kwargs.get("pk")
         try:
             if isinstance(pk, uuid.UUID):
-                return StudentAttendance.objects.filter(
+                return AttendanceRecord.objects.filter(
                     Q(id=pk) | Q(student=pk) | Q(class_id=pk) | Q(subject=pk) | Q(staff=pk)
                 )
             else:
                 return Response({'message': 'Student attendance not found.'}, status=status.HTTP_404_NOT_FOUND)
-        except StudentAttendance.DoesNotExist:
+        except AttendanceRecord.DoesNotExist:
             return Response({
                     'message': 'Student attendance not found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -92,11 +92,11 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
         data = request.data
         studentattendance = self.get_object()
 
-        serializer = StudentAttendanceSerializer(studentattendance, data=data, partial=True)
+        serializer = AttendanceRecordSerializer(studentattendance, data=data, partial=True)
         if serializer.is_valid(): 
             studentattendance = serializer.save() 
             message = "Student attendance updated successfully."
-            data = StudentAttendanceSerializer(studentattendance).data    
+            data = AttendanceRecordSerializer(studentattendance).data    
         
             return Response({
                 "message": message,
@@ -118,28 +118,3 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "Student attendance not found."}, status=status.HTTP_404_NOT_FOUND)
-
-
-class RetrieveStudentClassAttendance(RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = StudentAttendance.objects.all()
-    serializer_class = StudentAttendanceSerializer
-
-    def get_object(self):
-        studentclassattendance_id = self.kwargs.get("pk")
-        try:
-            studentclassattendance = StudentAttendance.objects.get(class_id=studentclassattendance_id)
-        except StudentAttendance.DoesNotExist:
-            return Response({
-                    'message': 'Student class attendance not found.'
-                    })
-        return studentclassattendance
-    
-    def retrieve(self, request, *args, **kwargs):
-        student_class_attendance = self.get_object()
-        serializer = StudentAttendanceSerializer(student_class_attendance)
-        resp = {
-            "message": "Student class attendance retrieved successfully.",
-            "data": serializer.data,
-        }
-        return Response(resp)

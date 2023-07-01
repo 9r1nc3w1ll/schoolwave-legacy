@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
 import EditUser from '@/components/EditUser';
 import { useSession } from 'next-auth/react';
+import { getClassStudents } from '@/apicalls/clas';
 
 
 
@@ -27,7 +28,7 @@ const StudentList = (props: any) => {
   }
 
   const { data: students, isSuccess, status, refetch } = useQuery('getStudents', () => {
-    return getStudents(session?.access_token)
+    return getClassStudents(props.classId, session?.access_token)
   }, {
     enabled: false
   })
@@ -71,7 +72,7 @@ const StudentList = (props: any) => {
 
         return students.filter((item: any) => {
           return (
-            item.id.toString().includes(search.toLowerCase()) ||
+            item.user.toString().includes(search.toLowerCase()) ||
             item.first_name.toLowerCase().includes(search.toLowerCase()) ||
             item.last_name.toLowerCase().includes(search.toLowerCase())
 
@@ -218,7 +219,7 @@ const StudentList = (props: any) => {
 
           <h5 className=" text-3xl font-semibold dark:text-white-light">Students</h5>
           <div className="flex flex-wrap items-center">
-          <button type="button" onClick={() => exportTable('csv')} className="btn btn-primary btn-sm m-1 ">
+            <button type="button" onClick={() => exportTable('csv')} className="btn btn-primary btn-sm m-1 ">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
               </svg>
@@ -293,19 +294,10 @@ const StudentList = (props: any) => {
             className="table-hover whitespace-nowrap"
             records={recordsData}
             columns={[
-              { accessor: 'id', title: 'Admission No.', sortable: true },
+              { accessor: 'user', title: 'Student_Id', sortable: true },
               { accessor: 'first_name', title: 'First Name', sortable: true },
               { accessor: 'last_name', title: 'Last Name', sortable: true },
-              { accessor: 'class', title: 'Class', sortable: true },
-              { accessor: 'guardian_name', title: 'Guardian Name', sortable: true },
-              {
-                accessor: 'date_of_birth',
-                title: 'D.O.B',
-                sortable: true,
-                render: ({ date_of_birth }) => <div>{formatDate(date_of_birth)}</div>,
-              },
-
-              { accessor: 'guardian_phone_number', title: 'Phone', sortable: true },
+    
             ]}
             totalRecords={initialRecords? initialRecords.length : 0}
             recordsPerPage={pageSize}

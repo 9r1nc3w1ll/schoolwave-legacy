@@ -21,11 +21,13 @@ const AccountSetting = (props:any) => {
     description: string;
     class_index:number;
     code:number;
+    student_count: string;
+    class_teacher: {name: string}
 
     // Add other properties of a class here
   }
-    const [selectedSession, setSelectedSession] = useState<any>({});
-    const [modal, setmodal] = useState(false);
+  const [selectedSession, setSelectedSession] = useState<any>({});
+  const [modal, setmodal] = useState(false);
 
   const router = useRouter()
   const classId = router?.query?.id
@@ -35,7 +37,7 @@ const AccountSetting = (props:any) => {
   const { status: sessionStatus, data: user_session } = useSession();
   const dispatch = useDispatch();
   const { data: classes, isSuccess, status, isLoading, refetch } = useQuery('classes', () => 
-  getClass(classId, user_session?.access_token), {enabled: false})
+    getClass(classId, user_session?.access_token), {enabled: false})
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
       refetch()
@@ -54,17 +56,17 @@ const AccountSetting = (props:any) => {
     setTabs(name);
   };
 
- 
+
   
   useEffect(() =>{
-       if (isSuccess && classes) {
-        setClassDetails(classes || null)
-         }
-       }, [isSuccess, classes, classId]);
+    if (isSuccess && classes) {
+      setClassDetails(classes || null)
+    }
+  }, [isSuccess, classes, classId]);
 
-       if (!classDetails) {
-        return <div>Loading...</div>;
-      }
+  if (!classDetails) {
+    return <div>Loading...</div>;
+  }
  
 
 
@@ -82,7 +84,7 @@ const AccountSetting = (props:any) => {
       </ul>
       <div className="pt-5">
         <div className="mb-5 flex items-center justify-between">
-          <h5 className="text-lg font-semibold dark:text-white-light">Class Details</h5>
+          <h5 className="text-lg font-semibold dark:text-white-light">{classDetails.name}</h5>
         </div>
         <div>
           
@@ -153,47 +155,50 @@ const AccountSetting = (props:any) => {
 
 
                         
-      <table className='text-left mt-5 md:flex-wrap '>
-        <thead >
-            <tr>
-                <th>ID: </th>
-                <td><div className="whitespace-nowrap">{classDetails.id}</div></td>
+                          <table className='text-left mt-5 md:flex-wrap '>
+                            <thead >
+                              <tr>
+                                <th>ID: </th>
+                                <td><div className="whitespace-nowrap">{classDetails.id}</div></td>
                 
-            </tr>
-            </thead>
+                              </tr>
+                            </thead>
 
         
-        <tbody>
-          <tr>
-            <th>Description:</th>
-            <td>{classDetails.description}</td>
-          </tr>
-          <tr>
-          <th>Level:</th>
-          <td>{classDetails.class_index}</td>
-          </tr>
-          <tr>
-          <th>Number of Students:</th>
+                            <tbody>
+                              <tr>
+                                <th>Description:</th>
+                                <td>{classDetails.description}</td>
+                              </tr>
+                              <tr>
+                                <th>Level:</th>
+                                <td>{classDetails.class_index}</td>
+                              </tr>
+                              <tr>
+                                <th>Number of Students:</th>
+                                <td> {classDetails.student_count}</td>
           
-          </tr>
-          <tr>
-          <th>Class code:</th>
-          <td> {classDetails.code}</td>
-          </tr>
+                              </tr>
+                              <tr>
+                                <th>Class code:</th>
+                                <td> {classDetails.code}</td>
 
-          <tr>
-          <th>Teacher:</th>
+                              </tr>
 
-          </tr>
+                              <tr>
+                                <th>Teacher:</th>
+                                <td> {classDetails?.class_teacher?.name}</td>
+
+                              </tr>
           
           
                 
                   
             
-        </tbody>
-    </table>
+                            </tbody>
+                          </table>
 
-                          </div> 
+                        </div> 
                       </div>
                     </div>
                   </div>
@@ -206,12 +211,12 @@ const AccountSetting = (props:any) => {
           ''
         )}
         {tabs === 'list-of-students' ? (
-          <StudentList/>
+          <StudentList classId={classId}/>
         ) : (
           ''
         )}
         {tabs === 'list-of-staffs' ? (
-          <StaffList/>
+          <StaffList classId={classId}/>
         ) : (
           ''
         )}
