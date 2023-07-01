@@ -239,7 +239,8 @@ class RetrieveUpdateDestoryClassMember(RetrieveUpdateDestroyAPIView):
         pk = self.kwargs.get("pk")
         try:
             if isinstance(pk, uuid.UUID):
-                return ClassMember.objects.get(
+                # Return all ClassMember instances matching the given pk
+                return ClassMember.objects.filter(
                     Q(id=pk) | Q(class_id=pk) | Q(user=pk)
                 )
             else:
@@ -248,14 +249,15 @@ class RetrieveUpdateDestoryClassMember(RetrieveUpdateDestroyAPIView):
             return Response({"message": "Class member not found."}, status=status.HTTP_404_NOT_FOUND)
 
     def retrieve(self, request, *args, **kwargs):
-        class_user = self.get_object()
-        serializer = ClassMemberSerializer(class_user)
+        class_users = self.get_object()
+        serializer = ClassMemberSerializer(class_users, many=True)
 
         resp = {
-            "message": "Class member fetched successfully.",
+            "message": "Class members fetched successfully.",
             "data": serializer.data,
         }
         return Response(resp)
+
 
     def patch(self, request, *args, **kwargs):
         data = request.data
