@@ -81,7 +81,7 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         studentattendance = self.get_object()
-        serializer = StudentAttendanceSerializer(studentattendance, many=True)
+        serializer = AttendanceRecord(studentattendance, many=True)
         resp = {
             "message": "Student attendance retrieved successfully.",
             "data": serializer.data,
