@@ -9,7 +9,7 @@ urlpatterns = [
         name="staff_list_create",
     ),
     path(
-        "/staff-detail/<uuid:pk>/",
+        "/staff-detail/<uuid:pk>",
         RetrieveUpdateDestoryStaff.as_view(),
         name="staff_retrieve_update_destroy",
     ),
@@ -19,7 +19,7 @@ urlpatterns = [
         name="staff_role_list_create",
     ),
     path(
-        "/staff-role-detail/<str:name>/",
+        "/staff-role-detail/<str:name>",
         RetrieveUpdateDestoryStaffRole.as_view(),
         name="staff_role_retrieve_update_destroy",
     ),

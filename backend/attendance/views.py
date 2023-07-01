@@ -5,6 +5,8 @@ from .serializers import StudentAttendanceSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from school.models import School
+from django.db.models import Q
+import uuid
 
 class ListCreateStudentAttendance(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -65,18 +67,21 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
     serializer_class = StudentAttendanceSerializer
 
     def get_object(self):
-        studentattendance_id = self.kwargs.get("pk")
+        pk = self.kwargs.get("pk")
         try:
-            studentattendance = StudentAttendance.objects.get(id=studentattendance_id)
+            if isinstance(pk, uuid.UUID):
+                return StudentAttendance.objects.filter(
+                    Q(id=pk) | Q(student=pk) | Q(class_id=pk) | Q(subject=pk) | Q(staff=pk)
+                )
+            else:
+                return Response({'message': 'Student attendance not found.'}, status=status.HTTP_404_NOT_FOUND)
         except StudentAttendance.DoesNotExist:
             return Response({
-                    'message': 'Student attendance not found.'
-                    })
-        return studentattendance
+                    'message': 'Student attendance not found.'}, status=status.HTTP_404_NOT_FOUND)
 
     def retrieve(self, request, *args, **kwargs):
         studentattendance = self.get_object()
-        serializer = StudentAttendanceSerializer(studentattendance)
+        serializer = StudentAttendanceSerializer(studentattendance, many=True)
         resp = {
             "message": "Student attendance retrieved successfully.",
             "data": serializer.data,
