@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "subject",
     "staff",
     "exam",
+    "parent",
     "fees",
 ]
 
