@@ -21,6 +21,8 @@ const AccountSetting = (props:any) => {
     description: string;
     class_index:number;
     code:number;
+    student_count: string;
+    class_teacher: {name: string}
 
     // Add other properties of a class here
   }
@@ -54,7 +56,7 @@ const AccountSetting = (props:any) => {
     setTabs(name);
   };
 
- 
+
   
   useEffect(() =>{
     if (isSuccess && classes) {
@@ -82,7 +84,7 @@ const AccountSetting = (props:any) => {
       </ul>
       <div className="pt-5">
         <div className="mb-5 flex items-center justify-between">
-          <h5 className="text-lg font-semibold dark:text-white-light">Class Details</h5>
+          <h5 className="text-lg font-semibold dark:text-white-light">{classDetails.name}</h5>
         </div>
         <div>
           
@@ -174,15 +176,18 @@ const AccountSetting = (props:any) => {
                               </tr>
                               <tr>
                                 <th>Number of Students:</th>
+                                <td> {classDetails.student_count}</td>
           
                               </tr>
                               <tr>
                                 <th>Class code:</th>
                                 <td> {classDetails.code}</td>
+
                               </tr>
 
                               <tr>
                                 <th>Teacher:</th>
+                                <td> {classDetails?.class_teacher?.name}</td>
 
                               </tr>
           
@@ -211,7 +216,7 @@ const AccountSetting = (props:any) => {
           ''
         )}
         {tabs === 'list-of-staffs' ? (
-          <StaffList/>
+          <StaffList classId={classId}/>
         ) : (
           ''
         )}

@@ -12,6 +12,7 @@ import CreateEmployee from '@/components/CreateEmployee';
 import { Dialog, Transition } from '@headlessui/react';
 import EditEmployee from '@/components/EditEmployee';
 import { useSession } from 'next-auth/react';
+import { getClassStaffs } from '@/apicalls/clas';
 
 
 
@@ -24,7 +25,7 @@ const StaffList = (props:any) => {
 
   const {data:students, isSuccess, status, refetch} = useQuery('getStaffs', async ()=> {
     
-    return getStaffs(user_session?.access_token)
+    return getClassStaffs(props.classId, user_session?.access_token)
   }, {enabled:false})
 
   useEffect(() => {
@@ -80,7 +81,7 @@ const StaffList = (props:any) => {
 
         return students.filter((item: any) => {
           return (
-            item.id.toString().includes(search.toLowerCase()) ||
+            item.user.toString().includes(search.toLowerCase()) ||
                       item.first_name.toLowerCase().includes(search.toLowerCase()) ||
                       item.last_name.toLowerCase().includes(search.toLowerCase()) 
                   
@@ -213,12 +214,12 @@ const StaffList = (props:any) => {
   return (
     <div>
       <div className="panel">
-      <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
+        <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
 
           <h5 className=" text-3xl font-semibold dark:text-white-light">Staff</h5>
           <div className="flex flex-wrap items-center">
 
-          <button type="button" 
+            <button type="button" 
             // onClick={() => exportTable('print')} 
               className="btn btn-primary btn-sm m-1">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ltr:mr-2 rtl:ml-2">
@@ -260,48 +261,46 @@ const StaffList = (props:any) => {
             
           </div>
           <div>
-          <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+            <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
 
           </div>
-          </div>
+        </div>
 
           
-        </div>
-   
-        <div className="datatables">
-          <DataTable
-            highlightOnHover
-            className="table-hover whitespace-nowrap"
-            records={recordsData}
-            columns={[
-              { accessor: 'id', title: 'Staff No.', sortable: true },
-              { accessor: 'first_name', title: 'First Name', sortable: true },
-              { accessor: 'last_name', title: 'Last Name', sortable: true },
-              { accessor: 'role', title: 'Role', sortable: true },
-                         
-              { accessor: 'phone_number', title: 'Phone', sortable: true },
-              { accessor: 'email', title: 'Email', sortable: true },
-            ]}
-            totalRecords={initialRecords? initialRecords.length : 0}
-            recordsPerPage={pageSize}
-            page={page}
-            onPageChange={(p) => setPage(p)}
-            recordsPerPageOptions={PAGE_SIZES}
-            onRecordsPerPageChange={setPageSize}
-            sortStatus={sortStatus}
-            onSortStatusChange={setSortStatus}
-            minHeight={200}
-            paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-
-            onRowClick={(x:any) =>
-              router.push('/employees/'+x.id)
-            }
-
-            selectedRecords={selectedRecords}
-            onSelectedRecordsChange={setSelectedRecords}
-          />
-        </div>
       </div>
+   
+      <div className="datatables">
+        <DataTable
+          highlightOnHover
+          className="table-hover whitespace-nowrap"
+          records={recordsData}
+          columns={[
+            { accessor: 'user', title: 'Staff Id.', sortable: true },
+            { accessor: 'first_name', title: 'First Name', sortable: true },
+            { accessor: 'last_name', title: 'Last Name', sortable: true },
+            { accessor: 'role', title: 'Role', sortable: true },
+              
+          ]}
+          totalRecords={initialRecords? initialRecords.length : 0}
+          recordsPerPage={pageSize}
+          page={page}
+          onPageChange={(p) => setPage(p)}
+          recordsPerPageOptions={PAGE_SIZES}
+          onRecordsPerPageChange={setPageSize}
+          sortStatus={sortStatus}
+          onSortStatusChange={setSortStatus}
+          minHeight={200}
+          paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
+
+          onRowClick={(x:any) =>
+            router.push('/employees/'+x.id)
+          }
+
+          selectedRecords={selectedRecords}
+          onSelectedRecordsChange={setSelectedRecords}
+        />
+      </div>
+    </div>
     
   );
 };

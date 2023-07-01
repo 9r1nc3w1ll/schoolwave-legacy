@@ -89,11 +89,24 @@ export const getClassStudents= async ( id : any, access_token?: string )=>{
     }
   })
   let tempData= await res.json()
- 
-  console.log(tempData)
-  return []
-  // return tempData.data
+
+  return tempData.data.filter((student :{role: string} )=> student.role ==='student')
 }
+
+export const getClassStaffs= async ( id : any, access_token?: string )=>{
+  console.log(id)
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class-member/'+id , {
+    method: "GET",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": 'Bearer '+ access_token, 
+    }
+  })
+  let tempData= await res.json()
+
+  return tempData.data.filter((staff :{role: string} )=> staff.role !='student')
+}
+
 
 
 

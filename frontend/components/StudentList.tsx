@@ -72,7 +72,7 @@ const StudentList = (props: any) => {
 
         return students.filter((item: any) => {
           return (
-            item.id.toString().includes(search.toLowerCase()) ||
+            item.user.toString().includes(search.toLowerCase()) ||
             item.first_name.toLowerCase().includes(search.toLowerCase()) ||
             item.last_name.toLowerCase().includes(search.toLowerCase())
 
@@ -294,19 +294,10 @@ const StudentList = (props: any) => {
             className="table-hover whitespace-nowrap"
             records={recordsData}
             columns={[
-              { accessor: 'id', title: 'Admission No.', sortable: true },
+              { accessor: 'user', title: 'Student_Id', sortable: true },
               { accessor: 'first_name', title: 'First Name', sortable: true },
               { accessor: 'last_name', title: 'Last Name', sortable: true },
-              { accessor: 'class', title: 'Class', sortable: true },
-              { accessor: 'guardian_name', title: 'Guardian Name', sortable: true },
-              {
-                accessor: 'date_of_birth',
-                title: 'D.O.B',
-                sortable: true,
-                render: ({ date_of_birth }) => <div>{formatDate(date_of_birth)}</div>,
-              },
-
-              { accessor: 'guardian_phone_number', title: 'Phone', sortable: true },
+    
             ]}
             totalRecords={initialRecords? initialRecords.length : 0}
             recordsPerPage={pageSize}
