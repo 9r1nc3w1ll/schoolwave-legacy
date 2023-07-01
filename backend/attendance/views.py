@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from school.models import School
 from django.db.models import Q
 import uuid
+from datetime import datetime, timedelta
 
 class ListCreateStudentAttendance(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -68,16 +69,30 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         pk = self.kwargs.get("pk")
+        startdate = self.kwargs.get("startdate")
+        enddate = self.kwargs.get("enddate")
+
         try:
             if isinstance(pk, uuid.UUID):
-                return AttendanceRecord.objects.filter(
-                    Q(id=pk) | Q(student=pk) | Q(class_id=pk) | Q(subject=pk) | Q(staff=pk)
-                )
+                if startdate and enddate:
+                    start_datetime = datetime.strptime(startdate, "%Y-%m-%d")
+                    end_datetime = datetime.strptime(enddate, "%Y-%m-%d")
+
+                    return AttendanceRecord.objects.filter(
+                        Q(id=pk) | Q(student=pk) | Q(class_id=pk) | Q(subject=pk) | Q(staff=pk),
+                        date__range=[start_datetime, end_datetime]
+                    )
+                else:
+                    current_date = datetime.now().date()
+                    return AttendanceRecord.objects.filter(
+                       (Q(id=pk) | Q(student=pk) | Q(class_id=pk) | Q(staff=pk)) & Q(date=current_date)
+                    )
             else:
                 return Response({'message': 'Student attendance not found.'}, status=status.HTTP_404_NOT_FOUND)
         except AttendanceRecord.DoesNotExist:
             return Response({
-                    'message': 'Student attendance not found.'}, status=status.HTTP_404_NOT_FOUND)
+                'message': 'Student attendance not found.'
+            }, status=status.HTTP_404_NOT_FOUND)
 
     def retrieve(self, request, *args, **kwargs):
         studentattendance = self.get_object()
@@ -87,34 +102,3 @@ class RetrieveUpdateDestoryStudentAttendance(RetrieveUpdateDestroyAPIView):
             "data": serializer.data,
         }
         return Response(resp)
-        
-    def patch(self, request, *args, **kwargs):
-        data = request.data
-        studentattendance = self.get_object()
-
-        serializer = AttendanceRecordSerializer(studentattendance, data=data, partial=True)
-        if serializer.is_valid(): 
-            studentattendance = serializer.save() 
-            message = "Student attendance updated successfully."
-            data = AttendanceRecordSerializer(studentattendance).data    
-        
-            return Response({
-                "message": message,
-                "data": data
-            })
-        
-        return Response({
-            "message": "Student attendance not found.",
-            "errors": serializer.errors
-            })
-
-    def delete(self, request, *args, **kwargs):
-        studentattendance = self.get_object()
-        if studentattendance:
-            studentattendance.delete()
-            resp = {
-                "message": "Student attendance deleted successfully.",
-            }
-            return Response(resp, status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({"message": "Student attendance not found."}, status=status.HTTP_404_NOT_FOUND)
