@@ -37,7 +37,6 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
     def get_staff(self, obj):
         data =  {
                 'id': obj.staff.id,
-                # 'user': obj.staff.user.id,
                 'title': obj.staff.title,
                 'role': list(obj.staff.role.values_list('name', flat=True))
             }
