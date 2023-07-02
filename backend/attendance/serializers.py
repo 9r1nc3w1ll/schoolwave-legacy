@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import AttendanceRecord
-# from .models import StudentInformation
 
 class AttendanceRecordSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField()
