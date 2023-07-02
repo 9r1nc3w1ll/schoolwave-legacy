@@ -10,6 +10,8 @@ import csv
 import io
 from session.models import Term
 from school.models import Class
+from django.db.models import Q
+import uuid
 
 class BatchUploadSubjects(APIView):
     permission_classes = [IsAuthenticated]
@@ -104,14 +106,20 @@ class RetrieveUpdateDestroySubject(RetrieveUpdateDestroyAPIView):
     serializer_class = SubjectSerializer
 
     def get_object(self):
-        subject_id = self.kwargs.get("pk")
+        pk = self.kwargs.get("pk")
         try:
-            subject = Subject.objects.get(id=subject_id)
+            if isinstance(pk, uuid.UUID):
+                return Subject.objects.get(
+                    Q(id=pk) | Q(class_id=pk) | Q(term=pk)
+                )
+            else:
+                return Response({
+                    'message': 'Subject not found.'
+                    })
         except Subject.DoesNotExist:
             return Response({
                     'message': 'Subject not found.'
                     })
-        return subject
 
     def retrieve(self, request, *args, **kwargs):
         subject = self.get_object()
@@ -370,4 +378,3 @@ class RetrieveUpdateDestroySubjectStaffAssignment(RetrieveUpdateDestroyAPIView):
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "Subject staff assignment not found."}, status=status.HTTP_404_NOT_FOUND)
-    
