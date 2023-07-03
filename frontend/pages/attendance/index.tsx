@@ -7,87 +7,87 @@ import { getStudents } from "@/apicalls/users";
 import AttendanceTablet from "@/components/AttendanceTablet";
 import Tippy from "@tippyjs/react";
 import AttendanceTable from "@/components/AttendanceTable";
+import { getClasses } from "@/apicalls/clas";
+import { getTerms } from "@/apicalls/session";
+import { getAttendance } from "@/apicalls/attendance";
 
-const tableData = [
-  {
-    id: 1,
-    name: 'John Doe',
-    email: 'johndoe@yahoo.com',
-    date: '10/08/2020',
-    sale: 120,
-    status: 'Complete',
-    register: '5 min ago',
-    progress: '40%',
-    position: 'Developer',
-    office: 'London',
-  },
-  {
-    id: 2,
-    name: 'Shaun Park',
-    email: 'shaunpark@gmail.com',
-    date: '11/08/2020',
-    sale: 400,
-    status: 'Pending',
-    register: '11 min ago',
-    progress: '23%',
-    position: 'Designer',
-    office: 'New York',
-  },
-  {
-    id: 3,
-    name: 'Alma Clarke',
-    email: 'alma@gmail.com',
-    date: '12/02/2020',
-    sale: 310,
-    status: 'In Progress',
-    register: '1 hour ago',
-    progress: '80%',
-    position: 'Accountant',
-    office: 'Amazon',
-  },
-  {
-    id: 4,
-    name: 'Vincent Carpenter',
-    email: 'vincent@gmail.com',
-    date: '13/08/2020',
-    sale: 100,
-    status: 'Canceled',
-    register: '1 day ago',
-    progress: '60%',
-    position: 'Data Scientist',
-    office: 'Canada',
-  },
-];
+
 
 const Attendance =()=>{
   const dispatch = useDispatch();
   const [listView, setListView] = useState(false)
+  const [students, setStudents] = useState([])
+  const [rqstAtt, setrqstAtt] = useState(false)
+  const [attendanceEmpty, setattendanceEmpty] = useState(false)
   const { status: sessionStatus, data: user_session } = useSession();
-  const { data: students, isSuccess, status, refetch } = useQuery('getStudents', () => {
+  const { data: studentList, isSuccess,isLoading, refetch:getstudents } = useQuery('getStudents', () => {
     return getStudents(user_session?.access_token)
   }, {
     enabled: false
   })
 
 
+  const { data: classes, isSuccess:classgotten,  refetch:getclasses } = useQuery('getClasses', () => {
+    return getClasses(user_session?.access_token)
+  }, {
+    enabled: false
+  })
+
+  const { data: terms, isSuccess:termgotten,  refetch:getterms } = useQuery('getTerms', () => {
+    return getTerms(user_session?.access_token)
+  }, {
+    enabled: false
+  })
+
+  const { data: attendance, isSuccess:attendancegotten,  refetch:getattendance } = useQuery('getAttendance', () => {
+    return getAttendance(user_session?.access_token)
+  }, {
+    enabled: false
+  })
+
   useEffect(() => {
     dispatch(setPageTitle('Schoolwave | Attendance'));
-
+    getAttendance()
+    setrqstAtt(true)
   }, []);
 
   useEffect(() => {
+    if(attendance?.length){
+      setStudents(attendance)
+    }else{
+      if(sessionStatus == 'authenticated'){
+        getstudents()
+        setattendanceEmpty(true)}
+    }
+ 
+
+  }, [rqstAtt, sessionStatus]);
+
+  useEffect(() => {
+    setStudents(studentList)
+  }, [attendanceEmpty, studentList, getstudents]);
+
+  useEffect(() => {
     if(sessionStatus == 'authenticated'){
-      refetch()
+      // getstudents()
+      getclasses()
+      getterms()
     }
 
-  }, [sessionStatus]);
+  }, [getclasses, getstudents, getterms, sessionStatus]);
+
+  let curr = new Date();
+  let date = curr.toISOString().substring(0,10);
 
 
   return(
    
     <div className="panel min-h-[70%] ">
       <div className="mb-4 flex justify-between">
-        <h1 className=" text-3xl font-semibold dark:text-white-light">Attendance</h1>
+        <div>
+          <h1 className=" text-3xl font-semibold dark:text-white-light">Attendance</h1>
+          <p className="text-xs"> * Leave start date and end date as it is to get today&apos;s attendance</p>
+        </div>
         {/* <input type="text" className="form-input w-auto" placeholder="Search..."
            value={search} onChange={(e) => setSearch(e.target.value)}
         /> */}
@@ -103,60 +103,66 @@ const Attendance =()=>{
         </div>
       </div>
       <form>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-6">
           <div>
-            <select className="form-select text-white-dark">
-              <option>Class</option>
-              <option>Basic 1 Jade</option>
-              <option>Basic 1 Gold</option>
-              <option>Basic 2</option>
-            </select>
-          </div>
+            <div className="mb-8">
+              <label>Class</label>
+              <select className="form-select text-white-dark">
+                <option>-- select One-- </option>
+                {classes?.map((clss: any)=> <option key={clss.id} value={clss.id}> {clss.name} </option>)}
+              </select>
+            </div>
            
-          <div>
-            <select className="form-select text-white-dark">
-              <option>Term</option>
-              <option>1st Term</option>
-              <option>2nd Term</option>
-              <option>3rd Term</option>
-            </select>
-          </div>
+            <div>
+              <label>Term</label>
+              <select className="form-select text-white-dark">
+                <option>-- select One-- </option>
+                {terms?.map((trm: any)=> <option key={trm.id} value={trm.id}>  {trm.name} </option>)}
+              </select>
+            </div>
 
-
-          { listView? <div>
-            <select className="form-select text-white-dark">
-              <option>week</option>
-              <option>Week 1</option>
-              <option>Week 2</option>
-              <option>Week 3</option>
-              <option>Week 4</option>
-              <option>Week 5</option>
-              <option>Week 6</option>
-              <option>Week 7</option>
-              <option>Week 8</option>
-              <option>Week 9</option>
-              <option>Week 10</option>
-              <option>Week 11</option>
-              <option>Week 12</option>
-              <option>Week 13</option>
-            </select>
+            <button className="btn btn-primary mt-4">Update</button>
           </div>
-            :
-            <input type="date" placeholder="Choose a day" className="form-input" />}
+          <div className=" ">
+            <div className="mb-8">
+              <label>Start Date</label>
+              <input type="date" placeholder="Choose a day" className="form-input" defaultValue={date} />
+            </div>
+            <div>
+              <label>End Date</label>
+              <input type="date" placeholder="Choose a day" className="form-input" defaultValue={date} />
+            </div> 
+          
+          </div>
+            
         </div>
       </form>
 
       <hr/>
       {
         listView?
-          <AttendanceTable />
+          <>
+            {
+              isSuccess && students.length?
+                
+                students.map((student: { id: any; }) => <AttendanceTable key={student.id} user={student}  />):
+
+                <h1> {isLoading? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
+            }
+        
+          </>
+     
           :
           <>
 
             <h1 className=" mt-6 text-xl font-semibold dark:text-white-light">Today</h1>
             <div className="mt-2 flex gap-2 flex-wrap">
               {
-                isSuccess && students?.map((student: { id: any; }) => <AttendanceTablet key={student.id} user={student}  />)
+                isSuccess && students?.length?
+                
+                  students.map((student: { id: any; }) => <AttendanceTablet key={student.id} user={student}  />):
+
+                  <h1> {isLoading? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
               }
             
             </div>

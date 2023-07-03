@@ -91,6 +91,7 @@ const CreateTerm =(props: any)=>{
           </div>
         </div>
       </div>
+      <button className="btn btn-danger mt-8" onClick={()=>{props.exit(false)}}> Exit</button>
     </div>
   )
 }

@@ -93,7 +93,7 @@ const Export = (props: any) => {
 
     if (isSuccess) {
 
-      setSessions(h.data)
+      setSessions(h)
     }
 
   }, [h, isSuccess, status])
