@@ -9,18 +9,16 @@ from django.dispatch import receiver
 
 # Create your models here.
 ADMISSION_STATUS = (
-    ('approved', 'Approved'),
-    ('denied', 'Denied'),
-    ('pending', 'Pending')
+    ("approved", "Approved"),
+    ("denied", "Denied"),
+    ("pending", "Pending"),
 )
 
-GENDERS = (
-    ("male", "Male"),
-    ("female", "Female")
-)
+GENDERS = (("male", "Male"), ("female", "Female"))
 
-class StudentInformation(BaseModel):    
-    username = models.CharField(max_length=200)
+
+class StudentInformation(BaseModel):
+    username = models.CharField(max_length=200, unique=True)
     password = models.CharField(max_length=200)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
@@ -42,24 +40,28 @@ class StudentInformation(BaseModel):
     guardian_address = models.TextField(blank=True, null=True)
 
 
-
 class AdmissionRequest(BaseModel):
-    status = models.CharField(max_length=100, choices=ADMISSION_STATUS, default="pending")
+    status = models.CharField(
+        max_length=100, choices=ADMISSION_STATUS, default="pending"
+    )
     student_info = models.ForeignKey(StudentInformation, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     comment_if_declined = models.TextField(blank=True, null=True)
 
     def create_student_user(self, **kwargs):
-        
         User.objects.create_user(
-            **dict(StudentInformation.objects.filter(username=self.student_info.username).values()[0])
+            **dict(
+                StudentInformation.objects.filter(
+                    username=self.student_info.username
+                ).values()[0]
+            )
         )
-        
-        
 
 
 @receiver(post_save, sender=AdmissionRequest)
-def create_user_on_approved_request(sender, instance: AdmissionRequest, created, **kwargs):
+def create_user_on_approved_request(
+    sender, instance: AdmissionRequest, created, **kwargs
+):
     if not created:
         if instance.status == "approved":
             instance.create_student_user()

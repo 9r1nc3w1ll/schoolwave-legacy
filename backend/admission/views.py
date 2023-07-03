@@ -1,57 +1,62 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser
 import csv
 import io
-from admission.serializers import AdmissionRequestSerializer, StudentInformationSerializer
+import json
+
+from django.shortcuts import render
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import (
+    CreateAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from admission.models import AdmissionRequest, StudentInformation
+from admission.serializers import (
+    AdmissionRequestSerializer,
+    StudentInformationSerializer,
+)
 from school.models import School
 from utils.permissions import IsSchoolOwner
-from admission.models import AdmissionRequest, StudentInformation
 
 
 # Create your views here.
 class BatchUploadAdmissionRequest(APIView):
     permission_classes = [IsSchoolOwner, IsAuthenticated]
-    parser_classes = [MultiPartParser,]
+    parser_classes = [
+        MultiPartParser,
+    ]
 
     def post(self, request, *args, **kwargs):
-        print("files", request.FILES)
-        
-        csv_file = request.FILES['csv']
-        school_id = request.POST["school_id"] #### CAN User have more than one school?
-
+        csv_file = request.FILES["csv"]
+        school_id = request.POST["school_id"]
         school = School.objects.get(id=school_id)
 
-        if not csv_file.name.endswith('.csv'):
+        if not csv_file.name.endswith(".csv"):
             raise ValidationError("Invalid file type")
-
         try:
-            data = csv_file.read().decode('utf-8')
-
+            data = csv_file.read().decode("utf-8")
             reader = csv.DictReader(io.StringIO(data))
-
             entries = [line for line in reader]
-            
+
             for entry in entries:
                 student_info = StudentInformation(**entry)
                 student_info.save()
-
-                req = AdmissionRequest.objects.create(
-                    student_info=student_info,
-                    school=school
+                AdmissionRequest.objects.create(
+                    student_info=student_info, school=school
                 )
-            
+
             data = {
                 "message": "Upload complete.",
             }
             return Response(data)
         except Exception as e:
-            raise ValidationError(e)
+            print(e)
+            raise e
 
 
 class CreateSingleAdmission(CreateAPIView):
@@ -63,14 +68,16 @@ class CreateSingleAdmission(CreateAPIView):
 
         qs = self.queryset.filter(school=school)
         return super().get_queryset()
-    
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         student_info = serializer.save()
 
-        admission_request_instance = AdmissionRequest.objects.get(student_info=student_info)
+        admission_request_instance = AdmissionRequest.objects.get(
+            student_info=student_info
+        )
 
         headers = self.get_success_headers(serializer.data)
         resp = {
@@ -78,8 +85,6 @@ class CreateSingleAdmission(CreateAPIView):
             "data": AdmissionRequestSerializer(admission_request_instance).data,
         }
         return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
-
-    
 
 
 class ListCreateAdmissionRequests(ListCreateAPIView):
@@ -92,10 +97,15 @@ class ListCreateAdmissionRequests(ListCreateAPIView):
 
         qs = self.queryset.filter(school=school)
         return super().get_queryset()
-    
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            resp = {
+                "message": "Validation error",
+                "errors": serializer.errors,
+            }
+            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
 
@@ -160,4 +170,3 @@ class RUDAdmissionRequests(RetrieveUpdateDestroyAPIView):
         }
 
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
-
