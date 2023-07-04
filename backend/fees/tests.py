@@ -5,9 +5,10 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from school.models import School
+from school.models import School, Class
 from session.models import Session
 from fees.models import FeeItem, FeePayment, FeeTemplate, Discount, Invoice
+from django.contrib.contenttypes.models import ContentType
 
 
 User = get_user_model()
@@ -17,68 +18,426 @@ class FeeItemTestCase(APITestCase):
         self.client = APIClient()
 
         self.user = User.objects.create_user(
-            username="testuser", password="testpassword"
+            username="testuser", password="testpassword", role="owner"
         )
 
-        # Create a school
+        self.student = User.objects.create_user(
+            username="teststudent", password="testpassword", role="student"
+        )
+
         self.school = School.objects.create(
             name="chrisland",
             owner=self.user,
             date_of_establishment=datetime.now().date(),
         )
 
-        # Create a session
-        self.session = Session.objects.create(
-            school=self.school,
-            resumption_date=datetime.now().date(),
-            start_date="2040",
-            end_date="2050"
+        self.class_obj = Class.objects.create(
+            name="Test Class", school=self.school, description="Description", code='TEST'
         )
+
+        self.discount = Discount.objects.create(
+            discount_type="percentage", amount=10, percentage=10,
+            school=self.school
+        )
+
+        self.fee_item = FeeItem.objects.create(
+            name="Fee Item", description="Test Fee Item", amount=100,
+            discount=self.discount, school=self.school 
+        )
+
+        self.fee_template = FeeTemplate.objects.create(
+            school=self.school, class_id=self.class_obj, discount=self.discount
+        )
+
     
-    def test_create_class(self):
-        url = reverse("list_create_class")
+    def test_create_fee_item(self):
+        url = reverse("list_create_fee_item")
         data = {
-            "name": "New Class",
+            "name": "New Fee Item",
             "school": self.school.id,
             "description": "Description",
-            "class_index": 1,
+            "amount" : 100,
+            "discount" : self.discount.id
         }
         self.client.force_authenticate(user=self.user)
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Class.objects.count(), 2)
 
-    def test_list_classes(self):
-        url = reverse("list_create_class")
+    def test_list_fee_items(self):
+        url = reverse("list_create_fee_item")
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data["data"]), 1)
-        self.assertEqual(response.data["data"][0]["name"], "Test Class")
 
-    def test_retrieve_class(self):
-        url = reverse("retrieve_update_destroy_class", args=[self.class_obj.id])
+    def test_retrieve_fee_item(self):
+        url = reverse("retrieve_update_destroy_fee_item", args=[self.fee_item.id])
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["data"]["name"], "Test Class")
 
-    def test_update_class(self):
-        url = reverse("retrieve_update_destroy_class", args=[self.class_obj.id])
+    def test_update_fee_item(self):
+        url = reverse("retrieve_update_destroy_fee_item", args=[self.fee_item.id])
         data = {"name": "Updated Class", "school": self.school.id}
         self.client.force_authenticate(user=self.user)
         response = self.client.patch(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(Class.objects.get(id=self.class_obj.id).name, "Updated Class")
 
-    def test_delete_class(self):
-        url = reverse("retrieve_update_destroy_class", args=[self.class_obj.id])
+    def test_delete_fee_item(self):
+        url = reverse("retrieve_update_destroy_fee_item", args=[self.fee_item.id])
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Class.objects.count(), 0)
+
+
+class FeeTemplateTestCase(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword", role="owner"
+        )
+
+        self.student = User.objects.create_user(
+            username="teststudent", password="testpassword", role="student"
+        )
+
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
+
+        self.class_obj = Class.objects.create(
+            name="Test Class", school=self.school, description="Description", code='TEST'
+        )
+
+        self.discount = Discount.objects.create(
+            discount_type="percentage", amount=10, percentage=10,
+            school=self.school
+        )
+
+        self.fee_item = FeeItem.objects.create(
+            name="Fee Item", description="Test Fee Item", amount=100,
+            discount=self.discount, school=self.school 
+        )
+
+        self.fee_template = FeeTemplate.objects.create(
+            school=self.school, class_id=self.class_obj, discount=self.discount
+        )
+
+    
+    def test_create_fee_template(self):
+        url = reverse("list_create_fee_template")
+        data = {
+            "name": "New Fee Item",
+            "school": self.school.id,
+            "class_id" : self.class_obj.id,
+            "required_items" : [self.fee_item.id,],
+            "optional_items" : [self.fee_item.id,],
+            "discount" : self.discount.id
+        }
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_list_fee_templates(self):
+        url = reverse("list_create_fee_template")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_fee_template(self):
+        url = reverse("retrieve_update_destroy_fee_template", args=[self.fee_template.id])
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_fee_template(self):
+        url = reverse("retrieve_update_destroy_fee_template", args=[self.fee_template.id])
+        data = {"name": "Updated Fees", "school": self.school.id}
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.patch(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_fee_template(self):
+        url = reverse("retrieve_update_destroy_fee_template", args=[self.fee_template.id])
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class FeePaymentTestCase(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword", role="owner"
+        )
+
+        self.student = User.objects.create_user(
+            username="teststudent", password="testpassword", role="student"
+        )
+
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
+
+        self.class_obj = Class.objects.create(
+            name="Test Class", school=self.school, description="Description", code='TEST'
+        )
+
+        self.discount = Discount.objects.create(
+            discount_type="percentage", amount=10, percentage=10,
+            school=self.school
+        )
+
+        self.fee_item = FeeItem.objects.create(
+            name="Fee Item", description="Test Fee Item", amount=100,
+            discount=self.discount, school=self.school 
+        )
+
+        self.fee_template = FeeTemplate.objects.create(
+            school=self.school, class_id=self.class_obj, discount=self.discount
+        )
+
+        self.fee_payment = FeePayment.objects.create(
+            school=self.school, template=self.fee_template, student=self.student
+        )
+
+    
+    def test_create_fee_payment(self):
+        url = reverse("list_create_fee_payment")
+        data = {
+            "school": self.school.id,
+            "items" : [self.fee_item.id,],
+            "student" : self.student.id,
+            "template" : self.fee_template.id,
+            "amount_paid": 32000
+        }
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_list_fee_payments(self):
+        url = reverse("list_create_fee_payment")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_fee_payment(self):
+        url = reverse("retrieve_update_destroy_fee_payment", args=[self.fee_payment.id])
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_fee_payment(self):
+        url = reverse("retrieve_update_destroy_fee_payment", args=[self.fee_payment.id])
+        data = {"amount_paid": 3000}
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.patch(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_fee_payment(self):
+        url = reverse("retrieve_update_destroy_fee_payment", args=[self.fee_payment.id])
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class DiscountTestCase(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword", role="owner"
+        )
+
+        self.student = User.objects.create_user(
+            username="teststudent", password="testpassword", role="student"
+        )
+
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
+
+        self.class_obj = Class.objects.create(
+            name="Test Class", school=self.school, description="Description", code='TEST'
+        )
+
+        self.discount = Discount.objects.create(
+            discount_type="percentage", amount=10, percentage=10,
+            school=self.school
+        )
+
+        self.fee_item = FeeItem.objects.create(
+            name="Fee Item", description="Test Fee Item", amount=100,
+            discount=self.discount, school=self.school 
+        )
+
+        self.fee_template = FeeTemplate.objects.create(
+            school=self.school, class_id=self.class_obj, discount=self.discount
+        )
+
+        self.fee_payment = FeePayment.objects.create(
+            school=self.school, template=self.fee_template, student=self.student
+        )
+
+    
+    def test_create_discount(self):
+        url = reverse("list_create_discount")
+        data = {
+            "discount_type": "amount",
+            "school" : self.school.id,
+            "amount": 32
+        }
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_list_discounts(self):
+        url = reverse("list_create_discount")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_discount(self):
+        url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_discount(self):
+        url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
+        data = {"amount": 30}
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.patch(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_discount(self):
+        url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class InvoiceTestCase(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword", role="owner"
+        )
+
+        self.student = User.objects.create_user(
+            username="teststudent", password="testpassword", role="student"
+        )
+
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
+
+        self.class_obj = Class.objects.create(
+            name="Test Class", school=self.school, description="Description", code='TEST'
+        )
+
+        self.discount = Discount.objects.create(
+            discount_type="percentage", amount=10, percentage=10,
+            school=self.school
+        )
+
+        self.fee_item = FeeItem.objects.create(
+            name="Fee Item", description="Test Fee Item", amount=100,
+            discount=self.discount, school=self.school 
+        )
+
+        self.fee_template = FeeTemplate.objects.create(
+            school=self.school, class_id=self.class_obj, discount=self.discount
+        )
+
+        self.fee_payment = FeePayment.objects.create(
+            school=self.school, template=self.fee_template, student=self.student
+        )
+
+        self.invoice = Invoice.objects.create(
+            item=self.fee_payment,
+            item_id=self.fee_payment.id,
+            school=self.school
+        )
+
+    
+    def test_create_invoice(self):
+        url = reverse("list_create_invoice")
+        data = {
+            "content_type" : ContentType.objects.get_for_model(FeePayment).id,
+            "item" : self.fee_payment.id,
+            "school" : self.school.id
+        }
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(url, data, format="json")
+
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_list_invoices(self):
+        url = reverse("list_create_invoice")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_invoice(self):
+        url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_invoice(self):
+        url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
+        data = {
+            "reversed_invoice_id": self.invoice.id,
+            "status" : "paid"
+        }
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.patch(url, data, format="json")
+
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_invoice(self):
+        url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

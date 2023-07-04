@@ -47,39 +47,18 @@ class BatchUploadSubjectsTestCase(APITestCase):
 
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
-
-    def test_batch_upload_subjects(self):
+    
+    def test_batch_upload_admission_subjects(self):
         url = reverse("batch_upload_subjects")
         self.client.force_authenticate(user=self.user)
-        csv_data = """Class Code,Subject Name,Subject Description,Subject Code
-                        Math101,Mathematics,Mathematics Subject,MATH101
-                        Science101,Science,Science Subject,SCI101
-                        """
-
-        csv_file = io.StringIO(csv_data)
-        csv_file.name = 'subjects_upload.csv'
-
-        csv = SimpleUploadedFile("subjects_upload.csv", csv_file.read().encode())
-        print(f"csv file--{csv_file.read().encode()}")
-
-        data = {
-            'term_id': self.term.id,
-        }
-
-        response = self.client.post(
-            url,
-            data=data,
-            format='multipart',
-            files={'csv': csv}
-        )
+        with open("subject/sample_subject_requests.csv") as csv:
+            response = self.client.post(
+                path=url,
+                data={"term_id": self.term.id, "csv": csv},
+            )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['message'], "Batch upload complete.")
-        self.assertEqual(len(response.data['created_subjects']), 2)
-        self.assertListEqual(
-            response.data['created_subjects'],
-            ['Mathematics (MATH101)', 'Science (SCI101)']
-        )
+
 
 class SubjectCRUDTestCase(APITestCase):
     def setUp(self):

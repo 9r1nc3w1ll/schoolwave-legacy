@@ -34,7 +34,7 @@ class StudentInformationSerializer(serializers.ModelSerializer):
 
 
 class AdmissionRequestSerializer(serializers.ModelSerializer):
-    student_info = StudentNameSerializer()
+    student_info = StudentNameSerializer(read_only=True)
 
     class Meta:
         model = AdmissionRequest

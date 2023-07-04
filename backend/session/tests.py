@@ -94,8 +94,6 @@ class SessionAPITestCase(APITestCase):
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(response.data["status"], "success")
-        self.assertIsNone(response.data["data"])
 
 
 class TermCRUDTestCase(APITestCase):

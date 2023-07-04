@@ -10,9 +10,7 @@ from staff.models import Staff
 class AttendanceRecord(BaseModel):
     class Meta:
         db_table = "attendance_records"
-    """
-    This is daily students attendance 
-    """
+    
     date = models.DateField(default=date.today)
     student = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'student'}, related_name='student_attendances')
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
@@ -24,10 +22,6 @@ class AttendanceRecord(BaseModel):
         ('Class', 'Class'),
     ]
     attendance_type = models.CharField(max_length=10, choices=ATTENDANCE_TYPE_CHOICES)
-    present = models.BooleanField()
+    present = models.BooleanField(default=False)
     remark = models.TextField()
     staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, blank=True, null=True)
-
-    def save(self, *args, **kwargs):
-
-        return super().save(*args, **kwargs)

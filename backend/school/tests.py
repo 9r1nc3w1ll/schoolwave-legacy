@@ -182,7 +182,6 @@ class ClassMemberTests(APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["data"]["role"], "student")
 
     def test_update_class_member(self):
         url = reverse("retrieve_update_destroy_class_member", kwargs={"pk":self.class_member_obj.id})

@@ -72,7 +72,10 @@ class CreateSchool(APIView):
                 {"message": "School already created."}, status=status.HTTP_409_CONFLICT
             )
 
+        request.data._mutable = True
         request.data.update({"owner": request.user.id})
+        request.data._mutable = False
+
         serializer = SchoolSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
@@ -143,10 +146,9 @@ class RetrieveUpdateDestoryClass(RetrieveUpdateDestroyAPIView):
                 return Class.objects.get(
                     Q(id=pk) | Q(school_id=pk)
                 )
-            else:
-                return Response({"message": "Class not found."}, status=status.HTTP_404_NOT_FOUND)
+            return super().get_object()
         except Class.DoesNotExist:
-            return Response({"message": "Class not found."}, status=status.HTTP_404_NOT_FOUND)
+            return super().get_object()
 
 
     def retrieve(self, request, *args, **kwargs):
@@ -235,21 +237,14 @@ class RetrieveUpdateDestoryClassMember(RetrieveUpdateDestroyAPIView):
     queryset = ClassMember.objects.all()
     serializer_class = ClassMemberSerializer
 
-    def get_object(self):
-        pk = self.kwargs.get("pk")
-        try:
-            if isinstance(pk, uuid.UUID):
-                # Return all ClassMember instances matching the given pk
-                return ClassMember.objects.filter(
-                    Q(id=pk) | Q(class_id=pk) | Q(user=pk)
-                )
-            else:
-                return Response({"message": "Class member not found."}, status=status.HTTP_404_NOT_FOUND)
-        except ClassMember.DoesNotExist:
-            return Response({"message": "Class member not found."}, status=status.HTTP_404_NOT_FOUND)
+   
 
     def retrieve(self, request, *args, **kwargs):
-        class_users = self.get_object()
+        pk = self.kwargs.get("pk")
+
+        class_users = ClassMember.objects.filter(
+                    Q(id=pk) | Q(class_id=pk) | Q(user=pk)
+                )
         serializer = ClassMemberSerializer(class_users, many=True)
 
         resp = {

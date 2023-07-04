@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ListCreateStudentAttendance, RetrieveUpdateDestoryStudentAttendance
+from .views import ListCreateStudentAttendance, RetrieveStudentAttendance, UpdateDestroyStudentAttendance
 
 urlpatterns = [
     path(
@@ -10,12 +10,12 @@ urlpatterns = [
     ),
     path(
         "/student-attendance/<uuid:pk>/<str:startdate>/<str:enddate>",
-        RetrieveUpdateDestoryStudentAttendance.as_view(),
-        name="student_attendance_retrieve_update_destroy",
+        RetrieveStudentAttendance.as_view(),
+        name="student_attendance_retrieve",
     ),
     path(
         "/student-attendance/<uuid:pk>",
-        RetrieveUpdateDestoryStudentAttendance.as_view(),
-        name="student_attendance_retrieve_update_destroy",
+        UpdateDestroyStudentAttendance.as_view(),
+        name="student_attendance_update_destroy",
     ),
 ]

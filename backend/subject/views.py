@@ -12,6 +12,7 @@ from session.models import Term
 from school.models import Class
 from django.db.models import Q
 import uuid
+from school.models import Class, School
 
 class BatchUploadSubjects(APIView):
     permission_classes = [IsAuthenticated]
@@ -33,7 +34,9 @@ class BatchUploadSubjects(APIView):
             subject_description = row.get('Subject Description')
             subject_code = row.get('Subject Code')
 
-            class_info, created = Class.objects.get_or_create(code=class_code)
+            school = School.objects.get(owner=request.user)
+
+            class_info, created = Class.objects.get_or_create(code=class_code, school=school)
             subject = Subject.objects.create(
                 name=subject_name,
                 description=subject_description,

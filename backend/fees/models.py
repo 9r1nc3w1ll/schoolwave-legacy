@@ -7,6 +7,7 @@ from account.models import User
 from school.models import Class, School
 from config.models import BaseModel
 
+import uuid
 
 
 class Discount(BaseModel):
@@ -64,12 +65,12 @@ class Invoice(BaseModel):
     INVOICE_STATUSES = (
         ("pending", "pending"),
         ("paid", "paid"),
-        ("cancelled", "cancelled")
+        ("cancelled", "cancelled"),
     )
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    instance_id = models.PositiveIntegerField()
-    instance = GenericForeignKey("content_type", "instance_id")
-    reversed_invoice_id = models.PositiveIntegerField(null=True, blank=True)
+    item_id = models.UUIDField(default=uuid.uuid4)
+    item = GenericForeignKey("content_type", "item_id")
+    reversed_invoice_id = models.UUIDField(default=uuid.uuid4)
     status = models.CharField(default="pending", max_length=20, choices=INVOICE_STATUSES)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
