@@ -9,19 +9,27 @@ import Subject from '@/components/CreateSubject';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
 import BulkAdmission from '@/components/BulkSubjects';
-import { formatDate } from '@/utility_methods/datey';
 import { showAlert } from '@/utility_methods/alert';
 import { getSubjects, updateSubject } from '@/apicalls/subjects';
+import DropDownWIthChildren from '@/components/DropDownWIthChildren';
+import SubjectUserAssignment from '@/components/SubjectStaffAssignment';
+import EditSubjectForm from '@/components/EditSubjectForm';
+import { Interface } from 'readline';
 
 
 
 
-const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'phone', 'date_of_birth' ];
+
+
+const col = ['code', 'name', 'class_id', 'term'];
+
+
 
 const Export = (props:any) => {
   const router = useRouter()
   const { status: sessionStatus, data: user_session } = useSession();
-  const {data:subjects, isSuccess, status, refetch} = useQuery('getAdmission', ()=> getSubjects(user_session?.access_token), {enabled: false})
+  const {data:subjects, isSuccess, status, refetch} = useQuery('getSubject', ()=> getSubjects(user_session?.access_token), {enabled: false})
+
   const { mutate, isLoading, error } = useMutation(
     (data:boolean) =>{
    
@@ -38,6 +46,19 @@ const Export = (props:any) => {
     }
   );
 
+
+  const [activeToolTip, setActiveToolTip] = useState<string>('');
+  const [sessions, setSessions] = useState([])
+  const [selectedSession, setSelectedSession] = useState<any>({});
+  const [usermodal,setusermodal ] = useState(false);
+  const [assignStudent, setassignStudent] = useState(false);
+  const [uploadModal, setuploadModal] = useState(false);
+  const [editModal, seteditModal ] = useState(false)
+  const [modal, setmodal] = useState(false);
+
+
+
+
   useEffect(() => {
     let path = router.asPath.split('#')
     if(path[1] == 'create-subject'){
@@ -49,16 +70,25 @@ const Export = (props:any) => {
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
       refetch()
+      
+      
   
     }
 
   }, [sessionStatus, refetch]);
+ useEffect(() =>{
+  if(subjects !=''){
+   
+    setSessions(subjects)
+    
+  }else[subjects]
+ })
 
 
   const dispatch = useDispatch();                          
   const [selectedRecords, setSelectedRecords] = useState<any>([]);
-  const [modal, setmodal] = useState(false);
-  const [uploadModal, setuploadModal] = useState(false);
+ 
+
   const canEdit = () => selectedRecords.length === 1
 
 
@@ -71,12 +101,14 @@ const Export = (props:any) => {
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
   const [initialRecords, setInitialRecords] = useState(sortBy(subjects, 'id'));
   const [recordsData, setRecordsData] = useState(initialRecords);
-
   const [search, setSearch] = useState('');
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
     columnAccessor: 'id',
     direction: 'asc',
   });
+
+  
+
 
   useEffect(() => {
     setPage(1);
@@ -95,11 +127,8 @@ const Export = (props:any) => {
         return subjects.filter((item: any) => {
           return (
             item.code.toString().includes(search.toLowerCase()) ||
-                      item.subject_info.name.toLowerCase().includes(search.toLowerCase()) ||
-                      item.subject_info.class_id.toLowerCase().includes(search.toLowerCase()) ||
-                      item.subject_info.term.toLowerCase().includes(search.toLowerCase()) 
-                      
-
+                      item.name.toLowerCase().includes(search.toLowerCase()) ||
+                      item.class_id.toLowerCase().includes(search.toLowerCase())
                   
           );
         });
@@ -110,11 +139,39 @@ const Export = (props:any) => {
   }, [search, subjects, status]);
 
   useEffect(() => {
+    if (activeToolTip != '') {
+      const selectedSession = sessions.find((session: any) => session.id === activeToolTip);
+      setSelectedSession(selectedSession);
+      console.log(selectedSession);
+    }
+  }, [console.log("No ID active",activeToolTip) ]) ;
+
+
+  
+  useEffect(() => {
     const data = sortBy(initialRecords, sortStatus.columnAccessor);
     setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
     setPage(1);
   }, [sortStatus]);
   const header = ['Subject Code', 'Name', 'Class', 'Action'];
+
+  interface SubjectInterface {
+    id: string;
+    class_id: string;
+    description: string;
+    term_id: string;
+    code: string;
+  }
+
+
+  
+  const handleSubjectClick = (sub: SubjectInterface) => {
+    if (sub && sub.id) {
+      setActiveToolTip(sub.id);
+    }
+  };
+
+
 
   const exportTable = (type: any) => {
     let columns: any = col;
@@ -217,6 +274,7 @@ const Export = (props:any) => {
       }
     }
   };
+  
 
   const capitalize = (text: any) => {
     return text
@@ -272,7 +330,7 @@ const Export = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <Subject user_session={user_session} setmodal={setmodal}  refreshAdmission={refetch} />
+                        <Subject user_session={user_session} setmodal={setmodal}  refreshClass={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -319,16 +377,59 @@ const Export = (props:any) => {
             records={recordsData}
             columns={[
               { accessor: 'code', title: 'Subject Code.', sortable: true },
-              { accessor: 'subject_info.name', title: 'Name', sortable: true },
-              { accessor: 'subject_info.class_id', title: 'Class', sortable: true },
-              { accessor: 'subject_info.term', title: 'Term', sortable: true },
-              { accessor: 'status', 
-                render: ({ status }) => <div className={status=='approved'? 'badge bg-success': status=='denied'? 'badge bg-danger': 'badge bg-warning' }>{status}</div>,
-                sortable: true },
+              { accessor: 'name', title: 'Name', sortable: true },
+              { accessor: 'class_id', title: 'Class', sortable: true },
+              { accessor: 'term', title: 'Term', sortable: true },
+              {
+                accessor: 'Action',
+                render: ({ action, sub}: any) => (
+                  
+                    <DropDownWIthChildren
+                    trigger={<button type="button" className='relative' 
+                      onClick={() => handleSubjectClick(sub)}
+
+                       
+                          
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
+                            />
+                          </svg>
+                        </button>
+                      }
+                    >
+                      <div className="bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[100%] w-[130px] z-10">
+                        <p className="mb-2 px-3 pt-2 cursor-pointer hover:bg-white"  onClick={() => {
+                   seteditModal(true)
+                  }
+
+                  }>
+                          Edit
+                        </p>
+                  
+                  
+                  <p className='mb-2 px-2  cursor-pointer hover:bg-white' onClick={()=>{
+                    setassignStudent(false)
+                    setusermodal(true)
               
-                         
-           
-            ]}
+
+                  }}>Assign Teacher</p>
+
+                        {/* <DeleteTerms sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch} /> */}
+                      </div>
+                    </DropDownWIthChildren> ) }]}
+
+
             totalRecords={initialRecords? initialRecords.length : 0}
             recordsPerPage={pageSize}
             page={page}
@@ -347,9 +448,74 @@ const Export = (props:any) => {
             selectedRecords={selectedRecords}
             onSelectedRecordsChange={setSelectedRecords}
           />
+
+          
         </div>
+        <div>
+        <Transition appear show={usermodal} as={Fragment}>
+          <Dialog as="div" open={usermodal} onClose={() => setusermodal(false)}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0" />
+            </Transition.Child>
+            <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+              <div className="flex items-start justify-center min-h-screen px-4">
+                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
+                  <div className="w-4/5 mx-auto py-5 text-center">
+                    {/* <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a SubJect <span className='text-sm'>{`(${selectedSession.name})`}</span></h5> */}
+                    <SubjectUserAssignment student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch}/>
+                  </div>
+                </Dialog.Panel>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+
+        <Transition appear show={editModal} as={Fragment}>
+          <Dialog as="div" open={editModal} onClose={() => seteditModal(false)}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0" />
+            </Transition.Child>
+            <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+              <div className="flex items-start justify-center min-h-screen px-4">
+                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
+                  <div className="w-4/5 mx-auto py-5">
+                    <h5 className=" text-lg font-semibold dark:text-white-light">Edit Subject</h5>
+                    {/* <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p> */}
+
+                    <EditSubjectForm create={false} user_session={user_session} sessionData={selectedSession} exit={seteditModal} refreshClasses={refetch}/>
+                  </div>
+                </Dialog.Panel>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
       </div>
+
+
     </div>
+    </div>
+
+
+
+        
+        
+  
   );
 };
 
