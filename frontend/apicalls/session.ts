@@ -103,3 +103,18 @@ export const createTerm= async(data: any, access_token?: string, )=>{
   
   return tempData
 }
+
+export const deleteTerm= async (id: string, access_token: string)=>{
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/term/' + id, {
+    method: "DELETE",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": 'Bearer '+ access_token, 
+    },
+  
+  })
+ 
+ 
+  
+  return res
+}

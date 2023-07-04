@@ -26,6 +26,21 @@ export const getStaffs= async (access_token ?: string)=>{
   return staffs
 }
 
+export const getAllUsers= async (access_token ?: string)=>{
+
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users' , {
+    method: "GET",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": 'Bearer '+ access_token , 
+    }
+  })
+  let tempData= await res.json()
+  
+ return tempData
+}
+
+
 export const getParents= async (access_token ?: string)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users' , {
     method: "GET",
