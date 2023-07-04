@@ -24,26 +24,22 @@ class ListCreateStudentAttendance(ListCreateAPIView):
         
 
     def create(self, request, *args, **kwargs):
-        serializer = AttendanceRecordSerializer(data=request.data)
-        if serializer.is_valid():
-            student = serializer.save()
-            message = "Student attendance created successfully."
-            data = AttendanceRecordSerializer(student)
-
-            headers = self.get_success_headers(serializer.data)
-
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
             resp = {
-                    "message": message,
-                    "data": serializer.data,
-                }
-            return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
-
-        else:
-            resp = {
-                "message": "Invalid data.",
+                "message": "Validation error",
                 "errors": serializer.errors,
             }
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer.save()
+
+        headers = self.get_success_headers(serializer.data)
+        resp = {
+            "message": "Student attendance created successfully.",
+            "data": serializer.data,
+        }
+        return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
    
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

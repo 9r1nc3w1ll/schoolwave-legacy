@@ -75,7 +75,7 @@ class SubjectCRUDTestCase(APITestCase):
         )
 
         self.class_obj = Class.objects.create(
-            name="Test Class", school=self.school, description="Description", code="Prim43"
+            name="Test Class", school=self.school, description="Description", code="Prim"
         )
 
         self.session = Session.objects.create(
@@ -94,9 +94,8 @@ class SubjectCRUDTestCase(APITestCase):
             description="Mathematics subject",
             term=self.term,
             class_id=self.class_obj,
-            code="Subj98"
+            code="Sub98"
         )
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
     def test_list_subjects(self):
         url = reverse("subject_list_create")
@@ -117,7 +116,7 @@ class SubjectCRUDTestCase(APITestCase):
             "description": "Science subject",
             "term":self.term.id,
             "class_id":self.class_obj.id,
-            "code":"Subj65"
+            "code":"Subj5"
         }
 
         response = self.client.post(url, data)
@@ -207,9 +206,8 @@ class SubjectSelectionCRUDTestCase(APITestCase):
 
         self.subject_selection = SubjectSelection.objects.create(
             subject=self.subject,
-            score=80
+            score=80.0
         )
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
     def test_list_subject_selections(self):
         url = reverse("subject_selection_list_create")
@@ -311,7 +309,6 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
             subject=self.subject,
             score=80
         )
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
         self.staff_user = User.objects.create(
             username="staffuser", password="staffpassword", role="staff"
@@ -341,7 +338,6 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
             subject=self.subject,
             active="True"
         )
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
 
     def test_list_subject_staff_assignment(self):

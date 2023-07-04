@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_standardized_errors",
     "rest_framework.authtoken",
+    "ckeditor",
     "account",
     "school",
     "session",

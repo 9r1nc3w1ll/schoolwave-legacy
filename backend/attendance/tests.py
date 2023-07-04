@@ -73,7 +73,7 @@ class AttendanceRecordAPITestCase(APITestCase):
             remark="Good",
             staff=self.staff_obj
         )
-        self.attendance.save()
+        
     
     def test_list_attendance(self):
         url = reverse("student_attendance_list_create")
@@ -90,19 +90,19 @@ class AttendanceRecordAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         data = {
-
-            "date": "2023-05-31",
+            "date": "2023-05-30",
             "start_time": "10:00:00",
             "end_time": "11:00:00",
-            "attendance_type": "Class",
+            "attendance_type": "Daily",
             "present": True,
             "remark": "Poor",
             "student" : self.student_obj.id,
             "class_id" : self.class_obj.id,
             "staff" : self.staff_obj.id
-
         }
         response = self.client.post(url, data)
+
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 

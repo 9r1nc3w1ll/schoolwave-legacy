@@ -2,15 +2,15 @@ from rest_framework import serializers
 from .models import AttendanceRecord
 
 class AttendanceRecordSerializer(serializers.ModelSerializer):
-    student = serializers.SerializerMethodField()
-    class_id = serializers.SerializerMethodField()
-    staff = serializers.SerializerMethodField()
+    student_info = serializers.SerializerMethodField()
+    class_info = serializers.SerializerMethodField()
+    staff_info = serializers.SerializerMethodField()
 
     class Meta:
         model = AttendanceRecord
         fields = '__all__'
 
-    def get_student(self, obj):
+    def get_student_info(self, obj):
         data = {
                 'id': obj.student.id,
                 'first_name': obj.student.first_name,
@@ -20,7 +20,7 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
             return data
         return None
     
-    def get_class_id(self, obj):
+    def get_class_info(self, obj):
         data =  {
                 'id': obj.class_id.id,
                 'name': obj.class_id.name,
@@ -33,7 +33,7 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
         return None
 
 
-    def get_staff(self, obj):
+    def get_staff_info(self, obj):
         data =  {
                 'id': obj.staff.id,
                 'title': obj.staff.title,

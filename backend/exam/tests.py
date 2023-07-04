@@ -436,12 +436,14 @@ class AnswerAPITestCase(APITestCase):
 
         data = {
             "question": self.question.id,
-            "answer_option":self.question_option,
+            "answer_option":self.question_option.id,
             "answer_value":"Simbi is a Boy",
             "correct_answer":False
         }
 
         response = self.client.post(url, data)
+
+        print(response.data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["message"], "Answer created successfully.")

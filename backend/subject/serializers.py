@@ -2,13 +2,13 @@ from rest_framework import serializers
 from .models import Subject, SubjectSelection, SubjectStaffAssignment
 
 class SubjectSerializer(serializers.ModelSerializer):
-    class_id = serializers.SerializerMethodField()
-    term = serializers.SerializerMethodField()
+    class_info = serializers.SerializerMethodField()
+    term_info = serializers.SerializerMethodField()
     class Meta:
         model = Subject
         fields = '__all__'
 
-    def get_class_id(self, obj):
+    def get_class_info(self, obj):
         data =  {
                 'id': obj.class_id.id,
                 'name': obj.class_id.name,
@@ -20,7 +20,7 @@ class SubjectSerializer(serializers.ModelSerializer):
             return data
         return None
     
-    def get_term(self, obj):
+    def get_term_info(self, obj):
         data =  {
                 'id': obj.term.id,
                 'name': obj.term.name,
