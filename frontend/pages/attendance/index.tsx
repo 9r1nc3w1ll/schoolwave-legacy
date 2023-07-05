@@ -10,6 +10,7 @@ import AttendanceTable from "@/components/AttendanceTable";
 import { getClasses } from "@/apicalls/clas";
 import { getTerms } from "@/apicalls/session";
 import { getAttendance } from "@/apicalls/attendance";
+import { useForm } from "react-hook-form";
 
 
 
@@ -18,7 +19,9 @@ const Attendance =()=>{
   const [listView, setListView] = useState(false)
   const [students, setStudents] = useState([])
   const [rqstAtt, setrqstAtt] = useState(false)
+  const [today, settoday] = useState(false)
   const [attendanceEmpty, setattendanceEmpty] = useState(false)
+  const [attData, setattData] = useState({})
   const { status: sessionStatus, data: user_session } = useSession();
   const { data: studentList, isSuccess,isLoading, refetch:getstudents } = useQuery('getStudents', () => {
     return getStudents(user_session?.access_token)
@@ -26,6 +29,7 @@ const Attendance =()=>{
     enabled: false
   })
 
+  const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
 
   const { data: classes, isSuccess:classgotten,  refetch:getclasses } = useQuery('getClasses', () => {
     return getClasses(user_session?.access_token)
@@ -40,23 +44,24 @@ const Attendance =()=>{
   })
 
   const { data: attendance, isSuccess:attendancegotten,  refetch:getattendance } = useQuery('getAttendance', () => {
-    return getAttendance(user_session?.access_token)
+    return getAttendance(attData, user_session?.access_token)
   }, {
     enabled: false
   })
 
   useEffect(() => {
     dispatch(setPageTitle('Schoolwave | Attendance'));
-    getAttendance()
+    // getAttendance()
     setrqstAtt(true)
   }, []);
 
   useEffect(() => {
     if(attendance?.length){
       setStudents(attendance)
-    }else{
+    }
+    else{
       if(sessionStatus == 'authenticated'){
-        getstudents()
+        // getstudents()
         setattendanceEmpty(true)}
     }
  
@@ -79,6 +84,37 @@ const Attendance =()=>{
   let curr = new Date();
   let date = curr.toISOString().substring(0,10);
 
+  const onSubmit =(data: any)=>{
+    let tday = new Date().toISOString().substring(0,10) === data.startDate
+    data.today = tday
+    settoday(tday)
+    setattData(data)
+   
+  }
+  useEffect(()=>{
+    if(Object.keys(attData).length){
+      getattendance()
+    }
+  }, [attData])
+
+  useEffect(()=>{
+    if(attendance?.length){
+   
+    }else{
+      setattendanceEmpty(true)
+    }
+  }, [attendancegotten])
+
+  useEffect(()=>{
+    if(today && attendanceEmpty){
+      console.log('empty')
+      getstudents()
+    }
+
+    if(attendance){
+      setStudents(attendance)
+    }
+  }, [today, attendance ])
 
   return(
    
@@ -102,12 +138,12 @@ const Attendance =()=>{
 
         </div>
       </div>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-6">
           <div>
             <div className="mb-8">
               <label>Class</label>
-              <select className="form-select text-white-dark">
+              <select className="form-select text-white-dark" id='class' {...register("class", { required: "This field is required" })} >
                 <option>-- select One-- </option>
                 {classes?.map((clss: any)=> <option key={clss.id} value={clss.id}> {clss.name} </option>)}
               </select>
@@ -115,22 +151,22 @@ const Attendance =()=>{
            
             <div>
               <label>Term</label>
-              <select className="form-select text-white-dark">
+              <select className="form-select text-white-dark" id='term' {...register("term", { required: "This field is required" })} >
                 <option>-- select One-- </option>
                 {terms?.map((trm: any)=> <option key={trm.id} value={trm.id}>  {trm.name} </option>)}
               </select>
             </div>
 
-            <button className="btn btn-primary mt-4">Update</button>
+            <button className="btn btn-primary mt-4" type='submit'>Update</button>
           </div>
           <div className=" ">
             <div className="mb-8">
               <label>Start Date</label>
-              <input type="date" placeholder="Choose a day" className="form-input" defaultValue={date} />
+              <input type="date" placeholder="Choose a day" className="form-input" defaultValue={date} id='startDate'  {...register("startDate", { required: "This field is required" })}  />
             </div>
             <div>
               <label>End Date</label>
-              <input type="date" placeholder="Choose a day" className="form-input" defaultValue={date} />
+              <input type="date" placeholder="Choose a day" className="form-input" defaultValue={date} id='endDate' {...register("endDate", { required: "This field is required" })} />
             </div> 
           
           </div>

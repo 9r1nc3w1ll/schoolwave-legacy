@@ -26,7 +26,6 @@ const CreateClassForm = (props: any) => {
 
   const { mutate, isLoading, error } = useMutation(
     (data:any) =>{
-      console.log('data', props.user_session.access_token)
       return createClass(data, props.user_session.access_token)},
     {
       onSuccess: async (data) => {
