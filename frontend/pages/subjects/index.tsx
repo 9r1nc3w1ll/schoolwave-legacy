@@ -375,10 +375,6 @@ const Export = (props:any) => {
                   
                     <DropDownWIthChildren
                     trigger={<button type="button" className='relative' 
-                    onClick={() => {
-                      setActiveToolTip(record.id);
-                    }}
-
                        
                           
                         >

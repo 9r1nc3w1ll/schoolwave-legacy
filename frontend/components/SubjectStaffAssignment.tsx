@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import Select from 'react-select';
 import { active } from 'sortablejs';
 import CheckboxWithState from './CheckboxWithState';
+import Option from 'react-select/dist/declarations/src/components/Option';
 
 const SubjectUserAssignments = (props: any) => {
 
@@ -63,6 +64,11 @@ const SubjectUserAssignments = (props: any) => {
     });
   }, [search, items]);
 
+  interface Option{
+    id:string;
+    first_name:string;
+    second_name:string;
+  }
   
 
    
@@ -92,8 +98,14 @@ const SubjectUserAssignments = (props: any) => {
                     
 
                     <Select
-                      defaultValue='Select a Teacher'
-                      options={teachersSuccess ? items.map((item:any) => ({ value: item.id, label: `${item.first_name} ${item.last_name}` })) : []}
+                       defaultValue={{ value: '', label: 'Select a Teacher' }}
+                       options={teachersSuccess
+                         ? items.map((item: any) => ({
+                             value: item.id,
+                             label: `${item.first_name} ${item.last_name}`
+                           }))
+                         : []
+                       }
                       isSearchable={false}
                       onChange={(e: any) => {
 
