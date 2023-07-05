@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import {useEffect, useState} from 'react'
 import { setPageTitle } from "@/store/themeConfigSlice";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { getStudents } from "@/apicalls/users";
 import AttendanceTablet from "@/components/AttendanceTablet";
 import Tippy from "@tippyjs/react";
@@ -11,13 +11,15 @@ import { getClasses } from "@/apicalls/clas";
 import { getTerms } from "@/apicalls/session";
 import { getAttendance } from "@/apicalls/attendance";
 import { useForm } from "react-hook-form";
+import { showAlert } from "@/utility_methods/alert";
+import AttendanceModal from "@/components/AttendanceModal";
 
 
 
 const Attendance =()=>{
   const dispatch = useDispatch();
   const [listView, setListView] = useState(false)
-  const [students, setStudents] = useState([])
+  const [students, setStudents] = useState()
   const [rqstAtt, setrqstAtt] = useState(false)
   const [today, settoday] = useState(false)
   const [attendanceEmpty, setattendanceEmpty] = useState(false)
@@ -43,11 +45,24 @@ const Attendance =()=>{
     enabled: false
   })
 
-  const { data: attendance, isSuccess:attendancegotten,  refetch:getattendance } = useQuery('getAttendance', () => {
-    return getAttendance(attData, user_session?.access_token)
-  }, {
-    enabled: false
-  })
+  const { mutate, data: attendance,  isLoading:loadingattendance, isSuccess:attendancegotten, error } = useMutation(
+    (data) =>
+      getAttendance(data, user_session?.access_token),
+    {
+      onSuccess: async (data) => {
+        showAlert('success', 'Saved Successfuly')
+      
+
+      },
+      onError: (error:any) => {
+                 
+        showAlert('error', 'An Error Occured' )
+        
+      }
+    }
+  );
+
+
 
   useEffect(() => {
     dispatch(setPageTitle('Schoolwave | Attendance'));
@@ -55,18 +70,7 @@ const Attendance =()=>{
     setrqstAtt(true)
   }, []);
 
-  useEffect(() => {
-    if(attendance?.length){
-      setStudents(attendance)
-    }
-    else{
-      if(sessionStatus == 'authenticated'){
-        // getstudents()
-        setattendanceEmpty(true)}
-    }
- 
 
-  }, [rqstAtt, sessionStatus]);
 
   useEffect(() => {
     setStudents(studentList)
@@ -80,41 +84,24 @@ const Attendance =()=>{
     }
 
   }, [getclasses, getstudents, getterms, sessionStatus]);
-
-  let curr = new Date();
-  let date = curr.toISOString().substring(0,10);
+  const presentday = new Date().toISOString().substring(0,10)
 
   const onSubmit =(data: any)=>{
-    let tday = new Date().toISOString().substring(0,10) === data.startDate
+    let tday = presentday === data.startDate
     data.today = tday
     settoday(tday)
-    setattData(data)
+    mutate(data)
    
   }
-  useEffect(()=>{
-    if(Object.keys(attData).length){
-      getattendance()
-    }
-  }, [attData])
+ 
 
-  useEffect(()=>{
-    if(attendance?.length){
-   
-    }else{
-      setattendanceEmpty(true)
-    }
-  }, [attendancegotten])
-
-  useEffect(()=>{
-    if(today && attendanceEmpty){
-      console.log('empty')
-      getstudents()
-    }
-
-    if(attendance){
-      setStudents(attendance)
-    }
-  }, [today, attendance ])
+  const [active, setActive] = useState<string>('0');
+  const togglePara = (value: string) => {
+    setActive((oldValue) => {
+      return oldValue === value ? '' : value;
+    });
+  };
+  
 
   return(
    
@@ -162,11 +149,11 @@ const Attendance =()=>{
           <div className=" ">
             <div className="mb-8">
               <label>Start Date</label>
-              <input type="date" placeholder="Choose a day" className="form-input" defaultValue={date} id='startDate'  {...register("startDate", { required: "This field is required" })}  />
+              <input type="date" placeholder="Choose a day" className="form-input" defaultValue={presentday} id='startDate'  {...register("startDate", { required: "This field is required" })}  />
             </div>
             <div>
               <label>End Date</label>
-              <input type="date" placeholder="Choose a day" className="form-input" defaultValue={date} id='endDate' {...register("endDate", { required: "This field is required" })} />
+              <input type="date" placeholder="Choose a day" className="form-input" defaultValue={presentday} id='endDate' {...register("endDate", { required: "This field is required" })} />
             </div> 
           
           </div>
@@ -179,9 +166,9 @@ const Attendance =()=>{
         listView?
           <>
             {
-              isSuccess && students.length?
+              attendancegotten && attendance?.length?
                 
-                students.map((student: { id: any; }) => <AttendanceTable key={student.id} user={student}  />):
+                ( <AttendanceTable user={ attendance[0]?.attendance}  />):
 
                 <h1> {isLoading? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
             }
@@ -192,13 +179,17 @@ const Attendance =()=>{
           <>
 
             <h1 className=" mt-6 text-xl font-semibold dark:text-white-light">Today</h1>
-            <div className="mt-2 flex gap-2 flex-wrap">
-              {
-                isSuccess && students?.length?
-                
-                  students.map((student: { id: any; }) => <AttendanceTablet key={student.id} user={student}  />):
+            <div className="w-full">
 
-                  <h1> {isLoading? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
+              {
+                attendancegotten && attendance?.length ?
+                
+                  attendance[0]?.attendance.map((student: { id: any; }, i: number) => {
+                 
+                    return <AttendanceModal key={student.id} attendance={student}  i={`${i}`} togglePara={togglePara} active={active} />
+                  }):
+
+                  <h1> {loadingattendance? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
               }
             
             </div>

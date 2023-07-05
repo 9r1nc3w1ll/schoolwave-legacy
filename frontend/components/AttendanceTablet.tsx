@@ -1,7 +1,7 @@
 
 
 export default function AttendanceTablet (props: any){
-console.log(props.user)
+
   return(
     <form className="max-w-[220px] bg-success-light shadow-md p-2 rounded-sm hover:shadow-sm">
       <div className="flex gap-2 mb-2">
