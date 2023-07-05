@@ -12,9 +12,8 @@ import BulkAdmission from '@/components/BulkSubjects';
 import { showAlert } from '@/utility_methods/alert';
 import { getSubjects, updateSubject } from '@/apicalls/subjects';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
-import SubjectUserAssignment from '@/components/SubjectStaffAssignment';
 import EditSubjectForm from '@/components/EditSubjectForm';
-import { Interface } from 'readline';
+import SubjectUserAssignments from '@/components/SubjectStaffAssignment';
 
 
 
@@ -47,7 +46,7 @@ const Export = (props:any) => {
   );
 
 
-  const [activeToolTip, setActiveToolTip] = useState<string>('');
+  const [activeToolTip, setActiveToolTip] =  useState(null);
   const [sessions, setSessions] = useState([])
   const [selectedSession, setSelectedSession] = useState<any>({});
   const [usermodal,setusermodal ] = useState(false);
@@ -142,9 +141,9 @@ const Export = (props:any) => {
     if (activeToolTip != '') {
       const selectedSession = sessions.find((session: any) => session.id === activeToolTip);
       setSelectedSession(selectedSession);
-      console.log(selectedSession);
+     
     }
-  }, [console.log("No ID active",activeToolTip) ]) ;
+  }, [activeToolTip ]) ;
 
 
   
@@ -162,16 +161,6 @@ const Export = (props:any) => {
     term_id: string;
     code: string;
   }
-
-
-  
-  const handleSubjectClick = (sub: SubjectInterface) => {
-    if (sub && sub.id) {
-      setActiveToolTip(sub.id);
-    }
-  };
-
-
 
   const exportTable = (type: any) => {
     let columns: any = col;
@@ -382,11 +371,13 @@ const Export = (props:any) => {
               { accessor: 'term', title: 'Term', sortable: true },
               {
                 accessor: 'Action',
-                render: ({ action, sub}: any) => (
+                render: ({ action, record}: any) => (
                   
                     <DropDownWIthChildren
                     trigger={<button type="button" className='relative' 
-                      onClick={() => handleSubjectClick(sub)}
+                    onClick={() => {
+                      setActiveToolTip(record.id);
+                    }}
 
                        
                           
@@ -410,7 +401,8 @@ const Export = (props:any) => {
                     >
                       <div className="bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[100%] w-[130px] z-10">
                         <p className="mb-2 px-3 pt-2 cursor-pointer hover:bg-white"  onClick={() => {
-                   seteditModal(true)
+                   seteditModal(true);
+                   ;
                   }
 
                   }>
@@ -429,7 +421,7 @@ const Export = (props:any) => {
                       </div>
                     </DropDownWIthChildren> ) }]}
 
-
+          
             totalRecords={initialRecords? initialRecords.length : 0}
             recordsPerPage={pageSize}
             page={page}
@@ -441,12 +433,13 @@ const Export = (props:any) => {
             minHeight={200}
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
 
-            onRowClick={(x:any) =>
-              router.push('#')
-            }
-
+            onRowClick={(rowData) => {
+            setActiveToolTip(rowData.id);
+            router.push('#');
+            }}
             selectedRecords={selectedRecords}
             onSelectedRecordsChange={setSelectedRecords}
+            
           />
 
           
@@ -470,7 +463,7 @@ const Export = (props:any) => {
                 <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                   <div className="w-4/5 mx-auto py-5 text-center">
                     {/* <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a SubJect <span className='text-sm'>{`(${selectedSession.name})`}</span></h5> */}
-                    <SubjectUserAssignment student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch}/>
+                    <SubjectUserAssignments student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch}/>
                   </div>
                 </Dialog.Panel>
               </div>
