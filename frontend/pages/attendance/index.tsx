@@ -13,6 +13,8 @@ import { getAttendance } from "@/apicalls/attendance";
 import { useForm } from "react-hook-form";
 import { showAlert } from "@/utility_methods/alert";
 import AttendanceModal from "@/components/AttendanceModal";
+import Tablex from "@/components/Tablex";
+
 
 
 
@@ -168,7 +170,7 @@ const Attendance =()=>{
             {
               attendancegotten && attendance?.length?
                 
-                ( <AttendanceTable user={ attendance[0]?.attendance}  />):
+                ( <Tablex attendance={ attendance[0]?.attendance}  />):
 
                 <h1> {isLoading? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
             }

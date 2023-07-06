@@ -20,19 +20,25 @@ const x =
               "first_name": "Akpos",
               "last_name": "Egobe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "1",
+              "student_id": "a1"
             },
             {
               "first_name": "Akpos1",
               "last_name": "Eg2obe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "2",
+              "student_id": "a2"
             },
             {
               "first_name": "Akpos",
               "last_name": "Egobe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "3",
+              "student_id": "a3"
             }
           ]
         },
@@ -44,19 +50,25 @@ const x =
               "first_name": "Akpos",
               "last_name": "Egobe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "4",
+              "student_id": "a1"
             },
             {
               "first_name": "Akpos1",
               "last_name": "Eg2obe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "5",
+              "student_id": "a2"
             },
             {
               "first_name": "Akpos",
               "last_name": "Egobe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "6",
+              "student_id": "a3"
             }
           ]
         },
@@ -68,19 +80,25 @@ const x =
               "first_name": "Akpos",
               "last_name": "Egobe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "7",
+              "student_id": "a1"
             },
             {
               "first_name": "Akpos1",
               "last_name": "Eg2obe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "8",
+              "student_id": "a2"
             },
             {
               "first_name": "Akpos",
               "last_name": "Egobe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "9",
+              "student_id": "a3"
             }
           ]
         },
@@ -92,19 +110,25 @@ const x =
               "first_name": "Akpos",
               "last_name": "Egobe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "10",
+              "student_id": "a1"
             },
             {
               "first_name": "Akpos1",
               "last_name": "Eg2obe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "11",
+              "student_id": "a2"
             },
             {
               "first_name": "Akpos",
               "last_name": "Egobe",
               "present": true,
-              "remark": "Excused"
+              "remark": "Excused",
+              "attendance_id": "12",
+              "student_id": "a3"
             }
           ]
         }
