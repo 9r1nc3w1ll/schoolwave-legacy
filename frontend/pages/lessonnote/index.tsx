@@ -32,6 +32,7 @@ const Notes = () => {
       date: '11/02/2020',
       isFav: true,
       tag: '',
+      
     },
     {
       id: 3,
