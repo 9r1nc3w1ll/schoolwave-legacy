@@ -29,42 +29,23 @@ const col = ['code', 'name', 'class_id', 'term'];
 const Export = (props:any) => {
   const router = useRouter()
   const { status: sessionStatus, data: user_session } = useSession();
-  // const {data:sesions, isSuccess, status, isLoading, refetch} = useQuery('session', ()=> getSession(user_session?.access_token), {enabled: false })
+  const {data:sesions, isSuccess, status, isLoading, refetch} = useQuery('session', ()=> getSession(user_session?.access_token), {enabled: false })
 
-// Serial No
-// name
-// type
-// date
-
-interface EventData {
-  id: any,
-  serial_no: string,
-  name: string,
-  type: string,
-  date: string
-  dob: string
-}
-
-const eventData = [
-  {
-    id: "1",
-    serial_no: "02222",
-    name: 'Caroline',
-    type: 'Jensen',
-    date: '2023-07-18',
-    dob: '2004-05-28',
-    
-    },
-    {
-      id: "1",
-      serial_no:"0223",
-      name: 'Caroline',
-      type: 'Jensen',
-      date: '2023-07-18',
-      dob: '2004-05-28',
-      
-      }]
- 
+  // const { mutate, isLoading, error } = useMutation(
+  //   (data:boolean) =>{
+   
+  //     return editSession (selectedRecords[0].id, data, user_session?.access_token)},
+  //   {
+  //     onSuccess: async (data) => {
+  //       showAlert('success', 'Session updated Successfully')
+  //       refetch()
+  //     },
+  //     onError: (error:any) => {
+  //       showAlert('error', 'An Error Occured' )
+     
+  //     }
+  //   }
+  // );
 
 
   const [activeToolTip, setActiveToolTip] =  useState(null);
@@ -90,22 +71,21 @@ const eventData = [
   }, [router]);
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
-      // refetch()
+      refetch()
       
       
   
     }
 
-  }, [sessionStatus]);
-
+  }, [sessionStatus, refetch]);
  useEffect(() =>{
-  if(eventData !=''){
+  if(sesions !=''){
     
    
-    setSessions(eventData)
+    setSessions(sesions.data)
     
     
-  }else[eventData]
+  }else[sesions]
  })
 
 
