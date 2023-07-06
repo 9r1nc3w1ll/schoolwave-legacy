@@ -12,8 +12,9 @@ import { getTerms } from "@/apicalls/session";
 import { getAttendance } from "@/apicalls/attendance";
 import { useForm } from "react-hook-form";
 import { showAlert } from "@/utility_methods/alert";
-import AttendanceModal from "@/components/AttendanceModal";
+import AttendanceModal from "@/components/AttendanceAccordion";
 import Tablex from "@/components/Tablex";
+import AttendanceAccordion from "@/components/AttendanceAccordion";
 
 
 
@@ -188,7 +189,7 @@ const Attendance =()=>{
                 
                   attendance[0]?.attendance.map((student: { id: any; }, i: number) => {
                  
-                    return <AttendanceModal key={student.id} attendance={student}  i={`${i}`} togglePara={togglePara} active={active} />
+                    return <AttendanceAccordion key={student.id} attendance={student}  i={`${i}`} togglePara={togglePara} active={active} />
                   }):
 
                   <h1> {loadingattendance? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>

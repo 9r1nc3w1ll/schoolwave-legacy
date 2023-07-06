@@ -41,7 +41,7 @@ const AttendanceTable = (props: any) => {
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-  const [initialRecords, setInitialRecords] = useState(sortBy(props.user, 'id'));
+  const [initialRecords, setInitialRecords] = useState(sortBy(students, 'id'));
   const [recordsData, setRecordsData] = useState(initialRecords);
 
   const [search, setSearch] = useState('');
@@ -179,7 +179,7 @@ const AttendanceTable = (props: any) => {
                   }
                 >
                   <ul className="!min-w-[140px]">
-                    {cols.map((col, i) => {
+                    {cols.map((col: string, i: number) => {
                       return (
                         <li
                           key={i}
