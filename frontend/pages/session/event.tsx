@@ -15,6 +15,8 @@ import { updateSubject } from '@/apicalls/subjects';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 import EditSessionForm from '@/components/EditSessionForm';
 import CreateSessionForm from '@/components/CreateSessionForm';
+import { type } from 'os';
+import { date } from 'yup';
 
 
 
@@ -27,23 +29,42 @@ const col = ['code', 'name', 'class_id', 'term'];
 const Export = (props:any) => {
   const router = useRouter()
   const { status: sessionStatus, data: user_session } = useSession();
-  const {data:sesions, isSuccess, status, isLoading, refetch} = useQuery('session', ()=> getSession(user_session?.access_token), {enabled: false })
+  // const {data:sesions, isSuccess, status, isLoading, refetch} = useQuery('session', ()=> getSession(user_session?.access_token), {enabled: false })
 
-  // const { mutate, isLoading, error } = useMutation(
-  //   (data:boolean) =>{
-   
-  //     return editSession (selectedRecords[0].id, data, user_session?.access_token)},
-  //   {
-  //     onSuccess: async (data) => {
-  //       showAlert('success', 'Session updated Successfully')
-  //       refetch()
-  //     },
-  //     onError: (error:any) => {
-  //       showAlert('error', 'An Error Occured' )
-     
-  //     }
-  //   }
-  // );
+// Serial No
+// name
+// type
+// date
+
+interface EventData {
+  id: any,
+  serial_no: string,
+  name: string,
+  type: string,
+  date: string
+  dob: string
+}
+
+const eventData = [
+  {
+    id: "1",
+    serial_no: "02222",
+    name: 'Caroline',
+    type: 'Jensen',
+    date: '2023-07-18',
+    dob: '2004-05-28',
+    
+    },
+    {
+      id: "1",
+      serial_no:"0223",
+      name: 'Caroline',
+      type: 'Jensen',
+      date: '2023-07-18',
+      dob: '2004-05-28',
+      
+      }]
+ 
 
 
   const [activeToolTip, setActiveToolTip] =  useState(null);
@@ -69,21 +90,22 @@ const Export = (props:any) => {
   }, [router]);
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
-      refetch()
+      // refetch()
       
       
   
     }
 
-  }, [sessionStatus, refetch]);
+  }, [sessionStatus]);
+
  useEffect(() =>{
-  if(sesions !=''){
+  if(eventData !=''){
     
    
-    setSessions(sesions.data)
+    setSessions(eventData)
     
     
-  }else[sesions]
+  }else[eventData]
  })
 
 
@@ -286,7 +308,7 @@ const Export = (props:any) => {
       <div className="panel">
         <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
 
-          <h5 className=" text-3xl font-semibold dark:text-white-light">Session</h5>
+          <h5 className=" text-3xl font-semibold dark:text-white-light">Events</h5>
           <div className="flex flex-wrap items-center">
            
             <button type="button" onClick={() => setuploadModal(true)} className="btn btn-primary btn-sm m-1">
@@ -294,7 +316,7 @@ const Export = (props:any) => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
               </svg>
 
-                            Bulk Sessions
+                            Bulk Event
             </button>
      
             <button type="button"  className="btn btn-primary btn-sm m-1" onClick={()=>{
@@ -305,7 +327,7 @@ const Export = (props:any) => {
               </svg>
 
 
-                            Create Edit
+                            Create Event
             </button>
   
             <Transition appear show={modal} as={Fragment}>
