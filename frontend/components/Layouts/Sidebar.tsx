@@ -266,6 +266,8 @@ const Sidebar = () => {
                         <li>
                           <Link href="/event/calendarview">{t('Calender View')}</Link>
                         </li>
+                        
+                        
                         <li>
                           <Link href="/event">{t('Events')}</Link>
                         </li>
