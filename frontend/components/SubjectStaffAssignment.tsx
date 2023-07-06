@@ -7,6 +7,13 @@ import Select from 'react-select';
 import { active } from 'sortablejs';
 import CheckboxWithState from './CheckboxWithState';
 import Option from 'react-select/dist/declarations/src/components/Option';
+import { AnyARecord } from 'dns';
+
+
+const options = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'orange', label: 'Orange' }
+];
 
 const SubjectUserAssignments = (props: any) => {
 
@@ -50,6 +57,8 @@ const SubjectUserAssignments = (props: any) => {
 
   
 
+ 
+
   const [filteredItems, setFilteredItems] = useState<any>(items);
   useEffect(() => {
     setFilteredItems(() => {
@@ -64,12 +73,37 @@ const SubjectUserAssignments = (props: any) => {
     });
   }, [search, items]);
 
-  interface Option{
-    id:string;
-    first_name:string;
-    second_name:string;
-  }
+  const [electedOption, setelectedOption] = useState(null);
   
+ 
+  const handleChange = (electedOption:any) => {
+    setelectedOption(electedOption);
+    console.log('Selected Option:', electedOption);
+
+    let data = {
+      subject: electedOption.value,
+      staff: props.classData.id,
+      role: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+      active: true
+    };
+
+    // Additional logic to handle the selected optio
+    mutate(data);
+  };
+  let options:any = [];
+
+  if (teachersSuccess) {
+     // Replace with the actual items data from your code
+
+    options = items.map((item:any) => ({
+      value: item.id,
+      label: `${item.first_name} ${item.last_name}`
+    }));
+  }
+
+  const defaultValue = options.length > 0 ? options[0] : null;
+
+ 
 
    
 
@@ -97,72 +131,19 @@ const SubjectUserAssignments = (props: any) => {
                   <div className='w-full'>
                     
 
-                    <Select
-                       defaultValue={{ value: '', label: 'Select a Teacher' }}
-                       options={teachersSuccess
-                         ? items.map((item: any) => ({
-                             value: item.id,
-                             label: `${item.first_name} ${item.last_name}`
-                           }))
-                         : []
-                       }
-                      isSearchable={false}
-                      onChange={(e: any) => {
-
-                        let data = {
-                          subject: e.value,
-                          staff: props.classData.id,
-                          role: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                          active:true
-                        
-                        }
-                        mutate(data)}}
-                        
-                      
-                    />
-                    
+                  <Select
+                    value={electedOption}
+                    onChange={handleChange}
+                    options={options}
+                    isSearchable={false}
+                    defaultValue={defaultValue}
+                  />
                   </div>      
 
                   
                 </div>
 
-                <div
-                  
-                  className="bg-white dark:bg-[#1b2e4b] rounded-xl border mx-auto p-3 grid grid-cols-2 items-center gap-10
-                  text-gray-500 font-semibold w-[90%] h-auto hover:text-primary transition-all duration-300 hover:scale-[1.01]"
-                >
-                  
-                  <div className="user-profile flex gap-8 items-center">
-                    <img src={`/assets/images/profile-${Math.round(Math.random() * 35)}.jpeg`} alt="img" className="w-8 h-8 rounded-md object-cover" />
-                    <div>{props.classData.name}</div>
-                  </div>
-                  <div className='w-full'>
-                    
-
-                    <Select
-                      defaultValue='Select a Teacher'
-                      options={teachersSuccess ? items.map((item:any) => ({ value: item.id, label: `${item.first_name} ${item.last_name}` })) : []}
-                      isSearchable={false}
-                      onChange={(e: any) => {
-
-                        let data = {
-                          subject: e.value,
-                          staff: props.classData.id,
-                          role: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                          active:true
-                        
-                        }
-                        mutate(data)}}
-                        
-                      
-                    />
-                    
-                  </div>
-
-                  
-
-                  
-                </div>
+               
            
         </div>
       </div>
