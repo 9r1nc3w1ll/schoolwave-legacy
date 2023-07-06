@@ -6,6 +6,7 @@ const ParentLog = () => {
    
 
     return(
+        
         <div className="panel">
                     <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Login details</h5>
 
