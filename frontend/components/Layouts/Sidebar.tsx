@@ -217,7 +217,7 @@ const Sidebar = () => {
                           <Link href="/subjects">{t('Subject Lists')}</Link>
                         </li>
                         <li>
-                          <Link href="/lessonnote">{t('Lesson Notes')}</Link>
+                          <Link href="/subjects/lesson_note">{t('Lesson Notes')}</Link>
                         </li>
                        
                       </ul>
@@ -256,7 +256,7 @@ const Sidebar = () => {
                     <AnimateHeight duration={300} height={currentMenu === 'Sessions' ? 'auto' : 0}>
                       <ul className="sub-menu text-gray-500">
                         <li>
-                          <Link href="/session">{t('Sessions')}</Link>
+                          <Link href="/session">{t('Sessions List')}</Link>
                           
                         </li>
                         

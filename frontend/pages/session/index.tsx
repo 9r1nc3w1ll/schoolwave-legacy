@@ -170,7 +170,7 @@ const Export =  (props:any) => {
                 <th>Name</th>
                 <th>Start Date</th>
                 <th>End Date</th>
-                <th>Current Session?</th>
+                <th>Current Session</th>
                 <th></th>
               </tr>
             </thead>
