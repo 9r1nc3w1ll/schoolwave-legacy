@@ -72,9 +72,9 @@ class CreateSchool(APIView):
                 {"message": "School already created."}, status=status.HTTP_409_CONFLICT
             )
 
-        request.data._mutable = True
+        request.POST._mutable = True
         request.data.update({"owner": request.user.id})
-        request.data._mutable = False
+        request.POST._mutable = False
 
         serializer = SchoolSerializer(data=request.data)
         if not serializer.is_valid():
