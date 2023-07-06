@@ -9,6 +9,27 @@ import AttendanceOption from './AttendanceOption';
 
 
 
+const students =  [
+  {
+    "first_name": "Akpos",
+    "last_name": "Egobe",
+    "id": "a1"
+  },
+  {
+    "first_name": "Akpos1",
+    "last_name": "Eg2obe",
+    "id": "a2"
+  },
+  {
+    "first_name": "Akpos",
+    "last_name": "Egobe",
+
+    "id": "a3"
+  }
+]
+
+
+
 const AttendanceTable = (props: any) => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -25,11 +46,24 @@ const AttendanceTable = (props: any) => {
 
   const [search, setSearch] = useState('');
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
-    columnAccessor: 'id',
+    columnAccessor: 'first_name',
     direction: 'asc',
   });
 
-  const [hideCols, setHideCols] = useState<any>(['age', 'dob', 'isActive']);
+  const [hideCols, setHideCols] = useState<any>([]);
+
+  const [cols, setCols] = useState<any>([]);
+
+
+  useEffect(()=>{
+    let arr: any = []
+    props.attendance.forEach((att: any)=>{
+      arr.push(att.date)
+    })
+
+    setCols(arr)
+  }, [])
+
 
   const formatDate = (date: any) => {
     if (date) {
@@ -49,18 +83,18 @@ const AttendanceTable = (props: any) => {
     }
   };
 
-  const cols = [
-    { accessor: 'id', title: 'ID' },
-    { accessor: 'first_name', title: 'First Name' },
-    { accessor: 'last_name', title: 'Last Name' },
-    { accessor: 'email', title: 'Email' },
-    { accessor: 'phone', title: 'Phone' },
-    { accessor: 'company', title: 'Company' },
-    { accessor: 'address.street', title: 'Address' },
-    { accessor: 'age', title: 'Age' },
-    { accessor: 'dob', title: 'Birthdate' },
-    { accessor: 'isActive', title: 'Active' },
-  ];
+  // const cols = [
+  //   { accessor: 'id', title: 'ID' },
+  //   { accessor: 'first_name', title: 'First Name' },
+  //   { accessor: 'last_name', title: 'Last Name' },
+  //   { accessor: 'email', title: 'Email' },
+  //   { accessor: 'phone', title: 'Phone' },
+  //   { accessor: 'company', title: 'Company' },
+  //   { accessor: 'address.street', title: 'Address' },
+  //   { accessor: 'age', title: 'Age' },
+  //   { accessor: 'dob', title: 'Birthdate' },
+  //   { accessor: 'isActive', title: 'Active' },
+  // ];
 
   useEffect(() => {
     setPage(1);
@@ -74,16 +108,12 @@ const AttendanceTable = (props: any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      return props.user.filter((item: { id: { toString: () => string | string[]; }; first_name: string; last_name: string; company: string; email: string; age: { toString: () => string; }; dob: string; phone: string; }) => {
+      return students.filter((item: any) => {
         return (
-          item.id.toString().includes(search.toLowerCase()) ||
-                    item.first_name.toLowerCase().includes(search.toLowerCase()) ||
-                    item.last_name.toLowerCase().includes(search.toLowerCase()) ||
-                    item.company.toLowerCase().includes(search.toLowerCase()) ||
-                    item.email.toLowerCase().includes(search.toLowerCase()) ||
-                    item.age.toString().toLowerCase().includes(search.toLowerCase()) ||
-                    item.dob.toLowerCase().includes(search.toLowerCase()) ||
-                    item.phone.toLowerCase().includes(search.toLowerCase())
+         
+          item.first_name.toLowerCase().includes(search.toLowerCase()) ||
+                    item.last_name.toLowerCase().includes(search.toLowerCase()) 
+                  
         );
       });
     });
@@ -95,11 +125,44 @@ const AttendanceTable = (props: any) => {
     setPage(1);
   }, [sortStatus]);
 
+  const generateDateCols =()=>{
+
+    let temp = [
+      {
+        accessor: 'first_name',
+        title: 'First Name',
+        sortable: true,
+      },
+      {
+        accessor: 'last_name',
+        title: 'Last Name',
+        sortable: true,
+      }
+
+    ]
+
+
+    props.attendance.forEach((att:any )=>{
+      let base: any = {
+   
+        title: att.date,
+        sortable: false,
+        hidden: false,
+        render: (x: any) => <AttendanceOption data={att.students.filter((stu: any) => stu.student_id === x.id)} />,
+      }
+
+      temp.push(base)
+  
+    })
+    
+    return temp
+  }
+
   return (
     <div>
       <div className="panel">
         <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
-          <h5 className="text-lg font-semibold dark:text-white-light">Show/Hide Columns</h5>
+          <h5 className="text-lg font-semibold dark:text-white-light">{props.current_class}</h5>
           <div className="flex items-center gap-5 ltr:ml-auto rtl:mr-auto">
             <div className="flex flex-col gap-5 md:flex-row md:items-center">
               <div className="dropdown">
@@ -108,7 +171,7 @@ const AttendanceTable = (props: any) => {
                   btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
                   button={
                     <>
-                      <span className="ltr:mr-1 rtl:ml-1">Weeks</span>
+                      <span className="ltr:mr-1 rtl:ml-1">Filter Days</span>
                       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M19 9L12 15L5 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
@@ -129,15 +192,15 @@ const AttendanceTable = (props: any) => {
                             <label className="mb-0 cursor-pointer">
                               <input
                                 type="checkbox"
-                                checked={!hideCols.includes(col.accessor)}
+                                checked={!hideCols.includes(col)}
                                 className="form-checkbox"
-                                defaultValue={col.accessor}
+                                defaultValue={col}
                                 onChange={(event: any) => {
                                   setHideCols(event.target.value);
-                                  showHideColumns(col.accessor, event.target.checked);
+                                  showHideColumns(col, event.target.checked);
                                 }}
                               />
-                              <span className="ltr:ml-2 rtl:mr-2">{col.title}</span>
+                              <span className="ltr:ml-2 rtl:mr-2">{col}</span>
                             </label>
                           </div>
                         </li>
@@ -156,76 +219,7 @@ const AttendanceTable = (props: any) => {
           <DataTable
             className="table-hover whitespace-nowrap"
             records={recordsData}
-            columns={[
-              {
-                accessor: 'id',
-                title: 'ID',
-                sortable: true,
-                hidden: hideCols.includes('id'),
-              },
-              {
-                accessor: 'first_name',
-                title: 'First Name',
-                sortable: true,
-                hidden: hideCols.includes('firstName'),
-              },
-              {
-                accessor: 'last_name',
-                title: 'Last Name',
-                sortable: true,
-                hidden: hideCols.includes('lastName'),
-
-              },
-              {
-                accessor: 'last_name',
-                title: '01',
-                sortable: false,
-                hidden: hideCols.includes('email'),
-                render: ({ last_name }) => <AttendanceOption />,
-              },
-              {
-                accessor: 'last_name',
-                title: '02',
-                sortable: false,
-                hidden: hideCols.includes('phone'),
-                render: ({ last_name }) => <AttendanceOption />,
-              },
-              {
-                accessor: 'last_name',
-                title: '03',
-                sortable: false,
-                hidden: hideCols.includes('company'),
-                render: ({ last_name }) => <AttendanceOption />,
-              },
-              {
-                accessor: 'last_name',
-                title: '04',
-                sortable: false,
-                hidden: hideCols.includes('address.street'),
-                render: ({ last_name}) => <AttendanceOption />,
-              },
-              {
-                accessor: 'last_name',
-                title: '05',
-                sortable: false,
-                hidden: hideCols.includes('age'),
-                render: ({ last_name }) => <AttendanceOption />,
-              },
-              {
-                accessor: 'last_name',
-                title: '06',
-                sortable: false,
-                hidden: hideCols.includes('dob'),
-                render: ({ last_name }) => <AttendanceOption />,
-              },
-              {
-                accessor: 'last_name',
-                title: '07',
-                sortable: false,
-                hidden: hideCols.includes('isActive'),
-                render: ({ last_name }) => <AttendanceOption />,
-              },
-            ]}
+            columns={ generateDateCols()}
             highlightOnHover
             totalRecords={initialRecords.length}
             recordsPerPage={pageSize}
@@ -235,7 +229,7 @@ const AttendanceTable = (props: any) => {
             onRecordsPerPageChange={setPageSize}
             sortStatus={sortStatus}
             onSortStatusChange={setSortStatus}
-            minHeight={200}
+            minHeight={400}
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
           />
         </div>

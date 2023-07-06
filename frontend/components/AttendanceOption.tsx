@@ -5,14 +5,15 @@ import useComponentVisible from "@/hooks/useComponentVisible";
 
 
 
-export default function AttendanceOption(){
+export default function AttendanceOption(props: any){
   const [showOptions, setShowOptions] = useState(false)
   const { ref, isComponentVisible } = useComponentVisible(true);
-
   return(
     <div className="flex gap-1">
-      <input type='checkbox' />
-      <div className="relative z-[0]">
+      <input type='checkbox' checked={props.data[0].present} onChange={()=>{
+        console.log('uuuyyyiiii', props.data)
+      }} />
+      {/* <div className="relative z-[0]">
         <div onClick={()=>{
           setShowOptions(!showOptions)
         }}>
@@ -28,7 +29,7 @@ export default function AttendanceOption(){
           <li>Late</li>
           <li>Punctual</li>
         </ul>}
-      </div>
+      </div> */}
 
     </div>
   )

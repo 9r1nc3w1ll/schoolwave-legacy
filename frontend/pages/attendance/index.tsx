@@ -170,7 +170,7 @@ const Attendance =()=>{
             {
               attendancegotten && attendance?.length?
                 
-                ( <Tablex attendance={ attendance[0]?.attendance}  />):
+                ( <AttendanceTable attendance={ attendance[0]?.attendance}  current_class={attendance[0]?.class_info} />):
 
                 <h1> {isLoading? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
             }

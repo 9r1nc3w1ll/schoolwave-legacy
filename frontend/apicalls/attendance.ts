@@ -19,7 +19,7 @@ const x =
             {
               "first_name": "Akpos",
               "last_name": "Egobe",
-              "present": true,
+              "present": false,
               "remark": "Excused",
               "attendance_id": "1",
               "student_id": "a1"
@@ -35,7 +35,7 @@ const x =
             {
               "first_name": "Akpos",
               "last_name": "Egobe",
-              "present": true,
+              "present": false,
               "remark": "Excused",
               "attendance_id": "3",
               "student_id": "a3"
@@ -57,7 +57,7 @@ const x =
             {
               "first_name": "Akpos1",
               "last_name": "Eg2obe",
-              "present": true,
+              "present": false,
               "remark": "Excused",
               "attendance_id": "5",
               "student_id": "a2"
