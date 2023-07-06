@@ -204,6 +204,7 @@ const AccountSetting = (props:any) => {
           <div className="switch">
             <div className="grid grid-cols-1 gap-5 md:grid-cols-1">
 
+
               <ParentLog/>
             </div>
           </div>
