@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useMutation, useQuery } from 'react-query';
 import { useRouter } from 'next/router';
-import { getSession } from '@/apicalls/session';
+import { getSession,editSession} from '@/apicalls/session';
 import Subject from '@/components/CreateSubject';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
@@ -13,9 +13,8 @@ import BulkAdmission from '@/components/BulkSubjects';
 import { showAlert } from '@/utility_methods/alert';
 import { updateSubject } from '@/apicalls/subjects';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
-import EditSubjectForm from '@/components/EditSubjectForm';
-import SubjectUserAssignments from '@/components/SubjectStaffAssignment';
-
+import EditSessionForm from '@/components/EditSessionForm';
+import CreateSessionForm from '@/components/CreateSessionForm';
 
 
 
@@ -28,23 +27,23 @@ const col = ['code', 'name', 'class_id', 'term'];
 const Export = (props:any) => {
   const router = useRouter()
   const { status: sessionStatus, data: user_session } = useSession();
-  const {data:subjects, isSuccess, status, refetch} = useQuery('getSubject', ()=> getSession(user_session?.access_token), {enabled: false})
+  const {data:sesions, isSuccess, status, isLoading, refetch} = useQuery('session', ()=> getSession(user_session?.access_token), {enabled: false })
 
-  const { mutate, isLoading, error } = useMutation(
-    (data:boolean) =>{
+  // const { mutate, isLoading, error } = useMutation(
+  //   (data:boolean) =>{
    
-      return updateSubject (selectedRecords[0].id, data, user_session?.access_token)},
-    {
-      onSuccess: async (data) => {
-        showAlert('success', 'Admission updated Successfully')
-        refetch()
-      },
-      onError: (error:any) => {
-        showAlert('error', 'An Error Occured' )
+  //     return editSession (selectedRecords[0].id, data, user_session?.access_token)},
+  //   {
+  //     onSuccess: async (data) => {
+  //       showAlert('success', 'Session updated Successfully')
+  //       refetch()
+  //     },
+  //     onError: (error:any) => {
+  //       showAlert('error', 'An Error Occured' )
      
-      }
-    }
-  );
+  //     }
+  //   }
+  // );
 
 
   const [activeToolTip, setActiveToolTip] =  useState(null);
@@ -55,6 +54,7 @@ const Export = (props:any) => {
   const [uploadModal, setuploadModal] = useState(false);
   const [editModal, seteditModal ] = useState(false)
   const [modal, setmodal] = useState(false);
+ 
 
 
 
@@ -77,11 +77,13 @@ const Export = (props:any) => {
 
   }, [sessionStatus, refetch]);
  useEffect(() =>{
-  if(subjects !=''){
-   
-    setSessions(subjects)
+  if(sesions !=''){
     
-  }else[subjects]
+   
+    setSessions(sesions.data)
+    
+    
+  }else[sesions]
  })
 
 
@@ -93,13 +95,13 @@ const Export = (props:any) => {
 
 
   useEffect(() => {
-    dispatch(setPageTitle('Schoolwave | Subjects'));
+    dispatch(setPageTitle('Schoolwave | sesions'));
    
   });
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-  const [initialRecords, setInitialRecords] = useState(sortBy(subjects, 'id'));
+  const [initialRecords, setInitialRecords] = useState(sortBy(sesions, 'id'));
   const [recordsData, setRecordsData] = useState(initialRecords);
   const [search, setSearch] = useState('');
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
@@ -122,13 +124,13 @@ const Export = (props:any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      if(isSuccess && subjects.length ){
-
-        return subjects.filter((item: any) => {
+      if(isSuccess && sesions.data.length ){
+        
+        return sesions.data.filter((item: any) => {
           return (
-            item.code.toString().includes(search.toLowerCase()) ||
-                      item.name.toLowerCase().includes(search.toLowerCase()) ||
-                      item.class_id.toLowerCase().includes(search.toLowerCase())
+            item.toString().includes(search.toLowerCase()) ||
+                      item.start_date.toLowerCase().includes(search.toLowerCase()) ||
+                      item.end_date.toLowerCase().includes(search.toLowerCase())
                   
           );
         });
@@ -136,11 +138,11 @@ const Export = (props:any) => {
         setInitialRecords([])
       }
     });
-  }, [search, subjects, status]);
+  }, [search, sessions, status]);
 
   useEffect(() => {
     if (activeToolTip != '') {
-      const selectedSession = sessions.find((session: any) => session.id === activeToolTip);
+      const selectedSession = sessions?.find((session: any) => session.id === activeToolTip);
       setSelectedSession(selectedSession);
      
     }
@@ -153,19 +155,13 @@ const Export = (props:any) => {
     setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
     setPage(1);
   }, [sortStatus]);
-  const header = ['Subject Code', 'Name', 'Class', 'Action'];
+ 
 
-  interface SubjectInterface {
-    id: string;
-    class_id: string;
-    description: string;
-    term_id: string;
-    code: string;
-  }
+
 
   const exportTable = (type: any) => {
     let columns: any = col;
-    let records = subjects? subjects: [];
+    let records = sesions? sesions: [];
     let filename = 'table';
 
     let newVariable: any;
@@ -264,7 +260,17 @@ const Export = (props:any) => {
       }
     }
   };
-  
+
+  const toggleActiveStatus = (recordId:any) => {
+    setRecordsData((prevRecordsData) =>
+      prevRecordsData.map((record) => {
+        if (record.id === recordId) {
+          return { ...record, active: !record.active };
+        }
+        return record;
+      })
+    );
+  };
 
   const capitalize = (text: any) => {
     return text
@@ -280,7 +286,7 @@ const Export = (props:any) => {
       <div className="panel">
         <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
 
-          <h5 className=" text-3xl font-semibold dark:text-white-light">Subjects</h5>
+          <h5 className=" text-3xl font-semibold dark:text-white-light">Session</h5>
           <div className="flex flex-wrap items-center">
            
             <button type="button" onClick={() => setuploadModal(true)} className="btn btn-primary btn-sm m-1">
@@ -288,7 +294,7 @@ const Export = (props:any) => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
               </svg>
 
-                            Bulk Subjects
+                            Bulk Sessions
             </button>
      
             <button type="button"  className="btn btn-primary btn-sm m-1" onClick={()=>{
@@ -299,7 +305,7 @@ const Export = (props:any) => {
               </svg>
 
 
-                            Create Subject
+                            Create Session
             </button>
   
             <Transition appear show={modal} as={Fragment}>
@@ -319,8 +325,8 @@ const Export = (props:any) => {
                   <div className="flex items-start justify-center min-h-screen px-4">
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
-                                         
-                        <Subject user_session={user_session} setmodal={setmodal}  refreshClass={refetch} />
+                        <CreateSessionForm user_session={user_session} setmodal={setmodal}  refreshClass={refetch} />
+                        {/* <Subject user_session={user_session} setmodal={setmodal}  refreshClass={refetch} /> */}
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -366,10 +372,22 @@ const Export = (props:any) => {
             className="table-hover whitespace-nowrap"
             records={recordsData}
             columns={[
-              { accessor: 'code', title: 'Subject Code.', sortable: true },
-              { accessor: 'name', title: 'Name', sortable: true },
-              { accessor: 'class_id', title: 'Class', sortable: true },
-              { accessor: 'term', title: 'Term', sortable: true },
+              { accessor: 'id', title: 'ID', sortable: true },
+              { accessor: 'start_date', title: 'Start Date', sortable: true },
+              { accessor: 'end_date', title: 'End Date', sortable: true },
+              {
+                accessor: 'active',
+                title: 'Active',
+                sortable: true,
+                render: ({ record }) => (
+                  <input
+                    type="checkbox"
+                    checked={record?.active}
+                    onChange={() => toggleActiveStatus(record?.id)}
+
+                  />
+                ),
+              },
               {
                 accessor: 'Action',
                 render: ({ action, record}: any) => (
@@ -406,13 +424,6 @@ const Export = (props:any) => {
                           Edit
                         </p>
                   
-                  
-                  <p className='mb-2 px-2  cursor-pointer hover:bg-white' onClick={()=>{
-                    setassignStudent(false)
-                    setusermodal(true)
-              
-
-                  }}>Assign Teacher</p>
 
                         {/* <DeleteTerms sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch} /> */}
                       </div>
@@ -455,16 +466,7 @@ const Export = (props:any) => {
             >
               <div className="fixed inset-0" />
             </Transition.Child>
-            <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
-              <div className="flex items-start justify-center min-h-screen px-4">
-                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
-                  <div className="w-4/5 mx-auto py-5 text-center">
-                    {/* <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a SubJect <span className='text-sm'>{`(${selectedSession.name})`}</span></h5> */}
-                    <SubjectUserAssignments student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch}/>
-                  </div>
-                </Dialog.Panel>
-              </div>
-            </div>
+           
           </Dialog>
         </Transition>
 
@@ -485,10 +487,10 @@ const Export = (props:any) => {
               <div className="flex items-start justify-center min-h-screen px-4">
                 <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                   <div className="w-4/5 mx-auto py-5">
-                    <h5 className=" text-lg font-semibold dark:text-white-light">Edit Subject</h5>
+                    <h5 className=" text-lg font-semibold dark:text-white-light">Edit Session</h5>
                     {/* <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p> */}
-
-                    <EditSubjectForm create={false} user_session={user_session} sessionData={selectedSession} exit={seteditModal} refreshClasses={refetch}/>
+                    <EditSessionForm create={false} user_session={user_session} sessionData={selectedSession} exit={seteditModal} refreshClasses={refetch} />
+                   
                   </div>
                 </Dialog.Panel>
               </div>

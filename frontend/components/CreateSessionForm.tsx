@@ -30,9 +30,10 @@ const CreateSessionForm = ( props:any) => {
     {
       onSuccess: async (data) => {
         showAlert('success', 'Session Created Successfuly')
+        props.refreshClass()
         props.exit(false)
         reset()
-        props.refreshList()
+        
   
       },
       onError: (error:any) => {

@@ -260,6 +260,10 @@ const Sidebar = () => {
                           
                         </li>
                         <li>
+                          <Link href="/session/sessionlist">{t('Sessions List')}</Link>
+                          
+                        </li>
+                        <li>
                           <Link href="/apps/invoice/preview">{t('Calender View')}</Link>
                         </li>
                         <li>
