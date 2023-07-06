@@ -264,10 +264,10 @@ const Sidebar = () => {
                           
                         </li>
                         <li>
-                          <Link href="/apps/invoice/preview">{t('Calender View')}</Link>
+                          <Link href="/event/calendarview">{t('Calender View')}</Link>
                         </li>
                         <li>
-                          <Link href="/apps/invoice/preview">{t('Events')}</Link>
+                          <Link href="/event">{t('Events')}</Link>
                         </li>
                         
                         
