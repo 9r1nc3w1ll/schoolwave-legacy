@@ -265,14 +265,10 @@ const Sidebar = () => {
                         <li>
                           <Link href="/apps/invoice/preview">{t('Events')}</Link>
                         </li>
+                        
+                        
                         <li>
-                          <Link href="/apps/invoice/preview">{t('Create Session')}</Link>
-                        </li>
-                        <li>
-                          <Link href="/apps/invoice/preview">{t('Create Term')}</Link>
-                        </li>
-                        <li>
-                          <Link href="/apps/invoice/preview">{t('Promotions')}</Link>
+                          <Link href="#">{t('Promotions')}</Link>
                         </li>
                       </ul>
                     </AnimateHeight>
