@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image  from 'next/image';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../store/themeConfigSlice';
 import BlankLayout from '@/components/Layouts/BlankLayout';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Logo from 'public/assets/images/logo.svg';
 
 
@@ -13,17 +13,14 @@ const Index = () => {
   const dispatch = useDispatch();
   const { status: sessionStatus, data: user_session } = useSession();
 
+  const [loggedin, setloggedin] = useState(false)
+
   useEffect(() => {
     dispatch(setPageTitle('Landing Page'));
   });
 
   useEffect(() => {
-    if (sessionStatus !== 'authenticated') {
-      alert('You are not logged in')
-    } else {
-      
-    }
-  
+setloggedin(sessionStatus == 'authenticated')
   }, [sessionStatus]);
   
 
@@ -49,12 +46,18 @@ const Index = () => {
                   <a href="/contact">Contact</a>
                 </li>
               </ul> */}
-
-              <button type='button' className="lg:flex lg:flex-1 lg:justify-end cursor-pointer">
-                <Link href="#" className="text-sm font-semibold leading-6 text-gray-900">
+{
+     loggedin?         <button type='button' className="lg:flex lg:flex-1 lg:justify-end cursor-pointer "  onClick={()=>{signOut()}}>
+           
                   Log Out <span aria-hidden="true">&rarr;</span>
-                </Link>
-              </button>
+       
+              </button>:
+                 <Link href='/login' className="lg:flex lg:flex-1 lg:justify-end cursor-pointer">
+                
+                   Log in <span aria-hidden="true">&rarr;</span>
+          
+               </Link>
+              }
             </nav>
           </span>
         </div>
@@ -64,7 +67,7 @@ const Index = () => {
         <div className="relative isolate px-6 lg:px-8">
           {/* BLURRY BACKGROUND */}
           <div
-            className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+            className="absolute inset-x-0  -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80 mt-[150px]"
             aria-hidden="true"
           >
             <div
@@ -82,20 +85,20 @@ const Index = () => {
                 Welcome to
               </h2>
               <h1 className="lg:text-8xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                Schoolwave
+                schoolwave
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-600">
-                Your best choice for your school organizational management.
+                You are seeing this because your school website is not configured yet.
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
-                <div>
+               {loggedin && <div>
                   <button
                     type='button'
                     className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     <Link href='/class'>Go to Dashboard</Link>
                   </button>
-                </div>
+                </div>}
                 <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
                   Learn more <span aria-hidden="true">→</span>
                 </a>
