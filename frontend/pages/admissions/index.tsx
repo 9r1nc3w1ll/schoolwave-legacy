@@ -339,6 +339,7 @@ const Export = (props:any) => {
         </div>
    
         <div className="datatables">
+          
           <DataTable
             highlightOnHover
             className="table-hover whitespace-nowrap"
