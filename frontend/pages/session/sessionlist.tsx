@@ -1,36 +1,42 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState, Fragment } from 'react';
 import sortBy from 'lodash/sortBy';
-import { downloadExcel } from 'react-export-table-to-excel';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useMutation, useQuery } from 'react-query';
 import { useRouter } from 'next/router';
-import CreateAdmission from '@/components/CreateAdmission';
+import { getSession } from '@/apicalls/session';
+import Subject from '@/components/CreateSubject';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
-import UploadAdmission from '@/components/UploadFile';
-import BulkAdmission from '@/components/BulkAdmission';
-import {  updateAdmission } from '@/apicalls/admissions';
-import { formatDate } from '@/utility_methods/datey';
+import BulkAdmission from '@/components/BulkSubjects';
 import { showAlert } from '@/utility_methods/alert';
-import { getSession } from '@/apicalls/session';
+import { updateSubject } from '@/apicalls/subjects';
+import DropDownWIthChildren from '@/components/DropDownWIthChildren';
+import EditSubjectForm from '@/components/EditSubjectForm';
+import SubjectUserAssignments from '@/components/SubjectStaffAssignment';
 
 
 
-const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'phone', 'date_of_birth' ];
+
+
+
+const col = ['code', 'name', 'class_id', 'term'];
+
+
 
 const Export = (props:any) => {
   const router = useRouter()
   const { status: sessionStatus, data: user_session } = useSession();
-  const {data:sessions, isSuccess, status, refetch} = useQuery('getAdmission', ()=> getSession(user_session?.access_token), {enabled: false})
+  const {data:subjects, isSuccess, status, refetch} = useQuery('getSubject', ()=> getSession(user_session?.access_token), {enabled: false})
+
   const { mutate, isLoading, error } = useMutation(
     (data:boolean) =>{
    
-      return updateAdmission(selectedRecords[0].id, data, user_session?.access_token)},
+      return updateSubject (selectedRecords[0].id, data, user_session?.access_token)},
     {
       onSuccess: async (data) => {
-        showAlert('success', 'Session updated Successfully')
+        showAlert('success', 'Admission updated Successfully')
         refetch()
       },
       onError: (error:any) => {
@@ -40,9 +46,22 @@ const Export = (props:any) => {
     }
   );
 
+
+  const [activeToolTip, setActiveToolTip] =  useState(null);
+  const [sessions, setSessions] = useState([])
+  const [selectedSession, setSelectedSession] = useState<any>({});
+  const [usermodal,setusermodal ] = useState(false);
+  const [assignStudent, setassignStudent] = useState(false);
+  const [uploadModal, setuploadModal] = useState(false);
+  const [editModal, seteditModal ] = useState(false)
+  const [modal, setmodal] = useState(false);
+
+
+
+
   useEffect(() => {
     let path = router.asPath.split('#')
-    if(path[1] == 'create-admission'){
+    if(path[1] == 'create-subject'){
       setmodal(true)
     }else if(path[1] == 'create-bulk-upload'){
       setuploadModal(true)
@@ -51,34 +70,45 @@ const Export = (props:any) => {
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
       refetch()
+      
+      
   
     }
 
   }, [sessionStatus, refetch]);
+ useEffect(() =>{
+  if(subjects !=''){
+   
+    setSessions(subjects)
+    
+  }else[subjects]
+ })
 
 
   const dispatch = useDispatch();                          
   const [selectedRecords, setSelectedRecords] = useState<any>([]);
-  const [modal, setmodal] = useState(false);
-  const [uploadModal, setuploadModal] = useState(false);
+ 
+
   const canEdit = () => selectedRecords.length === 1
 
 
   useEffect(() => {
-    dispatch(setPageTitle('Schoolwave | Sessions'));
+    dispatch(setPageTitle('Schoolwave | Subjects'));
    
   });
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-  const [initialRecords, setInitialRecords] = useState(sortBy(sessions, 'id'));
+  const [initialRecords, setInitialRecords] = useState(sortBy(subjects, 'id'));
   const [recordsData, setRecordsData] = useState(initialRecords);
-
   const [search, setSearch] = useState('');
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
     columnAccessor: 'id',
     direction: 'asc',
   });
+
+  
+
 
   useEffect(() => {
     setPage(1);
@@ -92,15 +122,13 @@ const Export = (props:any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      if(isSuccess && sessions.length ){
+      if(isSuccess && subjects.length ){
 
-        return sessions.filter((item: any) => {
+        return subjects.filter((item: any) => {
           return (
-            item.id.toString().includes(search.toLowerCase()) ||
-                      item.student_info.first_name.toLowerCase().includes(search.toLowerCase()) ||
-                      item.student_info.last_name.toLowerCase().includes(search.toLowerCase()) ||
-                      item.status.toLowerCase().includes(search.toLowerCase())
-
+            item.code.toString().includes(search.toLowerCase()) ||
+                      item.name.toLowerCase().includes(search.toLowerCase()) ||
+                      item.class_id.toLowerCase().includes(search.toLowerCase())
                   
           );
         });
@@ -108,18 +136,36 @@ const Export = (props:any) => {
         setInitialRecords([])
       }
     });
-  }, [search, sessions, status]);
+  }, [search, subjects, status]);
 
+  useEffect(() => {
+    if (activeToolTip != '') {
+      const selectedSession = sessions.find((session: any) => session.id === activeToolTip);
+      setSelectedSession(selectedSession);
+     
+    }
+  }, [activeToolTip ]) ;
+
+
+  
   useEffect(() => {
     const data = sortBy(initialRecords, sortStatus.columnAccessor);
     setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
     setPage(1);
   }, [sortStatus]);
- 
+  const header = ['Subject Code', 'Name', 'Class', 'Action'];
+
+  interface SubjectInterface {
+    id: string;
+    class_id: string;
+    description: string;
+    term_id: string;
+    code: string;
+  }
 
   const exportTable = (type: any) => {
     let columns: any = col;
-    let records = sessions? sessions: [];
+    let records = subjects? subjects: [];
     let filename = 'table';
 
     let newVariable: any;
@@ -218,6 +264,7 @@ const Export = (props:any) => {
       }
     }
   };
+  
 
   const capitalize = (text: any) => {
     return text
@@ -233,15 +280,15 @@ const Export = (props:any) => {
       <div className="panel">
         <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
 
-          <h5 className=" text-3xl font-semibold dark:text-white-light">Sessions</h5>
+          <h5 className=" text-3xl font-semibold dark:text-white-light">Subjects</h5>
           <div className="flex flex-wrap items-center">
-            
+           
             <button type="button" onClick={() => setuploadModal(true)} className="btn btn-primary btn-sm m-1">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
               </svg>
 
-                            Bulk Admission
+                            Bulk Subjects
             </button>
      
             <button type="button"  className="btn btn-primary btn-sm m-1" onClick={()=>{
@@ -252,7 +299,7 @@ const Export = (props:any) => {
               </svg>
 
 
-                            Create Session
+                            Create Subject
             </button>
   
             <Transition appear show={modal} as={Fragment}>
@@ -273,7 +320,7 @@ const Export = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <CreateAdmission user_session={user_session} setmodal={setmodal}  refreshAdmission={refetch} />
+                        <Subject user_session={user_session} setmodal={setmodal}  refreshClass={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -319,21 +366,59 @@ const Export = (props:any) => {
             className="table-hover whitespace-nowrap"
             records={recordsData}
             columns={[
-              { accessor: 'id', title: 'Staff No.', sortable: true },
-              { accessor: 'student_info.first_name', title: 'First Name', sortable: true },
-              { accessor: 'student_info.last_name', title: 'Last Name', sortable: true },
-              { accessor: 'status', 
-                render: ({ status }) => <div className={status=='approved'? 'badge bg-success': status=='denied'? 'badge bg-danger': 'badge bg-warning' }>{status}</div>,
-                sortable: true },
+              { accessor: 'code', title: 'Subject Code.', sortable: true },
+              { accessor: 'name', title: 'Name', sortable: true },
+              { accessor: 'class_id', title: 'Class', sortable: true },
+              { accessor: 'term', title: 'Term', sortable: true },
               {
-                accessor: 'created_at',
-                title: 'Request Date',
-                sortable: true,
-                render: ({ created_at }) => <div>{formatDate(created_at)}</div>,
-              },
-                         
-           
-            ]}
+                accessor: 'Action',
+                render: ({ action, record}: any) => (
+                  
+                    <DropDownWIthChildren
+                    trigger={<button type="button" className='relative' 
+                       
+                          
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
+                            />
+                          </svg>
+                        </button>
+                      }
+                    >
+                      <div className="bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[100%] w-[130px] z-10">
+                        <p className="mb-2 px-3 pt-2 cursor-pointer hover:bg-white"  onClick={() => {
+                   seteditModal(true);
+                   ;
+                  }
+
+                  }>
+                          Edit
+                        </p>
+                  
+                  
+                  <p className='mb-2 px-2  cursor-pointer hover:bg-white' onClick={()=>{
+                    setassignStudent(false)
+                    setusermodal(true)
+              
+
+                  }}>Assign Teacher</p>
+
+                        {/* <DeleteTerms sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch} /> */}
+                      </div>
+                    </DropDownWIthChildren> ) }]}
+
+          
             totalRecords={initialRecords? initialRecords.length : 0}
             recordsPerPage={pageSize}
             page={page}
@@ -345,16 +430,82 @@ const Export = (props:any) => {
             minHeight={200}
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
 
-            onRowClick={(x:any) =>
-              router.push('#')
-            }
-
+            onRowClick={(rowData) => {
+            setActiveToolTip(rowData.id);
+            router.push('#');
+            }}
             selectedRecords={selectedRecords}
             onSelectedRecordsChange={setSelectedRecords}
+            
           />
+
+          
         </div>
+        <div>
+        <Transition appear show={usermodal} as={Fragment}>
+          <Dialog as="div" open={usermodal} onClose={() => setusermodal(false)}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0" />
+            </Transition.Child>
+            <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+              <div className="flex items-start justify-center min-h-screen px-4">
+                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
+                  <div className="w-4/5 mx-auto py-5 text-center">
+                    {/* <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a SubJect <span className='text-sm'>{`(${selectedSession.name})`}</span></h5> */}
+                    <SubjectUserAssignments student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch}/>
+                  </div>
+                </Dialog.Panel>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+
+        <Transition appear show={editModal} as={Fragment}>
+          <Dialog as="div" open={editModal} onClose={() => seteditModal(false)}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0" />
+            </Transition.Child>
+            <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+              <div className="flex items-start justify-center min-h-screen px-4">
+                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
+                  <div className="w-4/5 mx-auto py-5">
+                    <h5 className=" text-lg font-semibold dark:text-white-light">Edit Subject</h5>
+                    {/* <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p> */}
+
+                    <EditSubjectForm create={false} user_session={user_session} sessionData={selectedSession} exit={seteditModal} refreshClasses={refetch}/>
+                  </div>
+                </Dialog.Panel>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
       </div>
+
+
     </div>
+    </div>
+
+
+
+        
+        
+  
   );
 };
 
