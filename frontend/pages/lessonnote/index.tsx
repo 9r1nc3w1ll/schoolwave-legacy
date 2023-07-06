@@ -22,6 +22,7 @@ const Notes = () => {
       date: '11/01/2020',
       isFav: false,
       tag: 'personal',
+      
     },
     {
       id: 2,
@@ -32,7 +33,7 @@ const Notes = () => {
       date: '11/02/2020',
       isFav: true,
       tag: '',
-      
+
     },
     {
       id: 3,
