@@ -137,7 +137,7 @@ const [termOptions, settermOptions] = useState<termOption[]>([]);
                       <option value="" disabled selected hidden>
                           Select an option
                         </option>
-                                  {classOptions.map((option) => (
+                                  {classOptions?.map((option) => (
                       <option key={option.id} value={option.id}>
                         {option.name}
                       </option>
