@@ -257,6 +257,7 @@ const Sidebar = () => {
                       <ul className="sub-menu text-gray-500">
                         <li>
                           <Link href="/session">{t('Sessions')}</Link>
+                          
                         </li>
                         <li>
                           <Link href="/apps/invoice/preview">{t('Calender View')}</Link>
