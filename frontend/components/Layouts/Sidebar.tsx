@@ -259,17 +259,14 @@ const Sidebar = () => {
                           <Link href="/session">{t('Sessions')}</Link>
                           
                         </li>
+                        
                         <li>
-                          <Link href="/session/sessionlist">{t('Sessions List')}</Link>
-                          
-                        </li>
-                        <li>
-                          <Link href="/event/calendarview">{t('Calender View')}</Link>
+                          <Link href="/session/calendar_view">{t('Calender View')}</Link>
                         </li>
                         
                         
                         <li>
-                          <Link href="/event">{t('Events')}</Link>
+                          <Link href="/session/event">{t('Events')}</Link>
                         </li>
                         
                         
