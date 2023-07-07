@@ -203,7 +203,7 @@ const Export =  (props:any) => {
                       <h5 className=" text-lg font-semibold dark:text-white-light">Edit Session</h5>
                       <p className='text-primary mb-5 text-sm'>{selectedSession?selectedSession.name: ''}</p>
                   
-                      <EditSessionForm create={false} user_session={props.user_session} sessionData={selectedSession} exit={setmodal}  />
+                      <EditSessionForm create={false} user_session={sessionData} sessionData={selectedSession} exit={setmodal} refreshSession={refetch}  />
                     </div>
                   </Dialog.Panel>
                 </div>

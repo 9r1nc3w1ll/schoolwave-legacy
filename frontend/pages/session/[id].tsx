@@ -108,7 +108,7 @@ export default function Basic ( props: any) {
                   <div className="w-4/5 mx-auto py-5">
                     <h5 className=" text-lg font-semibold dark:text-white-light">Update Term Details for the Session</h5>
                                      
-                    <CreateTerm userSession={user_session} selectedSession={router.query.id} exit={setmodal}  />
+                    <CreateTerm userSession={user_session} selectedSession={router.query.id} exit={setmodal} refreshTerms={refetch} />
                   </div>
                 </Dialog.Panel>
               </div>

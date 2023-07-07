@@ -30,8 +30,9 @@ const EditSessionForm = (props:any) => {
     {
       onSuccess: async (data) => {
         showAlert('success', 'Session Edited Successfuly')
+        props.refreshSession()
         props.exit(false)
-        queryClient.invalidateQueries(['session'])
+        
   
       },
       onError: (error:any) => {

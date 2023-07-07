@@ -26,8 +26,7 @@ const ClassUserAssignment =(props: any)=>{
       onSuccess: async (data) => {
         showAlert('success', 'User assigned to class Successfuly')
         queryClient.invalidateQueries(['getStaff'])
-        // props.setmodal(false)
-        console.log(data)
+        props.refreshClasses()
       },
       onError: (error:any) => {
                  

@@ -14,6 +14,7 @@ export default function BulkAdmission(props:any){
     {
       onSuccess: async (data) => {
         showAlert('success', 'File Uploaded Successfully')
+        props.refreshAdmission()
         props.closeModal(false)
 
       },

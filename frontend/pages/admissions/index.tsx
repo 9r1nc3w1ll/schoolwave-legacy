@@ -326,7 +326,7 @@ const Export = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                                          
-                        <BulkAdmission user_session={user_session} closeModal={setuploadModal} />
+                        <BulkAdmission user_session={user_session} closeModal={setuploadModal} refreshAdmission={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
