@@ -344,7 +344,6 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
         url = reverse("subject_staff_assignment_list_create")
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
-        print(response.data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -387,7 +386,6 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
         }
 
         response = self.client.patch(url, data)
-        print(response.data)
         self.assertEqual(response.data["message"], "Subject staff assignment updated successfully.")
         self.assertEqual(response.data["data"]["active"], False)
 

@@ -65,7 +65,6 @@ class UserCRUDTestCase(APITestCase):
                 "last_name":"User_last_name"}
 
         response = self.client.post(url, data)
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_retrieve_user(self):

@@ -35,7 +35,6 @@ class SchoolAPITestCase(APITestCase):
             "role": "admin",
         }
         response = self.client.post(url, data)
-        print(f"This is the user {response.data}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_school(self):
@@ -52,7 +51,6 @@ class SchoolAPITestCase(APITestCase):
         }      
 
         response = self.client.post(url, data=data)
-        print(f"This is the school {response.data}")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -169,8 +167,6 @@ class ClassMemberTests(APITestCase):
         url = reverse("list_create_class_member")
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
-
-        print(response.data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(

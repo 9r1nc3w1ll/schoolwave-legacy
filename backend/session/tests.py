@@ -150,7 +150,6 @@ class TermCRUDTestCase(APITestCase):
         }
 
         response = self.client.post(url, data)
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["message"], "Term created successfully.")
 

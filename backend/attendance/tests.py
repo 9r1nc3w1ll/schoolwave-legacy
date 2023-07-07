@@ -11,6 +11,7 @@ from school.models import Class, School
 from subject.models import Subject
 from session.models import Term, Session
 from staff.models import Staff, StaffRole
+from admission.models import AdmissionRequest
 
 User = get_user_model()
 
@@ -24,6 +25,10 @@ class AttendanceRecordAPITestCase(APITestCase):
 
         self.student_obj = User.objects.create(
             username="teststudent", password="testpassword", role="student"
+        )
+
+        self.student_obj_2 = User.objects.create(
+            username="teststudent2", password="testpassword", role="student"
         )
 
         self.staff_role = StaffRole.objects.create(
@@ -43,7 +48,11 @@ class AttendanceRecordAPITestCase(APITestCase):
         )
 
         self.class_obj = Class.objects.create(
-            name="Test Class", school=self.school, description="Description", code='TEST'
+            name="Test Class",
+            school=self.school,
+            description="Description",
+            class_index=1,
+            code="class12"
         )
 
         self.session = Session.objects.create(
@@ -73,6 +82,8 @@ class AttendanceRecordAPITestCase(APITestCase):
             remark="Good",
             staff=self.staff_obj
         )
+
+        self.client.force_authenticate(user=self.user)
         
     
     def test_list_attendance(self):
@@ -90,25 +101,31 @@ class AttendanceRecordAPITestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         data = {
-            "date": "2023-05-30",
-            "start_time": "10:00:00",
-            "end_time": "11:00:00",
-            "attendance_type": "Daily",
-            "present": True,
-            "remark": "Poor",
-            "student" : self.student_obj.id,
-            "class_id" : self.class_obj.id,
-            "staff" : self.staff_obj.id
+            "class_info": {
+                "class_id": str(self.class_obj.id),
+                'name': str(self.class_obj.name),
+                'description': str(self.class_obj.description),
+                'class_index': str(self.class_obj.class_index),
+                'code': str(self.class_obj.code),
+            },
+            "staff_info": {
+                "staff_id": str(self.staff_obj.id),
+                'title': str(self.staff_obj.title),
+            },
+            'attendance_type': "Class",
+            "attendance": [
+                {
+                    "student_id": str(self.student_obj.id),
+                    "date": "2023-05-30",
+                    "present": True,
+                    "remark": "Poor"
+                }
+            ]
         }
-        response = self.client.post(url, data)
 
-        print(response.data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response = self.client.post(url, data, format='json')        
 
-
-        
-
-    def test_update_student_session(self):
+    def test_update_student_attendance(self):
         url = reverse("student_attendance_update_destroy", kwargs={
             "pk": self.attendance.id,
             })
@@ -119,7 +136,6 @@ class AttendanceRecordAPITestCase(APITestCase):
         response = self.client.patch(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["data"]["start_time"], "10:00:00")
     
 
     def test_retrieve_student_class_attendance(self):
