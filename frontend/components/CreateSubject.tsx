@@ -53,7 +53,7 @@ const Subject  = (props:any) => {
   useEffect(()=>{
     if(isSuccess && clasii && isSuccess2 && term){
         
-      setclassOptions(clasii.data)
+      setclassOptions(clasii)
       settermOptions(term)
         
         
