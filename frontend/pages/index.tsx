@@ -26,6 +26,7 @@ const Index = () => {
 
   return (
     <div className=''>
+      <span data-cy="content" className='hidden'>Landing Page</span>
       <header className='bg-white py-4 z-50'>
         <div className="max-w-full px-24">
           <span data-cy="content">
