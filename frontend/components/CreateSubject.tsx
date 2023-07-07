@@ -33,8 +33,8 @@ const Subject  = (props:any) => {
     name: string;
   }
 
-const [classOptions, setclassOptions] = useState<classOption[]>([]);
-const [termOptions, settermOptions] = useState<termOption[]>([]);
+  const [classOptions, setclassOptions] = useState<classOption[]>([]);
+  const [termOptions, settermOptions] = useState<termOption[]>([]);
   const [date1, setDate1] = useState<any>('2022-07-05');
 
 
@@ -50,14 +50,14 @@ const [termOptions, settermOptions] = useState<termOption[]>([]);
 
   }, [sessionStatus, refetch,refetch2])
 
-   useEffect(()=>{
+  useEffect(()=>{
     if(isSuccess && clasii && isSuccess2 && term){
         
-        setclassOptions(clasii.data)
-        settermOptions(term)
+      setclassOptions(clasii.data)
+      settermOptions(term)
         
         
-    }else console.log("Class not working")
+    }
   });
 
   
@@ -98,8 +98,7 @@ const [termOptions, settermOptions] = useState<termOption[]>([]);
 
           const onSubmit = async (data: any) => { 
             mutate(data);
-            console.log(data)
-           
+                    
           };
 
 
@@ -134,29 +133,29 @@ const [termOptions, settermOptions] = useState<termOption[]>([]);
                       
                     
                       <select {...register('class_id', { required: "This field is required" })}  className='form-input' placeholder='Choose' >
-                      <option value="" disabled selected hidden>
+                        <option value="" disabled selected hidden>
                           Select an option
                         </option>
-                                  {classOptions?.map((option) => (
-                      <option key={option.id} value={option.id}>
-                        {option.name}
-                      </option>
-        ))}
+                        {classOptions?.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className=''> 
-                      <label htmlFor="term_id"> Term <span className='text-red-500'>*</span></label>
+                      <label htmlFor="term"> Term <span className='text-red-500'>*</span></label>
                     
                     
-                      <select {...register('term_id', { required: "This field is required" })}  className='form-input' placeholder='Choose' >
-                      <option value="" disabled selected hidden>
+                      <select {...register('term', { required: "This field is required" })}  className='form-input' placeholder='Choose' >
+                        <option value="" disabled selected hidden>
                           Select an option
                         </option>
-                                  {termOptions.map((option) => (
-                      <option key={option.id} value={option.id}>
-                        {option.name}
-                      </option>
-        ))}
+                        {termOptions.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))}
                       </select>
                     </div> 
       
@@ -166,7 +165,7 @@ const [termOptions, settermOptions] = useState<termOption[]>([]);
                    
                   <button type="submit" className="btn btn-primary !mt-6 ">
         Save
-                    </button>
+                  </button>
 
                 </div>
               </form>

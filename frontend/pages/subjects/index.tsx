@@ -75,13 +75,13 @@ const Export = (props:any) => {
     }
 
   }, [sessionStatus, refetch]);
- useEffect(() =>{
-  if(subjects !=''){
+  useEffect(() =>{
+    if(subjects !=''){
    
-    setSessions(subjects)
+      setSessions(subjects)
     
-  }else[subjects]
- })
+    }else[subjects]
+  })
 
 
   const dispatch = useDispatch();                          
@@ -158,7 +158,7 @@ const Export = (props:any) => {
     id: string;
     class_id: string;
     description: string;
-    term_id: string;
+    term: string;
     code: string;
   }
 
@@ -367,55 +367,55 @@ const Export = (props:any) => {
             columns={[
               { accessor: 'code', title: 'Subject Code.', sortable: true },
               { accessor: 'name', title: 'Name', sortable: true },
-              { accessor: 'class_id', title: 'Class', sortable: true },
-              { accessor: 'term', title: 'Term', sortable: true },
+              { accessor: 'class_info.name', title: 'Class', sortable: true },
+              { accessor: 'term_info.name', title: 'Term', sortable: true },
               {
                 accessor: 'Action',
                 render: ({ action, record}: any) => (
                   
-                    <DropDownWIthChildren
+                  <DropDownWIthChildren
                     trigger={<button type="button" className='relative' 
                        
                           
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
-                            />
-                          </svg>
-                        </button>
-                      }
                     >
-                      <div className="bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[100%] w-[130px] z-10">
-                        <p className="mb-2 px-3 pt-2 cursor-pointer hover:bg-white"  onClick={() => {
-                   seteditModal(true);
-                   ;
-                  }
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
+                        />
+                      </svg>
+                    </button>
+                    }
+                  >
+                    <div className="bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[100%] w-[130px] z-10">
+                      <p className="mb-2 px-3 pt-2 cursor-pointer hover:bg-white"  onClick={() => {
+                        seteditModal(true);
+                        ;
+                      }
 
-                  }>
+                      }>
                           Edit
-                        </p>
+                      </p>
                   
                   
-                  <p className='mb-2 px-2  cursor-pointer hover:bg-white' onClick={()=>{
-                    setassignStudent(false)
-                    setusermodal(true)
+                      <p className='mb-2 px-2  cursor-pointer hover:bg-white' onClick={()=>{
+                        setassignStudent(false)
+                        setusermodal(true)
               
 
-                  }}>Assign Teacher</p>
+                      }}>Assign Teacher</p>
 
-                        {/* <DeleteTerms sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch} /> */}
-                      </div>
-                    </DropDownWIthChildren> ) }]}
+                      {/* <DeleteTerms sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch} /> */}
+                    </div>
+                  </DropDownWIthChildren> ) }]}
 
           
             totalRecords={initialRecords? initialRecords.length : 0}
@@ -430,8 +430,8 @@ const Export = (props:any) => {
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
 
             onRowClick={(rowData) => {
-            setActiveToolTip(rowData.id);
-            router.push('#');
+              setActiveToolTip(rowData.id);
+              router.push('#');
             }}
             selectedRecords={selectedRecords}
             onSelectedRecordsChange={setSelectedRecords}
@@ -441,63 +441,63 @@ const Export = (props:any) => {
           
         </div>
         <div>
-        <Transition appear show={usermodal} as={Fragment}>
-          <Dialog as="div" open={usermodal} onClose={() => setusermodal(false)}>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0" />
-            </Transition.Child>
-            <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
-              <div className="flex items-start justify-center min-h-screen px-4">
-                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
-                  <div className="w-4/5 mx-auto py-5 text-center">
-                    {/* <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a SubJect <span className='text-sm'>{`(${selectedSession.name})`}</span></h5> */}
-                    <SubjectUserAssignments student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch}/>
-                  </div>
-                </Dialog.Panel>
+          <Transition appear show={usermodal} as={Fragment}>
+            <Dialog as="div" open={usermodal} onClose={() => setusermodal(false)}>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0" />
+              </Transition.Child>
+              <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                <div className="flex items-start justify-center min-h-screen px-4">
+                  <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
+                    <div className="w-4/5 mx-auto py-5 text-center">
+                      {/* <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a SubJect <span className='text-sm'>{`(${selectedSession.name})`}</span></h5> */}
+                      <SubjectUserAssignments student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch}/>
+                    </div>
+                  </Dialog.Panel>
+                </div>
               </div>
-            </div>
-          </Dialog>
-        </Transition>
+            </Dialog>
+          </Transition>
 
-        <Transition appear show={editModal} as={Fragment}>
-          <Dialog as="div" open={editModal} onClose={() => seteditModal(false)}>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0" />
-            </Transition.Child>
-            <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
-              <div className="flex items-start justify-center min-h-screen px-4">
-                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
-                  <div className="w-4/5 mx-auto py-5">
-                    <h5 className=" text-lg font-semibold dark:text-white-light">Edit Subject</h5>
-                    {/* <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p> */}
+          <Transition appear show={editModal} as={Fragment}>
+            <Dialog as="div" open={editModal} onClose={() => seteditModal(false)}>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0" />
+              </Transition.Child>
+              <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+                <div className="flex items-start justify-center min-h-screen px-4">
+                  <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
+                    <div className="w-4/5 mx-auto py-5">
+                      <h5 className=" text-lg font-semibold dark:text-white-light">Edit Subject</h5>
+                      {/* <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p> */}
 
-                    <EditSubjectForm create={false} user_session={user_session} sessionData={selectedSession} exit={seteditModal} refreshClasses={refetch}/>
-                  </div>
-                </Dialog.Panel>
+                      <EditSubjectForm create={false} user_session={user_session} sessionData={selectedSession} exit={seteditModal} refreshClasses={refetch}/>
+                    </div>
+                  </Dialog.Panel>
+                </div>
               </div>
-            </div>
-          </Dialog>
-        </Transition>
+            </Dialog>
+          </Transition>
+        </div>
+
+
       </div>
-
-
-    </div>
     </div>
 
 
