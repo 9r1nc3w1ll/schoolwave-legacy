@@ -29,7 +29,7 @@ const col = ['code', 'name', 'class_id', 'term'];
 const Export = (props:any) => {
   const router = useRouter()
   const { status: sessionStatus, data: user_session } = useSession();
-  // const {data:sesions, isSuccess, status, isLoading, refetch} = useQuery('session', ()=> getSession(user_session?.access_token), {enabled: false })
+  const {data:sesions, isSuccess, status, isLoading, refetch} = useQuery('session', ()=> getSession(user_session?.access_token), {enabled: false })
 
 // Serial No
 // name
@@ -68,7 +68,7 @@ const eventData = [
 
 
   const [activeToolTip, setActiveToolTip] =  useState(null);
-  const [sessions, setSessions] = useState([])
+  const [sessions, setSessions] = useState<MyEventType[]>([]);
   const [selectedSession, setSelectedSession] = useState<any>({});
   const [usermodal,setusermodal ] = useState(false);
   const [assignStudent, setassignStudent] = useState(false);
@@ -98,8 +98,17 @@ const eventData = [
 
   }, [sessionStatus]);
 
+  interface MyEventType {
+    id: string;
+    serial_no: string;
+    name: string;
+    type: string;
+    date: string;
+    dob: string;
+  }
+
  useEffect(() =>{
-  if(eventData !=''){
+  if(eventData){
     
    
     setSessions(eventData)
