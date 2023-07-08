@@ -22,10 +22,11 @@ const Attendance =()=>{
   const [rqstAtt, setrqstAtt] = useState(false)
   const [selectedClass, setSelectedClass] = useState('')
   const [today, settoday] = useState(false)
+  const [studentList, setStudentList] = useState([])
   const [attendanceEmpty, setattendanceEmpty] = useState(false)
   const [attData, setattData] = useState({})
   const { status: sessionStatus, data: user_session } = useSession();
-  const { data: studentList, isSuccess,isLoading, refetch:getstudents } = useQuery('getClassStudents', () => {
+  const { data: studentist, isSuccess,isLoading, refetch:getstudents } = useQuery('getClassStudents', () => {
     return getClassStudents(selectedClass, user_session?.access_token)
   }, {
     enabled: false
@@ -51,7 +52,7 @@ const Attendance =()=>{
     {
       onSuccess: async (data) => {
         showAlert('success', 'Saved Successfuly')
-      
+        setStudentList(studentist)
 
       },
       onError: (error:any) => {
@@ -63,13 +64,12 @@ const Attendance =()=>{
   );
 
   useEffect(()=>{
-    getstudents()
-    console.log('rrrrrrrrrrrrrrrr')
+    if(selectedClass){
+      getstudents()
+    }
   }, [selectedClass])
 
-  useEffect(()=>{
-    console.log('kkkkkkk', studentList)
-  }, [studentList, selectedClass])
+
 
 
   useEffect(() => {
