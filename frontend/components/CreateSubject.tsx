@@ -62,7 +62,7 @@ const Subject  = (props:any) => {
 
   
 
-  const { register, reset, handleSubmit, } = useForm({ shouldUseNativeValidation: true });
+  const { register, reset, handleSubmit } = useForm({ shouldUseNativeValidation: true });
 
           type FormData = {
             name: string,
