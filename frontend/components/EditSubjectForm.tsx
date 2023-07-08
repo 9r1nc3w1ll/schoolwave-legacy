@@ -63,17 +63,9 @@ const EditSubjectForm = (props:any) => {
 const [classOptions, setclassOptions] = useState<classOption[]>([]);
 const [termOptions, settermOptions] = useState<termOption[]>([]);
 
-useEffect(()=>{
-  if(props.sessionStatus == 'authenticated'){
-    refetch()
-    refetch2()
-
-  }else{console.log}
-
-}, [props.sessionStatus, refetch,refetch2])
 
 useEffect(()=>{
-  if(isSuccess && clasii){
+  
     
       setclassOptions(clasii.data)
       settermOptions(term)
@@ -81,9 +73,9 @@ useEffect(()=>{
       refetch()
     refetch2()
   
-  }else console.log("Class not working")
-}, [clasii]);
-
+  } 
+);
+s
 
   const onSubmit = async (data: any) => { 
    
