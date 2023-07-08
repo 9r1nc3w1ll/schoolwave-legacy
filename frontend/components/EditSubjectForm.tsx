@@ -75,7 +75,7 @@ useEffect(()=>{
   
   } 
 );
-s
+
 
   const onSubmit = async (data: any) => { 
    
