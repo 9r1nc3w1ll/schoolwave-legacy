@@ -176,7 +176,7 @@ const Sidebar = () => {
                           <Link href="/class">{t('Class Lists')}</Link>
                         </li>
                         <li>
-                          <Link href="/apps/invoice/preview">{t('Class Schedule')}</Link>
+                          <Link href="/class/schedule">{t('Class Schedule')}</Link>
                         </li>
                       </ul>
                     </AnimateHeight>

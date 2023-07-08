@@ -60,36 +60,35 @@ const EditSubjectForm = (props:any) => {
     name: string;
   }
 
-const [classOptions, setclassOptions] = useState<classOption[]>([]);
-const [termOptions, settermOptions] = useState<termOption[]>([]);
+  const [classOptions, setclassOptions] = useState<classOption[]>([]);
+  const [termOptions, settermOptions] = useState<termOption[]>([]);
 
 
-useEffect(()=>{
+  useEffect(()=>{
   
     
-      setclassOptions(clasii.data)
-      settermOptions(term)
-      console.log("working now",clasii.data)
-      refetch()
+    setclassOptions(clasii.data)
+    settermOptions(term)
+    refetch()
     refetch2()
   
   } 
-);
+  );
 
 
   const onSubmit = async (data: any) => { 
    
     mutate(data); };
 
-    useEffect(() => {
-      if (props.sessionData) {
-        setValue("name", props.sessionData.name);
-        setValue("code", props.sessionData.code);
-        setValue("description", props.sessionData.description);
-        setValue("class_id", props.sessionData.class_id);
-        setValue("term", props.sessionData.term);
-      }
-    }, [props.sessionData, setValue]);
+  useEffect(() => {
+    if (props.sessionData) {
+      setValue("name", props.sessionData.name);
+      setValue("code", props.sessionData.code);
+      setValue("description", props.sessionData.description);
+      setValue("class_id", props.sessionData.class_id);
+      setValue("term", props.sessionData.term);
+    }
+  }, [props.sessionData, setValue]);
 
   return (
     <div  className="">
@@ -110,7 +109,7 @@ useEffect(()=>{
           
         </div>
 
-          <div>
+        <div>
           <label htmlFor="class_id">Class</label>
           <select
             id="class_id"
