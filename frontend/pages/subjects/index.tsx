@@ -53,7 +53,12 @@ const Export = (props:any) => {
   const [assignStudent, setassignStudent] = useState(false);
   const [uploadModal, setuploadModal] = useState(false);
   const [editModal, seteditModal ] = useState(false)
-  const [modal, setmodal] = useState(false);
+  const [
+    
+    
+    
+    
+    modal, setmodal] = useState(false);
 
 
 
@@ -107,6 +112,7 @@ const Export = (props:any) => {
   });
 
   
+
 
 
   useEffect(() => {
@@ -360,6 +366,7 @@ const Export = (props:any) => {
         </div>
    
         <div className="datatables">
+          
           <DataTable
             highlightOnHover
             className="table-hover whitespace-nowrap"
@@ -441,30 +448,33 @@ const Export = (props:any) => {
           
         </div>
         <div>
-          <Transition appear show={usermodal} as={Fragment}>
-            <Dialog as="div" open={usermodal} onClose={() => setusermodal(false)}>
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <div className="fixed inset-0" />
-              </Transition.Child>
-              <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
-                <div className="flex items-start justify-center min-h-screen px-4">
-                  <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
-                    <div className="w-4/5 mx-auto py-5 text-center">
-                      {/* <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a SubJect <span className='text-sm'>{`(${selectedSession.name})`}</span></h5> */}
-                      <SubjectUserAssignments student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch}/>
-                    </div>
-                  </Dialog.Panel>
-                </div>
+        <Transition appear show={usermodal} as={Fragment}>
+          <Dialog as="div" open={usermodal} onClose={() => setusermodal(false)}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+
+              
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0" />
+            </Transition.Child>
+            <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
+              <div className="flex items-start justify-center min-h-screen px-4">
+                <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-[50%] max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
+                  <div className="w-4/5 mx-auto py-5 text-center">
+                    {/* <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a SubJect <span className='text-sm'>{`(${selectedSession.name})`}</span></h5> */}
+                    <SubjectUserAssignments student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch} exit={setusermodal}/>
+                  </div>
+                </Dialog.Panel>
+              </div>
               </div>
             </Dialog>
+           
           </Transition>
 
           <Transition appear show={editModal} as={Fragment}>
