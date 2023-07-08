@@ -9,7 +9,7 @@ import AttendanceOption from './AttendanceOption';
 
 
 
-const students =  [
+const studets =  [
   {
     "first_name": "Akpos",
     "last_name": "Egobe",
@@ -41,7 +41,7 @@ const AttendanceTable = (props: any) => {
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-  const [initialRecords, setInitialRecords] = useState(sortBy(students, 'id'));
+  const [initialRecords, setInitialRecords] = useState(sortBy(props.students, 'user'));
   const [recordsData, setRecordsData] = useState(initialRecords);
 
   const [search, setSearch] = useState('');
@@ -57,9 +57,14 @@ const AttendanceTable = (props: any) => {
 
   useEffect(()=>{
     let arr: any = []
-    props.attendance.forEach((att: any)=>{
-      arr.push(att.date)
-    })
+    if(props.attendance.length){
+
+      props.attendance.forEach((att: any)=>{
+        arr.push(att.date)
+      })
+    }else{
+      arr.push(props.presentDay)
+    }
 
     setCols(arr)
   }, [])
@@ -108,7 +113,7 @@ const AttendanceTable = (props: any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      return students.filter((item: any) => {
+      return props.students.filter((item: any) => {
         return (
          
           item.first_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -118,6 +123,20 @@ const AttendanceTable = (props: any) => {
       });
     });
   }, [search]);
+
+  const attHelper =(students: any, x: any)=>{
+    let dat = students.filter ((stu: { student_id: any; }) => stu.student_id == x.user)
+
+    if(dat.length){
+      return dat
+    }else{
+      return [{
+        present: false,
+        student_id: x.user 
+
+      }]
+    }
+  }
 
   useEffect(() => {
     const data = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -140,20 +159,33 @@ const AttendanceTable = (props: any) => {
       }
 
     ]
+    if(props.attendance.length){
+      props.attendance.forEach((att:any )=>{
+        let base: any = {
+ 
+          title: att.date,
+          sortable: false,
+          hidden: false,
+          render: (x: any) => <AttendanceOption data={attHelper(att.students, x)} />,
+        }
 
+        temp.push(base)
 
-    props.attendance.forEach((att:any )=>{
+      })
+    }else if(props.students.length && props.today){
       let base: any = {
-   
-        title: att.date,
+ 
+        title: props.presentday,
         sortable: false,
         hidden: false,
-        render: (x: any) => <AttendanceOption data={att.students.filter((stu: any) => stu.student_id === x.id)} />,
+        render: (x: any) => <AttendanceOption data={[{present: false}]} />,
       }
 
       temp.push(base)
+
+    }
+
   
-    })
     
     return temp
   }

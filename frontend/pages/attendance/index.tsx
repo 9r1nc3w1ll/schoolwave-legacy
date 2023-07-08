@@ -4,16 +4,12 @@ import {useEffect, useState} from 'react'
 import { setPageTitle } from "@/store/themeConfigSlice";
 import { useMutation, useQuery } from "react-query";
 import { getStudents } from "@/apicalls/users";
-import AttendanceTablet from "@/components/AttendanceTablet";
-import Tippy from "@tippyjs/react";
 import AttendanceTable from "@/components/AttendanceTable";
-import { getClasses } from "@/apicalls/clas";
+import { getClassStudents, getClasses } from "@/apicalls/clas";
 import { getTerms } from "@/apicalls/session";
 import { getAttendance } from "@/apicalls/attendance";
 import { useForm } from "react-hook-form";
 import { showAlert } from "@/utility_methods/alert";
-import AttendanceModal from "@/components/AttendanceAccordion";
-import Tablex from "@/components/Tablex";
 import AttendanceAccordion from "@/components/AttendanceAccordion";
 
 
@@ -24,12 +20,13 @@ const Attendance =()=>{
   const [listView, setListView] = useState(false)
   const [students, setStudents] = useState()
   const [rqstAtt, setrqstAtt] = useState(false)
+  const [selectedClass, setSelectedClass] = useState('')
   const [today, settoday] = useState(false)
   const [attendanceEmpty, setattendanceEmpty] = useState(false)
   const [attData, setattData] = useState({})
   const { status: sessionStatus, data: user_session } = useSession();
-  const { data: studentList, isSuccess,isLoading, refetch:getstudents } = useQuery('getStudents', () => {
-    return getStudents(user_session?.access_token)
+  const { data: studentList, isSuccess,isLoading, refetch:getstudents } = useQuery('getClassStudents', () => {
+    return getClassStudents(selectedClass, user_session?.access_token)
   }, {
     enabled: false
   })
@@ -65,6 +62,14 @@ const Attendance =()=>{
     }
   );
 
+  useEffect(()=>{
+    getstudents()
+    console.log('rrrrrrrrrrrrrrrr')
+  }, [selectedClass])
+
+  useEffect(()=>{
+    console.log('kkkkkkk', studentList)
+  }, [studentList, selectedClass])
 
 
   useEffect(() => {
@@ -75,24 +80,19 @@ const Attendance =()=>{
 
 
 
-  useEffect(() => {
-    setStudents(studentList)
-  }, [attendanceEmpty, studentList, getstudents]);
 
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
-      // getstudents()
+
       getclasses()
       getterms()
     }
 
-  }, [getclasses, getstudents, getterms, sessionStatus]);
+  }, [getclasses, getterms, sessionStatus]);
   const presentday = new Date().toISOString().substring(0,10)
 
   const onSubmit =(data: any)=>{
-    let tday = presentday === data.startDate
-    data.today = tday
-    settoday(tday)
+    settoday(presentday === data.startDate || presentday === data.endDate)
     mutate(data)
    
   }
@@ -133,7 +133,13 @@ const Attendance =()=>{
           <div>
             <div className="mb-8">
               <label>Class</label>
-              <select className="form-select text-white-dark" id='class' {...register("class", { required: "This field is required" })} >
+              <select className="form-select text-white-dark" id='class' {...register("class", { required: "This field is required" })}
+                onChange={(e)=>{
+                  setSelectedClass(e.target.value)
+                  console.log('rrrrr', e.target.value)
+              
+                }}
+              >
                 <option>-- select One-- </option>
                 {classes?.map((clss: any)=> <option key={clss.id} value={clss.id}> {clss.name} </option>)}
               </select>
@@ -171,9 +177,9 @@ const Attendance =()=>{
             {
               attendancegotten && attendance?.length?
                 
-                ( <AttendanceTable attendance={ attendance[0]?.attendance}  current_class={attendance[0]?.class_info} />):
-
-                <h1> {isLoading? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
+                ( <AttendanceTable attendance={ attendance[0]?.attendance} students={studentList} current_class={attendance[0]?.class_info} today={today} />): today && studentList?.length?
+                  <AttendanceTable attendance={ []} students={studentList} current_class={`Current Day`} today={today} presentday={presentday} />:
+                  <h1> {isLoading? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
             }
         
           </>
@@ -190,9 +196,16 @@ const Attendance =()=>{
                   attendance[0]?.attendance.map((student: { id: any; }, i: number) => {
                  
                     return <AttendanceAccordion key={student.id} attendance={student}  i={`${i}`} togglePara={togglePara} active={active} />
-                  }):
+                  }): today && studentList?.length? 
+                  
+                    
+                 
+                    <AttendanceAccordion  today={presentday} students={studentList} i={1} togglePara={togglePara} active={active} />
+                 
+                  
+                    :
 
-                  <h1> {loadingattendance? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
+                    <h1> {loadingattendance? 'Loading...': 'No data to display, adjust the filters and click update to fetch data' }</h1>
               }
             
             </div>

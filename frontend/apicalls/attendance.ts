@@ -138,7 +138,8 @@ const x =
     }
   ]
 export const getAttendance= async (data: any, access_token?: string)=>{
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/attendance/student-attendance/${data?.class}${data?.today? '': `/${ data?.startDate}/${data?.endDate}`}` , {
+
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/attendance/student-attendance/${data?.class}/${ data?.startDate}/${data?.endDate}` , {
     method: "GET",
     headers: {
       "content-Type": "application/json",
@@ -147,9 +148,6 @@ export const getAttendance= async (data: any, access_token?: string)=>{
   })
   let tempData= await res.json()
   
-  // return []
-
-
-  return x
+  return tempData.data
 }
   
