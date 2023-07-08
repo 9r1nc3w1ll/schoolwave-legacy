@@ -178,7 +178,7 @@ const AttendanceTable = (props: any) => {
         title: props.presentday,
         sortable: false,
         hidden: false,
-        render: (x: any) => <AttendanceOption data={[{present: false}]} />,
+        render: (x: any) => <AttendanceOption data={[{present: false, student_id: x.user}]} />,
       }
 
       temp.push(base)
