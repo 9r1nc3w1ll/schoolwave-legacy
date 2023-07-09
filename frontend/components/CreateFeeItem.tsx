@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { createSession } from '@/apicalls/session';
-import {useEffect} from 'react'
-import { createFeeItem } from "@/apicalls/fees";
+import {useEffect, useState} from 'react'
+import { createFeeItem, getDiscounts } from "@/apicalls/fees";
 
 
 
@@ -19,13 +19,11 @@ interface FormValues {
 
 
 const CreateFeeItem = ( props:any) => {
-
+  const [discounts, setDiscount] = useState([])
 
   const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
 
-  const queryClient = useQueryClient();
-
-  const { mutate, isLoading, error } = useMutation(
+  const { mutate, isSuccess, error } = useMutation(
     (data) =>
       createFeeItem(props.user_session.access_token, data),
     {
@@ -34,7 +32,7 @@ const CreateFeeItem = ( props:any) => {
         props.refreshList()
         props.exit(false)
         reset()
-        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
   
       },
       onError: (error:any) => {
@@ -50,6 +48,17 @@ const CreateFeeItem = ( props:any) => {
     }
   );
 
+  const {data, isLoading,  refetch} = useQuery('feediscounts', ()=> getDiscounts(props.user_session?.access_token), {enabled: false })
+
+
+  useEffect(()=>{
+    if(data){
+      setDiscount(data)
+      console.log(data)
+    }
+  },[data])
+ 
+
   const onSubmit = async (tempData: any) => { 
 
     tempData.school = props.user_session?.school.id
@@ -61,16 +70,24 @@ const CreateFeeItem = ( props:any) => {
       <form className="space-y-5"   onSubmit={handleSubmit(onSubmit)}>
       
         <div>
-          <label htmlFor="name">Name</label>
-          <input id="name" type="text"  className="form-input" {...register("name", { required: "This field is required" })} />
+          <input id="name" type="text" placeholder="Name"  className="form-input" {...register("name", { required: "This field is required" })} />
         </div>
         <div>
-          <label htmlFor="name">Description</label>
-          <input id="description" type="text"  className="form-input" {...register("description")} />
+          <input id="description" type="text" placeholder="Description"  className="form-input" {...register("description")} />
         </div>
         <div>
-          <label htmlFor="name">Amount</label>
-          <input id="amount" type="number"  className="form-input" {...register("amount", { required: "This field is required" })} />
+          <select placeholder="Discount" className="form-input" onClick={()=>{
+            refetch()
+          }}>
+            <option>Choose</option>
+            {isLoading? <option>Loading ...</option>:
+              discounts.map((disc:any)=> <option key={disc.id}>{disc.discount_type}</option>)
+            }
+          </select>
+        </div>
+        <div>
+        
+          <input id="amount" type="number"  placeholder="Amount" className="form-input" {...register("amount", { required: "This field is required" })} />
         </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
 

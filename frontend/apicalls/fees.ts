@@ -133,9 +133,7 @@ export const getDiscounts= async (access_token: any)=>{
   })
   let tempData= await res.json()
       
-     
-      
-  return tempData
+  return tempData.data
 }
 export const getSingleDiscount= async (id: any, access_token?: string)=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/fees/discount/' +id , {

@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { createSession } from '@/apicalls/session';
 import {useEffect} from 'react'
-import { createFeeItem } from "@/apicalls/fees";
+import { createDiscount, createFeeItem } from "@/apicalls/fees";
 
 
 
@@ -27,10 +27,10 @@ const CreateDiscount = ( props:any) => {
 
   const { mutate, isLoading, error } = useMutation(
     (data) =>
-      createFeeItem(props.user_session.access_token, data),
+      createDiscount(props.user_session.access_token, data),
     {
       onSuccess: async (data) => {
-        showAlert('success', 'Session Created Successfuly')
+        showAlert('success', 'Discount Created Successfuly')
         props.refreshList()
         props.exit(false)
         reset()
@@ -62,15 +62,15 @@ const CreateDiscount = ( props:any) => {
       
         <div>
           <label htmlFor="name">Name</label>
-          <input id="name" type="text"  className="form-input" {...register("name", { required: "This field is required" })} />
-        </div>
-        <div>
-          <label htmlFor="name">Description</label>
-          <input id="description" type="text"  className="form-input" {...register("description")} />
+          <input id="discount_type" type="text"  className="form-input" {...register("discount_type", { required: "This field is required" })} />
         </div>
         <div>
           <label htmlFor="name">Amount</label>
           <input id="amount" type="number"  className="form-input" {...register("amount", { required: "This field is required" })} />
+        </div>
+        <div>
+          <label htmlFor="name">Percentage</label>
+          <input id="percentage" type="number"  className="form-input" {...register("percentage", { required: "This field is required" })} />
         </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
 

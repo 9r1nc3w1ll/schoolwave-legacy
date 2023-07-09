@@ -1,9 +1,10 @@
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { createSession } from '@/apicalls/session';
-import {useEffect} from 'react'
-import { createFeeItem } from "@/apicalls/fees";
+import {useEffect, useState} from 'react'
+import { createFeeItem, getFeeItems } from "@/apicalls/fees";
+import Select from 'react-select';
 
 
 
@@ -20,9 +21,23 @@ interface FormValues {
 
 const CreateFeeTemplate = ( props:any) => {
 
-
+  const [feeItems, setFeeItems] = useState([]) 
+  const [required_item, setrequired_item] = useState([])
+  const [optional_item, setoptional_item] = useState([])
   const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
+  const {data, isSuccess, status, refetch} = useQuery('feeitems', ()=> getFeeItems(props.user_session?.access_token))
 
+  useEffect(()=>{
+    let refinedSeeItems: any = []
+    if(data){
+      data.data?.forEach(itm =>{
+        itm.value = itm .id 
+        itm.label = itm.name
+        refinedSeeItems.push(itm)
+      })
+    }
+    setFeeItems(refinedSeeItems)
+  }, [data])
   const queryClient = useQueryClient();
 
   const { mutate, isLoading, error } = useMutation(
@@ -53,8 +68,9 @@ const CreateFeeTemplate = ( props:any) => {
   const onSubmit = async (tempData: any) => { 
 
     tempData.school = props.user_session?.school.id
-    tempData.discount = '362fba40-cfbe-4a01-b45c-cf5652ee474a'
-    mutate(tempData);                                                                  
+    tempData.required_item = required_item
+    tempData.optional_item = optional_item
+    console.log(tempData);                                                                  
   };
   return (
     <div  className="">
@@ -69,8 +85,20 @@ const CreateFeeTemplate = ( props:any) => {
           <input id="description" type="text"  className="form-input" {...register("description")} />
         </div>
         <div>
-          <label htmlFor="name">Amount</label>
-          <input id="amount" type="number"  className="form-input" {...register("amount", { required: "This field is required" })} />
+          <label htmlFor="name">Required Fee Items</label>
+          <Select  placeholder="Select an option" options={feeItems} isMulti isSearchable={true} onChange={(e:any)=>{
+            let dataofInterest: any = []
+            e.forEach((itm: any) =>{dataofInterest.push(itm.id)})
+            setrequired_item(dataofInterest)
+          }} />
+        </div>
+        <div>
+          <label htmlFor="name">Optional Fee Items</label>
+          <Select  placeholder="Select an option" options={feeItems} isMulti isSearchable={true} onChange={(e:any)=>{
+            let dataofInterest: any = []
+            e.forEach((itm: any) =>{dataofInterest.push(itm.id)})
+            setoptional_item(dataofInterest)
+          }} />
         </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
 

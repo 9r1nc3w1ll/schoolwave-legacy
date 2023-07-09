@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { editSession } from '@/apicalls/session';
-import { editFeeItem } from '@/apicalls/fees';
+import { editDiscount } from '@/apicalls/fees';
 
 
 
@@ -17,7 +17,7 @@ interface FormValues {
 
 
 
-const EditFeeItem = (props:any) => {
+const EditDiscount = (props:any) => {
 
   const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
  
@@ -27,7 +27,7 @@ const EditFeeItem = (props:any) => {
   },[])
 
   const { mutate, isLoading, error } = useMutation(
-    (data) => editFeeItem(props.sessionData.id, props.user_session.access_token, data),
+    (data) => editDiscount(props.sessionData.id, props.user_session.access_token, data),
     {
       onSuccess: async (data) => {
         showAlert('success', 'Session Edited Successfuly')
@@ -62,15 +62,15 @@ const EditFeeItem = (props:any) => {
       
         <div>
           <label htmlFor="name">Name</label>
-          <input id="name" type="text"  className="form-input" {...register("name", { required: "This field is required" })} />
-        </div>
-        <div>
-          <label htmlFor="name">Description</label>
-          <input id="description" type="text"  className="form-input" {...register("description")} />
+          <input id="discount_type" type="text"  className="form-input" {...register("discount_type", { required: "This field is required" })} />
         </div>
         <div>
           <label htmlFor="name">Amount</label>
           <input id="amount" type="number"  className="form-input" {...register("amount", { required: "This field is required" })} />
+        </div>
+        <div>
+          <label htmlFor="name">Percentage</label>
+          <input id="percentage" type="number"  className="form-input" {...register("percentage", { required: "This field is required" })} />
         </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
 
@@ -83,4 +83,4 @@ const EditFeeItem = (props:any) => {
   );
 };
 
-export default EditFeeItem;
+export default EditDiscount;

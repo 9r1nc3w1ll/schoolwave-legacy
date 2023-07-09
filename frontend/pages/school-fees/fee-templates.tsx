@@ -12,6 +12,7 @@ import ActivateSessions from '@/components/ActivateSessions';
 import EditFeeItem from '@/components/EditFeeItem';
 import CreateFeeItem from '@/components/CreateFeeItem';
 import { getFeeItems } from '@/apicalls/fees';
+import CreateFeeTemplate from '@/components/CreateFeeTemplate';
 
 
 
@@ -135,7 +136,7 @@ const Export =  (props:any) => {
       <div className='panel col-span-2'>
         <div className='panel bg-[#f5f6f7]'>
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create Fee Item</h5>
-          <CreateFeeItem   user_session={sessionData}  exit={setmodal} refreshList={refetch}  />
+          <CreateFeeTemplate   user_session={sessionData}  exit={setmodal} refreshList={refetch}  />
         </div>
       </div>
       <div className='panel col-span-4 ' >
