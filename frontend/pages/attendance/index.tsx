@@ -11,6 +11,7 @@ import { getAttendance } from "@/apicalls/attendance";
 import { useForm } from "react-hook-form";
 import { showAlert } from "@/utility_methods/alert";
 import AttendanceAccordion from "@/components/AttendanceAccordion";
+import ClassSelect from "@/components/ClassSelect";
 
 
 
@@ -34,11 +35,7 @@ const Attendance =()=>{
 
   const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
 
-  const { data: classes, isSuccess:classgotten,  refetch:getclasses } = useQuery('getClasses', () => {
-    return getClasses(user_session?.access_token)
-  }, {
-    enabled: false
-  })
+
 
   const { data: terms, isSuccess:termgotten,  refetch:getterms } = useQuery('getTerms', () => {
     return getTerms(user_session?.access_token)
@@ -80,15 +77,14 @@ const Attendance =()=>{
 
 
 
-
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
 
-      getclasses()
+      // getclasses()
       getterms()
     }
 
-  }, [getclasses, getterms, sessionStatus]);
+  }, [ getterms, sessionStatus]);
   const presentday = new Date().toISOString().substring(0,10)
 
   const onSubmit =(data: any)=>{
@@ -131,19 +127,7 @@ const Attendance =()=>{
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-6">
           <div>
-            <div className="mb-8">
-              <label>Class</label>
-              <select className="form-select text-white-dark" id='class' {...register("class", { required: "This field is required" })}
-                onChange={(e)=>{
-                  setSelectedClass(e.target.value)
-                  console.log('rrrrr', e.target.value)
-              
-                }}
-              >
-                <option>-- select One-- </option>
-                {classes?.map((clss: any)=> <option key={clss.id} value={clss.id}> {clss.name} </option>)}
-              </select>
-            </div>
+            <ClassSelect register={register} setSelectedClass={setSelectedClass} user_session={user_session} triggerFetch= {sessionStatus == 'authenticated'} />
            
             <div>
               <label>Term</label>

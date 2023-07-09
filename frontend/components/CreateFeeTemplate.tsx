@@ -5,6 +5,7 @@ import { createSession } from '@/apicalls/session';
 import {useEffect, useState} from 'react'
 import { createFeeItem, getFeeItems } from "@/apicalls/fees";
 import Select from 'react-select';
+import ClassSelect from "./ClassSelect";
 
 
 
@@ -82,7 +83,7 @@ const CreateFeeTemplate = ( props:any) => {
         </div>
         <div>
           <label htmlFor="name">Description</label>
-          <input id="description" type="text"  className="form-input" {...register("description")} />
+          <ClassSelect register={register} setSelectedClass={(x)=>x} user_session={props.user_session} triggerFetch= {props.User_session_status == 'authenticated'} />
         </div>
         <div>
           <label htmlFor="name">Required Fee Items</label>

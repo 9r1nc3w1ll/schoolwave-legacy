@@ -1,7 +1,33 @@
+import { getClasses } from "@/apicalls/clas"
+import { useEffect } from "react"
+import { useQuery } from "react-query"
 
 const ClassSelect =(props: any)=>{
+  const { data: classes, isSuccess:classgotten,  refetch } = useQuery('getClasses', () => {
+    return getClasses(props.user_session?.access_token)
+  }, {
+    enabled: false
+  })
 
-    return (
-        
-    )
+  useEffect(()=>{
+    console.log(props.triggerFetch)
+    refetch()
+  }, [props.triggerFetch])
+
+  return (
+    <div className="mb-8">
+      <label>Class</label>
+      <select className="form-select text-white-dark" id='class' {...props.register("class", { required: "This field is required" })}
+        onChange={(e)=>{
+          props.setSelectedClass(e.target.value)
+                    
+        }}
+      >
+        <option>-- select One-- </option>
+        {classes?.map((clss: any)=> <option key={clss.id} value={clss.id}> {clss.name} </option>)}
+      </select>
+    </div>
+  )
 }
+
+export default ClassSelect

@@ -136,7 +136,7 @@ const Export =  (props:any) => {
       <div className='panel col-span-2'>
         <div className='panel bg-[#f5f6f7]'>
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create Fee Item</h5>
-          <CreateFeeTemplate   user_session={sessionData}  exit={setmodal} refreshList={refetch}  />
+          <CreateFeeTemplate   user_session={sessionData} User_session_status={sessionStatus}  exit={setmodal} refreshList={refetch}  />
         </div>
       </div>
       <div className='panel col-span-4 ' >
