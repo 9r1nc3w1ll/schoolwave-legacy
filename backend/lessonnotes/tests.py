@@ -53,7 +53,10 @@ class LessonNoteAPITestCase(APITestCase):
             "class_id":self.class_obj.id,
             "content":"This is another content",
             "created_by":self.user.id,
-            "last_updated_by":self.user.id
+            "last_updated_by":self.user.id,
+            "topic": "Hello",
+            "description": "Hello",
+            "tag": "Hello"
         }
 
         response = self.client.post(url, data)

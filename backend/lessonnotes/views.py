@@ -11,7 +11,7 @@ class ListCreateLessonNote(ListCreateAPIView):
     serializer_class = LessonNoteSerializer
 
     def get_queryset(self):
-        lessonnote_id = self.kwargs.get("lessonnote_id")
+        lessonnote_id = self.kwargs.get("lesson_notes_id")
         if lessonnote_id:
             return self.queryset.filter(id=lessonnote_id)
         else:
