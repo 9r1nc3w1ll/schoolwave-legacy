@@ -26,7 +26,7 @@ interface FormValues {
 
 
 
-const EditSubjectForm = (props:any) => {
+const EditExamForm = (props:any) => {
 
   const { register, handleSubmit, reset, setValue } = useForm({ shouldUseNativeValidation: true });
  
@@ -161,4 +161,4 @@ const EditSubjectForm = (props:any) => {
   );
 };
 
-export default EditSubjectForm;
+export default EditExamForm;

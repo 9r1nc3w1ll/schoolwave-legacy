@@ -55,6 +55,7 @@ const Subject  = (props:any) => {
         
       setclassOptions(clasii)
       settermOptions(term)
+      console.log(user_session?.access_token)
         
         
     }
