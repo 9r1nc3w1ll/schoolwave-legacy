@@ -8,8 +8,8 @@ import { toUpper } from 'lodash';
 import { useSession } from 'next-auth/react';
 import StudentList from '@/components/StudentList';
 import StaffList from '@/components/StaffList';
-import { getExams } from '@/apicalls/exam';
-
+import { getSingleExam } from '@/apicalls/exam';
+import ExamQuestionList from '@/components/ExamQuestionList';
 
 
 const AccountSetting = (props:any) => {
@@ -32,19 +32,22 @@ const AccountSetting = (props:any) => {
   const router = useRouter()
   const examId = router?.query?.id
   
-  const [examDetails, setClassDetails] = useState<Class | null>(null);
+  
+  const [examDetails, setExamDetails] = useState<Class | null>(null);
 
   const { status: sessionStatus, data: user_session } = useSession();
   const dispatch = useDispatch();
+
   const { data: examData, isSuccess, status, isLoading, refetch } = useQuery('examData', () => 
-    getExams(user_session?.access_token), {enabled: false})
+  getSingleExam(examId, user_session?.access_token), {enabled: false})
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
       refetch()
-    }
+      console.log("Working now",examData)
+    }else{console.log("Not working")}
     
 
-  }, [sessionStatus, refetch]);
+  }, [sessionStatus, refetch, isSuccess]);
   const [editModal, seteditModal] = useState(false);
 
 
@@ -60,7 +63,7 @@ const AccountSetting = (props:any) => {
   
   useEffect(() =>{
     if (isSuccess && examData) {
-      setClassDetails(examData || null)
+      setExamDetails(examData || null)
     }
   }, [isSuccess, examData, examId]);
 
@@ -207,7 +210,7 @@ const AccountSetting = (props:any) => {
           ''
         )}
         {tabs === 'list-of-exam-question' ? (
-          <StudentList examId={examId}/>
+          <ExamQuestionList examId={examId} />
         ) : (
           ''
         )}

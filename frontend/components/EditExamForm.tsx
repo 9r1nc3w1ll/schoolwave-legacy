@@ -7,22 +7,11 @@ import {  useState } from 'react';
 import { getClasses } from '@/apicalls/clas';
 import { getTerms } from '@/apicalls/session';
 import Select from 'react-select';
+import { editExam, getExamsQuestions  } from '@/apicalls/exam';
 
 
 
 
-
-
-interface FormValues {
-    name: string;
-    description: string;
-    class_id: string;
-    code: string;
-    term_id: string
-
-
- 
-   };
 
 
 
@@ -35,10 +24,10 @@ const EditExamForm = (props:any) => {
     reset(props.sessionData)
   },[])
   const { mutate, isLoading, error } = useMutation(
-    (data) => editSubject(props.sessionData.id, props.user_session.access_token, data),
+    (data) => editExam(props.sessionData.id, props.user_session.access_token, data),
     {
       onSuccess: async (data) => {
-        showAlert('success', 'Subject Edited Successfuly')
+        showAlert('success', 'Exam Edited Successfuly')
         props.exit(false)
         props.refreshClasses()
   
@@ -50,30 +39,44 @@ const EditExamForm = (props:any) => {
   );
 
   const { data: clasii, isSuccess, status, refetch } = useQuery('classes', () => getClasses(props.user_session?.access_token), {enabled: false})
-  const { data: term, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('terms', () => getTerms(props.user_session?.access_token), {enabled: false})
+  const { data: examsQuestions, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('examquestionss', () => getExamsQuestions(props.user_session?.access_token), {enabled: false})
   interface classOption {
     id: string;
     name: string;
   }
-  interface termOption {
+  interface examsQuestionOption {
     id: string;
-    name: string;
+    title: string;
   }
-
   const [classOptions, setclassOptions] = useState<classOption[]>([]);
-  const [termOptions, settermOptions] = useState<termOption[]>([]);
+  const [examquestionsOptions, setexamquestionsOptions] = useState<examsQuestionOption[]>([]);
+  const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
 
 
   useEffect(()=>{
   
     
     setclassOptions(clasii)
-    settermOptions(term)
+    setexamquestionsOptions(examsQuestions)
     refetch()
     refetch2()
   
   } 
   );
+
+  let question_options:any = [];
+
+
+  question_options = examquestionsOptions?.map((option: examsQuestionOption) => ({
+        
+    value: option.id,
+    label: option.title,
+  }));
+
+  const handleQuestionChange = (selectedOptions: any) => {
+    setSelectedQuestions(selectedOptions);
+  };
+
 
 
   const onSubmit = async (data: any) => { 
@@ -83,10 +86,14 @@ const EditExamForm = (props:any) => {
   useEffect(() => {
     if (props.sessionData) {
       setValue("name", props.sessionData.name);
-      setValue("code", props.sessionData.code);
-      setValue("description", props.sessionData.description);
-      setValue("class_id", props.sessionData.class_id);
-      setValue("term", props.sessionData.term);
+      setValue("description", props.sessionData.description); // Update the field name from "code" to "description"
+      setValue("start_date", props.sessionData.start_date);
+      setValue("due_date", props.sessionData.due_date);
+      setValue("weight", props.sessionData.weight);
+      setValue("class_name", props.sessionData.class_name);
+      setValue("questions", props.sessionData.questions);
+
+
     }
   }, [props.sessionData, setValue]);
 
@@ -100,28 +107,40 @@ const EditExamForm = (props:any) => {
         </div>
 
         <div>
-          <label htmlFor="name">Code</label>
-          <input id="code" type="text"  className="form-input" {...register("code", { required: "This field is required" })} />
+          <label htmlFor="description">Description</label>
+          <input id="description" type="text"  className="form-input" {...register("description", { required: "This field is required" })} />
         </div>
         <div>
-          <label htmlFor="name"> Descirption</label>
-          <input id="description" type="text"  className="form-input" {...register("description", { required: "This field is required" })} />
+          <label htmlFor="start_date"> Start Date</label>
+          <input id="start_date" type="date"  className="form-input" {...register("start_date", { required: "This field is required" })} />
           
         </div>
 
         <div>
-          <label htmlFor="class_id">Class</label>
+          <label htmlFor="due_dat"> Due Date</label>
+          <input id="due_date" type="date"  className="form-input" {...register("due_date", { required: "This field is required" })} />
+          
+        </div>
+
+        <div>
+          <label htmlFor="weight"> Weight</label>
+          <input id="weight" type="number"  className="form-input" {...register("weight", { required: "This field is required" })} />
+          
+        </div>
+
+        <div>
+          <label htmlFor="class_name">Class</label>
           <select
-            id="class_id"
+            id="class_name"
             className="form-input"
-            {...register("class_id", { required: "This field is required" })}
+            {...register("class_name", { required: "This field is required" })}
           >
             <option>Select an option</option>
             {classOptions?.map((option) => (
-              <option
+              <option 
                 key={option.id}
                 value={option.id}
-                selected={option.id === props.sessionData.class_id}
+                selected={option.id === props.sessionData?.class_id}
               >
                 {option.name}
               </option>
@@ -129,23 +148,18 @@ const EditExamForm = (props:any) => {
           </select>
         </div>
         <div>
-          <label htmlFor="term_id">Term</label>
-          <select
-            id="term_id"
-            className="form-input"
-            {...register("term_id", { required: "This field is required" })}
-          >
-            <option>Select an option</option>
-            {termOptions?.map((option) => (
-              <option
-                key={option.id}
-                value={option.id}
-                selected={option.id === props.sessionData.term_id}
-              >
-                {option.name}
-              </option>
-            ))}
-          </select>
+          <label htmlFor="questions">Questions</label>
+          {/* <Select
+            placeholder="Select an option"
+            options={question_options}
+            isMulti
+            isSearchable
+            {...register("questions", { required: "This field is required" })}
+            value={selectedQuestions}
+            onChange={handleQuestionChange}
+          />
+           */}
+         
         </div>
           
     

@@ -9,14 +9,14 @@ import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
 import EditUser from '@/components/EditUser';
 import { useSession } from 'next-auth/react';
-import { getClassStudents } from '@/apicalls/clas';
+import { getExamsQuestions } from '@/apicalls/exam';
 
 
 
 
 const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'phone', 'date_of_birth'];
 
-const StudentList = (props: any) => {
+const ExamQuestionList = (props: any) => {
   const router = useRouter()
   const dispatch = useDispatch();
   const { status: sessionStatus, data: session } = useSession();
@@ -27,8 +27,8 @@ const StudentList = (props: any) => {
     return selectedRecords.length === 1
   }
 
-  const { data: students, isSuccess, status, refetch } = useQuery('getStudents', () => {
-    return getClassStudents(props.classId, session?.access_token)
+  const { data: examQuestions, isSuccess, status, refetch } = useQuery('getStudents', () => {
+    return getExamsQuestions( session?.access_token)
   }, {
     enabled: false
   })
@@ -46,7 +46,7 @@ const StudentList = (props: any) => {
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-  const [initialRecords, setInitialRecords] = useState(sortBy(students, 'id'));
+  const [initialRecords, setInitialRecords] = useState(sortBy(examQuestions, 'id'));
   const [recordsData, setRecordsData] = useState(initialRecords);
   const [modal, setModal] = useState(false);
 
@@ -68,13 +68,13 @@ const StudentList = (props: any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      if(isSuccess && students.length ){
+      if(isSuccess && examQuestions.length ){
 
-        return students.filter((item: any) => {
+        return examQuestions.filter((item: any) => {
           return (
-            item.user.toString().includes(search.toLowerCase()) ||
-            item.first_name.toLowerCase().includes(search.toLowerCase()) ||
-            item.last_name.toLowerCase().includes(search.toLowerCase())
+            item.title.toString().includes(search.toLowerCase()) ||
+            item.details.toLowerCase().includes(search.toLowerCase()) ||
+            item.type.toLowerCase().includes(search.toLowerCase())
 
           );
         });
@@ -82,7 +82,7 @@ const StudentList = (props: any) => {
         setInitialRecords([])
       }
     });
-  }, [search, students, status]);
+  }, [search, examQuestions, status]);
 
   useEffect(() => {
     const data = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -103,7 +103,7 @@ const StudentList = (props: any) => {
 
   const exportTable = (type: any) => {
     let columns: any = col;
-    let records = students ? students : [];
+    let records = examQuestions ? examQuestions : [];
     let filename = 'table';
 
     let newVariable: any;
@@ -294,9 +294,10 @@ const StudentList = (props: any) => {
             className="table-hover whitespace-nowrap"
             records={recordsData}
             columns={[
-              { accessor: 'user', title: 'Student_Id', sortable: true },
-              { accessor: 'first_name', title: 'First Name', sortable: true },
-              { accessor: 'last_name', title: 'Last Name', sortable: true },
+              { accessor: 'id', title: 'ID', sortable: true },
+              { accessor: 'title', title: 'Title', sortable: true },
+              { accessor: 'details', title: 'Details', sortable: true },
+              { accessor: 'type', title: 'type', sortable: true },
     
             ]}
             totalRecords={initialRecords? initialRecords.length : 0}
@@ -309,11 +310,6 @@ const StudentList = (props: any) => {
             onSortStatusChange={setSortStatus}
             minHeight={200}
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-
-            onRowClick={(x: any) =>
-              router.push('/students/' + x.id)
-            }
-
             selectedRecords={selectedRecords}
             onSelectedRecordsChange={setSelectedRecords}
           />
@@ -323,4 +319,4 @@ const StudentList = (props: any) => {
   );
 };
 
-export default StudentList;
+export default ExamQuestionList ;

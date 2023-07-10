@@ -60,8 +60,8 @@ export const createExams= async(  access_token: any, data: any)=>{
     return tempData.data
   }
 
-  export const getSingleExam= async (id: any, access_token?: string)=>{
-    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/examexams/' +id , {
+  export const getSingleExam= async (id: any, access_token?: any)=>{
+    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/examexams/'+id +'/' , {
       method: "GET",
       headers: {
         "content-Type": "application/json",
@@ -69,7 +69,7 @@ export const createExams= async(  access_token: any, data: any)=>{
       }
     })
     let tempData= await res.json()
-   
+   console.log("Here we go",tempData.data)
     
     return tempData.data
   }

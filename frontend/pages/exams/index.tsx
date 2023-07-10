@@ -454,12 +454,12 @@ const Export = (props:any) => {
             minHeight={200}
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
 
-            onRowClick={(rowData) => {
-              setActiveToolTip(rowData.id);
-              router.push('#');
-            }}
+            // onRowClick={(rowData) => {
+            //   setActiveToolTip(rowData.id);
+            //   router.push(`/exams/${rowData.id}`);
+            // }}
             selectedRecords={selectedRecords}
-            onSelectedRecordsChange={setSelectedRecords}
+            
             
           />
 
@@ -484,7 +484,7 @@ const Export = (props:any) => {
                 <div className="flex items-start justify-center min-h-screen px-4">
                   <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                     <div className="w-4/5 mx-auto py-5">
-                      <h5 className=" text-lg font-semibold dark:text-white-light">Edit Subject</h5>
+                      <h5 className=" text-lg font-semibold dark:text-white-light">Edit Exam</h5>
                       {/* <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p> */}
 
                       <EditExamForm create={false} user_session={user_session} sessionData={selectedSession} exit={seteditModal} refreshClasses={refetch}/>
