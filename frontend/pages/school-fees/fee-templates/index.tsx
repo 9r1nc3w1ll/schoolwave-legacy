@@ -11,7 +11,7 @@ import { useSession } from 'next-auth/react';
 import ActivateSessions from '@/components/ActivateSessions';
 import EditFeeItem from '@/components/EditFeeItem';
 import CreateFeeItem from '@/components/CreateFeeItem';
-import { getFeeItems } from '@/apicalls/fees';
+import { getFeeItems, getFeeTemplates } from '@/apicalls/fees';
 import CreateFeeTemplate from '@/components/CreateFeeTemplate';
 
 
@@ -47,7 +47,7 @@ const Export =  (props:any) => {
 
 
   
-  const {data, isSuccess, status, isLoading, refetch} = useQuery('feeitems', ()=> getFeeItems(sessionData?.access_token), {enabled: false })
+  const {data, isSuccess, status, isLoading, refetch} = useQuery('feeitems', ()=> getFeeTemplates(sessionData?.access_token), {enabled: false })
 
   useEffect(()=>{
     if(sessionStatus == 'authenticated'){

@@ -10,7 +10,6 @@ const ClassSelect =(props: any)=>{
   })
 
   useEffect(()=>{
-    console.log(props.triggerFetch)
     refetch()
   }, [props.triggerFetch])
 

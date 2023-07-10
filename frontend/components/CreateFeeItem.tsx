@@ -4,6 +4,7 @@ import { showAlert } from '@/utility_methods/alert';
 import { createSession } from '@/apicalls/session';
 import {useEffect, useState} from 'react'
 import { createFeeItem, getDiscounts } from "@/apicalls/fees";
+import DiscountSelect from "./DiscountSelect";
 
 
 
@@ -19,7 +20,7 @@ interface FormValues {
 
 
 const CreateFeeItem = ( props:any) => {
-  const [discounts, setDiscount] = useState([])
+
 
   const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
 
@@ -48,21 +49,15 @@ const CreateFeeItem = ( props:any) => {
     }
   );
 
-  const {data, isLoading,  refetch} = useQuery('feediscounts', ()=> getDiscounts(props.user_session?.access_token), {enabled: false })
 
 
-  useEffect(()=>{
-    if(data){
-      setDiscount(data)
-      console.log(data)
-    }
-  },[data])
+
  
 
   const onSubmit = async (tempData: any) => { 
 
     tempData.school = props.user_session?.school.id
-    tempData.discount = '362fba40-cfbe-4a01-b45c-cf5652ee474a'
+    // tempData.discount = '362fba40-cfbe-4a01-b45c-cf5652ee474a'
     mutate(tempData);                                                                  
   };
   return (
@@ -76,14 +71,7 @@ const CreateFeeItem = ( props:any) => {
           <input id="description" type="text" placeholder="Description"  className="form-input" {...register("description")} />
         </div>
         <div>
-          <select placeholder="Discount" className="form-input" onClick={()=>{
-            refetch()
-          }}>
-            <option>Choose</option>
-            {isLoading? <option>Loading ...</option>:
-              discounts.map((disc:any)=> <option key={disc.id}>{disc.discount_type}</option>)
-            }
-          </select>
+          <DiscountSelect register={register} trigger={props.user_session_status == 'authenticated'} user_session={props.user_session} />
         </div>
         <div>
         

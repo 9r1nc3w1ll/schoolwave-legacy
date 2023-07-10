@@ -580,7 +580,7 @@ const Sidebar = () => {
                           <Link href="/school-fees/fee-templates">{t('Fee Templates')}</Link>
                         </li>
                         <li>
-                          <Link href="/school-fees/discount">{t('Discounts')}</Link>
+                          <Link href="/school-fees/discounts">{t('Discounts')}</Link>
                         </li>
                       </ul>
                     </AnimateHeight>
