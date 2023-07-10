@@ -384,10 +384,8 @@ const Export = (props:any) => {
               
               { accessor: 'name', title: 'Name', sortable: true },
               { accessor: 'start_date', title: 'Start Date', sortable: true },
-              { accessor: 'Due Date', title: 'Due Date', sortable: true },
+              { accessor: 'due_date', title: 'Due Date', sortable: true },
               { accessor: 'weight', title: 'Weight', sortable: true },
-              { accessor: 'class_name', title: 'Class Name', sortable: true },
-              { accessor: 'questions', title: 'Question', sortable: true },
               { accessor: 'Action',
                 render: ({ action, record}: any) => (
                   
