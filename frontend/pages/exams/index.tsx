@@ -454,10 +454,16 @@ const Export = (props:any) => {
             minHeight={200}
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
 
-            // onRowClick={(rowData) => {
-            //   setActiveToolTip(rowData.id);
-            //   router.push(`/exams/${rowData.id}`);
-            // }}
+            onRowClick={(rowData, fieldId:any) => {
+              if (fieldId == "Action") {
+                router.push(`#`);
+               
+              }else {
+                setActiveToolTip(rowData.id);
+                router.push(`/exams/${rowData.id}`);
+               
+              }
+            }}
             selectedRecords={selectedRecords}
             
             

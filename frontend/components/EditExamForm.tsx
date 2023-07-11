@@ -149,7 +149,7 @@ const EditExamForm = (props:any) => {
         </div>
         <div>
           <label htmlFor="questions">Questions</label>
-          {/* <Select
+          <Select
             placeholder="Select an option"
             options={question_options}
             isMulti
@@ -158,7 +158,7 @@ const EditExamForm = (props:any) => {
             value={selectedQuestions}
             onChange={handleQuestionChange}
           />
-           */}
+          
          
         </div>
           

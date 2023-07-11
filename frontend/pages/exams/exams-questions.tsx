@@ -12,10 +12,15 @@ import BulkAdmission from '@/components/BulkSubjects';
 import { showAlert } from '@/utility_methods/alert';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 import { getExams, editExam,  deleteExam } from '@/apicalls/exam';
+import { getExamsQuestions } from '@/apicalls/exam';
 import CreateExam from '@/components/CreateExam';
-import BulkExamination from '@/components/BulkExam';
+import BulkQuestions from '@/components/BulkExam';
 import DeleteExam from '@/components/DeleteExam';
 import EditExamForm from '@/components/EditExamForm';
+import CreateExamQuestions from '@/components/CreateQuestions';
+import EditSubjectForm from '@/components/EditSubjectForm';
+import EditQuestionForm from '@/components/EditQuestion';
+import DeleteQuestion from '@/components/DeleteQuestion';
 
 
 
@@ -30,7 +35,7 @@ const col = ['code', 'name', 'class_id', 'term'];
 const Export = (props:any) => {
   const router = useRouter()
   const { status: sessionStatus, data: user_session } = useSession();
-  const {data:examDetails, isSuccess, status, refetch} = useQuery('getExam', ()=> getExams(user_session?.access_token), {enabled: false})
+  const {data:questionDetails, isSuccess, status, refetch} = useQuery('getExam', ()=> getExamsQuestions(user_session?.access_token), {enabled: false})
 
   const { mutate, isLoading, error } = useMutation(
     (data:any) => {
@@ -81,14 +86,14 @@ const Export = (props:any) => {
   }, [sessionStatus, refetch]);
   useEffect(() =>{
     refetch
-    if(examDetails !=''){
+    if(questionDetails !=''){
   
-      setSessions(examDetails)
-      console.log(examDetails)
+      setSessions(questionDetails)
+      console.log(questionDetails)
       
     
     }else {console.log("No Exam details")}
-  }, [examDetails]);
+  }, [questionDetails]);
 
 
   const dispatch = useDispatch();                          
@@ -105,7 +110,7 @@ const Export = (props:any) => {
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-  const [initialRecords, setInitialRecords] = useState(sortBy(examDetails, 'id'));
+  const [initialRecords, setInitialRecords] = useState(sortBy(questionDetails, 'id'));
   const [recordsData, setRecordsData] = useState(initialRecords);
   const [search, setSearch] = useState('');
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
@@ -114,9 +119,9 @@ const Export = (props:any) => {
   });
 
   useEffect(() => {
-    setInitialRecords(examDetails);
-    console.log(examDetails)
-  }, [examDetails,isSuccess]);
+    setInitialRecords(questionDetails);
+    console.log(questionDetails)
+  }, [questionDetails,isSuccess]);
   
 
 
@@ -135,12 +140,12 @@ const Export = (props:any) => {
   useEffect(() => {
     setInitialRecords(() => {
      
-      if(isSuccess && examDetails.length ){
+      if(isSuccess && questionDetails.length ){
 
-        return examDetails.filter((item: any) => {
+        return questionDetails.filter((item: any) => {
           return (
             item.id.toString().includes(search.toLowerCase()) ||
-                      item.name.toLowerCase().includes(search.toLowerCase()) 
+                      item.details.toLowerCase().includes(search.toLowerCase()) 
                   
           );
         });
@@ -148,7 +153,7 @@ const Export = (props:any) => {
         setInitialRecords([])
       }
     });
-  }, [search, examDetails, status]);
+  }, [search, questionDetails, status]);
 
   useEffect(() => {
     if (activeToolTip != '') {
@@ -179,7 +184,7 @@ const Export = (props:any) => {
 
   const exportTable = (type: any) => {
     let columns: any = col;
-    let records = examDetails? examDetails: [];
+    let records = questionDetails? questionDetails: [];
     let filename = 'table';
 
     let newVariable: any;
@@ -295,7 +300,7 @@ const Export = (props:any) => {
       <div className="panel">
         <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
 
-          <h5 className=" text-3xl font-semibold dark:text-white-light">Examinations</h5>
+          <h5 className=" text-3xl font-semibold dark:text-white-light">Questions</h5>
           <div className="flex flex-wrap items-center">
            
             <button type="button" onClick={() => setuploadModal(true)} className="btn btn-primary btn-sm m-1">
@@ -303,7 +308,7 @@ const Export = (props:any) => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
               </svg>
 
-                            Bulk Examinations
+                            Bulk Questions
             </button>
      
             <button type="button"  className="btn btn-primary btn-sm m-1" onClick={()=>{
@@ -314,7 +319,7 @@ const Export = (props:any) => {
               </svg>
 
 
-                            Create Examination
+                            Create Question
             </button>
   
             <Transition appear show={modal} as={Fragment}>
@@ -335,7 +340,7 @@ const Export = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
 
-                        <CreateExam user_session={user_session} setmodal={setmodal}  refreshClass={refetch} />
+                        <CreateExamQuestions user_session={user_session} setmodal={setmodal}  refreshClass={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -361,7 +366,7 @@ const Export = (props:any) => {
                     <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
                       <div className="w-4/5 mx-auto py-5">
                         
-                        <BulkExamination user_session={user_session} closeModal={setuploadModal}/>     
+                        <BulkQuestions user_session={user_session} closeModal={setuploadModal}/>     
                         
                       </div>
                     </Dialog.Panel>
@@ -382,10 +387,10 @@ const Export = (props:any) => {
             records={recordsData}
             columns={[
               
-              { accessor: 'name', title: 'Name', sortable: true },
-              { accessor: 'start_date', title: 'Start Date', sortable: true },
-              { accessor: 'due_date', title: 'Due Date', sortable: true },
-              { accessor: 'weight', title: 'Weight', sortable: true },
+              { accessor: 'id', title: 'id', sortable: true },
+              { accessor: 'title', title: 'title', sortable: true },
+              { accessor: 'details', title: 'Details', sortable: true },
+              { accessor: 'type', title: 'type', sortable: true },
               { accessor: 'Action',
                 render: ({ action, record}: any) => (
                   
@@ -435,9 +440,9 @@ const Export = (props:any) => {
                         setusermodal(true)
               
 
-                      }}>Delete </p>
+                      }}> </p>
+                      <DeleteQuestion  sessionID={selectedSession?.id} user_session={user_session} refreshClasses={refetch} /> 
 
-                      {/* <DeleteExam sessionID={selectedSession.id} user_session={user_session} refreshClasses={refetch} /> */}
 
                     </div>
                   </DropDownWIthChildren> ) }]}
@@ -456,7 +461,7 @@ const Export = (props:any) => {
 
             onRowClick={(rowData) => {
               setActiveToolTip(rowData.id);
-              router.push(`/exams/${rowData.id}`);
+              router.push(`#`);
             }}
             selectedRecords={selectedRecords}
             
@@ -487,7 +492,9 @@ const Export = (props:any) => {
                       <h5 className=" text-lg font-semibold dark:text-white-light">Edit Subject</h5>
                       {/* <p className='text-primary mb-5 text-sm'>{selectedSession.name}</p> */}
 
-                      <EditExamForm create={false} user_session={user_session} sessionData={selectedSession} exit={seteditModal} refreshClasses={refetch}/>
+                      
+                      
+                      <EditQuestionForm create={false} user_session={user_session} sessionData={selectedSession} exit={seteditModal} refreshClasses={refetch}/>
                     </div>
                   </Dialog.Panel>
                 </div>

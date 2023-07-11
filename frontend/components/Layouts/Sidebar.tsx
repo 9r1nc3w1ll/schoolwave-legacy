@@ -314,7 +314,7 @@ const Sidebar = () => {
                           <Link href="/apps/invoice/preview">{t('Assessment ')}</Link>
                         </li>
                         <li>
-                          <Link href="/apps/invoice/preview">{t('Questions')}</Link>
+                          <Link href="/exams/exams-questions">{t('Questions')}</Link>
                         </li>
                         <li>
                           <Link href="/apps/invoice/preview">{t('Results')}</Link>
