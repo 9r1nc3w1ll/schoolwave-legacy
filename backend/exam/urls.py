@@ -13,42 +13,42 @@ from .views import (
 
 urlpatterns = [
     path(
-        'questions/',
+        '/questions',
         ListCreateQuestion.as_view(),
         name='question_list_create',
     ),
     path(
-        'questions/<uuid:pk>/',
+        '/questions/<uuid:pk>',
         RetrieveUpdateDestroyQuestion.as_view(),
         name='question_retrieve_update_destroy',
     ),
     path(
-        'question-options/',
+        '/question-options',
         ListCreateQuestionOption.as_view(),
         name='question_option_list_create',
     ),
     path(
-        'question-options/<uuid:pk>/',
+        '/question-options/<uuid:pk>',
         RetrieveUpdateDestroyQuestionOption.as_view(),
         name='question_option_retrieve_update_destroy',
     ),
     path(
-        'exams/',
+        '/exams',
         ListCreateExam.as_view(),
         name='exam_list_create',
     ),
     path(
-        'exams/<uuid:pk>/',
+        '/exams/<uuid:pk>',
         RetrieveUpdateDestroyExam.as_view(),
         name='exam_retrieve_update_destroy',
     ),
     path(
-        'answers/',
+        '/answers',
         ListCreateAnswer.as_view(),
         name='answer_list_create',
     ),
     path(
-        'answers/<uuid:pk>/',
+        '/answers/<uuid:pk>',
         RetrieveUpdateDestroyAnswer.as_view(),
         name='answer_retrieve_update_destroy',
     ),

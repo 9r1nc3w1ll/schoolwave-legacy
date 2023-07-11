@@ -278,14 +278,15 @@ class ExamAPITestCase(APITestCase):
             class_name=self.class_obj,
             start_date=datetime.now().date(),
             due_date=datetime.now().date(),
-            weight=0.5
+            weight=0.5,
+            subject=self.subject
         )
 
         self.exam.questions.add(Question.objects.create(
             title="Question 1",
             subject=self.subject,
             details="Question 1 details",
-            type="quiz"
+            type="quiz",
         ))
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
@@ -308,13 +309,15 @@ class ExamAPITestCase(APITestCase):
             "class_name": self.class_obj.id,
             "start_date": datetime.now().date(),
             "due_date": datetime.now().date(),
-            "weight": 0.5
+            "weight": 0.5,
+            "subject":self.subject.id,
+            "questions":list([self.question.id])
         }
 
         response = self.client.post(url, data)
 
-        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # self.assertEqual(response.data["message"], "Exam created successfully.")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Exam created successfully.")
 
     def test_retrieve_exam(self):
         url = reverse("exam_retrieve_update_destroy", kwargs={"pk": self.exam.id})
@@ -403,14 +406,15 @@ class AnswerAPITestCase(APITestCase):
             class_name=self.class_obj,
             start_date=datetime.now().date(),
             due_date=datetime.now().date(),
-            weight=0.5
+            weight=0.5,
+            subject=self.subject
         )
 
         self.exam.questions.add(Question.objects.create(
             title="Question 1",
             subject=self.subject,
             details="Question 1 details",
-            type="quiz"
+            type="quiz",
         ))
 
         self.answer = Answer.objects.create(

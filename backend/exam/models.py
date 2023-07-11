@@ -45,6 +45,7 @@ class Exam(BaseModel):
     start_date = models.DateField()
     due_date = models.DateField()
     weight = models.DecimalField(max_digits=5, decimal_places=2)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
 
