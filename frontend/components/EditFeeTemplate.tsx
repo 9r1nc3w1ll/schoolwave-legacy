@@ -1,12 +1,12 @@
-import { useEffect} from 'react';
+import { useEffect, useState} from 'react';
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { editSession } from '@/apicalls/session';
-import { editFeeItem } from '@/apicalls/fees';
+import { editFeeItem, editFeeTemplate, getFeeItems } from '@/apicalls/fees';
 import DiscountSelect from './DiscountSelect';
 import ClassSelect from './ClassSelect';
-import Select from 'react-select/dist/declarations/src/Select';
+import Select from 'react-select';
 
 
 
@@ -20,17 +20,40 @@ interface FormValues {
 
 
 
-const EditFeeItem = (props:any) => {
-
+const EditFeeTemplate = (props:any) => {
+  const [feeItems, setFeeItems] = useState([]) 
+  const [required_item, setrequired_item] = useState([])
+  const [optional_item, setoptional_item] = useState([])
   const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
+  const {data, isSuccess, status, refetch} = useQuery('feeitems', ()=> getFeeItems(props.user_session?.access_token), {enabled: false})
+  useEffect(()=>{
+    if(props.user_session_status == 'authenticated') {
+      refetch()
+    }
+  }, [props.user_session_status=='authenticated'])
+
+
+  useEffect(()=>{
+    let refinedSeeItems: any = []
+    if(data){
+      data.data?.forEach((itm: any) =>{
+        itm.value = itm .id 
+        itm.label = itm.name
+        refinedSeeItems.push(itm)
+      })
+    }
+    setFeeItems(refinedSeeItems)
+  }, [data])
  
   const queryClient = useQueryClient();
   useEffect(()=>{
     reset(props.sessionData)
   },[])
 
+
+
   const { mutate, isLoading, error } = useMutation(
-    (data) => editFeeItem(props.sessionData.id, props.user_session.access_token, data),
+    (data) => editFeeTemplate(props.sessionData.id, props.user_session.access_token, data),
     {
       onSuccess: async (data) => {
         showAlert('success', 'Session Edited Successfuly')
@@ -75,10 +98,10 @@ const EditFeeItem = (props:any) => {
         </div>
         <div>
           <label htmlFor="name">Required Fee Items</label>
-          <Select  placeholder="Select an option" options={[]} isMulti isSearchable={true} onChange={(e:any)=>{
+          <Select  placeholder="Select an option" options={feeItems} isMulti isSearchable={true} onChange={(e:any)=>{
             let dataofInterest: any = []
             e.forEach((itm: any) =>{dataofInterest.push(itm.id)})
-            // setrequired_item(dataofInterest)
+            setrequired_item(dataofInterest)
           }} />
         </div>
         <div>
@@ -99,4 +122,4 @@ const EditFeeItem = (props:any) => {
   );
 };
 
-export default EditFeeItem;
+export default EditFeeTemplate;

@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { editSession } from '@/apicalls/session';
 import { editFeeItem } from '@/apicalls/fees';
+import DiscountSelect from './DiscountSelect';
 
 
 
@@ -61,16 +62,17 @@ const EditFeeItem = (props:any) => {
       <form className="space-y-5"   onSubmit={handleSubmit(onSubmit)}>
       
         <div>
-          <label htmlFor="name">Name</label>
-          <input id="name" type="text"  className="form-input" {...register("name", { required: "This field is required" })} />
+          <input id="name" type="text" placeholder="Name"  className="form-input" {...register("name", { required: "This field is required" })} />
         </div>
         <div>
-          <label htmlFor="name">Description</label>
-          <input id="description" type="text"  className="form-input" {...register("description")} />
+          <input id="description" type="text" placeholder="Description"  className="form-input" {...register("description")} />
         </div>
         <div>
-          <label htmlFor="name">Amount</label>
-          <input id="amount" type="number"  className="form-input" {...register("amount", { required: "This field is required" })} />
+          <DiscountSelect register={register} trigger={props.user_session_status == 'authenticated'} user_session={props.user_session} />
+        </div>
+        <div>
+      
+          <input id="amount" type="number"  placeholder="Amount" className="form-input" {...register("amount", { required: "This field is required" })} />
         </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
 

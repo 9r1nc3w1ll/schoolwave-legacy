@@ -31,7 +31,6 @@ const CreateFeeTemplate = ( props:any) => {
 
   useEffect(()=>{
     if(props.user_session_status == 'authenticated') {
-      console.log('yyyy')
       refetch()
     }
   }, [props.user_session_status=='authenticated'])

@@ -13,6 +13,7 @@ import EditFeeItem from '@/components/EditFeeItem';
 import CreateFeeItem from '@/components/CreateFeeItem';
 import { getFeeItems, getFeeTemplates } from '@/apicalls/fees';
 import CreateFeeTemplate from '@/components/CreateFeeTemplate';
+import EditFeeTemplate from '@/components/EditFeeTemplate';
 
 
 
@@ -206,7 +207,7 @@ const Export =  (props:any) => {
                       <h5 className=" text-lg font-semibold dark:text-white-light">Edit Fee Template</h5>
                       <p className='text-primary mb-5 text-sm'>{selectedSession?selectedSession.name: ''}</p>
                   
-                      <EditFeeItem create={false} user_session={sessionData} sessionData={selectedSession} exit={setmodal} refreshSession={refetch}  />
+                      <EditFeeTemplate create={false} user_session={sessionData} sessionData={selectedSession} exit={setmodal} refreshSession={refetch}  />
                     </div>
                   </Dialog.Panel>
                 </div>
