@@ -16,7 +16,7 @@ const ClassSelect =(props: any)=>{
   return (
     <div className="mb-8">
       <label>Class</label>
-      <select className="form-select text-white-dark" id='class' {...props.register("class", { required: "This field is required" })}
+      <select className="form-select text-white-dark" id='class' {...props.register(`${props.class_selector? props.class_selector :"class"}`, { required: "This field is required" })}
         onChange={(e)=>{
           props.setSelectedClass(e.target.value)
                     

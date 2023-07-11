@@ -47,7 +47,7 @@ const Export =  (props:any) => {
 
 
   
-  const {data, isSuccess, status, isLoading, refetch} = useQuery('feeitems', ()=> getFeeTemplates(sessionData?.access_token), {enabled: false })
+  const {data, isSuccess, status, isLoading, refetch} = useQuery('feetemplate', ()=> getFeeTemplates(sessionData?.access_token), {enabled: false })
 
   useEffect(()=>{
     if(sessionStatus == 'authenticated'){
@@ -57,7 +57,7 @@ const Export =  (props:any) => {
   useEffect(() => {
     setFilteredsessions(() => {
       return feesTemplate?.filter((item:any) => {
-        return item.name.toLowerCase().includes(search.toLowerCase()) || item.description.toLowerCase().includes(search.toLowerCase());
+        return item.id.toLowerCase().includes(search.toLowerCase());
       });
     });
   }, [search, feesTemplate, status]);
@@ -74,10 +74,10 @@ const Export =  (props:any) => {
         return (
           <tr className={`${item.active? `bg-primary-light`: ''} !important`} key={item.id}>
             <td>
-              <div className="whitespace-nowrap"><Link href={`/session/${item.id}`}>{item.name} </Link></div>
+              <div className="whitespace-nowrap"><Link href={`/session/${item.id}`}>{item.id} </Link></div>
             </td>
-            <td>{item.description}</td>
-            <td>{item.amount}</td>
+            <td>{item.class_id}</td>
+            <td>{item.tax}</td>
            
             <td className="text-center ">
              
@@ -135,8 +135,8 @@ const Export =  (props:any) => {
     <div className='lg:grid grid-cols-6 gap-6'>
       <div className='panel col-span-2'>
         <div className='panel bg-[#f5f6f7]'>
-          <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create Fee Item</h5>
-          <CreateFeeTemplate   user_session={sessionData} User_session_status={sessionStatus}  exit={setmodal} refreshList={refetch}  />
+          <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create Fee Template</h5>
+          <CreateFeeTemplate   user_session={sessionData} user_session_status={sessionStatus}  exit={setmodal} refreshList={refetch}  />
         </div>
       </div>
       <div className='panel col-span-4 ' >
@@ -171,9 +171,9 @@ const Export =  (props:any) => {
           <table className="table-striped">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Amount</th>
+                <th>Template Id</th>
+                <th>Class Id</th>
+                <th>Tax</th>
                 <th></th>
               </tr>
             </thead>

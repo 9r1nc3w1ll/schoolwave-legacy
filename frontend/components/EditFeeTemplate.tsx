@@ -1,12 +1,12 @@
+import { useEffect} from 'react';
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
-import { createSession } from '@/apicalls/session';
-import {useEffect, useState} from 'react'
-import { createFeeItem, createFeeTemplate, getFeeItems } from "@/apicalls/fees";
-import Select from 'react-select';
-import ClassSelect from "./ClassSelect";
-import DiscountSelect from "./DiscountSelect";
+import { editSession } from '@/apicalls/session';
+import { editFeeItem } from '@/apicalls/fees';
+import DiscountSelect from './DiscountSelect';
+import ClassSelect from './ClassSelect';
+import Select from 'react-select/dist/declarations/src/Select';
 
 
 
@@ -16,54 +16,33 @@ interface FormValues {
     start_date: string;
     end_date: string;
     resumption_date: string;
-    active: boolean
    };
 
 
 
-const CreateFeeTemplate = ( props:any) => {
+const EditFeeItem = (props:any) => {
 
-  const [feeItems, setFeeItems] = useState([]) 
-  const [required_item, setrequired_item] = useState([])
-  const [optional_item, setoptional_item] = useState([])
   const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
-  const {data, isSuccess, status, refetch} = useQuery('feeitems', ()=> getFeeItems(props.user_session?.access_token), {enabled: false})
-
-  useEffect(()=>{
-    if(props.user_session_status == 'authenticated') {
-      console.log('yyyy')
-      refetch()
-    }
-  }, [props.user_session_status=='authenticated'])
-
-  useEffect(()=>{
-    let refinedSeeItems: any = []
-    if(data){
-      data.data?.forEach((itm: any) =>{
-        itm.value = itm .id 
-        itm.label = itm.name
-        refinedSeeItems.push(itm)
-      })
-    }
-    setFeeItems(refinedSeeItems)
-  }, [data])
+ 
   const queryClient = useQueryClient();
+  useEffect(()=>{
+    reset(props.sessionData)
+  },[])
 
   const { mutate, isLoading, error } = useMutation(
-    (data) =>
-      createFeeTemplate(props.user_session.access_token, data),
+    (data) => editFeeItem(props.sessionData.id, props.user_session.access_token, data),
     {
       onSuccess: async (data) => {
-        showAlert('success', 'Session Created Successfuly')
-        props.refreshList()
+        showAlert('success', 'Session Edited Successfuly')
+        props.refreshSession()
         props.exit(false)
-        reset()
         
   
       },
       onError: (error:any) => {
         let x =error.response.data.message.split(' ')
-
+        
+  
         if(x.indexOf('duplicate') >=0 && x.indexOf('key') >=0  && x.indexOf('constraint') >=0){
 
           showAlert('error', 'A session with same Start Date or End Date already exist')
@@ -74,15 +53,12 @@ const CreateFeeTemplate = ( props:any) => {
     }
   );
 
-  const onSubmit = async (tempData: any) => { 
 
-    tempData.school = props.user_session?.school.id
-    tempData.required_items = required_item
-    tempData.optional_items = optional_item
-    tempData.active = false
-    tempData.tax = 1
-    mutate(tempData)
-  }
+
+
+  const onSubmit = async (data: any) => { 
+
+    mutate(data); };
   return (
     <div  className="">
       <form className="space-y-5"   onSubmit={handleSubmit(onSubmit)}>
@@ -99,10 +75,10 @@ const CreateFeeTemplate = ( props:any) => {
         </div>
         <div>
           <label htmlFor="name">Required Fee Items</label>
-          <Select  placeholder="Select an option" options={feeItems} isMulti isSearchable={true} onChange={(e:any)=>{
+          <Select  placeholder="Select an option" options={[]} isMulti isSearchable={true} onChange={(e:any)=>{
             let dataofInterest: any = []
             e.forEach((itm: any) =>{dataofInterest.push(itm.id)})
-            setrequired_item(dataofInterest)
+            // setrequired_item(dataofInterest)
           }} />
         </div>
         <div>
@@ -115,7 +91,7 @@ const CreateFeeTemplate = ( props:any) => {
         </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
           <button  type="submit"  className="btn btn-primary ltr:ml-4 rtl:mr-4">
-                                            Submit
+                                          Submit
           </button>
         </div>
       </form>
@@ -123,4 +99,4 @@ const CreateFeeTemplate = ( props:any) => {
   );
 };
 
-export default CreateFeeTemplate
+export default EditFeeItem;
