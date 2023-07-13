@@ -3,7 +3,7 @@ from django.conf import settings
 import os
 import json
 
-def schema_validator(json_data, schema_type="cv"):
+def schema_validator(json_data):
     
     file_path = os.path.join(settings.BASE_DIR, "grading/schema.json")
     with open(file_path, 'r') as f:

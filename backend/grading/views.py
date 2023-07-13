@@ -23,7 +23,7 @@ class GradingSchemeCreateView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
 
-        is_valid, message = schema_validator(request.data['scheme'])
+        is_valid, message = schema_validator({"scheme" : request.data['scheme']})
 
         if not is_valid:
             return Response({"error" : message}, status=status.HTTP_400_BAD_REQUEST)

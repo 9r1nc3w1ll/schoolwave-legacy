@@ -44,7 +44,9 @@ class GradingSchemeAPITest(APITestCase):
         }
 
         self.client.force_authenticate(user=self.user)
+
         response = self.client.post(url, data, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
 
@@ -72,6 +74,12 @@ class GradeAPITest(APITestCase):
 
         self.student = User.objects.create_user(
             username="teststudent", password="testpassword", role="student"
+        )
+
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
         )
 
         self.class_obj = Class.objects.create(
@@ -128,6 +136,8 @@ class GradeAPITest(APITestCase):
             'subject': self.subject.id,
             'term': self.term.id
         }
+
+        self.client.force_authenticate(user=self.user)
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -140,7 +150,44 @@ class GradeAPITest(APITestCase):
 
 class ResultAPITest(APITestCase):
     def setUp(self):
-        self.result = Result.objects.create(student_id=1, term_id=1, total_score=90, grade='A')
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword", role="owner"
+        )
+
+        self.student = User.objects.create_user(
+            username="teststudent", password="testpassword", role="student"
+        )
+
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
+
+        self.class_obj = Class.objects.create(
+            name="Test Class", school=self.school, description="Description", code="Prim"
+        )
+
+        self.session = Session.objects.create(
+            school=self.school,
+            resumption_date=datetime.now().date(),
+            start_date="2040",
+            end_date="2050"
+        )
+
+        self.term = Term.objects.create(
+            name="1st Term", active="True", school=self.school, session=self.session, code="Term45"
+        )
+
+        self.subject = Subject.objects.create(
+            name="Math",
+            description="Mathematics subject",
+            term=self.term,
+            class_id=self.class_obj,
+            code="Sub98"
+        )
+
+        self.result = Result.objects.create(student=self.student, term=self.term, total_score=90, grade='A')
 
     def test_get_result(self):
         url = reverse('result-detail', args=[self.result.id])
@@ -182,6 +229,6 @@ class ResultAPITest(APITestCase):
         url = reverse('result-detail', args=[self.result.id])
 
         self.client.force_authenticate(user=self.user)
-        
+
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
