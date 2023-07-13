@@ -1,0 +1,14 @@
+{
+    "title": "Grading Scheme",
+    "type": "object",
+    "properties": {
+      "scheme": {
+        "type": "object",
+        "patternProperties": {
+          "^\\d+:\\d+$": { "type": "string" }
+        }
+      }
+    },
+    "required": ["scheme"]
+  }
+  
