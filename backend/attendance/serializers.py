@@ -14,6 +14,7 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
             'class_id',
             'subject',
             'staff',
+            'student',
             'created_at',
             'updated_at',
             'deleted_at',
@@ -69,3 +70,7 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
         return [attendance]
 
 
+class MultipleAttendanceRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AttendanceRecord
+        fields =  "__all__"

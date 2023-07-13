@@ -1,7 +1,7 @@
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView, CreateAPIView
 from .models import AttendanceRecord
-from .serializers import AttendanceRecordSerializer
+from .serializers import AttendanceRecordSerializer, MultipleAttendanceRecordSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from school.models import School
@@ -116,3 +116,39 @@ class RetrieveStudentAttendance(GenericAPIView):
             "data": serializer.data,
         }
         return Response(resp)
+
+class CreateMultipleStudentAttendance(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = AttendanceRecord.objects.all()
+    serializer_class = MultipleAttendanceRecordSerializer
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        students = data.get("student", [])
+        presents = data.get("present", [])
+        remarks = data.get("remark", [])
+
+        attendance_records = []
+        for i in range(len(students)):
+            attendance_data = {
+                "class_id": data.get("class_id"),
+                "staff": data.get("staff"),
+                "attendance_type": data.get("attendance_type"),
+                "student": students[i],
+                "present": presents[i],
+                "remark": remarks[i],
+            }
+            serializer = self.get_serializer(data=attendance_data)
+            if not serializer.is_valid():
+                resp = {
+                    "message": "Validation error",
+                    "errors": serializer.errors,
+                }
+                return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+            attendance_records.append(serializer.save())
+
+        resp = {
+            "message": "Attendance records created successfully",
+            "attendance_records": MultipleAttendanceRecordSerializer(attendance_records, many=True).data,
+        }
+        return Response(resp, status=status.HTTP_201_CREATED)
