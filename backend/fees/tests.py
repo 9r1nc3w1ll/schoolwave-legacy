@@ -396,6 +396,7 @@ class InvoiceTestCase(APITestCase):
     
     def test_create_invoice(self):
         url = reverse("list_create_invoice")
+        
         data = {
             "content_type" : ContentType.objects.get_for_model(FeePayment).id,
             "item" : self.fee_payment.id,

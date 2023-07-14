@@ -8,6 +8,14 @@ class SessionSerializer(serializers.ModelSerializer):
         model = Session
         fields = "__all__"
         extra_kwargs = {'name': {'read_only': True}}
+    
+    def update(self, instance, validated_data):
+
+        active = validated_data.get("active", False)
+
+        if active:
+            sessions = Session.objects.filter(active=True).update(active=False)
+        return super().update(instance, validated_data)
 
 
 class TermSerializer(serializers.ModelSerializer):
