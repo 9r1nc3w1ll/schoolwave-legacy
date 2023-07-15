@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { AuthenticationRoute } from '@/components/Layouts/AuthenticationRoute';
 import BlankLayout from '@/components/Layouts/BlankLayout';
+import { showAlert } from '@/utility_methods/alert';
 
 
 const LoginBoxed = () => {
@@ -13,8 +14,11 @@ const LoginBoxed = () => {
   const onSubmit = async (data: any) => {
     const result: any = await signIn('credentials', { username: data.email, password: data.password, redirect: false, callbackUrl: '/' })
     if (result.ok) {
+      showAlert('success', 'Logged in Successfuly')
       router.push('/')
       return;
+    }else{
+      showAlert('error', 'An error occured')
     }
   };
 
