@@ -12,6 +12,7 @@ import { useSession } from 'next-auth/react';
 import { getClasses } from '@/apicalls/clas';
 import { createExams, getExamsQuestions } from '@/apicalls/exam';
 import Select from 'react-select';
+import { getSubjects } from '@/apicalls/subjects';
 
 
 
@@ -32,6 +33,14 @@ const CreateExam  = (props:any) => {
     title: string;
   }
 
+  interface subjectsOption {
+    id: string;
+    name: string;
+  }
+
+
+  const [subjectsOptions, setsubjectsOptions] = useState<subjectsOption[]>([]);
+
   const [classOptions, setclassOptions] = useState<classOption[]>([]);
   const [examsQuestionOptions, setexamsQuestionOptions] = useState<examsQuestionOption[]>([]);
   const [date1, setDate1] = useState<any>('2022-07-05');
@@ -50,12 +59,14 @@ const CreateExam  = (props:any) => {
   };
 
   const { data: clasii, isSuccess, status, refetch } = useQuery('classes', () => getClasses(user_session?.access_token), {enabled: false})
-  const { data: examsQuestion, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('terms', () => getExamsQuestions(user_session?.access_token), {enabled: false})
+  const { data: examsQuestion, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('Exam Question', () => getExamsQuestions(user_session?.access_token), {enabled: false})
+  const { data: subjects, isSuccess:isSuccess3, status:status3, refetch:refetch3 } = useQuery('seubjects', () => getSubjects(user_session?.access_token), {enabled: false})
 
   useEffect(()=>{
     if(sessionStatus == 'authenticated'){
       refetch()
       refetch2()
+      refetch3()
   
     }
 
@@ -69,6 +80,7 @@ const CreateExam  = (props:any) => {
         
       setclassOptions(clasii);
       setexamsQuestionOptions(examsQuestion); 
+      setsubjectsOptions(subjects);
       console.log("This are the exam question",examsQuestion)
 
      
@@ -77,7 +89,7 @@ const CreateExam  = (props:any) => {
 
       
     }
-  },[isSuccess, clasii, isSuccess2, examsQuestion]);
+  },[isSuccess, clasii, isSuccess2, examsQuestion, isSuccess3]);
 
 
   question_options = examsQuestionOptions.map((option: examsQuestionOption) => ({
@@ -114,9 +126,10 @@ const CreateExam  = (props:any) => {
 
           const onSubmit = async (data: any) => {
             const extractedQuestions = selectedQuestions.map((value: any) => value.value);
-            const updatedData = { ...data, questions: extractedQuestions };
+            const updatedData = { ...data, questions: extractedQuestions, };
           
             mutate(updatedData);
+            console.log(updatedData);
           };
 
         
@@ -181,18 +194,8 @@ const CreateExam  = (props:any) => {
                     <div className=''> 
                       <label htmlFor="class_name"> Class Name <span className='text-red-500'>*</span></label>
 
-{/* 
-                      <Select
-                                placeholder="Select an option"
-                                options={question_options}
-                                isMulti
-                                isSearchable={true}
-                                value={selectedQuestions}
-                                onChange={handleQuestionchange }
-                              /> */}
                     
-                      <select {...register('class_name', { required: "This field is required" })}  className='form-input' placeholder=
-'Choose' >
+                      <select {...register('class_name', { required: "This field is required" })}  className='form-input' placeholder='Choose' >
                         <option value="" disabled selected hidden>
                           Select an option
                         </option>
@@ -203,6 +206,27 @@ const CreateExam  = (props:any) => {
                         ))}
                       </select>
                     </div>
+
+                    <div>
+                        <label htmlFor="subject"> Subject <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          {...register("subject", { required: "This field is required" })}
+                          className="form-input"
+                          placeholder="Choose"
+                        >
+                          <option value="" disabled selected hidden>
+                            Select an option
+                          </option>
+                          {subjectsOptions?.map((option) => (
+                            <option key={option.id} value={option.id}>
+                              {option.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+
                     <div className=''> 
                       <label htmlFor="term"> Question <span className='text-red-500'>*</span></label>
 
