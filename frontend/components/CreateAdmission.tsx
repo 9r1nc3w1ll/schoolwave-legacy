@@ -10,7 +10,7 @@ import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import {parse} from 'json2csv'
 import { useSession } from 'next-auth/react';
-import { BulkAdmissionUpload } from '@/apicalls/admissions';
+import { BulkAdmissionUpload, createAdmission } from '@/apicalls/admissions';
 
 
 
@@ -72,7 +72,7 @@ const CreateAdmission  = (props:any) => {
           const { mutate, isLoading, error } = useMutation(
             (data:any) =>{
            
-              return createUser( data, user_session?.access_token)},
+              return createAdmission( data, user_session?.access_token)},
             {
               onSuccess: async (data) => {
                 showAlert('success', 'Admission created Successfully')
@@ -90,7 +90,7 @@ const CreateAdmission  = (props:any) => {
 
           const onSubmit = async (data: any) => { 
                
-            console.log(data)
+            mutate(data)
            
           };
 
