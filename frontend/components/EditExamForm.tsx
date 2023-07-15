@@ -41,7 +41,7 @@ const EditExamForm = (props:any) => {
 
 
   const { data: clasii, isSuccess, status, refetch } = useQuery('classes', () => getClasses(props.user_session?.access_token), {enabled: false})
-  const { data: subjects, isSuccess:isSuccess3, status:status3, refetch:refetch3 } = useQuery('terms', () => getSubjects(user_session?.access_token), {enabled: false})
+  const { data: subjects, isSuccess:isSuccess3, status:status3, refetch:refetch3 } = useQuery('terms', () => getSubjects(props.user_session?.access_token), {enabled: false})
   const { data: examsQuestions, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('examquestionss', () => getExamsQuestions(props.user_session?.access_token), {enabled: false})
   interface classOption {
     id: string;
