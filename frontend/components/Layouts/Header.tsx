@@ -7,7 +7,7 @@ import { toggleLocale, toggleTheme } from '../../store/themeConfigSlice';
 import { useTranslation } from 'react-i18next';
 import { toggleSidebar } from '../../store/themeConfigSlice';
 import Dropdown from '../Dropdown';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import {  signOut, useSession } from 'next-auth/react';
 
 const Header = (props: any) => {
   const router = useRouter();
@@ -123,7 +123,7 @@ const Header = (props: any) => {
           <div className="horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
             <Link href="/dashboard" className="main-logo flex shrink-0 items-center">
               <img className="inline w-8 ltr:-ml-1 rtl:-mr-1" src="/assets/images/logo.svg" alt="logo" />
-              <span className="hidden align-middle text-2xl  font-semibold  transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">Schoolwave</span>
+              <span className="hidden align-middle text-2xl  font-semibold  transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">{props.user_session?.school.name}</span>
             </Link>
             <button
               type="button"

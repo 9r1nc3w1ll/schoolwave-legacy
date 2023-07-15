@@ -103,12 +103,11 @@ const DefaultLayout = ({ children }: IProps) => {
             </button>
           )}
         </div>
-        {/* BEGIN APP SETTING LAUNCHER */}
-        <Setting />
+    
         {/* END APP SETTING LAUNCHER */}
         <div className={`${themeConfig.navbar} main-container min-h-screen text-black dark:text-white-dark`}>
           {/* BEGIN SIDEBAR */}
-          <Sidebar />
+          <Sidebar user_session={user_session} />
           {/* END SIDEBAR */}
           {/* BEGIN CONTENT AREA */}
           <div className="main-content">

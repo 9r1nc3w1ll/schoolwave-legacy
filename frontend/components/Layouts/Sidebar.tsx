@@ -8,18 +8,26 @@ import { IRootState } from '../../store';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-const Sidebar = () => {
+const Sidebar = (props:any) => {
   const router = useRouter();
   const [currentMenu, setCurrentMenu] = useState<string>('');
   const [errorSubMenu, setErrorSubMenu] = useState(false);
   const themeConfig = useSelector((state: IRootState) => state.themeConfig);
   const semidark = useSelector((state: IRootState) => state.themeConfig.semidark);
+  const[schoolname1, setschoolname1]= useState('')
+  const[schoolname2, setschoolname2]= useState('')
   const toggleMenu = (value: string) => {
     setCurrentMenu((oldValue) => {
       return oldValue === value ? '' : value;
     });
   };
-
+  useEffect(()=>{
+    let sch= props.user_session?.school.name.split(' ')
+    if(sch){
+      setschoolname1(sch[0])
+      setschoolname2(sch.length > 1 ? '...':'')
+    }
+  }, [props.user_session])
   useEffect(() => {
     const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
     if (selector) {
@@ -66,7 +74,7 @@ const Sidebar = () => {
           <div className="flex items-center justify-between px-4 py-3">
             <Link href="/" className="main-logo flex shrink-0 items-center">
               <img className="ml-[5px] w-8 flex-none" src="/assets/images/logo.svg" alt="logo" />
-              <span className="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">{t('SchoolWave')}</span>
+              <span className="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">{schoolname1 + schoolname2}</span>
             </Link>
 
             <button
