@@ -13,9 +13,13 @@ export default function BulkAdmission(props:any){
       return BulkAdmissionUpload( data, props.user_session?.access_token)},
     {
       onSuccess: async (data) => {
-        showAlert('success', 'File Uploaded Successfully')
-        props.refreshAdmission()
-        props.closeModal(false)
+        if(!data.error){
+          showAlert('success', 'File Uploaded Successfully')
+          props.refreshAdmission()
+          props.closeModal(false)
+        }else{
+          showAlert('error', 'An error occured with the upload')
+        }
 
       },
       onError: (error:any) => {
@@ -28,7 +32,7 @@ export default function BulkAdmission(props:any){
 
   const handleUpload = (file:any)=>{
     if(checkFile(file)){
-      showPrompt('info', `${file.name}`, 'CSV file selected, click continue to upload Admission', 'Upload File', ()=> 
+      showPrompt('success', `${file.name}`, 'CSV file selected, click continue to upload Admission', 'Upload File', ()=> 
       {
         const formData = new FormData
 

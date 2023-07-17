@@ -32,8 +32,10 @@ const Export = (props:any) => {
       return updateAdmission(selectedRecords[0].id, data, user_session?.access_token)},
     {
       onSuccess: async (data) => {
-        showAlert('success', 'Admission updated Successfully')
-        refetch()
+        if(!data.error){showAlert('success', 'Admission updated Successfully')
+          refetch()}else{
+          showAlert('error', 'An error occured')
+        }
       },
       onError: (error:any) => {
         showAlert('error', 'An Error Occured' )

@@ -75,10 +75,15 @@ const CreateAdmission  = (props:any) => {
               return createAdmission( data, user_session?.access_token)},
             {
               onSuccess: async (data) => {
-                showAlert('success', 'Admission created Successfully')
-                reset();
-                props.refreshAdmission()
-                props.setmodal(false)
+                if(!data.error){
+
+                  showAlert('success', 'Admission created Successfully')
+                  reset();
+                  props.refreshAdmission()
+                  props.setmodal(false)
+                }else{
+                  showAlert('error', 'An Error Occured' )
+                }
 
               },
               onError: (error:any) => {

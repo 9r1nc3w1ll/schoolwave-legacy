@@ -7,9 +7,14 @@ export const BulkAdmissionUpload= async (data:any, access_token ?: string)=>{
     }
   })
   let tempData= await res.json()
-   
-   
-  return tempData
+  if(res.ok){
+
+    return tempData
+  }else{
+    return{
+      error: true
+    }
+  }
 }
 
 export const createAdmission= async ( data : any, access_token?: string)=>{
@@ -22,9 +27,17 @@ export const createAdmission= async ( data : any, access_token?: string)=>{
     }
   })
   let tempData= await res.json()
-     
-      
-  return tempData.data
+  
+  console.log('eeee',res)
+  if(res.ok){
+
+    return tempData.data
+  }else{
+    return {
+      error: true,
+      msg: 'An Error Occured'
+    }
+  }
 }
     
 
@@ -38,9 +51,14 @@ export const getAdmissions= async (access_token?: string)=>{
     }
   })
   let tempData= await res.json()
-   
-    
-  return tempData.data
+  if(res.ok){
+
+    return tempData.data
+  }else{
+    return{
+      error: true
+    }
+  }
 }
   
 export const updateAdmission= async (id: string, approve : boolean, access_token?: string)=>{
@@ -55,8 +73,14 @@ export const updateAdmission= async (id: string, approve : boolean, access_token
     }
   })
   let tempData= await res.json()
-     
-      
-  return tempData.data
+  if(res.ok){
+
+    return tempData.data
+  }else{
+    console.log(res)
+    return{
+      error: true
+    }
+  }
 }
     
