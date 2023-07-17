@@ -37,7 +37,7 @@ export const getAllUsers= async (access_token ?: string)=>{
   })
   let tempData= await res.json()
   
- return tempData
+  return tempData
 }
 
 
@@ -95,7 +95,6 @@ export const createUser= async ( data: any, access_token ?: string)=>{
       "Authorization": 'Bearer '+ access_token,
    
     },
- 
     body: JSON.stringify(data),
   })
   let tempData= await res.json()
