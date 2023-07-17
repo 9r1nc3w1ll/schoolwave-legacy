@@ -8,9 +8,15 @@ export const createClass= async(data: any, access_token?: string)=>{
     body: JSON.stringify(data),
   })
   let tempData= await res.json()
- 
+  if(res.ok){
+    return tempData
+
+  }else{
+    return {
+      error:true
+    }
+  }
   
-  return tempData
 }
 
 export const editClass= async(id: string, access_token: string, data: any)=>{
@@ -23,9 +29,14 @@ export const editClass= async(id: string, access_token: string, data: any)=>{
     body: JSON.stringify(data),
   })
   let tempData= await res.json()
- 
-  
-  return tempData
+  if(res.ok){
+    return tempData
+
+  }else{
+    return {
+      error:true
+    }
+  }
 }
 
 export const deleteClass= async (id: string, access_token: string)=>{

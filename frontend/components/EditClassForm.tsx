@@ -31,9 +31,16 @@ const EditClassForm = (props:any) => {
     (data) => editClass(props.sessionData.id, props.user_session.access_token, data),
     {
       onSuccess: async (data) => {
-        showAlert('success', 'Class Edited Successfuly')
-        props.exit(false)
-        props.refreshClasses()
+
+        if(!data.error) {
+          
+          showAlert('success', 'Class Edited Successfuly')
+          props.exit(false)
+          props.refreshClasses()
+        }else{
+          showAlert('error', 'An error occurred')
+        }
+
   
       },
       onError: (error) => {

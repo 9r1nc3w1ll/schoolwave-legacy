@@ -30,13 +30,17 @@ const Export = (props: any) => {
   const queryClient = useQueryClient();
 
   const makeDuplicate = useMutation(
+    
     (data: any) =>
       createClass(data, user_session?.access_token),
     {
       onSuccess: async (data) => {
-        showAlert('success', 'Class Created Successfuly')
-      
-        queryClient.invalidateQueries(['classes'])
+        if(!data.error){
+          showAlert('success', 'Class Created Successfuly')
+          refetch()
+        }else{
+          showAlert('error', 'An error occured')
+        }
 
       },
       onError: () => {
@@ -52,6 +56,7 @@ const Export = (props: any) => {
     b.description = x.description
     b.class_index = x.class_index
     b.school = user_session?.school.id
+    b.code = x.code + '_copy'
 
     makeDuplicate.mutate(b)
   }

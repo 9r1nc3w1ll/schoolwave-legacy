@@ -29,10 +29,12 @@ const CreateClassForm = (props: any) => {
       return createClass(data, props.user_session.access_token)},
     {
       onSuccess: async (data) => {
-        showAlert('success', 'Class Created Successfuly')
-        props.exit(false)
-        reset()
-        props.refreshClasses()
+        if(!data.error) {showAlert('success', 'Class Created Successfuly')
+          props.exit(false)
+          reset()
+          props.refreshClasses()}else{
+          showAlert('error', 'An error occurred')
+        }
 
       },
       onError: (error) => {
