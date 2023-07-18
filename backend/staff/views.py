@@ -7,45 +7,6 @@ from rest_framework.response import Response
 from account.serializers import UserSerializer
 from account.models import User
 
-# class ListCreateStaff(ListCreateAPIView):
-#     permission_classes = [IsAuthenticated]
-#     queryset = Staff.objects.all()
-#     serializer_class = StaffSerializer
-
-#     def get_queryset(self):
-#         staff_id = self.kwargs.get("staff_id")
-#         if staff_id:
-#             return self.queryset.filter(id=staff_id)
-#         else:
-#             return self.queryset.all()
-
-        
-
-#     def create(self, request, *args, **kwargs):
-#         serializer = StaffSerializer(data=request.data)
-#         if serializer.is_valid():
-#             staff = serializer.save()
-#             message = "Staff created successfully."
-#             data = StaffSerializer(staff)
-
-#             headers = self.get_success_headers(serializer.data)
-
-#             resp = {
-#                     "message": message,
-#                     "data": serializer.data,
-#                 }
-#             return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
-
-#         else:
-#             resp = {
-#                 "message": "Invalid data.",
-#                 "errors": serializer.errors,
-#             }
-#             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
 class ListCreateStaff(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Staff.objects.all()

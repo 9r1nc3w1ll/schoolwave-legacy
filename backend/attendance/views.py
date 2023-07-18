@@ -48,7 +48,7 @@ class ListCreateStudentAttendance(ListCreateAPIView):
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-
+        
         serializer = self.get_serializer(queryset, many=True)
 
         resp = {
@@ -57,36 +57,7 @@ class ListCreateStudentAttendance(ListCreateAPIView):
         }
         return Response(resp)
 
-
-class UpdateDestroyStudentAttendance(RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = AttendanceRecord.objects.all()
-    serializer_class = AttendanceRecordSerializer
-
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop("partial", False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
-        resp = {
-            "message": "Attendance record updated successfully.",
-            "data": serializer.data,
-        }
-        return Response(resp)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-
-        resp = {
-            "message": "Attendance record deleted successfully.",
-        }
-
-        return Response(resp, status=status.HTTP_204_NO_CONTENT)
-
-class RetrieveStudentAttendance(GenericAPIView):
+class RetrieveUpdateStudentAttendance(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = AttendanceRecord.objects.all()
     serializer_class = AttendanceRecordSerializer
@@ -96,19 +67,29 @@ class RetrieveStudentAttendance(GenericAPIView):
         startdate = self.kwargs.get("startdate")
         enddate = self.kwargs.get("enddate")
 
-        
-        if startdate and enddate:
-            start_datetime = datetime.strptime(startdate, "%Y-%m-%d")
-            end_datetime = datetime.strptime(enddate, "%Y-%m-%d")
+        try:
+            if isinstance(pk, uuid.UUID):
+                if startdate and enddate:
+                    start_datetime = datetime.strptime(startdate, "%Y-%m-%d")
+                    end_datetime = datetime.strptime(enddate, "%Y-%m-%d")
 
-            return AttendanceRecord.objects.filter(
-                Q(id=pk) | Q(student=pk) | Q(class_id=pk) | Q(subject=pk) | Q(staff=pk),
-                date__range=[start_datetime, end_datetime]
-            ).first()
-        
-        return super().get_object()
+                    return AttendanceRecord.objects.filter(
+                        Q(id=pk) | Q(student=pk) | Q(class_id=pk) | Q(subject=pk) | Q(staff=pk),
+                        date__range=[start_datetime, end_datetime]
+                    )
+                else:
+                    current_date = datetime.now().date()
+                    return AttendanceRecord.objects.filter(
+                       (Q(id=pk) | Q(student=pk) | Q(class_id=pk) | Q(staff=pk)) & Q(date=current_date)
+                    )
+            else:
+                return Response({'message': 'Student attendance not found.'}, status=status.HTTP_404_NOT_FOUND)
+        except AttendanceRecord.DoesNotExist:
+            return Response({
+                'message': 'Student attendance not found.'
+            }, status=status.HTTP_404_NOT_FOUND)
 
-    def get(self, request, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         studentattendance = self.get_object()
         serializer = AttendanceRecordSerializer(studentattendance, many=True)
         resp = {
@@ -116,6 +97,7 @@ class RetrieveStudentAttendance(GenericAPIView):
             "data": serializer.data,
         }
         return Response(resp)
+
 
 class CreateMultipleStudentAttendance(CreateAPIView):
     permission_classes = [IsAuthenticated]
