@@ -40,10 +40,10 @@ class Exam(BaseModel):
         db_table = "exams"
     name = models.CharField(max_length=100)
     description = models.TextField()
-    questions = models.ManyToManyField(Question)
+    questions = models.ManyToManyField(Question, blank=True)
     class_name = models.ForeignKey(Class, on_delete=models.CASCADE)
-    start_date = models.DateField()
-    due_date = models.DateField()
+    start_date = models.DateField(null=True, blank=True)
+    due_date = models.DateField(null=True, blank=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 

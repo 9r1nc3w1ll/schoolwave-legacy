@@ -14,6 +14,7 @@ from .serializers import (
     AnswerSerializer,
 )
 
+from django.db.models import Q
 
 class ListCreateQuestion(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -135,7 +136,9 @@ class RetrieveUpdateDestroyQuestionOption(RetrieveUpdateDestroyAPIView):
     def get_object(self):
         question_option_id = self.kwargs.get("pk")
         try:
-            question_option = self.queryset.get(id=question_option_id)
+            question_option = QuestionOption.objects.filter(
+                Q(id=question_option_id) | Q(question=question_option_id)
+            )
             return question_option
         except QuestionOption.DoesNotExist:
             return None
@@ -147,7 +150,7 @@ class RetrieveUpdateDestroyQuestionOption(RetrieveUpdateDestroyAPIView):
                 {"message": "Question option not found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        serializer = self.get_serializer(question_option)
+        serializer = QuestionOptionSerializer(question_option, many=True)
         return Response(
             {
                 "message": "Question option retrieved successfully.",
