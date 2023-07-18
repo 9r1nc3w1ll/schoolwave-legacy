@@ -4,6 +4,47 @@ from .models import Staff, StaffRole
 from .serializers import StaffSerializer, StaffRoleSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from account.serializers import UserSerializer
+from account.models import User
+
+# class ListCreateStaff(ListCreateAPIView):
+#     permission_classes = [IsAuthenticated]
+#     queryset = Staff.objects.all()
+#     serializer_class = StaffSerializer
+
+#     def get_queryset(self):
+#         staff_id = self.kwargs.get("staff_id")
+#         if staff_id:
+#             return self.queryset.filter(id=staff_id)
+#         else:
+#             return self.queryset.all()
+
+        
+
+#     def create(self, request, *args, **kwargs):
+#         serializer = StaffSerializer(data=request.data)
+#         if serializer.is_valid():
+#             staff = serializer.save()
+#             message = "Staff created successfully."
+#             data = StaffSerializer(staff)
+
+#             headers = self.get_success_headers(serializer.data)
+
+#             resp = {
+#                     "message": message,
+#                     "data": serializer.data,
+#                 }
+#             return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
+
+#         else:
+#             resp = {
+#                 "message": "Invalid data.",
+#                 "errors": serializer.errors,
+#             }
+#             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 class ListCreateStaff(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -17,30 +58,67 @@ class ListCreateStaff(ListCreateAPIView):
         else:
             return self.queryset.all()
 
-        
-
     def create(self, request, *args, **kwargs):
-        serializer = StaffSerializer(data=request.data)
-        if serializer.is_valid():
-            staff = serializer.save()
-            message = "Staff created successfully."
-            data = StaffSerializer(staff)
-
-            headers = self.get_success_headers(serializer.data)
-
-            resp = {
-                    "message": message,
-                    "data": serializer.data,
+        user_id = request.data.get("user_id")
+        
+        if user_id:
+            # User ID is provided, create the staff with the given user
+            try:
+                user = User.objects.get(id=user_id)
+                user.role = "staff"  # Set the role to "staff"
+                user.save()
+                serializer = StaffSerializer(data=request.data)
+                if serializer.is_valid():
+                    staff = serializer.save(user=user)
+                    message = "Staff created successfully."
+                    data = StaffSerializer(staff).data
+                    resp = {
+                        "message": message,
+                        "data": data,
+                    }
+                    return Response(resp, status=status.HTTP_201_CREATED)
+                else:
+                    resp = {
+                        "message": "Invalid data.",
+                        "errors": serializer.errors,
+                    }
+                    return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+            except User.DoesNotExist:
+                resp = {
+                    "message": "User with the provided ID does not exist.",
                 }
-            return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
-
+                return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+        
         else:
-            resp = {
-                "message": "Invalid data.",
-                "errors": serializer.errors,
-            }
-            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
-   
+            # User ID is not provided, create the user first, then the staff
+            user_serializer = UserSerializer(data=request.data)
+            if user_serializer.is_valid():
+                user = user_serializer.save(role="staff")  # Set the role to "staff"
+                request.data["user"] = user.id
+                serializer = StaffSerializer(data=request.data)
+                if serializer.is_valid():
+                    staff = serializer.save()
+                    message = "Staff created successfully."
+                    data = StaffSerializer(staff).data
+                    resp = {
+                        "message": message,
+                        "data": data,
+                    }
+                    return Response(resp, status=status.HTTP_201_CREATED)
+                else:
+                    resp = {
+                        "message": "Invalid data.",
+                        "errors": serializer.errors,
+                    }
+                    return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                resp = {
+                    "message": "Invalid user data.",
+                    "errors": user_serializer.errors,
+                }
+                return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+
+            
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
