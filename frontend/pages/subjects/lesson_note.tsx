@@ -12,6 +12,7 @@ import { useMutation, useQuery } from 'react-query';
 import { useSession } from 'next-auth/react';
 import { showAlert } from '@/utility_methods/alert';
 import { getClasses } from '@/apicalls/class-api';
+import { Session } from 'next-auth';
 
 
 
@@ -30,6 +31,38 @@ const Notes = () => {
 
   
 
+
+
+const [notesList, setNoteList] = useState([])
+
+interface Params{
+  topic: string,
+  description: string,
+  tag: string,
+  content: string,
+  class_id: string,
+  created_by: string,
+  last_updated_by: string,
+  files: Buffer[],
+  week: string[],
+}
+
+
+interface Note {
+  id:string,
+  topic: string,
+  description: string,
+  tag: string,
+  content: string,
+  class_id: string,
+  created_by: string,
+  last_updated_by: string,
+  files: Buffer[],
+  week: string[],
+}
+
+
+
 const defaultParams = {
   topic: '',
   description: '',
@@ -42,16 +75,22 @@ const defaultParams = {
   week:''
 };
 
-const [notesList, setNoteList] = useState([])
+interface classOption {
+  id: string;
+  name: string;
+}
+const initialDeletedNote: Note | null = null;
+
+
 
 
   const [params, setParams] = useState<any>(JSON.parse(JSON.stringify(defaultParams)));
-  const [addContactModal, setAddContactModal] = useState<any>(false);
-  const [isDeleteNoteModal, setIsDeleteNoteModal] = useState<any>(false);
-  const [isShowNoteMenu, setIsShowNoteMenu] = useState<any>(false);
-  const [isViewNoteModal, setIsViewNoteModal] = useState<any>(false);
-  const [filterdNotesList, setFilterdNotesList] = useState<any>([]);
-  const [selectedTab, setSelectedTab] = useState<any>('all');
+  const [addContactModal, setAddContactModal] = useState<boolean>(false);
+  const [isDeleteNoteModal, setIsDeleteNoteModal] = useState<boolean>(false);
+  const [isShowNoteMenu, setIsShowNoteMenu] = useState<boolean>(false);
+  const [isViewNoteModal, setIsViewNoteModal] = useState<boolean>(false);
+  const [filterdNotesList, setFilterdNotesList] = useState<any[]>([]);;
+  const [selectedTab, setSelectedTab] = useState<string>('all');
   const [deletedNote, setDeletedNote] = useState<any>(null);
   const [classOptions, setclassOptions] = useState<classOption[]>([]);
 
@@ -63,7 +102,7 @@ const [notesList, setNoteList] = useState([])
     if (isSuccess){
      
       setclassOptions(clasii);
-      console.log("Here are the clasess",clasii )
+      
     } else{
 
       console.log(error)
@@ -119,15 +158,14 @@ const [notesList, setNoteList] = useState([])
         await CreateLesssonNote( params, user_session?.access_token);
         refetch2()
       }
-      console.log(params)
+      
       showMessage('Note has been saved successfully.');
       setAddContactModal(false);
       searchNotes();
     } catch (error) {
       // Handle error
       
-      console.error('Failed to save note:', error);
-      console.log(params)
+
     }
   };
 
@@ -136,11 +174,8 @@ const [notesList, setNoteList] = useState([])
     setIsShowNoteMenu(false);
     searchNotes();
   };
-  interface classOption {
-    id: string;
-    name: string;
-  }
- 
+
+
 
   const setTag = async (note: any, name: string = '') => {
 
@@ -149,22 +184,24 @@ const [notesList, setNoteList] = useState([])
       const updatedNote = { ...note, tag: name };
       await editLessonNote(note.id, user_session?.access_token, updatedNote);
 
-      const updatedList = filterdNotesList.map((d: any) => (d.id === note.id ? updatedNote : d));
+      const updatedList = filterdNotesList?.map((d: any) => (d.id === note.id ? updatedNote : d));
       setFilterdNotesList(updatedList);
-      console.log("after",filterdNotesList)
+     
 
-      if (selectedTab !== 'all' || selectedTab === 'delete') {
+      
         searchNotes();
-      }
+      
     } catch (error) {
       // Handle error
-      console.error('Failed to update note tag:', error);
+
     }
   };
+
+ 
  
   const handleClassChange = (e:any) => {
     const { value } = e.target;
-    setParams((prevParams:any) => ({
+    setParams((prevParams:Params) => ({
       ...prevParams,
       class_id: value,
     }));
@@ -173,7 +210,7 @@ const [notesList, setNoteList] = useState([])
   const handleFileChange = (e:any) => {
     const { files } = e.target;
     const fileList = Array.from(files);
-    setParams((prevParams:any) => ({
+    setParams((prevParams:Params) => ({
       ...prevParams,
       files: [],
     }));
@@ -185,12 +222,12 @@ const [notesList, setNoteList] = useState([])
     setParams({ ...params, [id]: value, week: ["1","2"], created_by: user_session?.id, last_updated_by:user_session?.id, });
   };
 
-  const deleteNoteConfirm = (note: any) => {
+  const deleteNoteConfirm = (note: Note) => {
     setDeletedNote(note);
     setIsDeleteNoteModal(true);
   };
 
-  const viewNote = (note: any) => {
+  const viewNote = (note: Note) => {
     setParams(note);
     setIsViewNoteModal(true);
   };
@@ -210,7 +247,7 @@ const [notesList, setNoteList] = useState([])
     try {
       await deleteLessonNote(deletedNote.id, user_session?.access_token );
 
-      const updatedList = notesList.filter((d: any) => d.id !== deletedNote.id);
+      const updatedList = notesList.filter((d: Note) => d.id !== deletedNote.id);
       setFilterdNotesList(updatedList);
       refetch2();
 
@@ -218,8 +255,7 @@ const [notesList, setNoteList] = useState([])
       showMessage('Note has been deleted successfully.');
       setIsDeleteNoteModal(false);
     } catch (error) {
-      // Handle error
-      console.error('Failed to delete note:', error);
+      // Handle error;
     }
   };
 
