@@ -61,7 +61,7 @@ class Invoice(BaseModel):
 
 class Transaction(BaseModel):
     class Meta:
-        db_table = "transactions"
+        db_table = "transaction"
 
     TRANSACTION_STATUSES = (
         ("pending", "pending"),
