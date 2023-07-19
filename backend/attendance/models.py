@@ -24,4 +24,4 @@ class AttendanceRecord(BaseModel):
     attendance_type = models.CharField(max_length=10, choices=ATTENDANCE_TYPE_CHOICES)
     present = models.BooleanField(default=False)
     remark = models.TextField()
-    staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, blank=True, null=True)
+    staff = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)

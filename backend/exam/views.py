@@ -15,6 +15,7 @@ from .serializers import (
 )
 
 from django.db.models import Q
+import uuid
 
 class ListCreateQuestion(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -134,23 +135,24 @@ class RetrieveUpdateDestroyQuestionOption(RetrieveUpdateDestroyAPIView):
     serializer_class = QuestionOptionSerializer
 
     def get_object(self):
-        question_option_id = self.kwargs.get("pk")
+        pk = self.kwargs.get("pk")
         try:
-            question_option = QuestionOption.objects.filter(
-                Q(id=question_option_id) | Q(question=question_option_id)
-            )
-            return question_option
+            if isinstance(pk, uuid.UUID):
+                return QuestionOption.objects.get(
+                    Q(id=pk) | Q(question=pk)
+                )
+            else:
+                return Response({
+                    'message': 'Question option not found.'
+                    })
         except QuestionOption.DoesNotExist:
-            return None
+            return Response({
+                    'message': 'Question option not found.'
+                    })
 
     def retrieve(self, request, *args, **kwargs):
         question_option = self.get_object()
-        if not question_option:
-            return Response(
-                {"message": "Question option not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        serializer = QuestionOptionSerializer(question_option, many=True)
+        serializer = QuestionOptionSerializer(question_option)
         return Response(
             {
                 "message": "Question option retrieved successfully.",
@@ -158,14 +160,11 @@ class RetrieveUpdateDestroyQuestionOption(RetrieveUpdateDestroyAPIView):
             }
         )
 
-    def update(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
+        data = request.data
         question_option = self.get_object()
-        if not question_option:
-            return Response(
-                {"message": "Question option not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        serializer = self.get_serializer(question_option, data=request.data, partial=True)
+
+        serializer = QuestionOptionSerializer(question_option, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         question_option = serializer.save()
         return Response(

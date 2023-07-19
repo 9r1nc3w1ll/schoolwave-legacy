@@ -52,7 +52,7 @@ class StaffAPITestCase(APITestCase):
         role1 = StaffRole.objects.get(name="Class Teacher")
         role2 = StaffRole.objects.get(name="Lesson Teacher")
 
-        self.staff.role.set([role1, role2])
+        self.staff.roles.set([role1, role2])
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
@@ -70,9 +70,12 @@ class StaffAPITestCase(APITestCase):
         url = reverse("staff_list_create")
         self.client.force_authenticate(user=self.user)
         data = {
-            "user": self.staff_user_1.id,
+            "username": "newuser", 
+            "password": "newpassword", 
+            "first_name":"user_firstname", 
+            "last_name":"User_last_name",
             "title": "Staff Title",
-            "role": self.staff_role2.id,
+            "roles": [self.staff_role2.id],
         }
              
         response = self.client.post(url, data)

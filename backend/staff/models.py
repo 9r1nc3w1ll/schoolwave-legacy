@@ -19,7 +19,7 @@ class Staff(BaseModel):
         db_table = "staffs"
 
     # Additional fields specific to staff
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
     title = models.CharField(max_length=255)
     roles = models.ManyToManyField(StaffRole)  # Array of roles (e.g., ["Teacher", "Principal"])
 

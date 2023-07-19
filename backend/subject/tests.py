@@ -330,7 +330,7 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
         )
 
         role = StaffRole.objects.get(name="Class Teacher")
-        self.staff.role.set([role])
+        self.staff.roles.set([role])
 
         self.subject_staff_assignment = SubjectStaffAssignment.objects.create(
             staff=self.staff,

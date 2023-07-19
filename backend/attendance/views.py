@@ -5,6 +5,7 @@ from .serializers import AttendanceRecordSerializer, MultipleAttendanceRecordSer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from school.models import School
+from account.models import User
 from django.db.models import Q
 import uuid
 from datetime import datetime, timedelta
@@ -21,8 +22,6 @@ class ListCreateStudentAttendance(ListCreateAPIView):
         else:
             return self.queryset.all()
 
-        
-
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
@@ -32,6 +31,27 @@ class ListCreateStudentAttendance(ListCreateAPIView):
             }
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
 
+        user = request.user
+        user_id = request.user.id
+        if not user.role == "admin" and not user.role == "teacher":
+            resp = {
+                "message": "Only admin or class teacher can create student attendance.",
+            }
+            return Response(resp, status=status.HTTP_403_FORBIDDEN)
+
+        class_id = serializer.validated_data.get("class_id")
+
+        if user.role == "teacher":
+            try:
+                # Check if the user is a member of the class passed through the serializer
+                user_class_member = ClassMember.objects.get(user=user, class_id=class_id)
+            except ObjectDoesNotExist:
+                resp = {
+                    "message": "You are not assigned to this class. Only assigned teachers can create student attendance for the class.",
+                }
+                return Response(resp, status=status.HTTP_403_FORBIDDEN)
+
+        serializer.validated_data['staff_id'] = user.id
         serializer.save()
 
         headers = self.get_success_headers(serializer.data)
@@ -97,6 +117,26 @@ class RetrieveUpdateStudentAttendance(RetrieveUpdateDestroyAPIView):
             "data": serializer.data,
         }
         return Response(resp)
+
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+        pk = self.kwargs.get("pk")
+
+        try:
+            attendance_record = AttendanceRecord.objects.get(pk=pk)
+        except AttendanceRecord.DoesNotExist:
+            return Response({'message': 'Student attendance not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AttendanceRecordSerializer(attendance_record, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        studentattendance = serializer.save()
+
+        return Response(
+            {
+                "message": "Student attendance updated successfully.",
+                "data": AttendanceRecordSerializer(studentattendance).data,
+            }
+        )
 
 
 class CreateMultipleStudentAttendance(CreateAPIView):

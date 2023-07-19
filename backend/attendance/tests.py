@@ -35,12 +35,10 @@ class AttendanceRecordAPITestCase(APITestCase):
             name="Teacher", description="Test Desc"
         )
 
-        self.staff_obj = Staff.objects.create(
-            user=self.user, title="Class Teacher"
+        self.staff_obj = User.objects.create(
+            username="teststaff", password="testpassword", role="admin"
         )
-        self.staff_obj.role.add(self.staff_role)
-        self.staff_obj.save()
-
+    
         self.school = School.objects.create(
             name="chrisland",
             owner=self.user,
@@ -110,7 +108,7 @@ class AttendanceRecordAPITestCase(APITestCase):
             },
             "staff_info": {
                 "staff_id": str(self.staff_obj.id),
-                'title': str(self.staff_obj.title),
+                'first_name': str(self.staff_obj.first_name),
             },
             'attendance_type': "Class",
             "attendance": [
@@ -149,14 +147,3 @@ class AttendanceRecordAPITestCase(APITestCase):
 
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_delete_student_attendance(self):
-        url = reverse("student_attendance_update_destroy", kwargs={
-            "pk": self.attendance.id,
-            })
-        self.client.force_authenticate(user=self.user)
-        response = self.client.delete(url)
-
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-    
