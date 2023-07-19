@@ -11,7 +11,7 @@ export default function AttendanceOption(props: any){
   return(
     <div className="flex gap-1">
       <input type='checkbox' checked={props.data[0].present} onChange={()=>{
-        console.log('uuuyyyiiii', props.data)
+        
       }} />
       {/* <div className="relative z-[0]">
         <div onClick={()=>{
