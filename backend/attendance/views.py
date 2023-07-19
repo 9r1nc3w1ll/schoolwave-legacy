@@ -4,7 +4,7 @@ from .models import AttendanceRecord
 from .serializers import AttendanceRecordSerializer, MultipleAttendanceRecordSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from school.models import School
+from school.models import School, ClassMember
 from account.models import User
 from django.db.models import Q
 import uuid
@@ -22,6 +22,46 @@ class ListCreateStudentAttendance(ListCreateAPIView):
         else:
             return self.queryset.all()
 
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     if not serializer.is_valid():
+    #         resp = {
+    #             "message": "Validation error",
+    #             "errors": serializer.errors,
+    #         }
+    #         return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+
+    #     user = request.user
+
+    #     message = "Only admin or class teacher can create student attendance."
+    #     if user.role == "admin":
+    #         resp = {
+    #             "message": message,
+    #         }
+    #         return Response(resp, status=status.HTTP_403_FORBIDDEN)
+        
+    #     elif user.role == "teacher":
+
+    #         try:
+    #             class_id = serializer.validated_data.get("class_id")
+    #             user_class_member = ClassMember.objects.get(user=user, class_id=class_id)
+    #             print(user_class_member)
+    #         except AttendanceRecord.DoesNotExist:
+    #             resp = {
+    #                 "message": "You are not assigned to this class. Only assigned teachers can create student attendance for the class.",
+    #             }
+    #             return Response(resp, status=status.HTTP_403_FORBIDDEN)
+
+    #     serializer.validated_data['staff_id'] = user.id
+    #     serializer.save()
+
+    #     headers = self.get_success_headers(serializer.data)
+    #     resp = {
+    #         "message": "Student attendance created successfully.",
+    #         "data": serializer.data,
+    #     }
+    #     return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
+   
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
@@ -32,24 +72,28 @@ class ListCreateStudentAttendance(ListCreateAPIView):
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
 
         user = request.user
-        user_id = request.user.id
-        if not user.role == "admin" and not user.role == "teacher":
+
+        if user.role == "admin":
             resp = {
                 "message": "Only admin or class teacher can create student attendance.",
             }
             return Response(resp, status=status.HTTP_403_FORBIDDEN)
-
-        class_id = serializer.validated_data.get("class_id")
-
-        if user.role == "teacher":
+        
+        elif user.role == "teacher":
             try:
-                # Check if the user is a member of the class passed through the serializer
+                class_id = serializer.validated_data.get("class_id")
                 user_class_member = ClassMember.objects.get(user=user, class_id=class_id)
-            except ObjectDoesNotExist:
+            except ClassMember.DoesNotExist:
                 resp = {
                     "message": "You are not assigned to this class. Only assigned teachers can create student attendance for the class.",
                 }
                 return Response(resp, status=status.HTTP_403_FORBIDDEN)
+            
+        else:
+            resp = {
+                "message": "Only admin or class teacher can create student attendance.",
+            }
+            return Response(resp, status=status.HTTP_403_FORBIDDEN)
 
         serializer.validated_data['staff_id'] = user.id
         serializer.save()
@@ -60,7 +104,7 @@ class ListCreateStudentAttendance(ListCreateAPIView):
             "data": serializer.data,
         }
         return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
-   
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
