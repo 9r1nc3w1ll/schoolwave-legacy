@@ -23,10 +23,6 @@ class Grade(BaseModel):
 
 
 class GradingScheme(BaseModel):
-    """
-    "min_score:max_score" : "A" 
-    (e.g., "70:100"), and the values are strings representing the grade (e.g., "A", "B", "C").
-    """
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     scheme = models.JSONField()
 
@@ -44,18 +40,6 @@ class Result(BaseModel):
 
         grades = Grade.objects.filter(term=self.term, student=self.student, subject=self.subject)
 
-
         weighted_total = grades.aggregate(total=Sum('score'))['total']
 
-        if weighted_total is not None:
-            scheme = grading_scheme.scheme
-
-            for grade_range, grade_value in scheme.items():
-                min_score, max_score = grade_range
-                if min_score <= self.total_score <= max_score:
-                    self.grade = grade_value
-                    break
-            else:
-                self.grade = "N/A"
-
-        self.save()
+        

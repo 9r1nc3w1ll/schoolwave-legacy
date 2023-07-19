@@ -41,10 +41,48 @@ class GradeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = GradeSerializer
     permission_classes = [IsAuthenticated,]
 
-class ResultListCreateView(generics.ListCreateAPIView):
+class GetResultsByStudent(generics.ListCreateAPIView):
     queryset = Result.objects.all()
     serializer_class = ResultSerializer
     permission_classes = [IsAuthenticated,]
+
+    def get_queryset(self):
+        student_id = self.kwargs.get("student_id")
+
+        qs = self.queryset.filter(student_id=student_id)
+
+        if qs.count() == 0:
+            return Response(
+                {"error" : "Results have not been computed for this student."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return qs
+
+
+class ComputeResults(generics.GenericAPIView):
+    queryset = Result.objects.all()
+    serializer_class = ResultSerializer
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request, *args, **kwargs):
+        return
+
+class GetResultsBySubject(generics.ListCreateAPIView):
+    queryset = Result.objects.all()
+    serializer_class = ResultSerializer
+    permission_classes = [IsAuthenticated,]
+
+    def get_queryset(self):
+        subject_id = self.kwargs.get("subject_id")
+
+        qs = self.queryset.filter(subject_id=subject_id)
+
+        if qs.count() == 0:
+            return Response(
+                {"error" : "Results have not been computed for this subject"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return qs
 
 class ResultRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Result.objects.all()
