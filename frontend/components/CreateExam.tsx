@@ -9,7 +9,7 @@ import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import {parse} from 'json2csv'
 import { useSession } from 'next-auth/react';
-import { getClasses } from '@/apicalls/clas';
+import { getClasses } from '@/apicalls/class-api';
 import { createExams, getExamsQuestions } from '@/apicalls/exam';
 import Select from 'react-select';
 import { getSubjects } from '@/apicalls/subjects';
@@ -81,7 +81,7 @@ const CreateExam  = (props:any) => {
       setclassOptions(clasii);
       setexamsQuestionOptions(examsQuestion); 
       setsubjectsOptions(subjects);
-      console.log("This are the exam question",examsQuestion)
+     
 
      
           
@@ -129,7 +129,7 @@ const CreateExam  = (props:any) => {
             const updatedData = { ...data, questions: extractedQuestions, };
           
             mutate(updatedData);
-            console.log(updatedData);
+            
           };
 
         
