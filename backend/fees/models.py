@@ -10,7 +10,6 @@ from config.models import BaseModel
 import uuid
 
 
-
 class Discount(BaseModel):
     class Meta:
         db_table = "discount"
