@@ -1,4 +1,21 @@
-export const CreateLesssonNote= async ( data: any, access_token ?: string)=>{
+import { Session } from "next-auth"
+
+
+interface Note {
+  id:string,
+  topic: string,
+  description: string,
+  tag: string,
+  content: string,
+  class_id: string,
+  created_by: string,
+  last_updated_by: string,
+  files: Buffer[],
+  week: string[],
+}
+
+
+export const CreateLesssonNote= async ( data: Note, access_token: any)=>{
     const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/lessonnotes/lesson-note-list', {
       method: "POST",
       headers: {
@@ -15,7 +32,7 @@ export const CreateLesssonNote= async ( data: any, access_token ?: string)=>{
     return tempData
   }
 
-  export const getLesssonNote= async (access_token?:string)=>{
+  export const getLesssonNote= async (access_token: any)=>{
     
     const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/lessonnotes/lesson-note-list', {
       method: "GET",
@@ -36,7 +53,7 @@ export const CreateLesssonNote= async ( data: any, access_token ?: string)=>{
  
   
 
-  export const editLessonNote= async(id: string, access_token: any, data: any)=>{
+  export const editLessonNote= async(id: Note, access_token: any, data: Note)=>{
     const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/lessonnotes/lesson-note-detail/' + id, {
       method: "PATCH",
       headers: {
@@ -52,7 +69,7 @@ export const CreateLesssonNote= async ( data: any, access_token ?: string)=>{
   }
   
 
-  export const deleteLessonNote= async (id: string, access_token: any)=>{
+  export const deleteLessonNote= async (id: Note, access_token: any)=>{
     const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/lessonnotes/lesson-note-detail/' + id, {
       method: "DELETE",
       headers: {
@@ -68,7 +85,7 @@ export const CreateLesssonNote= async ( data: any, access_token ?: string)=>{
   }
   
 
-  export const getSingleLesson= async (id: any, access_token?: string)=>{
+  export const getSingleLesson= async (id: Note, access_token: any)=>{
     const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/lessonnotes/lesson-note-detail/' +id , {
       method: "GET",
       headers: {
