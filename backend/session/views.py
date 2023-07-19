@@ -147,6 +147,17 @@ class ListCreateTerm(ListCreateAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
+        session_id = request.GET.get("session_id", "")
+
+        if session_id:
+            try:
+                session = Session.objects.get(id=session_id)
+
+                queryset = self.get_queryset().filter(session=session)
+            except Session.DoesNotExist:
+                return Response({"error" : f"Session with id {session_id} not found."}, status=status.HTTP_400_BAD_REQUEST)
+            
+
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -155,7 +166,7 @@ class ListCreateTerm(ListCreateAPIView):
         serializer = self.get_serializer(queryset, many=True)
 
         resp = {
-            "message": "Term fetched successfully.",
+            "message": "Terms fetched successfully.",
             "data": serializer.data,
         }
         return Response(resp)
