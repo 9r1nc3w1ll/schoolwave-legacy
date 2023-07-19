@@ -27,8 +27,8 @@ class FeeItem(BaseModel):
 
     name = models.CharField(max_length=200)
     description = models.TextField()
-    amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-    tax = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+    amount = models.IntegerField(default=0)
+    tax = models.IntegerField(default=0)
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
 
@@ -46,32 +46,32 @@ class FeeTemplate(BaseModel):
     active = models.BooleanField(default=True)
 
 
+class FeePayment(BaseModel):
+    class Meta:
+        db_table = "fee_payment"
+
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    template = models.ForeignKey(FeeTemplate, on_delete=models.CASCADE)
+    amount_paid = models.IntegerField(default=0)
+    items = models.ManyToManyField(FeeItem)
+    balance = models.IntegerField(default=0)
+    outstanding = models.IntegerField(default=0)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 class Invoice(BaseModel):
     class Meta:
         db_table = "invoice"
 
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
-    template = models.ForeignKey(FeeTemplate, on_delete=models.CASCADE)
-    amount_paid = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-    items = models.ManyToManyField(FeeItem)
-    balance = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-    outstanding_balance = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
-class Transaction(BaseModel):
-    class Meta:
-        db_table = "transactions"
-
-    TRANSACTION_STATUSES = (
+    INVOICE_STATUSES = (
         ("pending", "pending"),
         ("paid", "paid"),
         ("cancelled", "cancelled"),
     )
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    invoice_id = models.UUIDField(default=uuid.uuid4)
-    invoice = GenericForeignKey("content_type", "invoice_id")
-    reversed_transaction_id = models.UUIDField(default=uuid.uuid4)
-    status = models.CharField(default="pending", max_length=20, choices=TRANSACTION_STATUSES)
+    item_id = models.UUIDField(default=uuid.uuid4)
+    item = GenericForeignKey("content_type", "item_id")
+    reversed_invoice_id = models.UUIDField(default=uuid.uuid4)
+    status = models.CharField(default="pending", max_length=20, choices=INVOICE_STATUSES)
     school = models.ForeignKey(School, on_delete=models.CASCADE)

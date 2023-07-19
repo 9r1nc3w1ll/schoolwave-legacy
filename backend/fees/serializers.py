@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from fees.models import FeeItem, Transaction, FeeTemplate, Discount, Invoice
+from fees.models import FeeItem, FeePayment, FeeTemplate, Discount, Invoice
 
 
 class FeeTemplateSerializer(serializers.ModelSerializer):
@@ -16,10 +16,10 @@ class FeeItemSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TransactionSerializer(serializers.ModelSerializer):
+class FeePaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Transaction
+        model = FeePayment
         fields = "__all__"
 
 
@@ -34,13 +34,4 @@ class InvoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Invoice
-        fields = "__all__"
-
-
-class BulkInvoiceSerializer(serializers.Serializer):
-    template = serializers.UUIDField()
-    items = serializers.ListField(child=serializers.UUIDField())
-    
-
-    class Meta:
         fields = "__all__"

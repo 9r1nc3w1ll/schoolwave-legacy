@@ -5,9 +5,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from school.models import School, Class, ClassMember
+from school.models import School, Class
 from session.models import Session
-from fees.models import FeeItem, Transaction, FeeTemplate, Discount, Invoice
+from fees.models import FeeItem, FeePayment, FeeTemplate, Discount, Invoice
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -177,7 +177,7 @@ class FeeTemplateTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class InvoiceTestCase(APITestCase):
+class FeePaymentTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
 
@@ -189,10 +189,6 @@ class InvoiceTestCase(APITestCase):
             username="teststudent", password="testpassword", role="student"
         )
 
-        self.student_2 = User.objects.create_user(
-            username="teststudent2", password="testpassword", role="student"
-        )
-
         self.school = School.objects.create(
             name="chrisland",
             owner=self.user,
@@ -201,18 +197,6 @@ class InvoiceTestCase(APITestCase):
 
         self.class_obj = Class.objects.create(
             name="Test Class", school=self.school, description="Description", code='TEST'
-        )
-
-        self.class_member_1 = ClassMember.objects.create(
-            user=self.student,
-            class_id=self.class_obj,
-            role="student"
-        )
-
-        self.class_member_2 = ClassMember.objects.create(
-            user=self.student_2,
-            class_id=self.class_obj,
-            role="student"
         )
 
         self.discount = Discount.objects.create(
@@ -229,13 +213,13 @@ class InvoiceTestCase(APITestCase):
             school=self.school, class_id=self.class_obj, discount=self.discount
         )
 
-        self.invoice = Invoice.objects.create(
+        self.fee_payment = FeePayment.objects.create(
             school=self.school, template=self.fee_template, student=self.student
         )
 
     
-    def test_create_invoice(self):
-        url = reverse("list_create_invoice")
+    def test_create_fee_payment(self):
+        url = reverse("list_create_fee_payment")
         data = {
             "school": self.school.id,
             "items" : [self.fee_item.id,],
@@ -247,37 +231,23 @@ class InvoiceTestCase(APITestCase):
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    
 
-    def test_bulk_create_invoice(self):
-        url = reverse("bulk_create_invoice", args=[self.class_obj.id])
-        data = {
-            "items" : [self.fee_item.id,],
-            "template" : self.fee_template.id,
-        }
-        self.client.force_authenticate(user=self.user)
-        response = self.client.post(url, data, format="json")
-
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-
-    def test_list_invoices(self):
-        url = reverse("list_create_invoice")
+    def test_list_fee_payments(self):
+        url = reverse("list_create_fee_payment")
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_retrieve_invoice(self):
-        url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
+    def test_retrieve_fee_payment(self):
+        url = reverse("retrieve_update_destroy_fee_payment", args=[self.fee_payment.id])
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_update_invoice(self):
-        url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
+    def test_update_fee_payment(self):
+        url = reverse("retrieve_update_destroy_fee_payment", args=[self.fee_payment.id])
         data = {"amount_paid": 3000}
 
         self.client.force_authenticate(user=self.user)
@@ -285,8 +255,8 @@ class InvoiceTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_invoice(self):
-        url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
+    def test_delete_fee_payment(self):
+        url = reverse("retrieve_update_destroy_fee_payment", args=[self.fee_payment.id])
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(url)
 
@@ -327,6 +297,10 @@ class DiscountTestCase(APITestCase):
 
         self.fee_template = FeeTemplate.objects.create(
             school=self.school, class_id=self.class_obj, discount=self.discount
+        )
+
+        self.fee_payment = FeePayment.objects.create(
+            school=self.school, template=self.fee_template, student=self.student
         )
 
     
@@ -373,7 +347,7 @@ class DiscountTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class TransactionTestCase(APITestCase):
+class InvoiceTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
 
@@ -409,23 +383,23 @@ class TransactionTestCase(APITestCase):
             school=self.school, class_id=self.class_obj, discount=self.discount
         )
 
-        self.invoice = Invoice.objects.create(
+        self.fee_payment = FeePayment.objects.create(
             school=self.school, template=self.fee_template, student=self.student
         )
 
-        self.transaction = Transaction.objects.create(
-            invoice=self.invoice,
-            invoice_id=self.invoice.id,
+        self.invoice = Invoice.objects.create(
+            item=self.fee_payment,
+            item_id=self.fee_payment.id,
             school=self.school
         )
 
     
-    def test_create_transaction(self):
-        url = reverse("list_create_transaction")
+    def test_create_invoice(self):
+        url = reverse("list_create_invoice")
         
         data = {
-            "content_type" : ContentType.objects.get_for_model(Invoice).id,
-            "invoice" : self.invoice.id,
+            "content_type" : ContentType.objects.get_for_model(FeePayment).id,
+            "item" : self.fee_payment.id,
             "school" : self.school.id
         }
 
@@ -435,24 +409,24 @@ class TransactionTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_list_transactions(self):
-        url = reverse("list_create_transaction")
+    def test_list_invoices(self):
+        url = reverse("list_create_invoice")
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_retrieve_transaction(self):
-        url = reverse("retrieve_update_destroy_transaction", args=[self.transaction.id])
+    def test_retrieve_invoice(self):
+        url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_update_transaction(self):
-        url = reverse("retrieve_update_destroy_transaction", args=[self.transaction.id])
+    def test_update_invoice(self):
+        url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
         data = {
-            "reversed_transaction_id": self.transaction.id,
+            "reversed_invoice_id": self.invoice.id,
             "status" : "paid"
         }
 
@@ -462,8 +436,8 @@ class TransactionTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_transaction(self):
-        url = reverse("retrieve_update_destroy_transaction", args=[self.transaction.id])
+    def test_delete_invoice(self):
+        url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(url)
 
