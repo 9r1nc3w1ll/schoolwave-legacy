@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
 import EditUser from '@/components/EditUser';
 import { useSession } from 'next-auth/react';
-import { getClassStudents } from '@/apicalls/clas';
+import { getClassStudents } from '@/apicalls/class-api';
 
 
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 import { showAlert } from "@/utility_methods/alert";
-import { deleteClass } from "@/apicalls/clas";
+import { deleteClass } from "@/apicalls/class-api";
 import { deleteTerm } from "@/apicalls/session";
 
 const DeleteTerms = (props:any) => {

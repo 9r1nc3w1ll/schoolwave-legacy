@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient, useQuery } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import {  useState } from 'react';
-import { getClasses } from '@/apicalls/clas';
+import { getClasses } from '@/apicalls/class-api';
 import Select from 'react-select';
 import { editExamQuestion } from '@/apicalls/exam';
 import { getSubjects } from '@/apicalls/subjects';

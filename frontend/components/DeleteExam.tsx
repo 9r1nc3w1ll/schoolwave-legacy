@@ -12,7 +12,7 @@ const DeleteExam = (props:any) => {
  
   async function x  (){
     const gt = await deleteExam(props.sessionID, props.user_session.access_token)
-    console.log(props.sessionID, props.user_session.access_token)
+
    
     if(gt.status == 204){
       queryClient.invalidateQueries(['subjects'])

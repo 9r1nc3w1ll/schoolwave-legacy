@@ -12,7 +12,7 @@ import CreateEmployee from '@/components/CreateEmployee';
 import { Dialog, Transition } from '@headlessui/react';
 import EditEmployee from '@/components/EditEmployee';
 import { useSession } from 'next-auth/react';
-import { getClassStaffs } from '@/apicalls/clas';
+import { getClassStaffs } from '@/apicalls/class-api';
 
 
 

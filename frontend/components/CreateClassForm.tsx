@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
-import { createClass } from '@/apicalls/clas';
+import { createClass } from '@/apicalls/class-api';
 
 
 

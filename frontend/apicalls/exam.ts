@@ -55,7 +55,7 @@ export const createExams= async(  access_token: any, data: any)=>{
     })
     let tempData= await res.json()
     
-    console.log("Here is our data", tempData.data)
+    
     
     return tempData.data
   }
@@ -69,7 +69,7 @@ export const createExams= async(  access_token: any, data: any)=>{
       }
     })
     let tempData= await res.json()
-   console.log("Here we go",tempData.data)
+ 
     
     return tempData.data
 
