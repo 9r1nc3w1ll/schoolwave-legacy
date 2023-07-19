@@ -16,7 +16,7 @@ export const CreateLesssonNote= async ( data: any, access_token ?: string)=>{
   }
 
   export const getLesssonNote= async (access_token?:string)=>{
-    console.log(access_token)
+    
     const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/lessonnotes/lesson-note-list', {
       method: "GET",
       headers: {

@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { useMutation, useQuery } from 'react-query';
 import { useSession } from 'next-auth/react';
 import { showAlert } from '@/utility_methods/alert';
-import { getClasses } from '@/apicalls/clas';
+import { getClasses } from '@/apicalls/class-api';
 
 
 

@@ -10,7 +10,7 @@ import 'flatpickr/dist/flatpickr.css';
 import {parse} from 'json2csv'
 import { useSession } from 'next-auth/react';
 import { CreateSubject } from '@/apicalls/subjects';
-import { getClasses } from '@/apicalls/clas';
+import { getClasses } from '@/apicalls/class-api';
 import { getTerms } from '@/apicalls/session';
 
 
@@ -55,7 +55,7 @@ const Subject  = (props:any) => {
         
       setclassOptions(clasii)
       settermOptions(term)
-      console.log(user_session?.access_token)
+    
         
         
     }

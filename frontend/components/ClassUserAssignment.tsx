@@ -1,4 +1,4 @@
-import { AssignUserToClass } from '@/apicalls/clas';
+import { AssignUserToClass } from '@/apicalls/class-api';
 import { getStaffs, getStudents } from '@/apicalls/users';
 import { showAlert } from '@/utility_methods/alert';
 import { useState, useEffect } from 'react';

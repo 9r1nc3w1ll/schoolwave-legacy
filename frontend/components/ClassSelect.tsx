@@ -1,4 +1,4 @@
-import { getClasses } from "@/apicalls/clas"
+import { getClasses } from "@/apicalls/class-api"
 import { useEffect } from "react"
 import { useQuery } from "react-query"
 

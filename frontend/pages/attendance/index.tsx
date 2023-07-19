@@ -5,7 +5,7 @@ import { setPageTitle } from "@/store/themeConfigSlice";
 import { useMutation, useQuery } from "react-query";
 import { getStudents } from "@/apicalls/users";
 import AttendanceTable from "@/components/AttendanceTable";
-import { getClassStudents, getClasses } from "@/apicalls/clas";
+import { getClassStudents, getClasses } from "@/apicalls/class-api";
 import { getTerms } from "@/apicalls/session";
 import { getAttendance } from "@/apicalls/attendance";
 import { useForm } from "react-hook-form";
