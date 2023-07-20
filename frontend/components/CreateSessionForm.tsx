@@ -51,8 +51,9 @@ const CreateSessionForm = ( props:any) => {
 
   const onSubmit = async (tempData: any) => { 
     tempData.active = false
-    tempData.school = props.user_session?.school.id
-    mutate(tempData);                                                                  
+    // tempData.school = props.user_session?.school.id
+  
+    // mutate(tempData);                                                                  
   };
   return (
     <div  className="">

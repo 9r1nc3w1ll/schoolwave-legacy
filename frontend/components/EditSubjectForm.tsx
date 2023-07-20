@@ -4,7 +4,7 @@ import { useMutation, useQueryClient, useQuery } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { editSubject } from '@/apicalls/subjects';
 import {  useState } from 'react';
-import { getClasses } from '@/apicalls/clas';
+import { getClasses } from '@/apicalls/class-api';
 import { getTerms } from '@/apicalls/session';
 import Select from 'react-select';
 

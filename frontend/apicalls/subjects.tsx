@@ -78,7 +78,7 @@ export const BulkSubjectsUpload= async (data:any, access_token ?: string)=>{
 
   
 export const AssignStaffToSubject= async(data: any, access_token?: string)=>{
-  console.log(data)
+
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/subject/subject-staff-assignment' , {
     method: "POST",
     headers: {

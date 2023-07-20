@@ -1,6 +1,6 @@
 
 export const createExams= async(  access_token: any, data: any)=>{
-    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/examexams/' , {
+    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/exams' , {
       method: "POST",
       headers: {
         "content-Type": "application/json",
@@ -15,7 +15,7 @@ export const createExams= async(  access_token: any, data: any)=>{
   }
   
   export const editExam= async(id: string, access_token: string, data: any)=>{
-    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/examexams/' + id, {
+    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/exams' + id, {
       method: "PATCH",
       headers: {
         "content-Type": "application/json",
@@ -46,7 +46,7 @@ export const createExams= async(  access_token: any, data: any)=>{
   
   
   export const getExams= async (access_token: any)=>{
-    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/examexams/' , {
+    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/exams' , {
       method: "GET",
       headers: {
         "content-Type": "application/json",
@@ -55,13 +55,13 @@ export const createExams= async(  access_token: any, data: any)=>{
     })
     let tempData= await res.json()
     
-    console.log("Here is our data", tempData.data)
+    
     
     return tempData.data
   }
 
   export const getSingleExam= async (id: any, access_token?: any)=>{
-    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/examexams/'+id +'/' , {
+    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/exams/'+id  , {
       method: "GET",
       headers: {
         "content-Type": "application/json",
@@ -69,15 +69,16 @@ export const createExams= async(  access_token: any, data: any)=>{
       }
     })
     let tempData= await res.json()
-   console.log("Here we go",tempData.data)
+ 
     
     return tempData.data
+
   }
   
   
   
 export const createExamQuestion= async(access_token: any, data: any)=>{
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/examquestions/' , {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/questions' , {
     method: "POST",
     headers: {
       "content-Type": "application/json",
@@ -92,7 +93,7 @@ export const createExamQuestion= async(access_token: any, data: any)=>{
 }
   
 export const getExamsQuestions= async (access_token: any)=>{
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/examquestions/' , {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/questions' , {
     method: "GET",
     headers: {
       "content-Type": "application/json",

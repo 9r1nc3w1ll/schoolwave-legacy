@@ -6,281 +6,167 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IRootState } from '@/store';
 import Dropdown from '@/components/Dropdown';
 import { setPageTitle } from '@/store/themeConfigSlice';
+import { CreateLesssonNote, getLesssonNote, editLessonNote, deleteLessonNote } from '@/apicalls/lesson-notes';
+import { useRouter } from 'next/router';
+import { useMutation, useQuery } from 'react-query';
+import { useSession } from 'next-auth/react';
+import { showAlert } from '@/utility_methods/alert';
+import { getClasses } from '@/apicalls/class-api';
+import { Session } from 'next-auth';
+
+
 
 const Notes = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setPageTitle('Notes'));
   });
-  const [notesList, setNoteList] = useState([
-    {
-      id: 1,
-      user: 'Max Smith',
-      thumb: 'profile-16.jpeg',
-      title: 'Meeting with Kelly',
-      description: 'Curabitur facilisis vel elit sed dapibus sodales purus rhoncus.',
-      date: '11/01/2020',
-      isFav: false,
-      tag: 'personal',
-      
-    },
-    {
-      id: 2,
-      user: 'John Doe',
-      thumb: 'profile-14.jpeg',
-      title: 'Receive Package',
-      description: 'Facilisis curabitur facilisis vel elit sed dapibus sodales purus.',
-      date: '11/02/2020',
-      isFav: true,
-      tag: '',
-    },
-    {
-      id: 3,
-      user: 'Kia Jain',
-      thumb: 'profile-15.jpeg',
-      title: 'Download Docs',
-      description: 'Proin a dui malesuada, laoreet mi vel, imperdiet diam quam laoreet.',
-      date: '11/04/2020',
-      isFav: false,
-      tag: 'work',
-    },
-    {
-      id: 4,
-      user: 'Max Smith',
-      thumb: 'profile-16.jpeg',
-      title: 'Meeting at 4:50pm',
-      description: 'Excepteur sint occaecat cupidatat non proident, anim id est laborum.',
-      date: '11/08/2020',
-      isFav: false,
-      tag: '',
-    },
-    {
-      id: 5,
-      user: 'Karena Courtliff',
-      thumb: 'profile-17.jpeg',
-      title: 'Backup Files EOD',
-      description: 'Maecenas condimentum neque mollis, egestas leo ut, gravida.',
-      date: '11/09/2020',
-      isFav: false,
-      tag: '',
-    },
-    {
-      id: 6,
-      user: 'Max Smith',
-      thumb: 'profile-16.jpeg',
-      title: 'Download Server Logs',
-      description: 'Suspendisse efficitur diam quis gravida. Nunc molestie est eros.',
-      date: '11/09/2020',
-      isFav: false,
-      tag: 'social',
-    },
-    {
-      id: 7,
-      user: 'Vladamir Koschek',
-      thumb: '',
-      title: 'Team meet at Starbucks',
-      description: 'Etiam a odio eget enim aliquet laoreet lobortis sed ornare nibh.',
-      date: '11/10/2020',
-      isFav: false,
-      tag: '',
-    },
-    {
-      id: 8,
-      user: 'Max Smith',
-      thumb: 'profile-16.jpeg',
-      title: 'Create new users Profile',
-      description: 'Duis aute irure in nulla pariatur. Etiam a odio eget enim aliquet.',
-      date: '11/11/2020',
-      isFav: false,
-      tag: 'important',
-    },
-    {
-      id: 9,
-      user: 'Robert Garcia',
-      thumb: 'profile-21.jpeg',
-      title: 'Create a compost pile',
-      description: 'Zombie ipsum reversus ab viral inferno, nam rick grimes malum cerebro.',
-      date: '11/12/2020',
-      isFav: true,
-      tag: '',
-    },
-    {
-      id: 10,
-      user: 'Marie Hamilton',
-      thumb: 'profile-2.jpeg',
-      title: 'Take a hike at a local park',
-      description: 'De carne lumbering animata corpora quaeritis. Summus brains sit',
-      date: '11/13/2020',
-      isFav: true,
-      tag: '',
-    },
-    {
-      id: 11,
-      user: 'Megan Meyers',
-      thumb: 'profile-1.jpeg',
-      title: 'Take a class at local community center that interests you',
-      description: 'Cupcake ipsum dolor. Sit amet marshmallow topping cheesecake muffin.',
-      date: '11/13/2020',
-      isFav: false,
-      tag: '',
-    },
-    {
-      id: 12,
-      user: 'Angela Hull',
-      thumb: 'profile-22.jpeg',
-      title: 'Research a topic interested in',
-      description: 'Lemon drops tootsie roll marshmallow halvah carrot cake.',
-      date: '11/14/2020',
-      isFav: false,
-      tag: '',
-    },
-    {
-      id: 13,
-      user: 'Karen Wolf',
-      thumb: 'profile-23.jpeg',
-      title: 'Plan a trip to another country',
-      description: 'Space, the final frontier. These are the voyages of the Starship Enterprise.',
-      date: '11/16/2020',
-      isFav: true,
-      tag: '',
-    },
-    {
-      id: 14,
-      user: 'Jasmine Barnes',
-      thumb: 'profile-1.jpeg',
-      title: 'Improve touch typing',
-      description: 'Well, the way they make shows is, they make one show.',
-      date: '11/16/2020',
-      isFav: false,
-      tag: '',
-    },
-    {
-      id: 15,
-      user: 'Thomas Cox',
-      thumb: 'profile-11.jpeg',
-      title: 'Learn Express.js',
-      description: 'Bulbasaur Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      date: '11/17/2020',
-      isFav: false,
-      tag: 'work',
-    },
-    {
-      id: 16,
-      user: 'Marcus Jones',
-      thumb: 'profile-12.jpeg',
-      title: 'Learn calligraphy',
-      description: 'Ivysaur Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      date: '11/17/2020',
-      isFav: false,
-      tag: '',
-    },
-    {
-      id: 17,
-      user: 'Matthew Gray',
-      thumb: 'profile-24.jpeg',
-      title: 'Have a photo session with some friends',
-      description: 'Venusaur Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      date: '11/18/2020',
-      isFav: false,
-      tag: 'important',
-    },
-    {
-      id: 18,
-      user: 'Chad Davis',
-      thumb: 'profile-31.jpeg',
-      title: 'Go to the gym',
-      description: 'Charmander Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      date: '11/18/2020',
-      isFav: false,
-      tag: '',
-    },
-    {
-      id: 19,
-      user: 'Linda Drake',
-      thumb: 'profile-23.jpeg',
-      title: 'Make own LEGO creation',
-      description: 'Charmeleon Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      date: '11/18/2020',
-      isFav: false,
-      tag: 'social',
-    },
-    {
-      id: 20,
-      user: 'Kathleen Flores',
-      thumb: 'profile-34.jpeg',
-      title: 'Take cat on a walk',
-      description: 'Baseball ipsum dolor sit amet cellar rubber win hack tossed. ',
-      date: '11/18/2020',
-      isFav: false,
-      tag: 'personal',
-    },
-  ]);
 
-  const defaultParams = {
-    id: null,
-    title: '',
-    description: '',
-    tag: '',
-    user: '',
-    thumb: '',
-  };
+
+  const router = useRouter()
+  const { status: sessionStatus, data: user_session } = useSession();
+
+
+
+
+  
+
+
+
+const [notesList, setNoteList] = useState([])
+
+interface Params{
+  topic: string,
+  description: string,
+  tag: string,
+  content: string,
+  class_id: string,
+  created_by: string,
+  last_updated_by: string,
+  files: Buffer[],
+  week: string[],
+}
+
+
+interface Note {
+  id:string,
+  topic: string,
+  description: string,
+  tag: string,
+  content: string,
+  class_id: string,
+  created_by: string,
+  last_updated_by: string,
+  files: Buffer[],
+  week: string[],
+}
+
+
+
+const defaultParams = {
+  topic: '',
+  description: '',
+  tag: '',
+  content: '',
+  class_id: '',
+  created_by: '',
+  last_updated_by: '',
+  files: [],
+  week:''
+};
+
+interface classOption {
+  id: string;
+  name: string;
+}
+const initialDeletedNote: Note | null = null;
+
+
+
+
   const [params, setParams] = useState<any>(JSON.parse(JSON.stringify(defaultParams)));
-  const [addContactModal, setAddContactModal] = useState<any>(false);
-  const [isDeleteNoteModal, setIsDeleteNoteModal] = useState<any>(false);
-  const [isShowNoteMenu, setIsShowNoteMenu] = useState<any>(false);
-  const [isViewNoteModal, setIsViewNoteModal] = useState<any>(false);
-  const [filterdNotesList, setFilterdNotesList] = useState<any>([]);
-  const [selectedTab, setSelectedTab] = useState<any>('all');
+  const [addContactModal, setAddContactModal] = useState<boolean>(false);
+  const [isDeleteNoteModal, setIsDeleteNoteModal] = useState<boolean>(false);
+  const [isShowNoteMenu, setIsShowNoteMenu] = useState<boolean>(false);
+  const [isViewNoteModal, setIsViewNoteModal] = useState<boolean>(false);
+  const [filterdNotesList, setFilterdNotesList] = useState<any[]>([]);;
+  const [selectedTab, setSelectedTab] = useState<string>('all');
   const [deletedNote, setDeletedNote] = useState<any>(null);
+  const [classOptions, setclassOptions] = useState<classOption[]>([]);
+
+  const { data: clasii, isSuccess, status, refetch, error } = useQuery('classes', () => getClasses(user_session?.access_token), {enabled: false})
+
+  useEffect(() => {
+
+    refetch();
+    if (isSuccess){
+     
+      setclassOptions(clasii);
+      
+    } else{
+
+      console.log(error)
+    }
+    // Fetch initial notes data
+    
+   
+  }, [isSuccess]);
+
+  const { data: notes, isSuccess: isSuccess2, status : status2, refetch: refetch2 } = useQuery('getLessons', () => getLesssonNote(user_session?.access_token), {enabled: false})
+  useEffect(()=>{
+    refetch2();
+    if (isSuccess2){
+      
+      setFilterdNotesList(notes);
+      console.log("here are the notes",notes);
+    }
+  },[isSuccess2, notes]
+  );
+
+  
 
   const searchNotes = () => {
-    if (selectedTab !== 'fav') {
-      if (selectedTab !== 'all' || selectedTab === 'delete') {
-        setFilterdNotesList(notesList.filter((d) => d.tag === selectedTab));
-      } else {
-        setFilterdNotesList(notesList);
-      }
-    } else {
-      setFilterdNotesList(notesList.filter((d) => d.isFav));
-    }
+    // if (selectedTab !== 'fav') {
+    //   if (selectedTab !== 'all' || selectedTab === 'delete') {
+    //     setFilterdNotesList(notesList.filter((d: any) => d.tag === selectedTab));
+    //   } else {
+    //     setFilterdNotesList(notesList);
+        
+    //   }
+    // } else {
+    //   setFilterdNotesList(notesList.filter((d: any) => d.isFav));
+    // }
+
+    
   };
 
-  const saveNote = () => {
-    if (!params.title) {
-      showMessage('Title is required.', 'error');
+
+  const saveNote = async () => {
+    if (!params.topic) {
+      showMessage('Topic is required.', 'error');
       return false;
     }
-    if (params.id) {
-      //update task
-      let note: any = notesList.find((d: any) => d.id === params.id);
-      note.title = params.title;
-      note.user = params.user;
-      note.description = params.description;
-      note.tag = params.tag;
-    } else {
-      //add note
-      let maxNoteId = notesList.reduce((max: any, character: any) => (character.id > max ? character.id : max), notesList[0].id);
-      if (!maxNoteId) {
-        maxNoteId = 0;
-      }
-      let dt = new Date();
-      let note = {
-        id: maxNoteId + 1,
-        title: params.title,
-        user: params.user,
-        thumb: 'profile-21.jpeg',
-        description: params.description,
-        date: dt.getDate() + '/' + Number(dt.getMonth()) + 1 + '/' + dt.getFullYear(),
-        isFav: false,
-        tag: params.tag,
-      };
 
-      notesList.splice(0, 0, note);
+
+    try {
+      if (params.id) {
+        // Update existing note
+        await editLessonNote(params.id, user_session?.access_token, params);
+        refetch2()
+      } else {
+        // Create new note
+        await CreateLesssonNote( params, user_session?.access_token);
+        refetch2()
+      }
+      
+      showMessage('Note has been saved successfully.');
+      setAddContactModal(false);
       searchNotes();
+    } catch (error) {
+      // Handle error
+      
+
     }
-    showMessage('Note has been saved successfully.');
-    setAddContactModal(false);
-    searchNotes();
   };
 
   const tabChanged = (type: string) => {
@@ -289,38 +175,59 @@ const Notes = () => {
     searchNotes();
   };
 
-  const setFav = (note: any) => {
-    let list = filterdNotesList;
-    let item = list.find((d: any) => d.id === note.id);
-    item.isFav = !item.isFav;
 
-    setFilterdNotesList([...list]);
-    if (selectedTab !== 'all' || selectedTab === 'delete') {
-      searchNotes();
+
+  const setTag = async (note: any, name: string = '') => {
+
+    
+    try {
+      const updatedNote = { ...note, tag: name };
+      await editLessonNote(note.id, user_session?.access_token, updatedNote);
+
+      const updatedList = filterdNotesList?.map((d: any) => (d.id === note.id ? updatedNote : d));
+      setFilterdNotesList(updatedList);
+     
+
+      
+        searchNotes();
+      
+    } catch (error) {
+      // Handle error
+
     }
   };
 
-  const setTag = (note: any, name: string = '') => {
-    let list = filterdNotesList;
-    let item = filterdNotesList.find((d: any) => d.id === note.id);
-    item.tag = name;
-    setFilterdNotesList([...list]);
-    if (selectedTab !== 'all' || selectedTab === 'delete') {
-      searchNotes();
-    }
+ 
+ 
+  const handleClassChange = (e:any) => {
+    const { value } = e.target;
+    setParams((prevParams:Params) => ({
+      ...prevParams,
+      class_id: value,
+    }));
   };
+
+  const handleFileChange = (e:any) => {
+    const { files } = e.target;
+    const fileList = Array.from(files);
+    setParams((prevParams:Params) => ({
+      ...prevParams,
+      files: [],
+    }));
+  };
+
 
   const changeValue = (e: any) => {
     const { value, id } = e.target;
-    setParams({ ...params, [id]: value });
+    setParams({ ...params, [id]: value, week: ["1","2"], created_by: user_session?.id, last_updated_by:user_session?.id, });
   };
 
-  const deleteNoteConfirm = (note: any) => {
+  const deleteNoteConfirm = (note: Note) => {
     setDeletedNote(note);
     setIsDeleteNoteModal(true);
   };
 
-  const viewNote = (note: any) => {
+  const viewNote = (note: Note) => {
     setParams(note);
     setIsViewNoteModal(true);
   };
@@ -336,12 +243,26 @@ const Notes = () => {
     setAddContactModal(true);
   };
 
-  const deleteNote = () => {
-    setNoteList(notesList.filter((d: any) => d.id !== deletedNote.id));
-    searchNotes();
-    showMessage('Note has been deleted successfully.');
-    setIsDeleteNoteModal(false);
+  const deleteNote = async () => {
+    try {
+      await deleteLessonNote(deletedNote.id, user_session?.access_token );
+
+      const updatedList = notesList.filter((d: Note) => d.id !== deletedNote.id);
+      setFilterdNotesList(updatedList);
+      refetch2();
+
+      searchNotes();
+      showMessage('Note has been deleted successfully.');
+      setIsDeleteNoteModal(false);
+    } catch (error) {
+      // Handle error;
+    }
   };
+
+  // Rest of your component code...
+
+ 
+
 
   const showMessage = (msg = '', type = 'success') => {
     const toast: any = Swal.mixin({
@@ -544,13 +465,14 @@ const Notes = () => {
               </svg>
             </button>
           </div>
-          {filterdNotesList.length ? (
+          {filterdNotesList?.length ? (
             <div className="min-h-[400px] sm:min-h-[300px]">
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                {filterdNotesList.map((note: any) => {
+                {filterdNotesList?.map((note: any) => {
                   return (
                     <div
-                      className={`panel pb-12 ${
+                      className={`panel pb-12 
+                      ${
                         note.tag === 'personal'
                           ? 'bg-primary-light shadow-primary'
                           : note.tag === 'work'
@@ -567,29 +489,15 @@ const Notes = () => {
                         <div className="flex justify-between">
                           <div className="flex w-max items-center">
                             <div className="flex-none">
-                              {note.thumb && (
-                                <div className="rounded-full bg-gray-300 p-0.5 dark:bg-gray-700">
-                                  <img className="h-8 w-8 rounded-full object-cover" alt="img" src={`/assets/images/${note.thumb}`} />
-                                </div>
-                              )}
+                             
+                               
+                              
 
-                              {!note.thumb && note.user && (
-                                <div className="grid h-8 w-8 place-content-center rounded-full bg-gray-300 text-sm font-semibold dark:bg-gray-700">
-                                  {note.user.charAt(0) + '' + note.user.charAt(note.user.indexOf('') + 1)}
-                                </div>
-                              )}
-                              {!note.thumb && !note.user && (
-                                <div className="rounded-full bg-gray-300 p-2 dark:bg-gray-700">
-                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="12" cy="6" r="4" stroke="currentColor" strokeWidth="1.5" />
-                                    <ellipse opacity="0.5" cx="12" cy="17" rx="7" ry="4" stroke="currentColor" strokeWidth="1.5" />
-                                  </svg>
-                                </div>
-                              )}
+                             
                             </div>
                             <div className="ltr:ml-2 rtl:mr-2">
-                              <div className="font-semibold">{note.user}</div>
-                              <div className="text-sx text-white-dark">{note.date}</div>
+                              {/* <div className="font-semibold">{note.topic}</div> */}
+                              <div className="text-sx text-white-dark">{note.created_at}</div>
                             </div>
                           </div>
                           <div className="dropdown">
@@ -677,8 +585,9 @@ const Notes = () => {
                           </div>
                         </div>
                         <div>
-                          <h4 className="mt-4 font-semibold">{note.title}</h4>
+                          <h4 className="mt-4 font-semibold">{note.topic}</h4>
                           <p className="mt-2 text-white-dark">{note.description}</p>
+                          
                         </div>
                       </div>
                       <div className="absolute bottom-5 left-0 w-full px-5">
@@ -830,22 +739,7 @@ const Notes = () => {
                                 <path opacity="0.5" d="M14.5 11L14 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                               </svg>
                             </button>
-                            <button type="button" className="group text-warning ltr:ml-2 rtl:mr-2" onClick={() => setFav(note)}>
-                              <svg
-                                className={`h-4.5 w-4.5 group-hover:fill-warning ${note.isFav ? 'fill-warning' : ''}`}
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M9.15316 5.40838C10.4198 3.13613 11.0531 2 12 2C12.9469 2 13.5802 3.13612 14.8468 5.40837L15.1745 5.99623C15.5345 6.64193 15.7144 6.96479 15.9951 7.17781C16.2757 7.39083 16.6251 7.4699 17.3241 7.62805L17.9605 7.77203C20.4201 8.32856 21.65 8.60682 21.9426 9.54773C22.2352 10.4886 21.3968 11.4691 19.7199 13.4299L19.2861 13.9372C18.8096 14.4944 18.5713 14.773 18.4641 15.1177C18.357 15.4624 18.393 15.8341 18.465 16.5776L18.5306 17.2544C18.7841 19.8706 18.9109 21.1787 18.1449 21.7602C17.3788 22.3417 16.2273 21.8115 13.9243 20.7512L13.3285 20.4768C12.6741 20.1755 12.3469 20.0248 12 20.0248C11.6531 20.0248 11.3259 20.1755 10.6715 20.4768L10.0757 20.7512C7.77268 21.8115 6.62118 22.3417 5.85515 21.7602C5.08912 21.1787 5.21588 19.8706 5.4694 17.2544L5.53498 16.5776C5.60703 15.8341 5.64305 15.4624 5.53586 15.1177C5.42868 14.773 5.19043 14.4944 4.71392 13.9372L4.2801 13.4299C2.60325 11.4691 1.76482 10.4886 2.05742 9.54773C2.35002 8.60682 3.57986 8.32856 6.03954 7.77203L6.67589 7.62805C7.37485 7.4699 7.72433 7.39083 8.00494 7.17781C8.28555 6.96479 8.46553 6.64194 8.82547 5.99623L9.15316 5.40838Z"
-                                  stroke="currentColor"
-                                  strokeWidth="1.5"
-                                />
-                              </svg>
-                            </button>
+                           
                           </div>
                         </div>
                       </div>
@@ -908,64 +802,51 @@ const Notes = () => {
                         {params.id ? 'Edit Note' : 'Add Note'}
                       </div>
                       <div className="p-5">
-                        <form>
-                          <div className="mb-5">
-                            <label htmlFor="title">Title</label>
-                            <input id="title" type="text" placeholder="Enter Title" className="form-input" value={params.title} onChange={(e) => changeValue(e)} />
-                          </div>
-                          <div className="mb-5">
-                            <label htmlFor="name">User Name</label>
-                            <select id="user" className="form-select" value={params.user} onChange={(e) => changeValue(e)}>
-                              <option value="">Select User</option>
-                              <option value="Max Smith">Max Smith</option>
-                              <option value="John Doe">John Doe</option>
-                              <option value="Kia Jain">Kia Jain</option>
-                              <option value="Karena Courtliff">Karena Courtliff</option>
-                              <option value="Vladamir Koschek">Vladamir Koschek</option>
-                              <option value="Robert Garcia">Robert Garcia</option>
-                              <option value="Marie Hamilton">Marie Hamilton</option>
-                              <option value="Megan Meyers">Megan Meyers</option>
-                              <option value="Angela Hull">Angela Hull</option>
-                              <option value="Karen Wolf">Karen Wolf</option>
-                              <option value="Jasmine Barnes">Jasmine Barnes</option>
-                              <option value="Thomas Cox">Thomas Cox</option>
-                              <option value="Marcus Jones">Marcus Jones</option>
-                              <option value="Matthew Gray">Matthew Gray</option>
-                              <option value="Chad Davis">Chad Davis</option>
-                              <option value="Linda Drake">Linda Drake</option>
-                              <option value="Kathleen Flores">Kathleen Flores</option>
+                        {/* Create and Edit Table Form */}
+                          <form>
+                        <div className='mb-5'>
+                          <label htmlFor="topic">Topic:</label>
+                          <input type="text" id="topic" value={params.topic} onChange={changeValue} className='form-input'/>
+                        </div>
+                        <div className='mb-5'>
+                          <label htmlFor="description">Description:</label>
+                          <textarea id="description" value={params.description} onChange={changeValue} className='form-input'/>
+                        </div>
+                        <div className='mb-5'>
+                          <label htmlFor="tag">Tag:</label>
+                          <input type="text" id="tag" value={params.tag} onChange={changeValue} className='form-input' />
+                        </div>
+                        <div className='mb-5'>
+                          <label htmlFor="content">Content:</label>
+                          <textarea id="content" value={params.content} onChange={changeValue} className='form-input'/>
+                        </div>
+
+                        <div>
+                            <label htmlFor="class_name">Class</label>
+                            <select
+                              id="class_name"
+                              className="form-input"  onChange={handleClassChange} value={params.class_id} >
+                              <option>Select an option</option>
+                              {classOptions?.map((option) => (
+                                <option 
+                                  key={option.id}
+                                  value={option.id}
+                                  
+                                >
+                                  {option.name}
+                                </option>
+                              ))}
                             </select>
                           </div>
-                          <div className="mb-5">
-                            <label htmlFor="tag">Tag</label>
-                            <select id="tag" className="form-select" value={params.tag} onChange={(e) => changeValue(e)}>
-                              <option value="">None</option>
-                              <option value="personal">Personal</option>
-                              <option value="work">Work</option>
-                              <option value="social">Social</option>
-                              <option value="important">Important</option>
-                            </select>
-                          </div>
-                          <div className="mb-5">
-                            <label htmlFor="desc">Description</label>
-                            <textarea
-                              id="description"
-                              rows={3}
-                              className="form-textarea min-h-[130px] resize-none"
-                              placeholder="Enter Description"
-                              value={params.description}
-                              onChange={(e) => changeValue(e)}
-                            ></textarea>
-                          </div>
-                          <div className="mt-8 flex items-center justify-end">
-                            <button type="button" className="btn btn-outline-danger gap-2" onClick={() => setAddContactModal(false)}>
-                                                            Cancel
-                            </button>
-                            <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={saveNote}>
+                        <div className='mb-5'>
+                          <label htmlFor="files">Files:</label>
+                          <input type="file" id="files" onChange={handleFileChange} multiple className='form-input' />
+                        </div >
+                        <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={saveNote}>
                               {params.id ? 'Update Note' : 'Add Note'}
                             </button>
-                          </div>
-                        </form>
+                      </form>
+
                       </div>
                     </Dialog.Panel>
                   </Transition.Child>
@@ -1118,23 +999,15 @@ const Notes = () => {
                               params.tag === 'important' && 'shadow-danger')
                             }`}
                           >
+                          
                             {params.tag}
                           </button>
                         )}
-                        {params.isFav && (
-                          <button type="button" className="text-warning">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-warning">
-                              <path
-                                d="M9.15316 5.40838C10.4198 3.13613 11.0531 2 12 2C12.9469 2 13.5802 3.13612 14.8468 5.40837L15.1745 5.99623C15.5345 6.64193 15.7144 6.96479 15.9951 7.17781C16.2757 7.39083 16.6251 7.4699 17.3241 7.62805L17.9605 7.77203C20.4201 8.32856 21.65 8.60682 21.9426 9.54773C22.2352 10.4886 21.3968 11.4691 19.7199 13.4299L19.2861 13.9372C18.8096 14.4944 18.5713 14.773 18.4641 15.1177C18.357 15.4624 18.393 15.8341 18.465 16.5776L18.5306 17.2544C18.7841 19.8706 18.9109 21.1787 18.1449 21.7602C17.3788 22.3417 16.2273 21.8115 13.9243 20.7512L13.3285 20.4768C12.6741 20.1755 12.3469 20.0248 12 20.0248C11.6531 20.0248 11.3259 20.1755 10.6715 20.4768L10.0757 20.7512C7.77268 21.8115 6.62118 22.3417 5.85515 21.7602C5.08912 21.1787 5.21588 19.8706 5.4694 17.2544L5.53498 16.5776C5.60703 15.8341 5.64305 15.4624 5.53586 15.1177C5.42868 14.773 5.19043 14.4944 4.71392 13.9372L4.2801 13.4299C2.60325 11.4691 1.76482 10.4886 2.05742 9.54773C2.35002 8.60682 3.57986 8.32856 6.03954 7.77203L6.67589 7.62805C7.37485 7.4699 7.72433 7.39083 8.00494 7.17781C8.28555 6.96479 8.46553 6.64194 8.82547 5.99623L9.15316 5.40838Z"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                              ></path>
-                            </svg>
-                          </button>
-                        )}
+                       
                       </div>
                       <div className="p-5">
-                        <div className="text-base">{params.description}</div>
+                        <div className="font-semibold">{params.description}</div>
+                        <p className="text-base  py-5"> {params.content}</p>
 
                         <div className="mt-8 ltr:text-right rtl:text-left">
                           <button type="button" className="btn btn-outline-danger" onClick={() => setIsViewNoteModal(false)}>

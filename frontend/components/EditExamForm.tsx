@@ -4,10 +4,11 @@ import { useMutation, useQueryClient, useQuery } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { editSubject } from '@/apicalls/subjects';
 import {  useState } from 'react';
-import { getClasses } from '@/apicalls/clas';
+import { getClasses } from '@/apicalls/class-api';
 import { getTerms } from '@/apicalls/session';
 import Select from 'react-select';
 import { editExam, getExamsQuestions  } from '@/apicalls/exam';
+import { getSubjects } from '@/apicalls/subjects';
 
 
 
@@ -37,8 +38,11 @@ const EditExamForm = (props:any) => {
       }
     }
   );
+  
+
 
   const { data: clasii, isSuccess, status, refetch } = useQuery('classes', () => getClasses(props.user_session?.access_token), {enabled: false})
+  const { data: subjects, isSuccess:isSuccess3, status:status3, refetch:refetch3 } = useQuery('terms', () => getSubjects(props.user_session?.access_token), {enabled: false})
   const { data: examsQuestions, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('examquestionss', () => getExamsQuestions(props.user_session?.access_token), {enabled: false})
   interface classOption {
     id: string;
@@ -48,6 +52,13 @@ const EditExamForm = (props:any) => {
     id: string;
     title: string;
   }
+  interface subjectsOption {
+    id: string;
+    name: string;
+  }
+
+
+  const [subjectsOptions, setsubjectsOptions] = useState<subjectsOption[]>([]);
   const [classOptions, setclassOptions] = useState<classOption[]>([]);
   const [examquestionsOptions, setexamquestionsOptions] = useState<examsQuestionOption[]>([]);
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
@@ -58,8 +69,10 @@ const EditExamForm = (props:any) => {
     
     setclassOptions(clasii)
     setexamquestionsOptions(examsQuestions)
+    setsubjectsOptions(subjects); 
     refetch()
     refetch2()
+    refetch3()
   
   } 
   );
@@ -147,6 +160,26 @@ const EditExamForm = (props:any) => {
             ))}
           </select>
         </div>
+
+        <div>
+                        <label htmlFor="subject">
+                          Subject <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          {...register("subject", { required: "This field is required" })}
+                          className="form-input"
+                          placeholder="Choose"
+                        >
+                          <option value="" disabled selected hidden>
+                            Select an option
+                          </option>
+                          {subjectsOptions?.map((option) => (
+                            <option key={option.id} value={option.id}>
+                              {option.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
         <div>
           <label htmlFor="questions">Questions</label>
           <Select

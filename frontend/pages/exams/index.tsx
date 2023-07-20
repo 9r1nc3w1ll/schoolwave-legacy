@@ -72,23 +72,19 @@ const Export = (props:any) => {
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
       refetch()
-      console.log("This is our recorddtata",recordsData);
-      
-      
-  
-    }
+}
 
-  }, [sessionStatus, refetch]);
+  }, [sessionStatus,]);
   useEffect(() =>{
-    refetch
-    if(examDetails !=''){
-  
+    
+    if(isSuccess){
+      refetch();
       setSessions(examDetails)
       console.log(examDetails)
       
     
     }else {console.log("No Exam details")}
-  }, [examDetails]);
+  }, [isSuccess]);
 
 
   const dispatch = useDispatch();                          

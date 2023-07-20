@@ -91,7 +91,6 @@ export const getClass= async ( id : any, access_token?: string )=>{
 
 
 export const getClassStudents= async ( id : any, access_token?: string )=>{
-  console.log('rhg id', id)
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class-member/'+id , {
     method: "GET",
     headers: {
