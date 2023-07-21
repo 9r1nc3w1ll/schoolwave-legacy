@@ -14,14 +14,23 @@ type TLoginResponse = {
   }
 }
 
-
+const dummySchoolData = {
+  description: "The best School Ever",
+  name: "Alpha Institution",
+  motto: "Another one",
+  website_url: "https://www.sofascore.com/team/football/kf-fjallabyggdar/70086",
+  date_of_establishment: "1996-04-17",
+  owner: "f1fffae4-440e-423e-94ad-e0e90f267321",
+  tag: "Read",
+};
 const refreshToken = async (token: User): Promise<JWT> => {
   const { data: { user, school } } = await api.getSessionUser(token?.access_token)
 
   const res = {
     ...token,
     ...user,
-    ...(school ? { school } : {}),
+    school: school ? school : dummySchoolData, 
+    // ...(school ? { school } : {}),
     name: `${user.first_name} ${user.last_name}`,
   };
   return res

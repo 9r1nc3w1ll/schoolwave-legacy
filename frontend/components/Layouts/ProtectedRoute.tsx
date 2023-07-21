@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import DefaultLayout from './DefaultLayout';
 import React from 'react';
+import TeacherDefaultLayout from './TeacherDashbordLayout';
 
 type ProtectedLayoutProps = {
   children: React.ReactNode;
@@ -10,7 +11,8 @@ type ProtectedLayoutProps = {
 
 export const ProtectedLayout = ({ children }: ProtectedLayoutProps) => {
   const router = useRouter();
-  const { status: sessionStatus } = useSession();
+  const { status: sessionStatus, data: user_session } = useSession();
+  
 
   useEffect(() => {
     if (sessionStatus == 'loading' || !router.isReady) return;
@@ -24,7 +26,17 @@ export const ProtectedLayout = ({ children }: ProtectedLayoutProps) => {
 
   if (sessionStatus == 'loading') {
     return <>Loading schoolwave...</>;
+  } 
+  if (sessionStatus == 'authenticated'){
+    console.log("The session",user_session)
+
+  }
+  if (user_session?.role =='teacher'){
+    return sessionStatus == 'authenticated' ? <TeacherDefaultLayout>{children}</TeacherDefaultLayout> : <></>;
+  } else {
+
+    return sessionStatus == 'authenticated' ? <DefaultLayout>{children}</DefaultLayout> : <></>;
   }
 
-  return sessionStatus == 'authenticated' ? <DefaultLayout>{children}</DefaultLayout> : <></>;
+    
 };

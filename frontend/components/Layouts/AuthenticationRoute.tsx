@@ -8,12 +8,13 @@ type Props = {
 
 export const AuthenticationRoute = ({ children }: Props): JSX.Element => {
   const router = useRouter();
-  const { status: sessionStatus, data } = useSession();
+  const { status: sessionStatus, data:user_session } = useSession();
 
   useEffect(() => {
     if (sessionStatus == 'loading' || !router.isReady) return;
 
     if (sessionStatus == 'authenticated') {
+      
       router.push({
         pathname: '/',
         query: { returnUrl: router.asPath },
