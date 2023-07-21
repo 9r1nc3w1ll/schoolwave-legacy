@@ -9,9 +9,15 @@ export const createSession= async(access_token: string, data: any)=>{
     body: JSON.stringify(data),
   })
   let tempData= await res.json()
- 
-  
-  return tempData
+  if(res.ok){
+    return tempData
+
+  }else{
+    return {
+      error:true,
+      message: 'An error occured'
+    }
+  }
 }
 
 export const editSession= async(id: string, access_token: string, data: any)=>{

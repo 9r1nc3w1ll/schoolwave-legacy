@@ -1,8 +1,12 @@
-import { PropsWithChildren } from 'react';
+import { type ReactNode } from 'react';
 import App from '@/App';
 import React from 'react';
 
-const OnboardingLayout = ({ children }: PropsWithChildren) => {
+interface IProps {
+  children: ReactNode;
+}
+
+const OnboardingLayout = ({ children }: IProps) => {
   return (
     <App>
       <div className="flex min-h-screen items-center justify-center bg-[url('/assets/images/map.svg')] bg-cover bg-center dark:bg-[url('/assets/images/map-dark.svg')]">

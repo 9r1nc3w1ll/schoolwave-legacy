@@ -1,4 +1,3 @@
-import { useSession } from 'next-auth/react';
 import App from '@/App';
 import { type ReactNode } from 'react';
 interface IProps {
@@ -6,7 +5,6 @@ interface IProps {
 }
 
 const BlankLayout = ({ children }: IProps) => {
-  const { data } = useSession();
 
   return (
     <App>

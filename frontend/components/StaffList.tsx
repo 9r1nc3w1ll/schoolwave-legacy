@@ -9,7 +9,6 @@ import { getStaffs, getStudents } from '@/apicalls/users';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import CreateEmployee from '@/components/CreateEmployee';
-import { Dialog, Transition } from '@headlessui/react';
 import EditEmployee from '@/components/EditEmployee';
 import { useSession } from 'next-auth/react';
 import { getClassStaffs } from '@/apicalls/class-api';
@@ -81,9 +80,9 @@ const StaffList = (props:any) => {
 
         return students.filter((item: any) => {
           return (
-            item.user.toString().includes(search.toLowerCase()) ||
-                      item.first_name.toLowerCase().includes(search.toLowerCase()) ||
-                      item.last_name.toLowerCase().includes(search.toLowerCase()) 
+            item.user?.toString().includes(search.toLowerCase()) ||
+                      item.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+                      item.last_name?.toLowerCase().includes(search.toLowerCase()) 
                   
           );
         });

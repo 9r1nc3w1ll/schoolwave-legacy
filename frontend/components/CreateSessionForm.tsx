@@ -29,11 +29,13 @@ const CreateSessionForm = ( props:any) => {
       createSession(props.user_session.access_token, data),
     {
       onSuccess: async (data) => {
-        showAlert('success', 'Session Created Successfuly')
-        props.refreshList()
-        props.exit(false)
-        reset()
-        
+        if(!data.error){      showAlert('success', 'Session Created Successfuly')
+          props.refreshList()
+          props.exit(false)
+          reset()
+        }else{
+          showAlert('error', data.message)
+        }
   
       },
       onError: (error:any) => {
