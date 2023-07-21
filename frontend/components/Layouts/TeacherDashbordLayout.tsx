@@ -27,6 +27,20 @@ const TeacherDefaultLayout = ({ children }: IProps) => {
   const [animation, setAnimation] = useState(themeConfig.animation);
   const dispatch = useDispatch();
 
+
+
+  // useEffect(()=>{
+  //   if (user_session?.role !=='teacher'){
+  //     router.push({
+  //       pathname: '/',
+  //       query: { returnUrl: router.asPath },
+  //     });
+  //   }
+  // })
+  
+  
+
+
   const goToTop = () => {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
@@ -67,6 +81,9 @@ const TeacherDefaultLayout = ({ children }: IProps) => {
       setAnimation('');
     }, 1100);
   }, [router.asPath]);
+
+
+  if (sessionStatus =="authenticated" && user_session?.role =='teacher'){
 
   return (
     <App>
@@ -128,6 +145,9 @@ const TeacherDefaultLayout = ({ children }: IProps) => {
       </div>
     </App>
   );
-};
+}{
+  return <h1>Loading...</h1>
+}
+}
 
 export default TeacherDefaultLayout;

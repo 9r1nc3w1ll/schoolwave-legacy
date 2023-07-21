@@ -51,9 +51,9 @@ const CreateSessionForm = ( props:any) => {
 
   const onSubmit = async (tempData: any) => { 
     tempData.active = false
-    // tempData.school = props.user_session?.school.id
+    tempData.school = props.user_session?.school.id
   
-    // mutate(tempData);                                                                  
+    mutate(tempData);                                                                  
   };
   return (
     <div  className="">
@@ -73,7 +73,7 @@ const CreateSessionForm = ( props:any) => {
         </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
 
-          <button  type="submit"  className="btn btn-primary ltr:ml-4 rtl:mr-4">
+          <button  type="submit"  className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={onSubmit}>
                                             Submit
           </button>
         </div>

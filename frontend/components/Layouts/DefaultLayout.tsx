@@ -26,6 +26,17 @@ const DefaultLayout = ({ children }: IProps) => {
   const [animation, setAnimation] = useState(themeConfig.animation);
   const dispatch = useDispatch();
 
+
+useEffect(()=>{
+  if (user_session?.role!=='admin'){
+    router.push({
+      pathname: '/',
+      query: { returnUrl: router.asPath },
+    });
+  }
+})
+
+
   const goToTop = () => {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
@@ -67,8 +78,12 @@ const DefaultLayout = ({ children }: IProps) => {
     }, 1100);
   }, [router.asPath]);
 
+
+  if (sessionStatus =="authenticated" && user_session?.role =='admin'){
+  
   return (
-    <App>
+    
+  <App>
       <div className="relative">
         {showLoader && (
           <div className="screen_loader animate__animated fixed inset-0 z-[60] grid place-content-center bg-[#fafafa] dark:bg-[#060818]">
@@ -126,7 +141,10 @@ const DefaultLayout = ({ children }: IProps) => {
         </div>
       </div>
     </App>
+          
   );
+}
+return <h1>Loading...</h1>
 };
 
 export default DefaultLayout;

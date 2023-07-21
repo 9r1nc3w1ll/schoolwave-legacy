@@ -21,22 +21,20 @@ export const ProtectedLayout = ({ children }: ProtectedLayoutProps) => {
         pathname: '/login',
         query: { returnUrl: router.asPath },
       });
+     
     }
+
   }, [sessionStatus, router]);
 
   if (sessionStatus == 'loading') {
-    return <>Loading schoolwave...</>;
+    return <>Loading bb...</>;
   } 
   if (sessionStatus == 'authenticated'){
-    console.log("The session",user_session)
 
   }
-  if (user_session?.role =='teacher'){
-    return sessionStatus == 'authenticated' ? <TeacherDefaultLayout>{children}</TeacherDefaultLayout> : <></>;
-  } else {
-
-    return sessionStatus == 'authenticated' ? <DefaultLayout>{children}</DefaultLayout> : <></>;
-  }
+ 
+ return sessionStatus == 'authenticated' ? <DefaultLayout>{children}</DefaultLayout> : <></>;
+  
 
     
 };

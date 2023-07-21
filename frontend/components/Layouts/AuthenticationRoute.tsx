@@ -14,6 +14,7 @@ export const AuthenticationRoute = ({ children }: Props): JSX.Element => {
     if (sessionStatus == 'loading' || !router.isReady) return;
 
     if (sessionStatus == 'authenticated') {
+  
       
       router.push({
         pathname: '/',
