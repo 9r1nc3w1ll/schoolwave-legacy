@@ -48,7 +48,6 @@ const Export =  (props:any) => {
   useEffect(()=>{
     if(sessionStatus == 'authenticated'){
       refetch()
-      console.log("session data",sessionData )
     } else {console.log("Authentication faied")}
   }, [sessionStatus])
   useEffect(() => {

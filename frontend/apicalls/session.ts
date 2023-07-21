@@ -80,8 +80,8 @@ export const getSingleSession= async (id: any, access_token?: string)=>{
 }
 
 
-export const getTerms= async (access_token: any)=>{
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/term' , {
+export const getTerms= async (id?: string, access_token?: string)=>{
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/term?session_id='+ id , {
     method: "GET",
     headers: {
       "content-Type": "application/json",

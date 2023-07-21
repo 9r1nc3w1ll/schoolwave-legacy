@@ -22,7 +22,7 @@ export default function Basic ( props: any) {
 
 
   const { data: tableData, isSuccess, status, refetch } = useQuery('getTerms', () => {
-    return getTerms(user_session?.access_token)
+    return getTerms(router? router.query?.id: '', user_session?.access_token)
   }, {
     enabled: false
   })
