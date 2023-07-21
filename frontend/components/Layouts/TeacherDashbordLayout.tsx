@@ -29,14 +29,14 @@ const TeacherDefaultLayout = ({ children }: IProps) => {
 
 
 
-  // useEffect(()=>{
-  //   if (user_session?.role !=='teacher'){
-  //     router.push({
-  //       pathname: '/',
-  //       query: { returnUrl: router.asPath },
-  //     });
-  //   }
-  // })
+  useEffect(()=>{
+    if (user_session?.role !=='teacher'){
+      router.push({
+        pathname: '/',
+        query: { returnUrl: router.asPath },
+      });
+    }
+  })
   
   
 
