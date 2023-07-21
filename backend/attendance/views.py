@@ -22,46 +22,6 @@ class ListCreateStudentAttendance(ListCreateAPIView):
         else:
             return self.queryset.all()
 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     if not serializer.is_valid():
-    #         resp = {
-    #             "message": "Validation error",
-    #             "errors": serializer.errors,
-    #         }
-    #         return Response(resp, status=status.HTTP_400_BAD_REQUEST)
-
-    #     user = request.user
-
-    #     message = "Only admin or class teacher can create student attendance."
-    #     if user.role == "admin":
-    #         resp = {
-    #             "message": message,
-    #         }
-    #         return Response(resp, status=status.HTTP_403_FORBIDDEN)
-        
-    #     elif user.role == "teacher":
-
-    #         try:
-    #             class_id = serializer.validated_data.get("class_id")
-    #             user_class_member = ClassMember.objects.get(user=user, class_id=class_id)
-    #             print(user_class_member)
-    #         except AttendanceRecord.DoesNotExist:
-    #             resp = {
-    #                 "message": "You are not assigned to this class. Only assigned teachers can create student attendance for the class.",
-    #             }
-    #             return Response(resp, status=status.HTTP_403_FORBIDDEN)
-
-    #     serializer.validated_data['staff_id'] = user.id
-    #     serializer.save()
-
-    #     headers = self.get_success_headers(serializer.data)
-    #     resp = {
-    #         "message": "Student attendance created successfully.",
-    #         "data": serializer.data,
-    #     }
-    #     return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
-   
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
@@ -73,13 +33,13 @@ class ListCreateStudentAttendance(ListCreateAPIView):
 
         user = request.user
 
-        if user.role == "admin":
+        if not user.role == "admin":
             resp = {
                 "message": "Only admin or class teacher can create student attendance.",
             }
             return Response(resp, status=status.HTTP_403_FORBIDDEN)
         
-        elif user.role == "teacher":
+        elif not user.role == "teacher":
             try:
                 class_id = serializer.validated_data.get("class_id")
                 user_class_member = ClassMember.objects.get(user=user, class_id=class_id)
