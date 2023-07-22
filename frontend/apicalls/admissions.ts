@@ -11,8 +11,16 @@ export const BulkAdmissionUpload= async (data:any, access_token ?: string)=>{
 
     return tempData
   }else{
+  
+    
+    let msg = 'an error occured'
+
+    if(tempData.message.split(' ')[0] == 'duplicate'){
+      msg = "one or more admission with similar record already exist"
+    }
     return{
-      error: true
+      error: true,
+      message: msg
     }
   }
 }
@@ -27,15 +35,19 @@ export const createAdmission= async ( data : any, access_token?: string)=>{
     }
   })
   let tempData= await res.json()
-  
-  console.log('eeee',res)
+  console.log(tempData)
+  let msg = 'an error occured'
+
+  if(tempData.message.split(' ')[tempData.message.split(' ').length - 1] == 'exists.'){
+    msg = "student information with this username already exists."
+  }
   if(res.ok){
 
     return tempData.data
   }else{
     return {
       error: true,
-      msg: 'An Error Occured'
+      message: msg
     }
   }
 }

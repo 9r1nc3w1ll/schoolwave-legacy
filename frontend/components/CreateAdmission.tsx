@@ -82,7 +82,7 @@ const CreateAdmission  = (props:any) => {
                   props.refreshAdmission()
                   props.setmodal(false)
                 }else{
-                  showAlert('error', 'An Error Occured' )
+                  showAlert('error', data.message )
                 }
 
               },

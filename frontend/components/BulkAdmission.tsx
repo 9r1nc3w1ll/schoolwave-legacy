@@ -18,7 +18,7 @@ export default function BulkAdmission(props:any){
           props.refreshAdmission()
           props.closeModal(false)
         }else{
-          showAlert('error', 'An error occured with the upload')
+          showAlert('error', data.message)
         }
 
       },
