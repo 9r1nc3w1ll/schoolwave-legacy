@@ -14,8 +14,11 @@ import { showAlert } from '@/utility_methods/alert';
 import { getClasses } from '@/apicalls/class-api';
 import { Session } from 'next-auth';
 import ClassSelect from '@/components/ClassSelect';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { Parser } from 'html-to-react'
+import { formatDate } from '@/utility_methods/datey';
+
 
 
 
@@ -129,18 +132,7 @@ useEffect(()=>{
   
 
 const searchNotes = () => {
-  // if (selectedTab !== 'fav') {
-  //   if (selectedTab !== 'all' || selectedTab === 'delete') {
-  //     setFilterdNotesList(notesList.filter((d: any) => d.tag === selectedTab));
-  //   } else {
-  //     setFilterdNotesList(notesList);
-        
-  //   }
-  // } else {
-  //   setFilterdNotesList(notesList.filter((d: any) => d.isFav));
-  // }
-
-    
+   
 };
 
 
@@ -228,7 +220,9 @@ const changeValue = (e: any) => {
   
     setParams({ ...params, [id]: value, week: ["1","2"], created_by: user_session?.id, last_updated_by:user_session?.id, });
   }else{
-    setParams({ ...params, content: e, week: ["1","2"], created_by: user_session?.id, last_updated_by:user_session?.id, });
+    let text = e.getData()
+    console.log(text)
+    setParams({ ...params, content: text, week: ["1","2"], created_by: user_session?.id, last_updated_by:user_session?.id, });
 
   }
 };
@@ -508,7 +502,7 @@ return (
                           </div>
                           <div className="ltr:ml-2 rtl:mr-2">
                             {/* <div className="font-semibold">{note.topic}</div> */}
-                            <div className="text-sx text-white-dark">{note.created_at}</div>
+                            <div className="text-sx text-white-dark">{formatDate(note.created_at)}</div>
                           </div>
                         </div>
                         <div className="dropdown">
@@ -829,7 +823,23 @@ return (
                         </div>
                         <div className='mb-5'>
                           <label htmlFor="content">Content:</label>
-                          <ReactQuill theme="snow" value={params.content} onChange={changeValue} />
+                          {/* <ReactQuill theme="snow" value={params.content} onChange={changeValue} /> */}
+
+                          <CKEditor
+                            editor={ ClassicEditor }
+                            data={params.content}
+                            onReady={ editor => {
+                              // You can store the "editor" and use when it is needed.
+                              console.log( 'Editor is ready to use!', editor );
+                            } }
+                            onChange={(event, editor)=>{changeValue(editor)}}
+                            onBlur={ ( event, editor ) => {
+                              console.log( 'Blur.', editor );
+                            } }
+                            onFocus={ ( event, editor ) => {
+                              console.log( 'Focus.', editor );
+                            } }
+                          />
                         </div>
 
                         <div>
@@ -1020,11 +1030,12 @@ return (
                     </div>
                     <div className="p-5">
                       <div className="font-semibold">{params.description}</div>
+                      <p className="text-base  py-5"> {Parser().parse(params.content)}</p>
                       <p className="text-base  py-5"> {params.content}</p>
 
                       <div className="mt-8 ltr:text-right rtl:text-left">
                         <button type="button" className="btn btn-outline-danger" onClick={() => setIsViewNoteModal(false)}>
-                                                        Close
+                                                        Close 
                         </button>
                       </div>
                     </div>
