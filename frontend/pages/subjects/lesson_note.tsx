@@ -14,10 +14,11 @@ import { showAlert } from '@/utility_methods/alert';
 import { getClasses } from '@/apicalls/class-api';
 import { Session } from 'next-auth';
 import ClassSelect from '@/components/ClassSelect';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Parser } from 'html-to-react'
 import { formatDate } from '@/utility_methods/datey';
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css';
+const ReactQuill = dynamic(import('react-quill'), { ssr: false });
 
 
 
@@ -220,8 +221,8 @@ const changeValue = (e: any) => {
   
     setParams({ ...params, [id]: value, week: ["1","2"], created_by: user_session?.id, last_updated_by:user_session?.id, });
   }else{
-    let text = e.getData()
-    console.log(text)
+    let text = e
+    // console.log(text)
     setParams({ ...params, content: text, week: ["1","2"], created_by: user_session?.id, last_updated_by:user_session?.id, });
 
   }
@@ -782,7 +783,7 @@ return (
                   leaveFrom="opacity-100 scale-100"
                   leaveTo="opacity-0 scale-95"
                 >
-                  <Dialog.Panel className="panel w-full max-w-3xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                  <Dialog.Panel className="panel w-full max-w-5xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
                     <button
                       type="button"
                       onClick={() => setAddContactModal(false)}
@@ -825,7 +826,16 @@ return (
                           <label htmlFor="content">Content:</label>
                           {/* <ReactQuill theme="snow" value={params.content} onChange={changeValue} /> */}
 
-                          <CKEditor
+                          <div className="h-fit">
+                            <ReactQuill
+                              theme="snow"
+                              value={params.content || ''}
+                              defaultValue={params.content|| ''}
+                              onChange={changeValue}
+                              style={{ minHeight: '200px' }}
+                            />
+                          </div>
+                          {/* <CKEditor
                             editor={ ClassicEditor }
                             data={params.content}
                             onReady={ editor => {
@@ -839,7 +849,7 @@ return (
                             onFocus={ ( event, editor ) => {
                               console.log( 'Focus.', editor );
                             } }
-                          />
+                          /> */}
                         </div>
 
                         <div>
@@ -903,7 +913,7 @@ return (
                   leaveFrom="opacity-100 scale-100"
                   leaveTo="opacity-0 scale-95"
                 >
-                  <Dialog.Panel className="panel w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                  <Dialog.Panel className="panel w-full max-w-5xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
                     <button
                       type="button"
                       onClick={() => setIsDeleteNoteModal(false)}
@@ -989,7 +999,7 @@ return (
                   leaveFrom="opacity-100 scale-100"
                   leaveTo="opacity-0 scale-95"
                 >
-                  <Dialog.Panel className="panel w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                  <Dialog.Panel className="panel w-full max-w-5xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
                     <button
                       type="button"
                       onClick={() => setIsViewNoteModal(false)}
