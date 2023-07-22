@@ -41,7 +41,7 @@ const CreateEmployee  = (props:any) => {
             guardian_occupation:string;
             guardian_phone_number: string;
             guardian_address: string;
-            // Define other form fields here
+            // Define other form field here
           };
           
           
