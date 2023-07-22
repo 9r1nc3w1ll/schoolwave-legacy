@@ -13,8 +13,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from account.utils import send_user_mail
-from school.models import School
-from school.serializers import SchoolSerializer
+from school.models import School, ClassMember
+from school.serializers import SchoolSerializer, ClassMemberSerializer
 
 from .models import PasswordResetRequest, User
 from .serializers import (
@@ -300,11 +300,31 @@ class UserRoles(APIView):
         role
     }
     """
-
+    
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
-        user = self.get_object()
+        user = request.user
         roles = list(user.groups.values_list("name", flat=True))
         return Response({"roles": roles})
+
+
+class UserClass(APIView):
+    permission_classes = [IsAuthenticated]
+    queryset = ClassMember.objects.all()
+    serializer_class = ClassMemberSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        try:
+            user = ClassMember.objects.get(user=user)
+            data = ClassMemberSerializer(user).data
+            message = "User class retrieved successfully."
+        except ClassMember.DoesNotExist:
+            return Response({"message": "User not assigned to a class"})
+        resp = {
+            "message": message,
+            "data": data,
+        }
+        return Response(resp)
