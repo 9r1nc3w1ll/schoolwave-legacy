@@ -225,3 +225,39 @@ export const getSingleFeeTemplate= async (id: any, access_token?: string)=>{
       
   return tempData.data
 }
+
+export const getInvoices= async (access_token: any)=>{
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/fees/invoice' , {
+    method: "GET",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": 'Bearer '+ access_token, 
+    }
+  })
+  let tempData= await res.json()
+    
+   
+    
+  return tempData
+}
+
+export const createInvoice= async(access_token: string, data: any)=>{
+  const template = {
+    template: data.template,
+    items: ['9937acb1-f2ab-4555-a061-9417beb9fe7f']
+  }
+ 
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/fees/invoice/bulk_create_invoice/'+ data.class_id , {
+    method: "POST",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": 'Bearer '+ access_token, 
+    },
+    body: JSON.stringify(template),
+  })
+  let tempData= await res.json()
+     
+      
+  return tempData
+}
+    

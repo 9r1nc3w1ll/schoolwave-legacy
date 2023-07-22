@@ -588,6 +588,9 @@ const Sidebar = (props:any) => {
                           <Link href="/school-fees/fee-templates">{t('Fee Templates')}</Link>
                         </li>
                         <li>
+                          <Link href="/school-fees/invoices">{t('Invoices')}</Link>
+                        </li>
+                        <li>
                           <Link href="/school-fees/discounts">{t('Discounts')}</Link>
                         </li>
                       </ul>
