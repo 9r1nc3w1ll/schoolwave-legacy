@@ -12,8 +12,14 @@ export const createClass= async(data: any, access_token?: string)=>{
     return tempData
 
   }else{
+    let msg= 'An error occured'
+    if(tempData.message.split(' ')[tempData.message.split(' ').length - 1] == 'exists.'){
+      msg = "Class with class Code already exists"
+    }
+ 
     return {
-      error:true
+      error:true,
+      message: msg
     }
   }
   
@@ -33,8 +39,14 @@ export const editClass= async(id: string, access_token: string, data: any)=>{
     return tempData
 
   }else{
+    let msg= 'An error occured'
+    if(tempData.message.split(' ')[tempData.message.split(' ').length - 1] == 'exists.'){
+      msg = "Class with class Code already exists"
+    }
+ 
     return {
-      error:true
+      error:true,
+      message: msg
     }
   }
 }

@@ -38,7 +38,7 @@ const EditClassForm = (props:any) => {
           props.exit(false)
           props.refreshClasses()
         }else{
-          showAlert('error', 'An error occurred')
+          showAlert('error', data.message)
         }
 
   
@@ -66,7 +66,8 @@ const EditClassForm = (props:any) => {
 
         <div>
           <label htmlFor="name">Class Index</label>
-          <input id="class_index" type="number"  className="form-input" {...register("class_index", { required: "This field is required" })} />
+          <input id="class_index" type="number"  className="form-input" {...register("class_index", { required: "This field is required", validate: { positiveNumber: (value) => parseFloat(value) > 0,
+            lessThanHundred: (value) => parseFloat(value) < 100 }, })} />
         </div>
         <div>
           <label htmlFor="name"> Class Short Code</label>

@@ -5,7 +5,16 @@ import AttendanceTablet from './AttendanceTablet';
 
 const AttendanceAccordion =(props: any)=>{
   const [search, setSearch] = useState<string>('');
+  const [userID, setuserId] = useState([]);
+  const [userATT, setuserATT] = useState([]);
   const [filteredItems, setFilteredItems] = useState<any>(props.attendance? props.attendance.students: props.students);
+
+  const initAttendance =()=>{
+    let attnd= []
+    if(userID.length < 1 && userATT.length < 1){
+      props.attendance.forEach(att =>{attnd.push(att)})
+    }
+  }
 
   useEffect(() => {
     setFilteredItems(() => {
@@ -95,6 +104,7 @@ const AttendanceAccordion =(props: any)=>{
                     student. remark = ''
                     return <AttendanceTablet key={j}  user={student}  />})}
                 </div>
+                <button className='btn btn-primary' >Save</button>
               </AnimateHeight>
             </div>
           </div>

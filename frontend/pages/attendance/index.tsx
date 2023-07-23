@@ -171,7 +171,7 @@ const Attendance =()=>{
           :
           <>
 
-            <h1 className=" mt-6 text-xl font-semibold dark:text-white-light">Today</h1>
+            <h1 className=" mt-6 text-xl font-semibold dark:text-white-light">Attendace by day</h1>
             <div className="w-full">
 
               {

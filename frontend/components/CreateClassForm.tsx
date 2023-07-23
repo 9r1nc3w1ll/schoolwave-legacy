@@ -33,7 +33,7 @@ const CreateClassForm = (props: any) => {
           props.exit(false)
           reset()
           props.refreshClasses()}else{
-          showAlert('error', 'An error occurred')
+          showAlert('error', data.message)
         }
 
       },
@@ -44,7 +44,7 @@ const CreateClassForm = (props: any) => {
     }
   );
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: any, e: any) => {
 
     data.school = props.user_session.school.id
 
@@ -60,7 +60,9 @@ const CreateClassForm = (props: any) => {
         </div>
         <div>
           <label htmlFor="name">Class Index</label>
-          <input id="class_index" type="number" className="form-input" {...register("class_index", { required: "This field is required" })} />
+          <input id="class_index" type="number" min='0' className="form-input" {...register("class_index", { required: "This field is required", validate: { positiveNumber: (value) => parseFloat(value) > 0,
+            lessThanHundred: (value) => parseFloat(value) < 100 },
+          })}  />
         </div>
         <div>
           <label htmlFor="name">Class Short Code</label>
@@ -72,7 +74,7 @@ const CreateClassForm = (props: any) => {
         </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
 
-          <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
+          <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4" >
             Submit
           </button>
         </div>
