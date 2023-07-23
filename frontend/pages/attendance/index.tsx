@@ -179,12 +179,12 @@ const Attendance =()=>{
                 
                   attendance[0]?.attendance.map((student: { id: any; }, i: number) => {
                  
-                    return <AttendanceAccordion key={student.id} attendance={student}  i={`${i}`} togglePara={togglePara} active={active} />
+                    return <AttendanceAccordion class_id={selectedClass} key={student.id} attendance={student}  i={`${i}`} togglePara={togglePara} active={active} access_token={user_session?.access_token} />
                   }): today && studentList?.length? 
                   
                     
                  
-                    <AttendanceAccordion  today={presentday} students={studentList} i={1} togglePara={togglePara} active={active} />
+                    <AttendanceAccordion class_id={selectedClass}  today={presentday} students={studentList} i={1} togglePara={togglePara} active={active} access_token={user_session?.access_token}  />
                  
                   
                     :

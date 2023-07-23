@@ -1,19 +1,63 @@
 import AnimateHeight from 'react-animate-height';
 import { useEffect, useState } from 'react';
 import AttendanceTablet from './AttendanceTablet';
+import { useMutation } from 'react-query';
+import { showAlert } from '@/utility_methods/alert';
+import { markBulkAttendance } from '@/apicalls/attendance';
 
 
 const AttendanceAccordion =(props: any)=>{
   const [search, setSearch] = useState<string>('');
   const [userID, setuserId] = useState([]);
   const [userATT, setuserATT] = useState([]);
+  const [attRemarks, setAttRemarks] = useState([]);
   const [filteredItems, setFilteredItems] = useState<any>(props.attendance? props.attendance.students: props.students);
 
-  const initAttendance =()=>{
-    let attnd= []
-    if(userID.length < 1 && userATT.length < 1){
-      props.attendance.forEach(att =>{attnd.push(att)})
+  const { mutate, isLoading, error } = useMutation(
+    (data:any) =>{
+      return markBulkAttendance(data, props.access_token)},
+    {
+      onSuccess: async (data) => {
+        if(!data.error) {
+          showAlert('success', 'Attendance saved successfuly')
+          
+        }else{
+          showAlert('error', data.message)
+        }
+
+      },
+      onError: (error) => {
+
+        showAlert('error', 'An Error Occured')
+      }
     }
+  );
+
+  const handleChange =(i: number, remarks: string, att: boolean)=>{
+    let attnd: any= userATT
+    let rmrks: any = attRemarks
+    attnd[i]=  att
+    rmrks[i]= remarks
+
+    setuserATT(attnd)
+    setAttRemarks(rmrks)
+
+  }
+  const initAttendance =()=>{
+    let attnd: any = []
+    let usr: any = []
+    let rmrks: any = []
+    if(userID.length < 1 && userATT.length < 1){
+      filteredItems.forEach((att: any) =>{
+        usr.push(att.user)
+        attnd.push(false)
+        rmrks.push('absent')
+            
+      })
+    } 
+    setuserATT(attnd)
+    setuserId(usr)
+    setAttRemarks(rmrks)
   }
 
   useEffect(() => {
@@ -82,7 +126,9 @@ const AttendanceAccordion =(props: any)=>{
               <h1
           
                 className={`p-4 w-full flex items-center text-white-dark dark:bg-[#1b2e4b] `}
-                onClick={() => props.togglePara(props.i)}
+                onClick={() =>{ 
+                  initAttendance()
+                  props.togglePara(props.i)}}
               >
                 {props.today}
             
@@ -100,11 +146,23 @@ const AttendanceAccordion =(props: any)=>{
               <AnimateHeight duration={300} height={props.active === props.i ? 'auto' : 0}>
                 <div className="space-y-2 p-4 text-white-dark text-[13px] border-t border-[#d3d3d3] dark:border-[#1b2e4b]  flex gap-2 flex-wrap">
                   { filteredItems.map((student: any, j: number) =>{ 
-                    student.present = false
-                    student. remark = ''
-                    return <AttendanceTablet key={j}  user={student}  />})}
+                    student.present = userATT[j]
+                    student. remark = attRemarks[j]
+                    return <AttendanceTablet key={j}  user={student} handleChange={()=>{handleChange}} />})}
                 </div>
-                <button className='btn btn-primary' >Save</button>
+                <button className='btn btn-primary' onClick={()=>{
+                  mutate({
+                  
+                    "date": props.today,
+                    "attendance_type": "Daily",
+                    "present": userATT,
+                    "remark": attRemarks,
+                    "student": userID,
+                    "class_id": props.class_id,
+                  
+             
+                  })
+                }} >Save</button>
               </AnimateHeight>
             </div>
           </div>
