@@ -13,9 +13,14 @@ export const createSession= async(access_token: string, data: any)=>{
     return tempData
 
   }else{
+    let msg= 'An error occured'
+    if(tempData.message.split(' ')[tempData.message.split(' ').length - 1] == 'exists.' || tempData.message.split(' ')[0] == 'duplicate'){
+      msg = "Session already exists"
+    }
+ 
     return {
       error:true,
-      message: 'An error occured'
+      message: msg
     }
   }
 }

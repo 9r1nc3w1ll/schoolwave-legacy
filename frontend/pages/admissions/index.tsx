@@ -347,7 +347,7 @@ const Export = (props:any) => {
             className="table-hover whitespace-nowrap"
             records={recordsData}
             columns={[
-              { accessor: 'id', title: 'Staff No.', sortable: true },
+              { accessor: 'id', title: 'Admission No.', sortable: true },
               { accessor: 'student_info.first_name', title: 'First Name', sortable: true },
               { accessor: 'student_info.last_name', title: 'Last Name', sortable: true },
               { accessor: 'status', 

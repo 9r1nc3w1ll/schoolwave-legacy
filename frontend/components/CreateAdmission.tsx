@@ -114,38 +114,38 @@ const CreateAdmission  = (props:any) => {
                   <div className=' grid grid-cols-2 gap-5 md:grid-cols-3 md:gap-5'>
 
                     <div className='my-3'> 
-                      <label htmlFor="first_name"> First Name <span className='text-red-500'>*</span></label>
+                      <label htmlFor="first_name"> First Name </label>
                       <input {...register("first_name", { required: "This field is required" })}    className='form-input'/>
                     </div>
                     <div className='my-3'> 
-                      <label htmlFor="last_name"> Last Name <span className='text-red-500'>*</span></label>
+                      <label htmlFor="last_name"> Last Name </label>
                       <input {...register("last_name", { required: "This field is required" })}   className='form-input'/>
                     </div>
 
                     <div className='my-3'> 
-                      <label htmlFor="email"> email <span className='text-red-500'>*</span></label>
-                      <input {...register("email", { required: "This field is required" })}   className='form-input'/>
+                      <label htmlFor="email"> email </label>
+                      <input {...register("email")}   className='form-input'/>
                     </div>
                     <div className='my-3'> 
-                      <label htmlFor="username"> User Name <span className='text-red-500'>*</span></label>
+                      <label htmlFor="username"> User Name </label>
                       <input  className='form-input' {...register("username", { required: "This field is required" })} />
                     </div>
 
                     <div className='my-3'> 
-                      <label htmlFor="password"> Password <span className='text-red-500'>*</span></label>
-                      <input type="password" {...register("password",{ required: "This field is required" })}   className='form-input' />
+                      <label htmlFor="password"> Password </label>
+                      <input type="password" {...register("password")}   className='form-input' />
                     </div>
 
 
                     <div className='my-3'> 
-                      <label htmlFor="date_of_birth"> Da                                                                                                                                                      te of Birth <span className='text-red-500'>*</span> </label>
+                      <label htmlFor="date_of_birth"> Date of Birth  </label>
                       <input type='date' {...register("date_of_birth",{ required: "This field is required" })}  className="form-input"  />
 
                     </div>
 
 
                     <div className='my-3'> 
-                      <label htmlFor="gender"> Gender <span className='text-red-500'>*</span></label>
+                      <label htmlFor="gender"> Gender </label>
 
                       <select {...register('gender', { required: "This field is required" })}  className='form-input' placeholder='Choose' >
                         <option value="male">male</option>
@@ -154,7 +154,7 @@ const CreateAdmission  = (props:any) => {
                     </div>
 
                     <div className='my-3'> 
-                      <label htmlFor="bloogGroup"> Blood group <span className='text-red-500'>*</span></label>
+                      <label htmlFor="bloogGroup"> Blood group </label>
                       <select {...register('blood_group', { required: "This field is required" })}  className='form-input' placeholder='Choose'>
                         <option value= 'O+'>O+</option> 
                         <option value= 'O+'>O+ </option>
@@ -168,27 +168,27 @@ const CreateAdmission  = (props:any) => {
                     </div>
 
                     <div className='my-3'> 
-                      <label htmlFor="religion">Religion <span className='text-red-500'>*</span></label>
+                      <label htmlFor="religion">Religion </label>
                       <input {...register("religion", { required: "This field is required" })}  className='form-input'/>
                     </div>
 
                     <div className='my-3'> 
-                      <label htmlFor="phone_number"> Mobile No <span className='text-red-500'>*</span></label>
+                      <label htmlFor="phone_number"> Mobile No </label>
                       <input {...register("phone_number", { required: "This field is required" })}  className='form-input'/>
                     </div>
 
                     <div className='my-3'> 
-                      <label htmlFor="city"> City <span className='text-red-500'>*</span></label>
+                      <label htmlFor="city"> City </label>
                       <input {...register("city", { required: "This field is required" })}    className='form-input'/>
                     </div>
 
                     <div className='my-3'> 
-                      <label htmlFor="state"> State <span className='text-red-500'>*</span></label>
+                      <label htmlFor="state"> State </label>
                       <input {...register("state", { required: "This field is required" })}  className='form-input'/>
                     </div>
                   </div>
                   <div className='my-3'> 
-                    <label htmlFor="address"> Address <span className='text-red-500'>*</span></label>
+                    <label htmlFor="address"> Address </label>
                     <textarea id="ctnTextarea" rows={3} className="form-textarea" {...register("address", { required: "This field is required" })} placeholder="Enter Address" required></textarea>
                   </div>
 
@@ -199,20 +199,20 @@ const CreateAdmission  = (props:any) => {
                     <div className='font-bold py-6 text-lg'> Guardain details</div>
                     <div className=' grid grid-cols-2 gap-5'>
                       <div className='my-3'> 
-                        <label htmlFor="guardian_name"> Name <span className='text-red-500'>*</span></label>
+                        <label htmlFor="guardian_name"> Name </label>
                         <input {...register("guardian_name", { required: "This field is required" })}   className='form-input' />
                       </div>
 
                       <div className='my-3'> 
-                        <label htmlFor="relation"> Relation <span className='text-red-500'>*</span></label>
+                        <label htmlFor="relation"> Relation </label>
                         <input type="text" name="relation" className='form-input' placeholder='REM-10011'/>
                       </div>
                       <div className='my-3'> 
-                        <label htmlFor="guardian_occupation"> Guardian Occupation <span className='text-red-500'>*</span></label>
+                        <label htmlFor="guardian_occupation"> Guardian Occupation </label>
                         <input {...register("guardian_occupation", { required: "This field is required" })}   className='form-input' />
                       </div>
                       <div className='my-3'> 
-                        <label htmlFor="guardian_phone_number"> Guardian Phone Number <span className='text-red-500'>*</span><span className='text-red-500'>*</span></label>
+                        <label htmlFor="guardian_phone_number"> Guardian Phone Number </label>
                         <input {...register("guardian_phone_number", { required: "This field is required" })}    className='form-input ltr:rounded-l-none rtl:rounded-r-none"'/>
 
                       </div>
@@ -220,7 +220,7 @@ const CreateAdmission  = (props:any) => {
 
                     </div>
                     <div className='my-3'> 
-                      <label htmlFor="guardian_address"> Guardian Address<span className='text-red-500'>*</span></label>
+                      <label htmlFor="guardian_address"> Guardian Address</label>
                       <textarea id="ctnTextarea" rows={3} className="form-textarea" {...register("guardian_address", { required: "This field is required" })} placeholder="Enter Address" required></textarea>
 
                     </div>
