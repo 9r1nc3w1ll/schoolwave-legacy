@@ -28,6 +28,7 @@ export const createExams= async(  access_token: any, data: any)=>{
     return tempData
   }
   
+  
   export const editExam= async(id: string, access_token: string, data: any)=>{
     const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/exams' + id, {
       method: "PATCH",
