@@ -36,7 +36,7 @@ const Step1  = (props:any) => {
 
   useEffect(()=>{
     async function x (){
-      let y = await getSession(props.user_session.access_token)
+      let y = await getSession(props.user_session?.access_token)
       if(y.status == 'success'){
         let z:any = []
         y.data.forEach((session:any)=>{
@@ -146,10 +146,22 @@ const Step1  = (props:any) => {
                   <input id="currency" type="text"  className="form-input flex-1" />
                 </div>
                 <div className="flex sm:flex-row flex-col">
-                  <label htmlFor="horizontalPassword" className="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">
-            Currency Symbol
-                  </label>
-                  <input id="currencySymbol" type="text"  className="form-input flex-1" />
+                <label htmlFor="currencySymbol" className="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">
+                      Currency Symbol
+                    </label>
+                    <select id="currencySymbol" className="form-select flex-1">
+                      <option value="NGN">NGN (₦)</option>
+                      <option value="USD">USD ($)</option>
+                      <option value="EUR">EUR (€)</option>
+                      <option value="JPY">JPY (¥)</option>
+                      <option value="GBP">GBP (£)</option>
+                      <option value="AUD">AUD (A$)</option>
+                      <option value="CAD">CAD (C$)</option>
+                      <option value="CHF">CHF (Fr)</option>
+                      <option value="CNY">CNY (¥)</option>
+                      <option value="SEK">SEK (kr)</option>
+                      <option value="NZD">NZD (NZ$)</option>
+                    </select>
                 </div>
                 <div className="flex sm:flex-row flex-col">
                   <label htmlFor="horizontalPassword" className="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">
