@@ -1,3 +1,17 @@
+export const BulkSubjectsUpload= async (data:any, access_token ?: string)=>{
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/subject/batch_upload_requests' , {
+    method: "POST",
+    body: data,
+    headers: {
+      "Authorization": 'Bearer '+ access_token, 
+    }
+  })
+  let tempData= await res.json()
+   
+   
+  return tempData
+}
+
 
 export const createExams= async(  access_token: any, data: any)=>{
     const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/exams' , {
