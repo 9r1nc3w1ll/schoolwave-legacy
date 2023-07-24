@@ -100,6 +100,21 @@ export const getTerms= async (id: any, access_token?: string)=>{
 
 }
 
+export const getAllTerms= async ( access_token?: string)=>{
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/term', {
+    method: "GET",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": 'Bearer '+ access_token, 
+    }
+  })
+  let tempData= await res.json()
+ 
+  
+  return tempData.data
+
+}
+
 
 export const createTerm= async(data: any, access_token?: string, )=>{
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/session/term' , {

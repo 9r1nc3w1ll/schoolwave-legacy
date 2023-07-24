@@ -80,10 +80,10 @@ const Export = (props:any) => {
     if(isSuccess){
       refetch();
       setSessions(examDetails)
-      console.log(examDetails)
+     
       
     
-    }else {console.log("No Exam details")}
+    }
   }, [isSuccess]);
 
 
@@ -111,7 +111,7 @@ const Export = (props:any) => {
 
   useEffect(() => {
     setInitialRecords(examDetails);
-    console.log(examDetails)
+    
   }, [examDetails,isSuccess]);
   
 
@@ -125,7 +125,7 @@ const Export = (props:any) => {
     const from = (page - 1) * pageSize;
     const to = from + pageSize;
     setRecordsData([...initialRecords.slice(from, to)]);
-    console.log("initail", initialRecords.slice(from,to))
+   
   }, [page, pageSize, initialRecords]);
 
   useEffect(() => {

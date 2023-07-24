@@ -11,7 +11,7 @@ import {parse} from 'json2csv'
 import { useSession } from 'next-auth/react';
 import { CreateSubject } from '@/apicalls/subjects';
 import { getClasses } from '@/apicalls/class-api';
-import { getTerms } from '@/apicalls/session';
+import { getAllTerms } from '@/apicalls/session';
 
 
 
@@ -39,10 +39,11 @@ const Subject  = (props:any) => {
 
 
   const { data: clasii, isSuccess, status, refetch } = useQuery('classes', () => getClasses(user_session?.access_token), {enabled: false})
-  const { data: term, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('terms', () => getTerms(user_session?.access_token), {enabled: false})
+  const { data: term, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('terms', () => getAllTerms(user_session?.access_token), {enabled: false})
 
   useEffect(()=>{
     if(sessionStatus == 'authenticated'){
+     
       refetch()
       refetch2()
   
@@ -52,14 +53,13 @@ const Subject  = (props:any) => {
 
   useEffect(()=>{
     if(isSuccess && clasii && isSuccess2 && term){
+      
         
       setclassOptions(clasii)
       settermOptions(term)
-    
-        
-        
-    }
-  });
+      
+    } 
+  },[isSuccess, isSuccess2]);
 
   
 
