@@ -72,7 +72,7 @@ const SubjectUserAssignments = (props: any) => {
 
     options = items.map((item:any) => ({
       
-      label: item.id,
+      label: `${item.user_info.first_name} ${item.user_info.last_name}`,
       value: item.id,
     }))
 
