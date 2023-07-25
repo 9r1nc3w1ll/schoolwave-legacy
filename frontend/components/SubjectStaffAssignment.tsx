@@ -53,8 +53,8 @@ const SubjectUserAssignments = (props: any) => {
   useEffect(() => {
     if (teachersSuccess && rolesSuccess) {
       // setItems(teachersData);
-      // refetchTeacher()
-      // refetchRole()
+      refetchTeacher()
+      refetchRole()
       setItems(staffsDetails.data),
       setRoles(roleDetails)
       
