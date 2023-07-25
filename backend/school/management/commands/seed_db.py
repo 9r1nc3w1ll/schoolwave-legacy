@@ -1,5 +1,12 @@
 from django.core.management.base import BaseCommand
-from utils.factory import SchoolFactory, ClassFactory, TermFactory, SessionFactory, UserFactory, SubjectFactory
+from utils.factory import (
+    SchoolFactory, ClassFactory,
+    TermFactory, SessionFactory,
+    UserFactory, SubjectFactory,
+    DiscountFactory, FeeItemFactory,
+    FeeTemplateFactory, InvoiceFactory,
+    TransactionFactory
+    )
 from faker import Faker
 
 fk = Faker()
@@ -30,3 +37,18 @@ class Command(BaseCommand):
 
                     subject = SubjectFactory.create(class_id=class_instance, term=term_instance)
                     print("Subject created: ", subject.id)
+
+                    discount = DiscountFactory.create(school=school)
+                    print("Discount created: ", discount.id)
+
+                    fee_item = FeeItemFactory.create(discount=discount, school=school)
+                    print("Fee Item created: ", fee_item.id)
+
+                    template = FeeTemplateFactory.create(discount=discount, school=school, class_id=class_instance)
+                    print("Fee Item created: ", template.id)
+
+                    invoice = InvoiceFactory.create(template=template, school=school, student=owner)
+                    print("Fee Item created: ", invoice.id)
+
+                    transaction = TransactionFactory.create(school=school)
+                    print("Fee Item created: ", transaction.id)

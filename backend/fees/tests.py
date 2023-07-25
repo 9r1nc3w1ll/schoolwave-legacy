@@ -135,11 +135,14 @@ class FeeTemplateTestCase(APITestCase):
         url = reverse("list_create_fee_template")
         data = {
             "name": "New Fee Item",
+            "description": "New Fee Item Description",
             "school": self.school.id,
             "class_id" : self.class_obj.id,
             "required_items" : [self.fee_item.id,],
             "optional_items" : [self.fee_item.id,],
-            "discount" : self.discount.id
+            "discount" : self.discount.id,
+            "active": "True",
+            "tax": 23
         }
         self.client.force_authenticate(user=self.user)
         response = self.client.post(url, data, format="json")

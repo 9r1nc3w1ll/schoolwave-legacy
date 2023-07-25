@@ -9,13 +9,19 @@ from config.models import BaseModel
 
 import uuid
 
-
+from django.db.models.signals import post_save, m2m_changed
+from django.dispatch import receiver
 
 class Discount(BaseModel):
     class Meta:
         db_table = "discount"
     
-    discount_type = models.CharField(max_length=20, default="percentage")
+    DISCOUNT_TYPE_CHOICES = (
+        ('percentage', 'Percentage'),
+        ('amount', 'Amount'),
+    )
+
+    discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPE_CHOICES, default='percentage')
     amount = models.IntegerField(default=0)
     percentage = models.IntegerField(default=10)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
@@ -32,14 +38,25 @@ class FeeItem(BaseModel):
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
 
+    @property
+    def total_amount(self):
+        if self.discount.discount_type == 'percentage':
+            discount_amount = self.amount * self.discount.percentage / 100
+        else:
+            discount_amount = self.discount.amount
+
+        return self.amount - self.tax - discount_amount
+
 
 class FeeTemplate(BaseModel):
     class Meta:
         db_table = "fee_templates"
 
+    name = models.CharField(max_length=200)
+    description = models.TextField()
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     required_items = models.ManyToManyField(FeeItem, related_name="required")
-    optional_items = models.ManyToManyField(FeeItem, related_name="optional")
+    optional_items = models.ManyToManyField(FeeItem, related_name="optional", blank=True)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     tax = models.IntegerField(default=0)
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE)
@@ -53,10 +70,38 @@ class Invoice(BaseModel):
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     template = models.ForeignKey(FeeTemplate, on_delete=models.CASCADE)
     amount_paid = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-    items = models.ManyToManyField(FeeItem)
+    items = models.ManyToManyField(FeeItem, blank=True)
     balance = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
     outstanding_balance = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
+
+# Signal to create the Invoice items based on the related FeeTemplate
+@receiver(post_save, sender=Invoice)
+def create_invoice_items(sender, instance, created, **kwargs):
+    if created:
+        # Get the required and optional items from the related FeeTemplate
+        required_items = instance.template.required_items.all()
+        optional_items = instance.template.optional_items.all()
+
+        # Add required items to the Invoice
+        instance.items.add(*required_items)
+
+        # Add optional items to the Invoice if they exist
+        if optional_items.exists():
+            instance.items.add(*optional_items)
+
+# Signal to update the Invoice items when FeeTemplate items are modified
+@receiver(m2m_changed, sender=FeeTemplate.required_items.through)
+@receiver(m2m_changed, sender=FeeTemplate.optional_items.through)
+def update_invoice_items(sender, instance, **kwargs):
+    invoices_with_template = Invoice.objects.filter(template=instance)
+    for invoice in invoices_with_template:
+        required_items = instance.required_items.all()
+        optional_items = instance.optional_items.all()
+
+        # Update items in the Invoice
+        items_to_add = set(required_items).union(optional_items)
+        invoice.items.set(items_to_add)
 
 
 class Transaction(BaseModel):
