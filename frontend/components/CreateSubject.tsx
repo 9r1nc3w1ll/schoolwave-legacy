@@ -33,12 +33,12 @@ const Subject  = (props:any) => {
     name: string;
   }
 
-  const [classOptions, setclassOptions] = useState<classOption[]>([]);
-  const [termOptions, settermOptions] = useState<termOption[]>([]);
+  const [classOptions, setClassOptions] = useState<classOption[]>([]);
+  const [termOptions, setTermOptions] = useState<termOption[]>([]);
   const [date1, setDate1] = useState<any>('2022-07-05');
 
 
-  const { data: clasii, isSuccess, status, refetch } = useQuery('classes', () => getClasses(user_session?.access_token), {enabled: false})
+  const { data: classDetails, isSuccess, status, refetch } = useQuery('classes', () => getClasses(user_session?.access_token), {enabled: false})
   const { data: term, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('terms', () => getAllTerms(user_session?.access_token), {enabled: false})
 
   useEffect(()=>{
@@ -52,11 +52,11 @@ const Subject  = (props:any) => {
   }, [sessionStatus, refetch,refetch2])
 
   useEffect(()=>{
-    if(isSuccess && clasii && isSuccess2 && term){
+    if(isSuccess && classDetails && isSuccess2 && term){
       
         
-      setclassOptions(clasii)
-      settermOptions(term)
+      setClassOptions(classDetails)
+      setTermOptions(term)
       
     } 
   },[isSuccess, isSuccess2]);

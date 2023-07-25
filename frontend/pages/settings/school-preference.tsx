@@ -36,10 +36,10 @@ const Step1  = (props:any) => {
 
   useEffect(()=>{
     async function x (){
-      let y = await getSession(props.user_session?.access_token)
-      if(y.status == 'success'){
+      let SessionDetails = await getSession(props.user_session?.access_token)
+      if(SessionDetails.status == 'success'){
         let z:any = []
-        y.data.forEach((session:any)=>{
+        SessionDetails.data.forEach((session:any)=>{
           z.push({value:session.name, label:session.name})
         })
       
