@@ -19,7 +19,7 @@ GENDERS = (("male", "Male"), ("female", "Female"))
 
 class StudentInformation(BaseModel):
     username = models.CharField(max_length=200, unique=True)
-    password = models.CharField(max_length=200)
+    password = models.CharField(max_length=200, null=True, blank=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     email = models.EmailField(null=True, blank=True)
