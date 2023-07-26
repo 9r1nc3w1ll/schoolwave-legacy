@@ -33,13 +33,14 @@ class FeeTemplateSerializer(serializers.ModelSerializer):
         return None
     
     def get_discount_info(self, obj):
-        data =  {
-                'id': obj.discount.id,
-                'discount_type': obj.discount.discount_type,
-                'amount': obj.discount.amount,
-                'percentage': obj.discount.percentage,
+
+        if obj.discount:
+            data =  {
+                    'id': obj.discount.id,
+                    'discount_type': obj.discount.discount_type,
+                    'amount': obj.discount.amount,
+                    'percentage': obj.discount.percentage,
             }
-        if data:
             return data
         return None
 
@@ -62,14 +63,15 @@ class FeeItemSerializer(serializers.ModelSerializer):
         return None
     
     def get_discount_info(self, obj):
-        data =  {
-                'id': obj.discount.id,
-                'discount_type': obj.discount.discount_type,
-                'amount': obj.discount.amount,
-                'percentage': obj.discount.percentage,
+        if obj.discount:
+            data =  {
+                    'id': obj.discount.id,
+                    'discount_type': obj.discount.discount_type,
+                    'amount': obj.discount.amount,
+                    'percentage': obj.discount.percentage,
             }
-        if data:
-            return data
+            
+            return data        
         return None
 
 
@@ -110,7 +112,7 @@ class DiscountSerializer(serializers.ModelSerializer):
 class InvoiceSerializer(serializers.ModelSerializer):
     school_info = serializers.SerializerMethodField()
     template_info = serializers.SerializerMethodField()
-    items_info = serializers.SerializerMethodField()
+    items = serializers.SerializerMethodField()
     student_info = serializers.SerializerMethodField()
 
     class Meta:
@@ -135,14 +137,20 @@ class InvoiceSerializer(serializers.ModelSerializer):
             return data
         return None
     
-    def get_items_info(self, obj):
+    def get_items(self, obj):
+
+        items: FeeItem = obj.items
+
         data = [
             {
                 'id': item.id,
                 'name': item.name,
                 'description': item.description,
+                'amount' : item.amount,
+                'tax' : item.tax,
+                'discount' : item.total_amount
             }
-            for item in obj.items.all()  # Loop through each FeeItem in obj.items
+            for item in items.all()  # Loop through each FeeItem in obj.items
         ]
         if data:
             return data

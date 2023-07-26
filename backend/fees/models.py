@@ -35,17 +35,20 @@ class FeeItem(BaseModel):
     description = models.TextField()
     amount = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
     tax = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
-    discount = models.ForeignKey(Discount, on_delete=models.CASCADE)
+    discount = models.ForeignKey(Discount, on_delete=models.CASCADE, null=True, blank=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     @property
     def total_amount(self):
-        if self.discount.discount_type == 'percentage':
-            discount_amount = self.amount * self.discount.percentage / 100
-        else:
-            discount_amount = self.discount.amount
+        if self.discount:
+            if self.discount.discount_type == 'percentage':
+                discount_amount = self.amount * self.discount.percentage / 100
+            else:
+                discount_amount = self.discount.amount
 
-        return self.amount - self.tax - discount_amount
+            return self.amount - self.tax - discount_amount
+        else:
+            return self.amount - self.tax
 
 
 class FeeTemplate(BaseModel):
@@ -59,7 +62,7 @@ class FeeTemplate(BaseModel):
     optional_items = models.ManyToManyField(FeeItem, related_name="optional", blank=True)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     tax = models.IntegerField(default=0)
-    discount = models.ForeignKey(Discount, on_delete=models.CASCADE)
+    discount = models.ForeignKey(Discount, on_delete=models.CASCADE, null=True, blank=True)
     active = models.BooleanField(default=True)
 
 
