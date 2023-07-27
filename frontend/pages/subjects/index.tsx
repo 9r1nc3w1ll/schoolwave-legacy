@@ -53,12 +53,7 @@ const Export = (props:any) => {
   const [assignStudent, setassignStudent] = useState(false);
   const [uploadModal, setuploadModal] = useState(false);
   const [editModal, seteditModal ] = useState(false)
-  const [
-    
-    
-    
-    
-    modal, setmodal] = useState(false);
+  const [modal, setmodal] = useState(false);
 
 
 

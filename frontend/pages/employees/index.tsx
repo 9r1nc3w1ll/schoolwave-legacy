@@ -5,13 +5,13 @@ import { downloadExcel } from 'react-export-table-to-excel';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useQuery } from 'react-query';
-import { getStaffs, getStudents } from '@/apicalls/users';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import CreateEmployee from '@/components/CreateEmployee';
 import { Dialog, Transition } from '@headlessui/react';
 import EditEmployee from '@/components/EditEmployee';
 import { useSession } from 'next-auth/react';
+import { getAllStaffs } from '@/apicalls/staffs';
 
 
 
@@ -24,12 +24,13 @@ const Export = (props:any) => {
 
   const {data:students, isSuccess, status, refetch} = useQuery('getStaffs', async ()=> {
     
-    return getStaffs(user_session?.access_token)
+    return getAllStaffs(user_session?.access_token)
   }, {enabled:false})
 
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
       refetch()
+      
     }
 
   }, [sessionStatus, refetch]);
@@ -318,12 +319,9 @@ const Export = (props:any) => {
             records={recordsData}
             columns={[
               { accessor: 'id', title: 'Staff No.', sortable: true },
-              { accessor: 'first_name', title: 'First Name', sortable: true },
-              { accessor: 'last_name', title: 'Last Name', sortable: true },
-              { accessor: 'role', title: 'Role', sortable: true },
-                         
-              { accessor: 'phone_number', title: 'Phone', sortable: true },
-              { accessor: 'email', title: 'Email', sortable: true },
+              { accessor: 'user_info.first_name', title: 'First Name', sortable: true },
+              { accessor: 'user_info.last_name', title: 'Last Name', sortable: true },
+              { accessor: 'title', title: 'Title', sortable: true },
             ]}
             totalRecords={initialRecords? initialRecords.length : 0}
             recordsPerPage={pageSize}
