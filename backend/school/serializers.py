@@ -36,16 +36,31 @@ class ClassSerializer(serializers.ModelSerializer):
 
 
 class ClassMemberSerializer(serializers.ModelSerializer):
-    first_name = serializers.SerializerMethodField()
-    last_name = serializers.SerializerMethodField()
+    class_info = serializers.SerializerMethodField()
+    student_info = serializers.SerializerMethodField()
 
     class Meta:
         model = ClassMember
-        fields = ('user', 'first_name', 'last_name', 'class_id', 'role')
+        fields = ('role', 'class_info', 'student_info')
 
-    def get_first_name(self, obj):
-        return obj.user.first_name
-
-    def get_last_name(self, obj):
-        return obj.user.last_name
-
+    def get_class_info(self, obj):
+        data = {
+            'id': obj.class_id.id,
+            'name': obj.class_id.name,
+            'description': obj.class_id.description,
+            'class_index': obj.class_id.class_index,
+            'code': obj.class_id.code,
+        }
+        if data:
+            return data
+        return None
+    
+    def get_student_info(self, obj):
+        data = {
+            'id': obj.user.id,
+            'first_name': obj.user.first_name,
+            'last_name': obj.user.last_name,
+        }
+        if data:
+            return data
+        return None

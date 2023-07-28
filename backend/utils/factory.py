@@ -138,3 +138,11 @@ class TransactionFactory(factory.django.DjangoModelFactory):
     reversed_transaction_id = factory.LazyAttribute(lambda obj: uuid.uuid4())
     status = 'pending'
     school = factory.SubFactory(SchoolFactory)
+
+class ClassMemberFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "school.ClassMember"
+
+    user = factory.SubFactory(UserFactory)
+    class_id = factory.SubFactory(ClassFactory)
+    role = factory.Faker('word')

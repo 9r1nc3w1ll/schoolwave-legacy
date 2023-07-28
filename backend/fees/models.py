@@ -21,9 +21,11 @@ class Discount(BaseModel):
         ('amount', 'Amount'),
     )
 
+    name = models.CharField(max_length=200)
+    description = models.TextField()
     discount_type = models.CharField(max_length=20, choices=DISCOUNT_TYPE_CHOICES, default='percentage')
-    amount = models.IntegerField(default=0)
-    percentage = models.IntegerField(default=10)
+    amount = models.IntegerField(default=0, null=True, blank=True)
+    percentage = models.IntegerField(default=10, null=True, blank=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
 
 
@@ -70,6 +72,8 @@ class Invoice(BaseModel):
     class Meta:
         db_table = "invoice"
 
+    name = models.CharField(max_length=200)
+    description = models.TextField()
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     template = models.ForeignKey(FeeTemplate, on_delete=models.CASCADE)
     amount_paid = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)

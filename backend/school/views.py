@@ -285,3 +285,28 @@ class RetrieveUpdateDestoryClassMember(RetrieveUpdateDestroyAPIView):
         else:
             return Response({"message": "Class member not found."}, status=status.HTTP_404_NOT_FOUND)
         
+
+class ListStudentClass(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = ClassMember.objects.filter(user__role="student").all()
+    serializer_class = ClassMemberSerializer
+
+    def get_queryset(self):
+        return self.queryset.all()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        resp = {
+            "status": "success",
+            "message": "Students Class fetched successfully.",
+            "data": serializer.data,
+        }
+        return Response(resp)

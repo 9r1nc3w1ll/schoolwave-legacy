@@ -5,7 +5,7 @@ from utils.factory import (
     UserFactory, SubjectFactory,
     DiscountFactory, FeeItemFactory,
     FeeTemplateFactory, InvoiceFactory,
-    TransactionFactory
+    TransactionFactory, ClassMemberFactory
     )
 from faker import Faker
 
@@ -45,10 +45,13 @@ class Command(BaseCommand):
                     print("Fee Item created: ", fee_item.id)
 
                     template = FeeTemplateFactory.create(discount=discount, school=school, class_id=class_instance)
-                    print("Fee Item created: ", template.id)
+                    print("Fee Template created: ", template.id)
 
                     invoice = InvoiceFactory.create(template=template, school=school, student=owner)
-                    print("Fee Item created: ", invoice.id)
+                    print("Invoice created: ", invoice.id)
 
                     transaction = TransactionFactory.create(school=school)
-                    print("Fee Item created: ", transaction.id)
+                    print("Transaction created: ", transaction.id)
+
+                    class_member = ClassMemberFactory.create(user=owner, class_id=class_instance)
+                    print("Class member created: ", class_member.id)
