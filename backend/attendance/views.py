@@ -32,9 +32,23 @@ class ListCreateStudentAttendance(ListCreateAPIView):
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
         
         user = request.user
-        role = user.role        
+        role = user.role
+
+        if user:
+            try:
+                owner = School.objects.get(owner=user)
+                serializer.validated_data['staff_id'] = owner.id
+                serializer.save()
+                headers = self.get_success_headers(serializer.data)
+                resp = {
+                    "message": "Student attendance created successfully.",
+                    "data": serializer.data,
+                }
+                return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
+            except School.DoesNotExist:
+                return False       
         
-        if role == "admin":
+        elif role == "admin":
             serializer.validated_data['staff_id'] = user.id
             serializer.save()
             headers = self.get_success_headers(serializer.data)
