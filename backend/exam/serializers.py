@@ -18,6 +18,8 @@ class QuestionSerializer(serializers.ModelSerializer):
         return None
 
 
+
+
 class QuestionOptionSerializer(serializers.ModelSerializer):
     question_info = serializers.SerializerMethodField()
     class Meta:
@@ -32,6 +34,15 @@ class QuestionOptionSerializer(serializers.ModelSerializer):
         if data:
             return data
         return None
+
+
+class BatchQuestionSerializer(serializers.ModelSerializer):
+    options = QuestionOptionSerializer(many=True)
+
+    class Meta:
+        model = Question
+        fields = '__all__'
+
 
 
 class ExamSerializer(serializers.ModelSerializer):

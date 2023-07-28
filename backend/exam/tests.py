@@ -13,6 +13,29 @@ from .models import Question, QuestionOption, Exam, Answer
 
 User = get_user_model()
 
+
+class BatchUploadAPITest(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(username="testuser", password="testpass")
+        self.school = School.objects.create(name="Test School", owner=self.user)
+
+    def test_batch_upload(self):
+        
+        url = reverse("exam_batch_upload")
+        self.client.force_authenticate(user=self.user)
+
+        with open("exam/question_options.csv") as csv:
+            response = self.client.post(
+                path=url,
+                data={"csv": csv},
+        )
+
+        print(response.data)
+
+        self.assertEqual(response.status_code, 201)
+        
+
 class QuestionAPITestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()

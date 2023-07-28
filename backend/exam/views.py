@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
+    GenericAPIView
 )
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -9,13 +10,17 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Question, QuestionOption, Exam, Answer
 from .serializers import (
     QuestionSerializer,
+    BatchQuestionSerializer,
     QuestionOptionSerializer,
     ExamSerializer,
     AnswerSerializer,
 )
+from rest_framework.parsers import MultiPartParser
 
 from django.db.models import Q
 import uuid
+import csv
+import io
 
 class ListCreateQuestion(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -366,3 +371,54 @@ class RetrieveUpdateDestroyAnswer(RetrieveUpdateDestroyAPIView):
             {"message": "Answer deleted successfully."},
             status=status.HTTP_204_NO_CONTENT,
         )
+
+
+
+class BatchUploadAPI(GenericAPIView):
+    parser_classes = (MultiPartParser,)
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        csv_file = request.FILES.get('csv')
+
+        if not csv_file.name.endswith('.csv'):
+            return Response({'error': 'Invalid file format. Please upload a CSV file.'}, status=400)
+
+        try:
+            questions = []
+            data = csv_file.read().decode("utf-8")
+            reader = csv.DictReader(io.StringIO(data))
+
+            for row in reader:
+
+                question_data = {
+                    'title': row['Question Title'],
+                    'subject_id': row['Subject ID'],
+                    'details': row['Details'],
+                    'type': row['Type'],
+                    'options': [
+                        {'value': row[f'Option {i}'], 'right_option': row[f'Is Right Answer {i}'] == 'True'}
+                        for i in range(1, 5)
+                    ]
+                }
+                questions.append(question_data)
+            
+            for question in questions:
+                question = Question.objects.create(
+                    title=question["title"],
+                    subject_id=question["subject_id"],
+                    details=question["details"]
+                )
+
+                for option in question["options"]:
+                    qs_option = QuestionOption.objects.create(
+                        question=question, value=option["value"], right_option=eval(option["right_option"])
+                    )
+                
+                print("Created", qs_option.id, question.id)
+            
+
+            return Response(BatchQuestionSerializer(question).data, status=201)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)

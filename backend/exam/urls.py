@@ -9,6 +9,7 @@ from .views import (
     RetrieveUpdateDestroyExam,
     ListCreateAnswer,
     RetrieveUpdateDestroyAnswer,
+    BatchUploadAPI
 )
 
 urlpatterns = [
@@ -52,4 +53,5 @@ urlpatterns = [
         RetrieveUpdateDestroyAnswer.as_view(),
         name='answer_retrieve_update_destroy',
     ),
+    path('/batch_upload/', BatchUploadAPI.as_view(), name='exam_batch_upload'),
 ]
