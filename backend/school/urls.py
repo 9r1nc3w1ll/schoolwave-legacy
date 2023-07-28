@@ -27,5 +27,5 @@ urlpatterns = [
         RetrieveUpdateDestoryClassMember.as_view(),
         name="retrieve_update_destroy_class_member",
     ),
-    path("/student-class", ListStudentClass.as_view(), name="list_create_class_member"),
+    path("/student-class", ListStudentClass.as_view(), name="list_student_class"),
 ]

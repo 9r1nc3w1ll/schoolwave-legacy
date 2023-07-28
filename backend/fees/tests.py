@@ -240,6 +240,8 @@ class InvoiceTestCase(APITestCase):
     def test_create_invoice(self):
         url = reverse("list_create_invoice")
         data = {
+            "name": "First Invoice",
+            "description": "invoice description",
             "school": self.school.id,
             "items" : [self.fee_item.id,],
             "student" : self.student.id,
@@ -336,6 +338,8 @@ class DiscountTestCase(APITestCase):
     def test_create_discount(self):
         url = reverse("list_create_discount")
         data = {
+            "name":"Discount name",
+            "description": "Discount description",
             "discount_type": "amount",
             "school" : self.school.id,
             "amount": 32

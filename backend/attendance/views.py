@@ -32,23 +32,9 @@ class ListCreateStudentAttendance(ListCreateAPIView):
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
         
         user = request.user
-        role = user.role
-
-        if user:
-            try:
-                owner = School.objects.get(owner=user)
-                serializer.validated_data['staff_id'] = owner.id
-                serializer.save()
-                headers = self.get_success_headers(serializer.data)
-                resp = {
-                    "message": "Student attendance created successfully.",
-                    "data": serializer.data,
-                }
-                return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
-            except School.DoesNotExist:
-                return False       
+        role = user.role       
         
-        elif role == "admin":
+        if role == "admin":
             serializer.validated_data['staff_id'] = user.id
             serializer.save()
             headers = self.get_success_headers(serializer.data)
@@ -73,6 +59,23 @@ class ListCreateStudentAttendance(ListCreateAPIView):
             except ClassMember.DoesNotExist:
                 resp = {
                     "message": "You are not assigned to this class. Only assigned teachers can create student attendance for the class.",
+                }
+                return Response(resp, status=status.HTTP_403_FORBIDDEN)
+            
+        elif user:
+            try:
+                owner = School.objects.get(owner=user)
+                serializer.validated_data['staff_id'] = owner.id
+                serializer.save()
+                headers = self.get_success_headers(serializer.data)
+                resp = {
+                    "message": "Student attendance created successfully.",
+                    "data": serializer.data,
+                }
+                return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
+            except School.DoesNotExist:
+                resp = {
+                    "message": "Only admin or class teacher can create student attendance.",
                 }
                 return Response(resp, status=status.HTTP_403_FORBIDDEN)
                 
