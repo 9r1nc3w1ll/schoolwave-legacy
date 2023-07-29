@@ -386,39 +386,37 @@ class BatchUploadAPI(GenericAPIView):
             return Response({'error': 'Invalid file format. Please upload a CSV file.'}, status=400)
 
 
-            questions = []
-            data = csv_file.read().decode("utf-8")
-            reader = csv.DictReader(io.StringIO(data))
+        questions = []
+        data = csv_file.read().decode("utf-8")
+        reader = csv.DictReader(io.StringIO(data))
 
-            for row in reader:
+        for row in reader:
 
-                question_data = {
-                    'title': row['Question Title'],
-                    'subject_code': row['Subject Code'],
-                    'details': row['Details'],
-                    'type': row['Type'],
-                    'options': [
-                        {'value': row[f'Option {i}'], 'right_option': row[f'Is Right Answer {i}']}
-                        for i in range(1, 5)
-                    ]
-                }
-                questions.append(question_data)
+            question_data = {
+                'title': row['Question Title'],
+                'subject_code': row['Subject Code'],
+                'details': row['Details'],
+                'type': row['Type'],
+                'options': [
+                    {'value': row[f'Option {i}'], 'right_option': row[f'Is Right Answer {i}']}
+                    for i in range(1, 5)
+                ]
+            }
+            questions.append(question_data)
+        
+        for question in questions:
             
-            for question in questions:
-                
-                subject = Subject.objects.get(code=question["subject_code"])
+            subject = Subject.objects.get(code=question["subject_code"])
 
-                quest = Question.objects.create(
-                    title=question["title"],
-                    subject=subject,
-                    details=question["details"]
+            quest = Question.objects.create(
+                title=question["title"],
+                subject=subject,
+                details=question["details"]
+            )
+
+            for option in question["options"]:
+                qs_option = QuestionOption.objects.create(
+                    question=quest, value=option["value"], right_option=eval(option["right_option"])
                 )
 
-                for option in question["options"]:
-                    qs_option = QuestionOption.objects.create(
-                        question=quest, value=option["value"], right_option=eval(option["right_option"])
-                    )
-                
-            
-
-            return Response({"message" : "Uploaded successfuly"}, status=status.HTTP_201_CREATED)
+        return Response({"message" : "Uploaded successfuly"}, status=status.HTTP_201_CREATED)
