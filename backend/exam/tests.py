@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from .models import Subject
+from subject.models import Subject
 
 from school.models import Class, School
 from session.models import Session, Term
@@ -18,20 +18,51 @@ class BatchUploadAPITest(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create_user(username="testuser", password="testpass")
-        self.school = School.objects.create(name="Test School", owner=self.user)
+        
+        self.school = School.objects.create(
+            name="chrisland",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
+
+        self.class_obj = Class.objects.create(
+            name="Test Class", school=self.school, description="Description", code="Prim"
+        )
+
+        self.session = Session.objects.create(
+            school=self.school,
+            resumption_date=datetime.now().date(),
+            start_date="2040",
+            end_date="2050"
+        )
+
+        self.term = Term.objects.create(
+            name="1st Term", active="True", school=self.school, session=self.session, code="Term45"
+        )
+
+        self.subject = Subject.objects.create(
+            name="Math",
+            description="Mathematics subject",
+            term=self.term,
+            class_id=self.class_obj,
+            code="MAT101"
+        )
 
     def test_batch_upload(self):
         
         url = reverse("exam_batch_upload")
         self.client.force_authenticate(user=self.user)
 
+        subject = Subject.objects.get(id=self.subject.id)
+
         with open("exam/question_options.csv") as csv:
             response = self.client.post(
                 path=url,
                 data={"csv": csv},
         )
-
+            
         print(response.data)
+
 
         self.assertEqual(response.status_code, 201)
         

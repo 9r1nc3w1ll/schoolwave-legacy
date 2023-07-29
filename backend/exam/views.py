@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .models import Question, QuestionOption, Exam, Answer
+from subject.models import Subject
 from .serializers import (
     QuestionSerializer,
     BatchQuestionSerializer,
@@ -393,32 +394,34 @@ class BatchUploadAPI(GenericAPIView):
 
                 question_data = {
                     'title': row['Question Title'],
-                    'subject_id': row['Subject ID'],
+                    'subject_code': row['Subject Code'],
                     'details': row['Details'],
                     'type': row['Type'],
                     'options': [
-                        {'value': row[f'Option {i}'], 'right_option': row[f'Is Right Answer {i}'] == 'True'}
+                        {'value': row[f'Option {i}'], 'right_option': row[f'Is Right Answer {i}']}
                         for i in range(1, 5)
                     ]
                 }
                 questions.append(question_data)
             
             for question in questions:
-                question = Question.objects.create(
+                
+                subject = Subject.objects.get(code=question["subject_code"])
+
+                quest = Question.objects.create(
                     title=question["title"],
-                    subject_id=question["subject_id"],
+                    subject=subject,
                     details=question["details"]
                 )
 
                 for option in question["options"]:
                     qs_option = QuestionOption.objects.create(
-                        question=question, value=option["value"], right_option=eval(option["right_option"])
+                        question=quest, value=option["value"], right_option=eval(option["right_option"])
                     )
                 
-                print("Created", qs_option.id, question.id)
             
 
-            return Response(BatchQuestionSerializer(question).data, status=201)
+            return Response({"message" : "Uploaded successfuly"}, status=201)
 
         except Exception as e:
             return Response({'error': str(e)}, status=500)
