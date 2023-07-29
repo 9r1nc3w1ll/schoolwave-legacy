@@ -385,7 +385,7 @@ class BatchUploadAPI(GenericAPIView):
         if not csv_file.name.endswith('.csv'):
             return Response({'error': 'Invalid file format. Please upload a CSV file.'}, status=400)
 
-        try:
+
             questions = []
             data = csv_file.read().decode("utf-8")
             reader = csv.DictReader(io.StringIO(data))
@@ -421,7 +421,4 @@ class BatchUploadAPI(GenericAPIView):
                 
             
 
-            return Response({"message" : "Uploaded successfuly"}, status=201)
-
-        except Exception as e:
-            return Response({'error': str(e)}, status=500)
+            return Response({"message" : "Uploaded successfuly"}, status=status.HTTP_201_CREATED)
