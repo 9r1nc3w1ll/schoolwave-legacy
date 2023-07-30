@@ -32,7 +32,7 @@ const Export = (props:any) => {
     if(sessionStatus == 'authenticated'){
       refetch()
     }
-
+    console.log(invoices)
   }, [sessionStatus, refetch]);
     
   useEffect(() => {
@@ -64,6 +64,16 @@ const Export = (props:any) => {
     columnAccessor: 'id',
     direction: 'asc',
   });
+
+  useEffect(() => {
+    let inv = invoices?.data
+    if(inv){
+
+      inv.status = inv?.balance > inv?.amount_paid? 'paid': inv?.amount_paid > 0 ? 'partial': 'unpaid'
+    }
+
+    setInitialRecords(sortBy(inv, 'id'))
+  }, [invoices, recordsData]);
 
   useEffect(() => {
     setPage(1);
@@ -319,7 +329,12 @@ const Export = (props:any) => {
             records={recordsData}
             columns={[
               { accessor: 'id', title: 'Invoice No.', sortable: true },
-              { accessor: 'student', title: 'Student', sortable: true },
+              { accessor: 'student_info.first_name' , title: 'First Name', sortable: true },
+              { accessor: 'student_info.last_name' , title: 'Last Name', sortable: true },
+              { accessor: 'amount_paid' , title: 'Total', sortable: true },
+              { accessor: 'amount_paid' , title: 'Amount Paid', sortable: true },
+              { accessor: 'balance' , title: 'Balance', sortable: true },
+              { accessor: 'status' , title: 'Status', sortable: true },
               
             ]}
             totalRecords={initialRecords? initialRecords.length : 0}
