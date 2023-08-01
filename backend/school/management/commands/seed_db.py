@@ -5,7 +5,9 @@ from utils.factory import (
     UserFactory, SubjectFactory,
     DiscountFactory, FeeItemFactory,
     FeeTemplateFactory, InvoiceFactory,
-    TransactionFactory, ClassMemberFactory
+    TransactionFactory, ClassMemberFactory,
+    SubjectStaffAssignmentFactory, StaffRoleFactory,
+    StaffFactory
     )
 from faker import Faker
 
@@ -19,9 +21,14 @@ class Command(BaseCommand):
             username = fk.unique.user_name()
             owner = UserFactory.create(username=username)
             school = SchoolFactory.create(owner=owner)
+            role = StaffRoleFactory.create()
+            staff = StaffFactory.create(user=owner)
+                    
 
             print("User created", owner.id)
             print("School created", school.id)
+            print("Staff Role created: ", role.id)
+            print("Staff created: ", staff.id)
 
             for j in range(3):
                 class_instance = ClassFactory.create(school=school)
@@ -55,3 +62,6 @@ class Command(BaseCommand):
 
                     class_member = ClassMemberFactory.create(user=owner, class_id=class_instance)
                     print("Class member created: ", class_member.id)
+
+                    subject_staff_assignment = SubjectStaffAssignmentFactory.create(staff=staff, role=role, subject=subject)
+                    print("Subject Staff Assignment created: ", subject_staff_assignment.id)

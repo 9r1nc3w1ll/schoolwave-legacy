@@ -49,14 +49,17 @@ class AdmissionRequest(BaseModel):
     comment_if_declined = models.TextField(blank=True, null=True)
 
     def create_student_user(self, **kwargs):
-        User.objects.create_user(
-            **dict(
-                StudentInformation.objects.filter(
-                    username=self.student_info.username
-                ).values()[0]
-            )
-        )
+        student_info_data = StudentInformation.objects.filter(
+            username=self.student_info.username
+        ).values().first()
 
+        username = student_info_data.pop("username", None)
+
+        user, created = User.objects.get_or_create(username=username, defaults=student_info_data)
+
+        if created:
+            self.student_info.user = user
+            self.student_info.save()
 
 @receiver(post_save, sender=AdmissionRequest)
 def create_user_on_approved_request(

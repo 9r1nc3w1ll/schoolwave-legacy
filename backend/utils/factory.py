@@ -146,3 +146,27 @@ class ClassMemberFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     class_id = factory.SubFactory(ClassFactory)
     role = factory.Faker('word')
+
+class StaffRoleFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "staff.StaffRole"
+
+    name = factory.Faker('word')
+    description = factory.Faker('sentence')
+
+class StaffFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "staff.Staff"
+
+    user = factory.SubFactory(UserFactory, staff=None)  # Assuming you already have a UserFactory defined
+    title = factory.Faker('word')
+
+
+class SubjectStaffAssignmentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "subject.SubjectStaffAssignment"
+
+    staff = factory.SubFactory(StaffFactory)  # Assuming you already have a StaffFactory defined
+    role = factory.SubFactory(StaffRoleFactory)  # Assuming you already have a StaffRoleFactory defined
+    subject = factory.SubFactory(SubjectFactory)  # Assuming you already have a SubjectFactory defined
+    active = factory.Faker('boolean')
