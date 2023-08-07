@@ -2,6 +2,8 @@ from jsonschema import Draft7Validator, FormatChecker
 import os
 from django.conf import settings
 import json
+import requests
+from django.core.files.base import ContentFile
 
 
 def validate(json_data):
@@ -13,7 +15,17 @@ def validate(json_data):
 
     validator = Draft7Validator(schema, format_checker=FormatChecker())
 
-    errors = []
-
     if len(list(validator.iter_errors(json_data))) != 0:
         return False, str(list(validator.iter_errors(json_data)))
+
+
+def attach_remote_image(instance, remote_url):
+    response = requests.get(remote_url)
+    
+    if response.status_code == 200:
+        image_name = os.path.basename(remote_url)
+        instance.logo.save(image_name, ContentFile(response.content), save=False)
+        instance.save()
+        
+        return True
+    return False
