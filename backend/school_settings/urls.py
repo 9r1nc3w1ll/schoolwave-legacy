@@ -1,10 +1,11 @@
 from django.urls import path
 
-from school_settings.views import SchoolSettingsCreateView, FetchSettings, UploadLogo, GetLogo
+from school_settings.views import UpdateLogo, SchoolSettingsCreateView, FetchSettings, UploadSchoolLogo, GetLogo
 
 urlpatterns = [
-    path("", SchoolSettingsCreateView.as_view()),
-    path("/<uuid:school_id>", FetchSettings.as_view()),
-    path("/upload_school_logo", UploadLogo.as_view()),
-    path("/get_school_logo", GetLogo.as_view()),
+    path("", SchoolSettingsCreateView.as_view(), name="school_settings_create"),
+    path("/<uuid:school_id>", FetchSettings.as_view(), name="fetch_school_settings"),
+    path("/upload_school_logo", UploadSchoolLogo.as_view(), name="upload_school_logo"),
+    path("/get_school_logo", GetLogo.as_view(), name="get_school_logo"),
+    path("/update_logo", UpdateLogo.as_view(), name="update_school_logo"),
 ]

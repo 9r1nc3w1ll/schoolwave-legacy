@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "fees",
     "lessonnotes",
     "grading",
+    "school_settings",
 ]
 
 AUTH_USER_MODEL = "account.User"

@@ -4,8 +4,10 @@ from .models import SchoolLogo, SchoolSettings
 from rest_framework.permissions import IsAuthenticated
 from .serializers import SchoolLogoSerializer, SchoolSettingsSerializer
 from utils.permissions import IsSchoolOwner
-from .utils import validate
+from .utils import attach_remote_image, validate
+from rest_framework.parsers import MultiPartParser
 from school.models import School
+from django.conf import settings
 
 class SchoolSettingsCreateView(generics.CreateAPIView):
     queryset = SchoolSettings.objects.all()
@@ -38,18 +40,19 @@ class FetchSettings(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         school_id = kwargs.get("school_id", "")
 
-        settings = SchoolSettings.objects.filter(school_id=school_id)
+        settings_qs = SchoolSettings.objects.filter(school_id=school_id)
 
-        if not settings.exists():
+        if not settings_qs.exists():
             return Response({"error" : "Settings for school have not been created."}, status=status.HTTP_400_BAD_REQUEST)
         
-        return Response(SchoolSettingsSerializer(settings[0]).data)
+        return Response(SchoolSettingsSerializer(settings_qs[0]).data)
 
 
 class UploadSchoolLogo(generics.CreateAPIView):
     queryset = SchoolLogo.objects.all()
     serializer_class = SchoolLogoSerializer
     permission_classes = [IsAuthenticated, IsSchoolOwner]
+    parser_classes = [MultiPartParser]
 
     def get_queryset(self):
         
@@ -57,6 +60,33 @@ class UploadSchoolLogo(generics.CreateAPIView):
 
         qs = self.queryset.filter(school=school)
         return qs
+
+
+class UpdateLogo(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated, IsSchoolOwner]
+
+    def patch(self, request, *args, **kwargs):
+        data = request.data
+
+        school_id = data.get("school_id", "")
+        logo_url = data.get("logo_url", "")
+
+        if not logo_url:
+            return Response({"error" : "logo_url is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not school_id:
+            return Response({"error" : "school_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            logo = SchoolLogo.objects.get(school_id=school_id)
+        except SchoolLogo.DoesNotExist:
+            return Response({"error" : "Invalid school_id"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        do_attach = attach_remote_image(logo, logo_url)
+
+        if do_attach:
+            return Response({"message": "Logo updated successfully"}, status=status.HTTP_200_OK)
+
 
 
 
@@ -74,12 +104,12 @@ class GetLogo(generics.GenericAPIView):
         if not school.exists():
             return Response({"error" : "Invalid school_id"}, status=status.HTTP_400_BAD_REQUEST)
         
-        settings = SchoolSettings.objects.filter(school_id=school_id)
+        settings_qs = SchoolSettings.objects.filter(school_id=school_id)
 
-        if not settings.exists():
+        if not settings_qs.exists():
             return Response({"error" : "Settings for school have not been created."}, status=status.HTTP_400_BAD_REQUEST)
 
-        settings_obj = settings[0]
+        settings_obj = settings_qs[0]
 
         settings_dict = dict(settings_obj.settings)
 

@@ -24,7 +24,7 @@ def attach_remote_image(instance, remote_url):
     
     if response.status_code == 200:
         image_name = os.path.basename(remote_url)
-        instance.logo.save(image_name, ContentFile(response.content), save=False)
+        instance.file.save(image_name, ContentFile(response.content), save=False)
         instance.save()
         
         return True
