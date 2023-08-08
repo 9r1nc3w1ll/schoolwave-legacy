@@ -66,6 +66,9 @@ class User(BaseModel, AbstractUser):
     def save(self, *args, **kwargs):
         if self.role == "admin" or self.role == "super_admin":
             self.is_staff = True
+
+            if self.role == "super_admin":
+                self.is_superuser = True
         return super().save(*args, **kwargs)
 
 
