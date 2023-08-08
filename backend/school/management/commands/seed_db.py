@@ -35,7 +35,7 @@ class Command(BaseCommand):
 
         self.stdout.write("Seeding the database with sample data...")
 
-        superuser = User.objects.create_user(username="admin", password="admin")
+        superuser = User.objects.create_user(username="admin", email="admin@localhost", password="admin", role="super_admin")
 
         self.stdout.write(self.style.SUCCESS("Created admin user with username: admin & password: admin"))
 

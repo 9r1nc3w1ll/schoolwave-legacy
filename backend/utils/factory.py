@@ -155,8 +155,8 @@ class StaffRoleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "staff.StaffRole"
 
-    name = factory.Sequence(lambda n: f"owner{n}")
-    description = factory.Sequence(lambda n: f"owner{n}")
+    name = factory.Sequence(lambda n: f"name{n}")
+    description = factory.Sequence(lambda n: f"desc{n}")
 
 class StaffFactory(factory.django.DjangoModelFactory):
     class Meta:
