@@ -2,7 +2,10 @@ from django.core.management.base import BaseCommand
 from faker import Faker
 import random
 from datetime import date
+
+from requests import delete
 from account.models import User
+from admission.models import AdmissionRequest, StudentInformation
 from staff.models import StaffRole
 from utils.factory import UserFactory, SchoolFactory, InvoiceFactory, TransactionFactory, DiscountFactory, FeeItemFactory, FeeTemplateFactory, \
     SessionFactory, TermFactory, ClassFactory, ClassMemberFactory, StaffRoleFactory, StaffFactory,\
@@ -17,13 +20,26 @@ class Command(BaseCommand):
     help = "Seed the database with sample data using factories."
 
     def handle(self, *args, **kwargs):
-        User.objects.all().exclude(username="admin").delete()
-        StaffRole.objects.all().delete()
         
+        if input("This command will delete all data. Do you want to continue? (Y/N): ").lower() != "y":
+            self.stdout.write(self.style.WARNING("Database seeding aborted."))
+            return
+        
+        User.objects.all().delete()
+        StaffRole.objects.all().delete()
+        AdmissionRequest.objects.all().delete()
+        StudentInformation.objects.all().delete()
+
         num_records_per_factory = 5
         num_schools = 2
 
         self.stdout.write("Seeding the database with sample data...")
+
+        superuser = User.objects.create_user(username="admin", password="admin")
+
+        self.stdout.write(self.style.SUCCESS("Created admin user with username: admin & password: admin"))
+
+
 
         for _ in range(num_schools):
             owner = UserFactory.create()
