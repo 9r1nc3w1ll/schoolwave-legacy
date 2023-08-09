@@ -22,6 +22,7 @@ from django.db.models import Q
 import uuid
 import csv
 import io
+from school.models import School
 
 class ListCreateQuestion(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -381,11 +382,12 @@ class BatchUploadAPI(GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         csv_file = request.FILES.get('csv')
+        school_id = request.POST['school_id']
 
         if not csv_file.name.endswith('.csv'):
             return Response({'error': 'Invalid file format. Please upload a CSV file.'}, status=400)
 
-
+        school = School.objects.get(id=school_id)
         questions = []
         data = csv_file.read().decode("utf-8")
         reader = csv.DictReader(io.StringIO(data))
@@ -411,12 +413,15 @@ class BatchUploadAPI(GenericAPIView):
             quest = Question.objects.create(
                 title=question["title"],
                 subject=subject,
-                details=question["details"]
+                details=question["details"],
+                school=school
             )
 
             for option in question["options"]:
                 qs_option = QuestionOption.objects.create(
-                    question=quest, value=option["value"], right_option=eval(option["right_option"])
+                    question=quest, value=option["value"],
+                    right_option = option["right_option"].lower() == "true",
+                    school=school
                 )
 
         return Response({"message" : "Uploaded successfuly"}, status=status.HTTP_201_CREATED)

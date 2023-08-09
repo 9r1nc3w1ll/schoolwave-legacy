@@ -146,7 +146,8 @@ class ClassMemberTests(APITestCase):
         self.class_member_obj = ClassMember.objects.create(
             user= self.student_user,
             class_id= self.class_obj,
-            role= "student"
+            role= "student",
+            school=self.school
         )
 
     def test_create_class_member(self):
@@ -155,7 +156,8 @@ class ClassMemberTests(APITestCase):
         data = {
             "user": self.teacher_user.id,
             "class_id": self.class_obj.id,
-            "role": "teacher"
+            "role": "teacher",
+            "school":self.school.id
         }
         
         response = self.client.post(url, data)

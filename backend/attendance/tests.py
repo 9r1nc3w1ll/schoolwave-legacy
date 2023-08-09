@@ -66,7 +66,7 @@ class AttendanceRecordAPITestCase(APITestCase):
 
         self.subject = Subject.objects.create(
             name="Test Subject", description="Teste", class_id=self.class_obj, term=self.term,
-            code='TEST'
+            code='TEST', school=self.school,
         )
 
         self.attendance = AttendanceRecord.objects.create(
@@ -78,7 +78,8 @@ class AttendanceRecordAPITestCase(APITestCase):
             attendance_type="Daily",
             present=True,
             remark="Good",
-            staff=self.staff_obj
+            staff=self.staff_obj,
+            school=self.school,
         )
 
         self.client.force_authenticate(user=self.user)
@@ -118,7 +119,8 @@ class AttendanceRecordAPITestCase(APITestCase):
                     "present": True,
                     "remark": "Poor"
                 }
-            ]
+            ],
+            "school":self.school.id
         }
 
         response = self.client.post(url, data, format='json')        

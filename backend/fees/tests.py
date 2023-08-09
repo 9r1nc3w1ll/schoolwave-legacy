@@ -209,13 +209,15 @@ class InvoiceTestCase(APITestCase):
         self.class_member_1 = ClassMember.objects.create(
             user=self.student,
             class_id=self.class_obj,
-            role="student"
+            role="student",
+            school=self.school
         )
 
         self.class_member_2 = ClassMember.objects.create(
             user=self.student_2,
             class_id=self.class_obj,
-            role="student"
+            role="student",
+            school=self.school
         )
 
         self.discount = Discount.objects.create(

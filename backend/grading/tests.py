@@ -129,10 +129,11 @@ class GradeAPITest(APITestCase):
             description="Mathematics subject",
             term=self.term,
             class_id=self.class_obj,
-            code="Sub98"
+            code="Sub98",
+            school=self.school
         )
 
-        self.grade = Grade.objects.create(weight=30, student=self.student, subject=self.subject, term=self.term, score=30)
+        self.grade = Grade.objects.create(weight=30, student=self.student, subject=self.subject, term=self.term, score=30, school=self.school)
 
     def test_get_grade(self):
         url = reverse('grade-detail', args=[self.grade.id])
@@ -149,7 +150,8 @@ class GradeAPITest(APITestCase):
             'student': self.student.id,
             'subject': self.subject.id,
             'term': self.term.id,
-            'score' : 30
+            'score' : 30,
+            "school": self.school.id
         }
         self.client.force_authenticate(user=self.user)
 

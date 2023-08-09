@@ -1,6 +1,6 @@
 from django.db import models
 from account.models import User
-from school.models import Class
+from school.models import School, Class
 from config.models import BaseModel
 
 class LessonNote(BaseModel):
@@ -16,6 +16,7 @@ class LessonNote(BaseModel):
     content = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_lesson_notes')
     last_updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='updated_lesson_notes')
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)

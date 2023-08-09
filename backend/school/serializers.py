@@ -41,7 +41,7 @@ class ClassMemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ClassMember
-        fields = ('user', 'role', 'class_id', 'class_info', 'student_info')
+        fields = ('user', 'role', 'class_id', 'class_info', 'student_info', 'school')
 
     def get_class_info(self, obj):
         data = {

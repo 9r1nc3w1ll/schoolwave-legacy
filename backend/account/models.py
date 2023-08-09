@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from school.models import School
 
 from config.models import BaseModel
 
@@ -49,6 +50,7 @@ class User(BaseModel, AbstractUser):
     guardian_occupation = models.CharField(max_length=200, null=True, blank=True)
     guardian_phone_number = models.CharField(max_length=200, null=True, blank=True)
     guardian_address = models.TextField(blank=True, null=True)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
 
     
 

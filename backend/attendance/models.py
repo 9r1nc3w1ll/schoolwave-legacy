@@ -3,7 +3,7 @@ from config.models import BaseModel
 from datetime import date
 
 from subject.models import Subject
-from school.models import Class
+from school.models import School, Class
 from account.models import User
 from staff.models import Staff
 
@@ -25,3 +25,4 @@ class AttendanceRecord(BaseModel):
     present = models.BooleanField(default=False)
     remark = models.TextField()
     staff = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)

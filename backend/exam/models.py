@@ -2,7 +2,7 @@ from django.db import models
 
 from config.models import BaseModel
 from subject.models import Subject
-from school.models import Class
+from school.models import School, Class
 
 from ckeditor.fields import RichTextField
 
@@ -17,6 +17,7 @@ class Question(BaseModel):
         ('free form', 'Free Form')
     ]
     type = models.CharField(max_length=20, choices=QUESTION_TYPE_CHOICES)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
 
@@ -29,6 +30,7 @@ class QuestionOption(BaseModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     value = models.CharField(max_length=100)
     right_option = models.BooleanField()
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
 
@@ -46,6 +48,7 @@ class Exam(BaseModel):
     due_date = models.DateField(null=True, blank=True)
     weight = models.DecimalField(max_digits=5, decimal_places=2)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
 
@@ -59,6 +62,7 @@ class Answer(BaseModel):
     answer_option = models.ForeignKey(QuestionOption, on_delete=models.CASCADE, null=True, blank=True)
     answer_value = models.TextField(null=True, blank=True)
     correct_answer = models.BooleanField()
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
 

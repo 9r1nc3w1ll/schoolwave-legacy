@@ -45,7 +45,8 @@ class BatchUploadAPITest(APITestCase):
             description="Mathematics subject",
             term=self.term,
             class_id=self.class_obj,
-            code="MAT101"
+            code="MAT101",
+            school=self.school
         )
 
     def test_batch_upload(self):
@@ -58,7 +59,8 @@ class BatchUploadAPITest(APITestCase):
         with open("exam/question_options.csv") as csv:
             response = self.client.post(
                 path=url,
-                data={"csv": csv},
+                data={"csv": csv,
+                    "school_id":self.school.id},
         )
             
         print(response.data)
@@ -101,14 +103,16 @@ class QuestionAPITestCase(APITestCase):
             description="Mathematics subject",
             term=self.term,
             class_id=self.class_obj,
-            code="Subj98"
+            code="Subj98",
+            school=self.school,
         )
 
         self.question = Question.objects.create(
             title="Test Question",
             subject=self.subject,
             details="Question details",
-            type="quiz"
+            type="quiz",
+            school=self.school
         )
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
@@ -129,7 +133,8 @@ class QuestionAPITestCase(APITestCase):
             "title": "New Question",
             "subject": self.subject.id,
             "details": "Question details",
-            "type": "quiz"
+            "type": "quiz",
+            "school":self.school.id
         }
 
         response = self.client.post(url, data)
@@ -203,20 +208,23 @@ class QuestionOptionAPITestCase(APITestCase):
             description="Mathematics subject",
             term=self.term,
             class_id=self.class_obj,
-            code="Subj98"
+            code="Subj98",
+            school=self.school,
         )
 
         self.question = Question.objects.create(
             title="Test Question",
             subject=self.subject,
             details="Question details",
-            type="quiz"
+            type="quiz",
+            school=self.school
         )
 
         self.question_option = QuestionOption.objects.create(
             question=self.question,
             value="Option A",
-            right_option=True
+            right_option=True,
+            school=self.school
         )
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
@@ -236,7 +244,8 @@ class QuestionOptionAPITestCase(APITestCase):
         data = {
             "question": self.question.id,
             "value": "Option B",
-            "right_option": False
+            "right_option": False,
+            "school": self.school.id
         }
 
         response = self.client.post(url, data)
@@ -310,20 +319,23 @@ class ExamAPITestCase(APITestCase):
             description="Mathematics subject",
             term=self.term,
             class_id=self.class_obj,
-            code="Subj98"
+            code="Subj98",
+            school=self.school,
         )
 
         self.question = Question.objects.create(
             title="Test Question",
             subject=self.subject,
             details="Question details",
-            type="quiz"
+            type="quiz",
+            school=self.school
         )
 
         self.question_option = QuestionOption.objects.create(
             question=self.question,
             value="Option A",
-            right_option=True
+            right_option=True,
+            school=self.school
         )
 
         self.exam = Exam.objects.create(
@@ -333,7 +345,8 @@ class ExamAPITestCase(APITestCase):
             start_date=datetime.now().date(),
             due_date=datetime.now().date(),
             weight=0.5,
-            subject=self.subject
+            subject=self.subject,
+            school=self.school
         )
 
         self.exam.questions.add(Question.objects.create(
@@ -341,6 +354,7 @@ class ExamAPITestCase(APITestCase):
             subject=self.subject,
             details="Question 1 details",
             type="quiz",
+            school=self.school
         ))
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
@@ -365,7 +379,8 @@ class ExamAPITestCase(APITestCase):
             "due_date": datetime.now().date(),
             "weight": 0.5,
             "subject":self.subject.id,
-            "questions":list([self.question.id])
+            "questions":list([self.question.id]),
+            "school":self.school.id
         }
 
         response = self.client.post(url, data)
@@ -438,20 +453,23 @@ class AnswerAPITestCase(APITestCase):
             description="Mathematics subject",
             term=self.term,
             class_id=self.class_obj,
-            code="Subj98"
+            code="Subj98",
+            school=self.school,
         )
 
         self.question = Question.objects.create(
             title="Test Question",
             subject=self.subject,
             details="Question details",
-            type="quiz"
+            type="quiz",
+            school=self.school
         )
 
         self.question_option = QuestionOption.objects.create(
             question=self.question,
             value="Option A",
-            right_option=True
+            right_option=True,
+            school=self.school
         )
 
         self.exam = Exam.objects.create(
@@ -461,7 +479,8 @@ class AnswerAPITestCase(APITestCase):
             start_date=datetime.now().date(),
             due_date=datetime.now().date(),
             weight=0.5,
-            subject=self.subject
+            subject=self.subject,
+            school=self.school
         )
 
         self.exam.questions.add(Question.objects.create(
@@ -469,13 +488,15 @@ class AnswerAPITestCase(APITestCase):
             subject=self.subject,
             details="Question 1 details",
             type="quiz",
+            school=self.school
         ))
 
         self.answer = Answer.objects.create(
             question=self.question,
             answer_option=self.question_option,
             answer_value="Ade is a Boy",
-            correct_answer=True
+            correct_answer=True,
+            school=self.school
         )
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
@@ -496,7 +517,8 @@ class AnswerAPITestCase(APITestCase):
             "question": self.question.id,
             "answer_option":self.question_option.id,
             "answer_value":"Simbi is a Boy",
-            "correct_answer":False
+            "correct_answer":False,
+            "school":self.school.id
         }
 
         response = self.client.post(url, data)

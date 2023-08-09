@@ -30,7 +30,7 @@ class LessonNoteAPITestCase(APITestCase):
         )
 
         self.lesson_note = LessonNote.objects.create(
-            week="1", class_id=self.class_obj, content="This is a content", created_by=self.user, last_updated_by=self.user
+            week="1", class_id=self.class_obj, content="This is a content", created_by=self.user, last_updated_by=self.user, school=self.school
         )
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
@@ -56,7 +56,8 @@ class LessonNoteAPITestCase(APITestCase):
             "last_updated_by":self.user.id,
             "topic": "Hello",
             "description": "Hello",
-            "tag": "Hello"
+            "tag": "Hello",
+            "school":self.school.id
         }
 
         response = self.client.post(url, data)

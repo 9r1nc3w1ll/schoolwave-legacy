@@ -4,7 +4,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 
-from account.models import User
 from config.models import BaseModel
 
 
@@ -15,7 +14,7 @@ class School(BaseModel):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True)
     logo_file_name = models.CharField(max_length=255, null=True)
-    owner = models.OneToOneField(User, on_delete=models.CASCADE)
+    owner = models.OneToOneField("account.User", on_delete=models.CASCADE, related_name="school_owner")
     date_of_establishment = models.DateField(null=True)
     motto = models.CharField(max_length=255, null=True)
     tag = models.SlugField(max_length=10, unique=True, null=True)
@@ -40,9 +39,10 @@ class ClassMember(BaseModel):
     class Meta:
         db_table = "class_members"
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey("account.User", on_delete=models.CASCADE)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     role = models.CharField(max_length=100)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
 

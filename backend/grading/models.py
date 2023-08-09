@@ -19,6 +19,7 @@ class Grade(BaseModel):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
     score = models.DecimalField(max_digits=5, decimal_places=2)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
     
 
 
@@ -34,6 +35,7 @@ class Result(BaseModel):
     total_score = models.DecimalField(max_digits=5, decimal_places=2)
     grade = models.CharField(max_length=255)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     def compute_result(self):
         grading_scheme = GradingScheme.objects.get(school=self.student.school)

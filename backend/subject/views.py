@@ -21,8 +21,10 @@ class BatchUploadSubjects(APIView):
     def post(self, request, *args, **kwargs):
         csv_file = request.FILES['csv']
         term_id = request.POST['term_id']
+        school_id = request.POST['school_id']
 
         term = Term.objects.get(id=term_id)
+        school = School.objects.get(id=school_id)
         data = csv_file.read().decode('utf-8')
 
         reader = csv.DictReader(io.StringIO(data))
@@ -34,7 +36,7 @@ class BatchUploadSubjects(APIView):
             subject_description = row.get('Subject Description')
             subject_code = row.get('Subject Code')
 
-            school = School.objects.get(owner=request.user)
+            # school = School.objects.get(owner=request.user)
 
             class_info, created = Class.objects.get_or_create(code=class_code, school=school)
             subject = Subject.objects.create(
@@ -42,7 +44,8 @@ class BatchUploadSubjects(APIView):
                 description=subject_description,
                 class_id=class_info,
                 term=term,
-                code=subject_code
+                code=subject_code,
+                school=school
             )
             created_subjects.append(subject)
 

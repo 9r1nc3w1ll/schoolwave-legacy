@@ -54,7 +54,7 @@ class BatchUploadSubjectsTestCase(APITestCase):
         with open("subject/sample_subject_requests.csv") as csv:
             response = self.client.post(
                 path=url,
-                data={"term_id": self.term.id, "csv": csv},
+                data={"term_id": self.term.id, "school_id": self.school.id, "csv": csv},
             )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -94,7 +94,8 @@ class SubjectCRUDTestCase(APITestCase):
             description="Mathematics subject",
             term=self.term,
             class_id=self.class_obj,
-            code="Sub98"
+            code="Sub98",
+            school=self.school
         )
 
     def test_list_subjects(self):
@@ -116,7 +117,8 @@ class SubjectCRUDTestCase(APITestCase):
             "description": "Science subject",
             "term":self.term.id,
             "class_id":self.class_obj.id,
-            "code":"Subj5"
+            "code":"Subj5",
+            "school":self.school.id
         }
 
         response = self.client.post(url, data)
@@ -193,7 +195,8 @@ class SubjectSelectionCRUDTestCase(APITestCase):
             description="Mathematics subject",
             term=self.term,
             class_id=self.class_obj,
-            code="Subj231"
+            code="Subj231",
+            school=self.school
         )
 
         self.subject_1 = Subject.objects.create(
@@ -201,12 +204,14 @@ class SubjectSelectionCRUDTestCase(APITestCase):
             description="Biology subject",
             term=self.term,
             class_id=self.class_obj,
-            code="Subj232"
+            code="Subj232",
+            school=self.school
         )
 
         self.subject_selection = SubjectSelection.objects.create(
             subject=self.subject,
-            score=80.0
+            score=80.0,
+            school=self.school
         )
 
     def test_list_subject_selections(self):
@@ -226,7 +231,8 @@ class SubjectSelectionCRUDTestCase(APITestCase):
         data = {
             "subject": self.subject_1.id,
             "subject_name": self.subject_1.name,
-            "score": 90
+            "score": 90,
+            "school":self.school.id
         }
 
         response = self.client.post(url, data)
@@ -302,12 +308,14 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
             description="Mathematics subject",
             term=self.term,
             class_id=self.class_obj,
-            code="Subj231"
+            code="Subj231",
+            school=self.school
         )
 
         self.subject_selection = SubjectSelection.objects.create(
             subject=self.subject,
-            score=80
+            score=80,
+            school=self.school
         )
 
         self.staff_user = User.objects.create(
@@ -336,7 +344,8 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
             staff=self.staff,
             role=self.staff_role,
             subject=self.subject,
-            active="True"
+            active="True",
+            school=self.school
         )
 
 
@@ -358,7 +367,8 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
             "staff":self.staff.id,
             "role": self.staff_role.id,
             "subject":self.subject.id,
-            "active":"True"
+            "active":"True",
+            "school":self.school.id
         }
 
         response = self.client.post(url, data)

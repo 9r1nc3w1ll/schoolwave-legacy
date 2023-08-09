@@ -19,7 +19,8 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
             'updated_at',
             'deleted_at',
             'attendance_type',
-            'attendance'
+            'attendance',
+            'school'
         )
 
     def get_class_info(self, obj):
