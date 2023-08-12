@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
-from school.models import School
+from school.models import School, ClassMember
 
 from config.models import BaseModel
 
@@ -52,17 +52,22 @@ class User(BaseModel, AbstractUser):
     guardian_address = models.TextField(blank=True, null=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
 
-    
-
-    
-    
-    
-
     objects = UserManager()
 
     @property
     def tokens(self):
         refresh = RefreshToken.for_user(self)
+
+        refresh['role'] = self.role
+
+        if self.school:
+            refresh["school"] = self.school.id
+        
+        c_member = ClassMember.objects.filter(user=self)
+
+        if c_member.exists():
+            refresh["class"] = c_member[0].class_id.id
+
         return {"refresh": str(refresh), "access": str(refresh.access_token)}
 
     def save(self, *args, **kwargs):

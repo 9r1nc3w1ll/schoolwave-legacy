@@ -70,12 +70,10 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {"TITLE": "Schoolwave API Docs"}
 
-
-SPECTACULAR_SETTINGS = {"TITLE": "Schoolwave API Docs"}
-
 REST_USE_JWT = True
 
 SIMPLE_JWT = {
+    "TOKEN_OBTAIN_SERIALIZER": "utils.jwt.CustomTokenObtainPairSerializer",
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
     "AUTH_HEADER_TYPES": ("Bearer", "Token"),
