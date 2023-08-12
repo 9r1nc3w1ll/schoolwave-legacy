@@ -11,6 +11,7 @@ import io
 from session.models import Term
 from school.models import Class
 from django.db.models import Q
+from django.http import HttpResponse
 import uuid
 from school.models import Class, School
 
@@ -384,3 +385,16 @@ class RetrieveUpdateDestroySubjectStaffAssignment(RetrieveUpdateDestroyAPIView):
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "Subject staff assignment not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class GetSampleCSV(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+
+        file = open("subject/sample_subject_requests.csv", "r")
+
+        response = HttpResponse(file, content_type="text/csv")
+        response['Content-Disposition'] = 'attachment; filename=sample_subject_requests.csv'
+
+        return response

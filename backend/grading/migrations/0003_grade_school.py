@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='grade',
             name='school',
-            field=models.ForeignKey(default='0140b6b2-ff9a-42ab-8c78-52bba55e0c1f', on_delete=django.db.models.deletion.CASCADE, to='school.school'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='school.school'),
             preserve_default=False,
         ),
     ]

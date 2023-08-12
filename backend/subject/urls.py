@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    GetSampleCSV,
     ListCreateSubject,
     RetrieveUpdateDestroySubject,
     ListCreateSubjectSelection,
@@ -17,4 +18,5 @@ urlpatterns = [
     path("/batch_upload_requests", BatchUploadSubjects.as_view(), name="batch_upload_subjects"),
     path('/subject-staff-assignment', ListCreateSubjectStaffAssignment.as_view(), name='subject_staff_assignment_list_create'),
     path('/subject-staff-assignment/<uuid:pk>', RetrieveUpdateDestroySubjectStaffAssignment.as_view(), name='subject_staff_assignment_retrieve_update_destroy'),
+    path("/get_sample_csv", GetSampleCSV.as_view()),
 ]
