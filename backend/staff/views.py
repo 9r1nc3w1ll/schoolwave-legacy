@@ -6,7 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from account.serializers import UserSerializer
 from account.models import User
-from django.db import transaction
+from rest_framework.views import APIView
+from subject.serializers import SubjectSerializer
+from school.serializers import ClassSerializer
 
 class ListCreateStaff(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -261,3 +263,42 @@ class RetrieveUpdateDestoryStaffRole(RetrieveUpdateDestroyAPIView):
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "Staff not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+class AssignedSubjectsView(APIView):
+    queryset = Staff.objects.all()
+    serializer_class = SubjectSerializer
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get("pk")
+        try:
+            teacher = Staff.objects.get(id=pk)
+            assigned_subjects = teacher.assigned_subjects.all()
+            data = SubjectSerializer(assigned_subjects, many=True).data
+        except Staff.DoesNotExist:
+            data = None
+
+        resp = {
+            "message": "List of Subject assigned to a Teacher retrieved successfully.",
+            "data": data,
+        }
+        return Response(resp)
+
+
+class AssignedClassesView(APIView):
+    queryset = Staff.objects.all()
+    serializer_class = ClassSerializer
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get("pk")
+        try:
+            teacher = Staff.objects.get(id=pk)
+            assigned_classes = teacher.assigned_classes.all()
+            data = ClassSerializer(assigned_classes, many=True).data
+        except Staff.DoesNotExist:
+            data = None
+
+        resp = {
+            "message": "List of Class assigned to a Teacher retrieved successfully.",
+            "data": data,
+        }
+        return Response(resp)

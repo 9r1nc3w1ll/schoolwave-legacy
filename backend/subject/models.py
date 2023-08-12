@@ -13,6 +13,7 @@ class Subject(BaseModel):
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     term = models.ForeignKey(Term, on_delete=models.CASCADE)
     code = models.CharField(max_length=150, unique=True)
+    staff_assignments = models.ManyToManyField(Staff, through='SubjectStaffAssignment', related_name='assigned_subjects')
     school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ListCreateStaff, RetrieveUpdateDestoryStaff, ListCreateStaffRole, RetrieveUpdateDestoryStaffRole
+from .views import ListCreateStaff, RetrieveUpdateDestoryStaff, ListCreateStaffRole, RetrieveUpdateDestoryStaffRole, AssignedSubjectsView, AssignedClassesView
 
 urlpatterns = [
     path(
@@ -23,5 +23,11 @@ urlpatterns = [
         RetrieveUpdateDestoryStaffRole.as_view(),
         name="staff_role_retrieve_update_destroy",
     ),
+    path('/teachers_assigned_subjects/<uuid:pk>',
+        AssignedSubjectsView.as_view(),
+        name='assigned_subjects'),
+    path('/teachers_assigned_classes/<uuid:pk>',
+        AssignedClassesView.as_view(),
+        name='assigned_classes'),
 ]
 
