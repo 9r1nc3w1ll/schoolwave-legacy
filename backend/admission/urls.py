@@ -4,7 +4,8 @@ from admission.views import (
     BatchUploadAdmissionRequest,
     ListCreateAdmissionRequests,
     RUDAdmissionRequests,
-    CreateSingleAdmission
+    CreateSingleAdmission,
+    GetSampleCSV
 )
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
         RUDAdmissionRequests.as_view(),
         name="retrieve_update_destroy_requests",
     ),
+    path("/get_sample_csv", GetSampleCSV.as_view()),
 ]

@@ -9,7 +9,8 @@ from .views import (
     RetrieveUpdateDestroyExam,
     ListCreateAnswer,
     RetrieveUpdateDestroyAnswer,
-    BatchUploadAPI
+    BatchUploadAPI,
+    GetSampleCSV
 )
 
 urlpatterns = [
@@ -54,4 +55,5 @@ urlpatterns = [
         name='answer_retrieve_update_destroy',
     ),
     path('/batch_upload/', BatchUploadAPI.as_view(), name='exam_batch_upload'),
+    path("/get_sample_csv", GetSampleCSV.as_view()),
 ]

@@ -4,6 +4,7 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
     GenericAPIView
 )
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
@@ -19,6 +20,7 @@ from .serializers import (
 from rest_framework.parsers import MultiPartParser
 
 from django.db.models import Q
+from django.http import HttpResponse
 import uuid
 import csv
 import io
@@ -425,3 +427,15 @@ class BatchUploadAPI(GenericAPIView):
                 )
 
         return Response({"message" : "Uploaded successfuly"}, status=status.HTTP_201_CREATED)
+
+class GetSampleCSV(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+
+        file = open("exam/question_options.csv", "r")
+
+        response = HttpResponse(file, content_type="text/csv")
+        response['Content-Disposition'] = 'attachment; filename=question_options.csv'
+
+        return response

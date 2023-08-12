@@ -1,8 +1,7 @@
 import csv
 import io
-import json
 
-from django.shortcuts import render
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import (
@@ -170,3 +169,15 @@ class RUDAdmissionRequests(RetrieveUpdateDestroyAPIView):
         }
 
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
+
+class GetSampleCSV(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+
+        file = open("admission/sample_admission_requests.csv", "r")
+
+        response = HttpResponse(file, content_type="text/csv")
+        response['Content-Disposition'] = 'attachment; filename=sample_admission_requests.csv'
+
+        return response
