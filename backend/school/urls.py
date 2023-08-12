@@ -8,7 +8,8 @@ from school.views import (
     SetupStatus,
     ListCreateClassMember,
     RetrieveUpdateDestoryClassMember,
-    ListStudentClass
+    ListStudentClass,
+    DashboardStatsAPIView
 )
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
         name="retrieve_update_destroy_class_member",
     ),
     path("/student-class", ListStudentClass.as_view(), name="list_student_class"),
+    path("/dashboard-stats", DashboardStatsAPIView.as_view(), name="dashboard_stats"),
 ]

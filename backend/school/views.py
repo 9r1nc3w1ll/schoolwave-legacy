@@ -14,6 +14,9 @@ from school.serializers import ClassSerializer, SchoolSerializer, ClassMemberSer
 from utils.permissions import IsSchoolOwner
 from django.db.models import Q
 import uuid
+from admission.models import StudentInformation
+from staff.models import Staff
+from fees.models import Invoice
 
 logger = logging.getLogger(__name__)
 
@@ -310,3 +313,35 @@ class ListStudentClass(ListCreateAPIView):
             "data": serializer.data,
         }
         return Response(resp)
+
+class DashboardStatsAPIView(APIView):
+    def get(self, request, format=None):
+        male_student = StudentInformation.objects.filter(gender='male').count()
+        female_student = StudentInformation.objects.filter(gender='female').count()
+        male_staff = Staff.objects.filter(user__gender='male').count()
+        female_staff = Staff.objects.filter(user__gender='female').count()
+
+        # Retrieve invoices and calculate total and outstanding amounts
+        invoices = Invoice.objects.all()
+        
+        total_paid = sum(invoice.amount_paid for invoice in invoices)
+        total_outstanding = sum(invoice.outstanding_balance for invoice in invoices)
+        total_amount = total_paid + total_outstanding
+        
+        # Calculate percentages
+        paid_percentage = (total_paid / total_amount) * 100 if total_amount > 0 else 0
+        outstanding_percentage = (total_outstanding / total_amount) * 100 if total_amount > 0 else 0
+       
+        
+        data = {
+            'male_student_count': male_student,
+            'female_student_count': female_student,
+            'male_staff_count': male_staff,
+            'female_staff_count': female_staff,
+            'total_paid': total_paid,
+            'total_outstanding': total_outstanding,
+            'total_amount': total_amount,
+            'paid_percentage': paid_percentage,
+            'outstanding_percentage': outstanding_percentage,
+        }
+        return Response(data)
