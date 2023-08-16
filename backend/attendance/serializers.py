@@ -14,13 +14,14 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
             'class_id',
             'subject',
             'staff',
-            'student',
+            'attendee',
             'created_at',
             'updated_at',
             'deleted_at',
             'attendance_type',
             'attendance',
-            'school'
+            'school',
+            "role"
         )
 
     def get_class_info(self, obj):
@@ -50,24 +51,26 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
             class_id=obj.class_id,
             subject=obj.subject,
             staff=obj.staff,
-            deleted_at=None
+            deleted_at=None,
+            role=obj.role
         )
 
         attendance_data = []
         for record in attendance_records:
-            student_data = {
-                'student_id': record.student.id,
-                'first_name': record.student.first_name,
-                'last_name': record.student.last_name,
+            attendee_data = {
+                'attendee_id': record.attendee.id,
+                'first_name': record.attendee.first_name,
+                'last_name': record.attendee.last_name,
                 'present': record.present,
                 'remark': record.remark,
                 'attendance_id': record.id,
+                "role":record.role
             }
-            attendance_data.append(student_data)
+            attendance_data.append(attendee_data)
 
         attendance = {
             'date': obj.date,
-            'students': attendance_data,
+            'attendees': attendance_data,
         }
         return [attendance]
 

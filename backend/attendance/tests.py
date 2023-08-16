@@ -71,7 +71,7 @@ class AttendanceRecordAPITestCase(APITestCase):
 
         self.attendance = AttendanceRecord.objects.create(
             date="2023-05-30",
-            student=self.student_obj,
+            attendee=self.student_obj,
             class_id=self.class_obj,
             start_time="09:00:00",
             end_time="10:00:00",
@@ -80,6 +80,23 @@ class AttendanceRecordAPITestCase(APITestCase):
             remark="Good",
             staff=self.staff_obj,
             school=self.school,
+            role='student',
+        )
+
+        self.client.force_authenticate(user=self.user)
+
+        self.staff_attendance = AttendanceRecord.objects.create(
+            date="2023-05-30",
+            attendee=self.staff_obj,
+            class_id=self.class_obj,
+            start_time="09:00:00",
+            end_time="10:00:00",
+            attendance_type="Daily",
+            present=True,
+            remark="Good",
+            staff=self.staff_obj,
+            school=self.school,
+            role='staff',
         )
 
         self.client.force_authenticate(user=self.user)
@@ -114,13 +131,14 @@ class AttendanceRecordAPITestCase(APITestCase):
             'attendance_type': "Class",
             "attendance": [
                 {
-                    "student_id": str(self.student_obj.id),
+                    "attendee_id": str(self.student_obj.id),
                     "date": "2023-05-30",
                     "present": True,
                     "remark": "Poor"
                 }
             ],
-            "school":self.school.id
+            "school":self.school.id,
+            "role":'student'
         }
 
         response = self.client.post(url, data, format='json')        
@@ -140,6 +158,60 @@ class AttendanceRecordAPITestCase(APITestCase):
 
     def test_retrieve_student_class_attendance(self):
         url = reverse("student_attendance_retrieve", kwargs={
+            "pk": self.attendance.id,
+            "startdate" : "2023-01-01",
+            "enddate" : "2023-02-01"
+            })
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+    def test_list_staff_attendance(self):
+        url = reverse("staff_attendance_list_create")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            len(response.data["data"]), 1
+        )
+
+    def test_create_staff_attendance(self):
+        url = reverse("staff_attendance_list_create")
+        self.client.force_authenticate(user=self.user)
+
+        data = {
+            "class_info": {
+                "class_id": str(self.class_obj.id),
+                'name': str(self.class_obj.name),
+                'description': str(self.class_obj.description),
+                'class_index': str(self.class_obj.class_index),
+                'code': str(self.class_obj.code),
+            },
+            "staff_info": {
+                "staff_id": str(self.staff_obj.id),
+                'first_name': str(self.staff_obj.first_name),
+            },
+            'attendance_type': "Class",
+            "attendance": [
+                {
+                    "attendee_id": str(self.staff_obj.id),
+                    "date": "2023-05-30",
+                    "present": True,
+                    "remark": "Poor"
+                }
+            ],
+            "school":self.school.id,
+            "role":'staff'
+        }
+
+        response = self.client.post(url, data, format='json')        
+
+    def test_retrieve_staff_class_attendance(self):
+        url = reverse("staff_attendance_retrieve", kwargs={
             "pk": self.attendance.id,
             "startdate" : "2023-01-01",
             "enddate" : "2023-02-01"
