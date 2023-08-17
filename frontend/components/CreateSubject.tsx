@@ -98,7 +98,11 @@ const Subject  = (props:any) => {
           );
 
           const onSubmit = async (data: any) => { 
-            mutate(data);
+            mutate({...data,
+              school: props.user_session.school.id
+            });
+            
+           
                     
           };
 

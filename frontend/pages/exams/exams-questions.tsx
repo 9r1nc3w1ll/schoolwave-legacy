@@ -77,7 +77,7 @@ const Export = (props:any) => {
   useEffect(() => {
     if(sessionStatus == 'authenticated'){
       refetch()
-      console.log("This is our recorddtata",recordsData);
+    
       
       
   
@@ -89,10 +89,10 @@ const Export = (props:any) => {
     if(questionDetails !=''){
   
       setSessions(questionDetails)
-      console.log(questionDetails)
+     
       
     
-    }else {console.log("No Exam details")}
+    }else {}
   }, [questionDetails]);
 
 
@@ -120,7 +120,6 @@ const Export = (props:any) => {
 
   useEffect(() => {
     setInitialRecords(questionDetails);
-    console.log(questionDetails)
   }, [questionDetails,isSuccess]);
   
 
@@ -134,7 +133,6 @@ const Export = (props:any) => {
     const from = (page - 1) * pageSize;
     const to = from + pageSize;
     setRecordsData([...initialRecords.slice(from, to)]);
-    console.log("initail", initialRecords.slice(from,to))
   }, [page, pageSize, initialRecords]);
 
   useEffect(() => {
@@ -435,7 +433,7 @@ const Export = (props:any) => {
 
                     
 
-                    <p className='mb-2 px-2  cursor-pointer hover:bg-white' onClick={()=>{
+                      <p className='mb-2 px-2  cursor-pointer hover:bg-white' onClick={()=>{
                         setassignStudent(false)
                         setusermodal(true)
               
