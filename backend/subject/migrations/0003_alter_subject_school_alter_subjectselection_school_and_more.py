@@ -15,19 +15,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='subject',
             name='school',
-            field=models.ForeignKey(default='3a9b3639-82c2-4d80-bb3a-f571c111fef9', on_delete=django.db.models.deletion.CASCADE, to='school.school'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='school.school'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='subjectselection',
             name='school',
-            field=models.ForeignKey(default='3a9b3639-82c2-4d80-bb3a-f571c111fef9', on_delete=django.db.models.deletion.CASCADE, to='school.school'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='school.school'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='subjectstaffassignment',
             name='school',
-            field=models.ForeignKey(default='3a9b3639-82c2-4d80-bb3a-f571c111fef9', on_delete=django.db.models.deletion.CASCADE, to='school.school'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='school.school'),
             preserve_default=False,
         ),
     ]
