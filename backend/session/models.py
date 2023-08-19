@@ -13,16 +13,15 @@ class Session(BaseModel):
     name = models.CharField(max_length=50)
     active = models.BooleanField(null=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
-    start_date = PartialDateField()
-    end_date = PartialDateField()
+    start_date = PartialDateField('%Y')
+    end_date = PartialDateField('%Y')
     resumption_date = models.DateField()
 
     def save(self, *args, **kwargs):
         self.name = f"{self.start_date}/{self.end_date}"
 
         return super().save(*args, **kwargs)
-
-
+        
 class Term(BaseModel):
     class Meta:
         db_table = "terms"
