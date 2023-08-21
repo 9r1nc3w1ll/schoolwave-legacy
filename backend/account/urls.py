@@ -37,7 +37,7 @@ urlpatterns = [
         "/users/<uuid:user_id>", RetrieveUpdateUserProfile.as_view(), name="user-profile-detail"
     ),
     path(
-        "users/profile",
+        "/users/profile",
         RetrieveUpdateUserProfile.as_view(),
         name="user-profile",
     ),
