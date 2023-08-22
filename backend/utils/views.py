@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from utils.flutterwave import verify_flutterwave_tx, generate_random_number
+
 import hashlib
 import hmac
 from django.conf import settings
@@ -26,3 +28,21 @@ class PaystackWebhook(APIView):
         if webhook_data["event"] == "charge.success":
             # Handle payment here when fleshed out.
             pass
+
+
+class FetchRef(APIView):
+
+    def get(self, request, *args, **kwargs):
+        ref = generate_random_number()
+        return Response({"ref" : ref})
+
+
+class VerifyFlutterwaveTx(APIView):
+
+    def get(self, request, *args, **kwargs):
+        ref = request.GET.get("ref", "")
+
+        status, data = verify_flutterwave_tx(ref)
+        return Response({"status" : status, "data" : data})
+
+

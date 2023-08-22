@@ -176,3 +176,12 @@ class BulkInvoiceSerializer(serializers.Serializer):
 
     class Meta:
         fields = "__all__"
+
+
+class PaymentSerializer(serializers.Serializer):
+    invoice_id = serializers.UUIDField()
+    ref = serializers.CharField()
+    school_id = serializers.UUIDField()
+
+    class Meta:
+        fields = "__all__"

@@ -5,11 +5,13 @@ from rest_framework.response import Response
 
 from account.models import User
 from account.serializers import OwnerSerializer, UserSerializer
+from django.contrib.contenttypes.models import ContentType
 from school.models import School, Class, ClassMember
 from fees.models import FeeItem, Transaction, FeeTemplate, Discount, Invoice
-from fees.serializers import BulkInvoiceSerializer, FeeItemSerializer, TransactionSerializer, DiscountSerializer, \
+from fees.serializers import BulkInvoiceSerializer, FeeItemSerializer, PaymentSerializer, TransactionSerializer, DiscountSerializer, \
     FeeTemplateSerializer, InvoiceSerializer
 from utils.permissions import IsSchoolOwner
+from utils.flutterwave import verify_flutterwave_tx, generate_random_number
 
 
 class ListCreateFeeTemplate(ListCreateAPIView):
@@ -544,3 +546,56 @@ class RetrieveUpdateDestroyInvoice(RetrieveUpdateDestroyAPIView):
         }
 
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
+
+
+class UpdateInvoice(GenericAPIView):
+    permission_classes = [IsAuthenticated,]
+    serializer_class = PaymentSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        
+        invoice_id = request.data.get("invoice_id", "")
+        ref = request.data.get("tx_ref", "")
+
+        school_id = request.data.get("school_id", "")
+
+        tx_status, tx_data = verify_flutterwave_tx(ref)
+
+        invoice = Invoice.objects.filter(id=invoice_id)
+        school = School.objects.filter(id=school_id)
+
+        if not invoice.exists():
+            return Response({"error" : "Invoice does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not school.exists():
+            return Response({"error" : "School does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if tx_status == "success":
+            content_type = ContentType.objects.get_for_model(Invoice).id
+            tx = Transaction.objects.create(
+                content_type=content_type,
+                invoice=invoice[0],
+                status="paid",
+                ref=ref,
+                school=school
+            )
+            tx.save()
+
+            return Response({"message" : "Transaction successful."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        elif tx_status == "pending":
+            tx = Transaction.objects.create(
+                content_type=content_type,
+                invoice=invoice[0],
+                ref=ref,
+                school=school
+            )
+            tx.save()
+
+            return Response({"message" : "Transaction has not been confirmed."}, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            return Response({"error" : "Transaction failed, or invalid transaction id."}, status=status.HTTP_400_BAD_REQUEST)

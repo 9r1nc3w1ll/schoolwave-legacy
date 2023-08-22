@@ -17,13 +17,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='attendancerecord',
             name='attendee',
-            field=models.ForeignKey(default='a119f8df-e165-4201-a8d6-a714afdd46cb', on_delete=django.db.models.deletion.CASCADE, related_name='attendances', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='attendances', to=settings.AUTH_USER_MODEL),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='attendancerecord',
             name='school',
-            field=models.ForeignKey(default='6023efc5-3ee7-40a2-81a2-eb42f166ff16', on_delete=django.db.models.deletion.CASCADE, to='school.school'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='school.school'),
             preserve_default=False,
         ),
     ]
