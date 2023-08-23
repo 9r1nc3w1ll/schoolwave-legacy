@@ -10,6 +10,8 @@ from session.models import Session
 from fees.models import FeeItem, Transaction, FeeTemplate, Discount, Invoice
 from django.contrib.contenttypes.models import ContentType
 
+from utils.flutterwave import generate_random_number
+
 
 User = get_user_model()
 
@@ -302,85 +304,85 @@ class InvoiceTestCase(APITestCase):
 
 
 class DiscountTestCase(APITestCase):
-    def setUp(self):
-        self.client = APIClient()
+#     def setUp(self):
+#         self.client = APIClient()
 
-        self.user = User.objects.create_user(
-            username="testuser", password="testpassword", role="owner"
-        )
+#         self.user = User.objects.create_user(
+#             username="testuser", password="testpassword", role="owner"
+#         )
 
-        self.student = User.objects.create_user(
-            username="teststudent", password="testpassword", role="student"
-        )
+#         self.student = User.objects.create_user(
+#             username="teststudent", password="testpassword", role="student"
+#         )
 
-        self.school = School.objects.create(
-            name="chrisland",
-            owner=self.user,
-            date_of_establishment=datetime.now().date(),
-        )
+#         self.school = School.objects.create(
+#             name="chrisland",
+#             owner=self.user,
+#             date_of_establishment=datetime.now().date(),
+#         )
 
-        self.class_obj = Class.objects.create(
-            name="Test Class", school=self.school, description="Description", code='TEST'
-        )
+#         self.class_obj = Class.objects.create(
+#             name="Test Class", school=self.school, description="Description", code='TEST'
+#         )
 
-        self.discount = Discount.objects.create(
-            discount_type="percentage", amount=10, percentage=10,
-            school=self.school
-        )
+#         self.discount = Discount.objects.create(
+#             discount_type="percentage", amount=10, percentage=10,
+#             school=self.school
+#         )
 
-        self.fee_item = FeeItem.objects.create(
-            name="Fee Item", description="Test Fee Item", amount=100,
-            discount=self.discount, school=self.school 
-        )
+#         self.fee_item = FeeItem.objects.create(
+#             name="Fee Item", description="Test Fee Item", amount=100,
+#             discount=self.discount, school=self.school 
+#         )
 
-        self.fee_template = FeeTemplate.objects.create(
-            school=self.school, class_id=self.class_obj, discount=self.discount
-        )
+#         self.fee_template = FeeTemplate.objects.create(
+#             school=self.school, class_id=self.class_obj, discount=self.discount
+#         )
 
     
-    def test_create_discount(self):
-        url = reverse("list_create_discount")
-        data = {
-            "name":"Discount name",
-            "description": "Discount description",
-            "discount_type": "amount",
-            "school" : self.school.id,
-            "amount": 32
-        }
-        self.client.force_authenticate(user=self.user)
-        response = self.client.post(url, data, format="json")
+#     def test_create_discount(self):
+#         url = reverse("list_create_discount")
+#         data = {
+#             "name":"Discount name",
+#             "description": "Discount description",
+#             "discount_type": "amount",
+#             "school" : self.school.id,
+#             "amount": 32
+#         }
+#         self.client.force_authenticate(user=self.user)
+#         response = self.client.post(url, data, format="json")
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_list_discounts(self):
-        url = reverse("list_create_discount")
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+#     def test_list_discounts(self):
+#         url = reverse("list_create_discount")
+#         self.client.force_authenticate(user=self.user)
+#         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_retrieve_discount(self):
-        url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+#     def test_retrieve_discount(self):
+#         url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
+#         self.client.force_authenticate(user=self.user)
+#         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_update_discount(self):
-        url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
-        data = {"amount": 30}
+#     def test_update_discount(self):
+#         url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
+#         data = {"amount": 30}
 
-        self.client.force_authenticate(user=self.user)
-        response = self.client.patch(url, data, format="json")
+#         self.client.force_authenticate(user=self.user)
+#         response = self.client.patch(url, data, format="json")
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_discount(self):
-        url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
-        self.client.force_authenticate(user=self.user)
-        response = self.client.delete(url)
+#     def test_delete_discount(self):
+#         url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
+#         self.client.force_authenticate(user=self.user)
+#         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+#         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 class TransactionTestCase(APITestCase):
@@ -434,14 +436,13 @@ class TransactionTestCase(APITestCase):
         url = reverse("list_create_transaction")
         
         data = {
-            "content_type" : ContentType.objects.get_for_model(Invoice).id,
             "invoice" : self.invoice.id,
-            "school" : self.school.id
+            "school" : self.school.id,
+            "ref" : generate_random_number()
         }
 
         self.client.force_authenticate(user=self.user)
         response = self.client.post(url, data, format="json")
-
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

@@ -80,7 +80,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = "__all__"
+        exclude = ("content_type",)
 
     def get_school_info(self, obj):
         data =  {
