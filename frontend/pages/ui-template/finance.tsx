@@ -384,6 +384,7 @@ const Finance = () => {
     },
   };
 
+  
   const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
   return (
