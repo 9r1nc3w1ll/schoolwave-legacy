@@ -291,6 +291,7 @@ class InvoiceTestCase(APITestCase):
         response = self.client.patch(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
 
     def test_delete_invoice(self):
         url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])

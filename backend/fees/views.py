@@ -548,11 +548,11 @@ class RetrieveUpdateDestroyInvoice(RetrieveUpdateDestroyAPIView):
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
 
 
-class UpdateInvoice(GenericAPIView):
+class ProcessInvoice(GenericAPIView):
     permission_classes = [IsAuthenticated,]
     serializer_class = PaymentSerializer
 
-    def post(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -584,7 +584,9 @@ class UpdateInvoice(GenericAPIView):
             )
             tx.save()
 
-            return Response({"message" : "Transaction successful."}, status=status.HTTP_400_BAD_REQUEST)
+            invoice.update_invoice(tx_data["amount"])
+
+            return Response({"message" : "Transaction successful.", "data" : InvoiceSerializer(invoice[0]).data}, status=status.HTTP_400_BAD_REQUEST)
         
         elif tx_status == "pending":
             tx = Transaction.objects.create(

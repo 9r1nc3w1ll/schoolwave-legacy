@@ -23,6 +23,7 @@ from drf_spectacular.views import (
 )
 
 from config.views import HealthCheck
+from utils.views import FetchRef, VerifyFlutterwaveTx
 
 urlpatterns = [
     path("admin", admin.site.urls),
@@ -49,4 +50,6 @@ urlpatterns = [
         "api/docs-redoc", SpectacularRedocView.as_view(url_name="schema"), name="redoc"
     ),
     path("healthz", HealthCheck.as_view(), name="health_check"),
+    path("fetch_ref", FetchRef.as_view()),
+    path("verify_tx", VerifyFlutterwaveTx.as_view())
 ]

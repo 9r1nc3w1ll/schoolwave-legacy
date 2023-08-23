@@ -1,4 +1,6 @@
+from decimal import Decimal
 from django.db import models
+
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -81,6 +83,18 @@ class Invoice(BaseModel):
     balance = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
     outstanding_balance = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @property
+    def total_amount(self):
+        return self.items.aggregate(total_amount=models.Sum('amount'))['total_amount'] or 0.00
+
+    def update_invoice(self, amount_paid):
+        amount_paid = Decimal(amount_paid)
+
+        self.amount_paid += amount_paid
+        self.outstanding_balance = self.total_amount - amount_paid
+        self.save()
+        
 
 # Signal to create the Invoice items based on the related FeeTemplate
 @receiver(post_save, sender=Invoice)
