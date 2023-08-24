@@ -2,6 +2,7 @@ from django.urls import path
 
 from admission.views import (
     BatchUploadAdmissionRequest,
+    BatchUpdateAdmissionRequests,
     ListCreateAdmissionRequests,
     RUDAdmissionRequests,
     CreateSingleAdmission,
@@ -14,6 +15,7 @@ urlpatterns = [
         BatchUploadAdmissionRequest.as_view(),
         name="batch_upload_requests",
     ),
+    path("/batch_update_requests", BatchUpdateAdmissionRequests.as_view(), name="batch_update_requests"),
     path("/requests/create", CreateSingleAdmission.as_view(), name="create_single_admission"),
     path(
         "/requests", ListCreateAdmissionRequests.as_view(), name="list_create_requests"

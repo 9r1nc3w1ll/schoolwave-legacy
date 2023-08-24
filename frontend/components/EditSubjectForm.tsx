@@ -5,7 +5,7 @@ import { showAlert } from '@/utility_methods/alert';
 import { editSubject } from '@/apicalls/subjects';
 import {  useState } from 'react';
 import { getClasses } from '@/apicalls/class-api';
-import { getTerms } from '@/apicalls/session';
+import { getAllTerms } from '@/apicalls/session';
 import Select from 'react-select';
 
 
@@ -50,7 +50,7 @@ const EditSubjectForm = (props:any) => {
   );
 
   const { data: clasii, isSuccess, status, refetch } = useQuery('classes', () => getClasses(props.user_session?.access_token), {enabled: false})
-  const { data: term, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('terms', () => getTerms(props.user_session?.access_token), {enabled: false})
+  const { data: term, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('terms', () => getAllTerms(props.user_session?.access_token), {enabled: false})
   interface classOption {
     id: string;
     name: string;
@@ -129,18 +129,18 @@ const EditSubjectForm = (props:any) => {
           </select>
         </div>
         <div>
-          <label htmlFor="term_id">Term</label>
+          <label htmlFor="term">Term</label>
           <select
-            id="term_id"
+            id="term"
             className="form-input"
-            {...register("term_id", { required: "This field is required" })}
+            {...register("term", { required: "This field is required" })}
           >
             <option>Select an option</option>
             {termOptions?.map((option) => (
               <option
                 key={option.id}
                 value={option.id}
-                selected={option.id === props.sessionData.term_id}
+                selected={option.id === props.sessionData.term}
               >
                 {option.name}
               </option>

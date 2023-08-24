@@ -24,7 +24,6 @@ GENDERS = (
     ("female", "Female")
 )
 
-
 class User(BaseModel, AbstractUser):
     class Meta:
         db_table = "users"
@@ -51,6 +50,13 @@ class User(BaseModel, AbstractUser):
     guardian_phone_number = models.CharField(max_length=200, null=True, blank=True)
     guardian_address = models.TextField(blank=True, null=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
+    profile_photo = models.OneToOneField(
+        "account.ProfilePhoto",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="user_profile"  # Add a related_name
+    )
 
     objects = UserManager()
 
@@ -101,3 +107,11 @@ class AuditLog(BaseModel):
 
     def __str__(self):
         return f"AuditLog: {self.action} - {self.object_type} ({self.object_id}) - User: {self.actor.username}"
+    
+class ProfilePhoto(BaseModel):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="profile_photos"
+    )
+    file = models.ImageField(upload_to="profile_pics", blank=True, null=True)

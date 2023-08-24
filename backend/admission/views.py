@@ -58,6 +58,34 @@ class BatchUploadAdmissionRequest(APIView):
             raise e
 
 
+class BatchUpdateAdmissionRequests(APIView):
+    serializer_class = AdmissionRequestSerializer
+    permission_classes = [IsSchoolOwner, IsAuthenticated]
+
+    
+    def patch(self, request, *args, **kwargs):
+        ids = request.data.get("ids", "")
+        data = request.data.get("data", {})
+
+        if not ids:
+            return Response({"error" : "Please pass in array of admission request ids to be updated."}, status=status.HTTP_400_BAD_REQUEST)
+
+        admission_requests = AdmissionRequest.objects.filter(id__in=ids)
+
+        for admission_request in admission_requests:
+            
+            serializer = self.serializer_class(admission_request, data=data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+        return Response({'message': 'Bulk update successful'})
+        
+
+
+
+
+
+
 class CreateSingleAdmission(CreateAPIView):
     serializer_class = StudentInformationSerializer
     permission_classes = [IsSchoolOwner, IsAuthenticated]

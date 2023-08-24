@@ -15,6 +15,7 @@ from rest_framework.views import APIView
 from account.utils import send_user_mail
 from school.models import School, ClassMember
 from school.serializers import SchoolSerializer, ClassMemberSerializer
+from rest_framework.generics import RetrieveUpdateAPIView
 
 from .models import PasswordResetRequest, User
 from .serializers import (
@@ -23,6 +24,7 @@ from .serializers import (
     PasswordChangeSerializer,
     PasswordResetRequestSerializer,
     UserSerializer,
+    ProfilePhotoSerializer
 )
 
 
@@ -328,3 +330,45 @@ class UserClass(APIView):
             "data": data,
         }
         return Response(resp)
+    
+
+class RetrieveUpdateUserProfile(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = "user_id"
+    
+    def get_object(self):
+        return self.request.user
+    
+    def get(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = UserSerializer(user)
+        return Response(
+            {"message": "User Profile retrieved successfully.", "data": serializer.data}
+        )
+    
+    def patch(self, request, *args, **kwargs):
+        user = self.get_object()
+        
+        # Create a mutable copy of request.data
+        user_data = request.data.copy()
+        
+        # Pop the profile_photo data from the mutable copy
+        profile_photo_data = user_data.pop("profile_photo", None)
+
+        serializer = UserSerializer(user, data=user_data, partial=True)
+        if serializer.is_valid():
+            if profile_photo_data:
+                # Update the profile photo if data is provided
+                profile_photo_serializer = ProfilePhotoSerializer(instance=user.profile_photo, data=profile_photo_data)
+                if profile_photo_serializer.is_valid():
+                    profile_photo_serializer.save()
+
+            user = serializer.save()
+            message = "User Profile updated successfully."
+            data = UserSerializer(user).data
+
+            return Response({"message": message, "data": data})
+
+        return Response({"message": "Invalid data.", "errors": serializer.errors})

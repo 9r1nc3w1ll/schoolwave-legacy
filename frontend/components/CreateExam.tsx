@@ -126,7 +126,7 @@ const CreateExam  = (props:any) => {
 
           const onSubmit = async (data: any) => {
             const extractedQuestions = selectedQuestions.map((value: any) => value.value);
-            const updatedData = { ...data, questions: extractedQuestions, };
+            const updatedData = { ...data, questions: extractedQuestions, school: user_session?.school.id };
           
             mutate(updatedData);
             

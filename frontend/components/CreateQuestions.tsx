@@ -63,7 +63,7 @@ const CreateExamQuestions  = (props:any) => {
     if( isSuccess2 && subjects){
         
       setsubjectsOptions(subjects); 
-      console.log("This are the subjects",subjects)
+      
 
      
           
@@ -106,9 +106,9 @@ const CreateExamQuestions  = (props:any) => {
             }
           );
 
-          const onSubmit = async (data: any) => {
+        const onSubmit = async (data: any) => {
             const extractedQuestions = selectedQuestions.map((value: any) => value.value);
-            const updatedData = { ...data, subjects: extractedQuestions };
+            const updatedData = { ...data, subjects: extractedQuestions, school: user_session?.school.id };
           
             mutate(updatedData);
           };

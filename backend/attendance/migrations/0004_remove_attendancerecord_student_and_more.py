@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='attendancerecord',
             name='attendee',
-            field=models.ForeignKey(default='a119f8df-e165-4201-a8d6-a714afdd46cb', on_delete=django.db.models.deletion.CASCADE, related_name='attendances', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='attendances', to=settings.AUTH_USER_MODEL),
             preserve_default=False,
         ),
         migrations.AddField(

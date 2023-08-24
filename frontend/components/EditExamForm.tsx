@@ -99,7 +99,7 @@ const EditExamForm = (props:any) => {
   useEffect(() => {
     if (props.sessionData) {
       setValue("name", props.sessionData.name);
-      setValue("description", props.sessionData.description); // Update the field name from "code" to "description"
+      setValue("description", props.sessionData.description); 
       setValue("start_date", props.sessionData.start_date);
       setValue("due_date", props.sessionData.due_date);
       setValue("weight", props.sessionData.weight);

@@ -65,7 +65,7 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
 
         # Create an admission request
         self.addmission_request_1 = AdmissionRequest.objects.create(
-            status="approved", student_info=self.student_info, school=self.school
+            status="pending", student_info=self.student_info, school=self.school
         )
 
         self.addmission_request_2 = AdmissionRequest.objects.create(
@@ -95,6 +95,25 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    
+    def test_batch_update_admission_request(self):
+        url = reverse("batch_update_requests")
+        self.client.force_authenticate(user=self.user)
+
+        data = {
+            "ids": [self.addmission_request_1.id, self.addmission_request_2.id],
+            "data": {
+                "status": "approved",
+                "comment_if_declined": "Updated comment"
+            }
+        }
+
+        response = self.client.patch(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(AdmissionRequest.objects.get(id=self.addmission_request_1.id).status, "approved")
+        self.assertEqual(AdmissionRequest.objects.get(id=self.addmission_request_2.id).status, "approved")
+
 
 
 class RUDAdmissionRequestsTestCase(TestCase):

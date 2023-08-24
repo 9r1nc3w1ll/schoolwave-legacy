@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
+from django.core.files import File
 
 User = get_user_model()
 
@@ -65,6 +66,7 @@ class UserCRUDTestCase(APITestCase):
                 "last_name":"User_last_name"}
 
         response = self.client.post(url, data)
+        print(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_retrieve_user(self):
@@ -99,3 +101,25 @@ class UserCRUDTestCase(APITestCase):
         self.assertEqual(
             len(response.data["data"]), 1
         )
+
+    def test_retrieve_user_profile(self):
+        url = reverse("user-profile")
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["data"]["username"], self.user.username)        
+
+    def test_update_user_profile(self):
+        url = reverse("user-profile") 
+        self.client.force_authenticate(user=self.user)
+
+        data = {
+            "profile_photo": '',
+            "first_name":"user_firstname",
+            "last_name":"User_last_name"
+        }
+
+        response = self.client.patch(url, data, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["data"]["first_name"], data["first_name"])
+        self.assertEqual(response.data["data"]["last_name"], data["last_name"])

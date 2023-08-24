@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 
-from account.models import User
+from account.models import User, ProfilePhoto
 
 
 class PasswordResetRequestSerializer(serializers.Serializer):
@@ -68,9 +68,14 @@ class LoginSerializer(serializers.Serializer):
             raise AuthenticationFailed("Invalid login credentials")
         return data
 
+class ProfilePhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfilePhoto
+        fields = ["file"]
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    profile_photo = ProfilePhotoSerializer(required=False)
 
     class Meta:
         model = User
