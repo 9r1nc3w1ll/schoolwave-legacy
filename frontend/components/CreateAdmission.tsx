@@ -96,7 +96,7 @@ const CreateAdmission  = (props:any) => {
           const onSubmit = async (data: any) => { 
                
             mutate(data)
-           
+
           };
 
 
@@ -225,7 +225,10 @@ const CreateAdmission  = (props:any) => {
 
                     </div>
                     <button type="submit" className="btn btn-primary !mt-6 w-[15%] ">
-        Save
+                      {
+                        isLoading ? <span className="animate-spin border-2 border-white border-l-transparent rounded-full w-5 h-5 ltr:mr-4 rtl:ml-4 inline-block align-middle"></span> : null
+                      }
+                      Save
                     </button>
 
 
