@@ -297,7 +297,7 @@ const Dashboard = (props: any) => {
           </div>
           <div className="mt-5 flex items-center">
             <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 5,137 </div>
-            <div className="badge bg-white/30">- 2.35% </div>
+            <div className="badge bg-white/30">+ 2.35% </div>
           </div>
           <div className="mt-5 flex items-center font-semibold">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr:mr-2 rtl:ml-2">
@@ -389,7 +389,7 @@ const Dashboard = (props: any) => {
           </div>
           <div className="mt-5 flex items-center">
             <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 50.01% </div>
-            <div className="badge bg-white/30">- 0.35% </div>
+            <div className="badge bg-white/30">+ 0.35% </div>
           </div>
           <div className="mt-5 flex items-center font-semibold">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr:mr-2 rtl:ml-2">
