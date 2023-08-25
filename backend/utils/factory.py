@@ -221,7 +221,7 @@ class AttendanceRecordFactory(factory.django.DjangoModelFactory):
         model = "attendance.AttendanceRecord"
 
     date = date.today()
-    student = factory.SubFactory(UserFactory) 
+    attendee = factory.SubFactory(UserFactory) 
     class_id = factory.SubFactory(ClassFactory)  
     subject = factory.SubFactory(SubjectFactory) 
     start_time = factory.Faker("time", end_datetime=None)

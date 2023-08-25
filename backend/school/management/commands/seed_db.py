@@ -70,7 +70,7 @@ class Command(BaseCommand):
                     subject_staff_assignment = SubjectStaffAssignmentFactory.create(staff=staff, role=role, subject=subject, school=school)
                     student_info = StudentInformationFactory.create()
                     ad_request = AdmissionRequestFactory.create(school=school, student_info=student_info)
-                    at_record = AttendanceRecordFactory.create(student=student, class_id=class_instance, subject=subject, staff=teacher, school=school)
+                    at_record = AttendanceRecordFactory.create(attendee=student, class_id=class_instance, subject=subject, staff=teacher, school=school)
                     question = QuestionFactory.create(subject=subject, school=school)
                     q_option = QuestionOptionFactory.create(question=question, school=school)
                     exam = ExamFactory.create(class_name=class_instance, subject=subject, school=school)
