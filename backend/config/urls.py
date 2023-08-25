@@ -24,6 +24,7 @@ from drf_spectacular.views import (
 
 from config.views import HealthCheck
 from utils.views import FetchRef, VerifyFlutterwaveTx
+from config.views import CheckEntities, HealthCheck
 
 urlpatterns = [
     path("admin", admin.site.urls),
@@ -52,4 +53,5 @@ urlpatterns = [
     path("healthz", HealthCheck.as_view(), name="health_check"),
     path("fetch_ref", FetchRef.as_view()),
     path("verify_tx", VerifyFlutterwaveTx.as_view())
+    path("check_entities", CheckEntities.as_view())
 ]

@@ -18,7 +18,7 @@ class Family(BaseModel):
         db_table = "families"
     member = models.OneToOneField(User, on_delete=models.CASCADE)
     family_name = models.CharField(max_length=255, default="student")
-    role = models.OneToOneField(FamilyRole, on_delete=models.CASCADE)
+    role = models.ForeignKey(FamilyRole, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
 

@@ -1,8 +1,10 @@
 from django.urls import path
 
-from .views import ListCreateStaff, RetrieveUpdateDestoryStaff, ListCreateStaffRole, RetrieveUpdateDestoryStaffRole, AssignedSubjectsView, AssignedClassesView
+from .views import ListCreateStaff, RetrieveUpdateDestoryStaff, ListCreateStaffRole, \
+    RetrieveUpdateDestoryStaffRole, AssignedSubjectsView, AssignedClassesView, BatchUploadStaff
 
 urlpatterns = [
+    path("/batch_upload", BatchUploadStaff.as_view(), name="batch_upload_staff"),
     path(
         "/staff-list",
         ListCreateStaff.as_view(),

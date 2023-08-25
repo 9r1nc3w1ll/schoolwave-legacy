@@ -1,0 +1,5 @@
+username,first_name,last_name,email,family_name,role
+newusername,John,Doe,john@example.com,Smith,Parent
+new2username,Jane,Smith,jane@example.com,Smith,Student
+new3username,Michael,Johnson,michael@example.com,Johnson,Parent
+new4username,Emily,Williams,emily@example.com,Williams,Student

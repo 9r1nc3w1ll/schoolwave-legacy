@@ -51,6 +51,17 @@ class FamilyAPITestCase(APITestCase):
         self.assertEqual(
             len(response.data["data"]), 1
         )
+    
+    def test_batch_upload_parents(self):
+        url = reverse("batch_upload_parents")
+        self.client.force_authenticate(user=self.user)
+        with open("parent/sample_upload.csv") as csv:
+            response = self.client.post(
+                path=url,
+                data={"csv": csv},
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_parent(self):
         url = reverse("parent_list_create")

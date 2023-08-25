@@ -11,6 +11,48 @@ from subject.serializers import SubjectSerializer
 from school.serializers import ClassSerializer
 from school_settings.models import SchoolSettings
 
+from rest_framework.parsers import MultiPartParser
+import csv
+import io
+
+class BatchUploadStaff(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
+
+    def post(self, request, *args, **kwargs):
+        csv_file = request.FILES['csv']
+
+        data = csv_file.read().decode('utf-8')
+
+        reader = csv.DictReader(io.StringIO(data))
+
+        staff_list = []
+
+        for row in reader:
+            username = row["username"]
+            first_name = row['first_name']
+            last_name = row['last_name']
+            email = row['email']
+            title = row['title']
+            role_names = row['roles'].split(',')  # Split roles into a list
+
+            user, _ = User.objects.get_or_create(username=username, first_name=first_name, last_name=last_name, email=email)
+
+            roles = []
+            for role_name in role_names:
+                role, _ = StaffRole.objects.get_or_create(name=role_name.strip())
+                roles.append(role)
+
+            staff = Staff(user=user, title=title)
+            staff.save()
+            staff.roles.set(roles)
+            staff_list.append(staff)
+
+        serializer = StaffSerializer(staff_list, many=True)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        
+    
 class ListCreateStaff(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Staff.objects.all()

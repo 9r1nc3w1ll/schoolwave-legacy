@@ -1,8 +1,10 @@
 from django.urls import path
 
-from .views import ListCreateParent, RetrieveUpdateDestoryParent, ListCreateParentRole, RetrieveUpdateDestoryParentRole
+from .views import ListCreateParent, RetrieveUpdateDestoryParent, ListCreateParentRole,\
+      RetrieveUpdateDestoryParentRole, BatchUploadFamily
 
 urlpatterns = [
+    path("/batch_upload", BatchUploadFamily.as_view(), name="batch_upload_parents"),
     path(
         "/parent-list",
         ListCreateParent.as_view(),

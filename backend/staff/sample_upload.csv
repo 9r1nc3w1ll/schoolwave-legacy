@@ -1,0 +1,5 @@
+username,first_name,last_name,email,title,roles
+username1,John,Doe,john@example.com,Teacher,"Teacher, Staff"
+usernam2,Jane,Smith,jane@example.com,Principal,"Principal, Staff"
+username3,Michael,Johnson,michael@example.com,Counselor,Counselor
+username4,Emily,Williams,emily@example.com,Librarian,Staff
