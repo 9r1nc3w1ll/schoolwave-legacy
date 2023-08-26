@@ -6,12 +6,6 @@ import { editSubject } from '@/apicalls/subjects';
 import {  useState } from 'react';
 import { getClasses } from '@/apicalls/class-api';
 import { getAllTerms } from '@/apicalls/session';
-import Select from 'react-select';
-
-
-
-
-
 
 interface FormValues {
     name: string;
@@ -20,11 +14,7 @@ interface FormValues {
     code: string;
     term_id: string
 
-
- 
    };
-
-
 
 const EditSubjectForm = (props:any) => {
 
@@ -65,14 +55,12 @@ const EditSubjectForm = (props:any) => {
 
 
   useEffect(()=>{
-  
-    
     setclassOptions(clasii)
     settermOptions(term)
     refetch()
     refetch2()
   
-  } 
+  }, [clasii, term, refetch, refetch2] 
   );
 
 

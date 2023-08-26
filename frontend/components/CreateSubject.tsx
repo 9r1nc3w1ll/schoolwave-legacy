@@ -14,9 +14,6 @@ import { getClasses } from '@/apicalls/class-api';
 import { getAllTerms } from '@/apicalls/session';
 
 
-
-
-
 const Subject  = (props:any) => {
   const { status: sessionStatus, data: user_session } = useSession();
   const dispatch = useDispatch();
@@ -37,13 +34,11 @@ const Subject  = (props:any) => {
   const [termOptions, setTermOptions] = useState<termOption[]>([]);
   const [date1, setDate1] = useState<any>('2022-07-05');
 
-
   const { data: classDetails, isSuccess, status, refetch } = useQuery('classes', () => getClasses(user_session?.access_token), {enabled: false})
   const { data: term, isSuccess:isSuccess2, status:status2, refetch:refetch2 } = useQuery('terms', () => getAllTerms(user_session?.access_token), {enabled: false})
 
   useEffect(()=>{
     if(sessionStatus == 'authenticated'){
-     
       refetch()
       refetch2()
   
@@ -53,15 +48,12 @@ const Subject  = (props:any) => {
 
   useEffect(()=>{
     if(isSuccess && classDetails && isSuccess2 && term){
-      
-        
       setClassOptions(classDetails)
       setTermOptions(term)
       
     } 
   },[isSuccess, isSuccess2]);
 
-  
 
   const { register, reset, handleSubmit } = useForm({ shouldUseNativeValidation: true });
 
@@ -74,14 +66,11 @@ const Subject  = (props:any) => {
             // Define other form fields here
           };
 
-
-      
-
           const queryClient = useQueryClient();
           const { mutate, isLoading, error } = useMutation(
             (data:any) =>{
               
-              return CreateSubject( data, user_session?.access_token)},
+              return CreateSubject( {...data,school:user_session?.school.id}, user_session?.access_token, )},
             {
               onSuccess: async (data) => {
                 showAlert('success', 'Subject created Successfully')
@@ -101,9 +90,7 @@ const Subject  = (props:any) => {
             mutate({...data,
               school: props.user_session.school.id
             });
-            
-           
-                    
+        
           };
 
 
