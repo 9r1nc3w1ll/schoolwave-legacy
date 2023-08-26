@@ -2,7 +2,12 @@ from rest_framework import serializers
 
 from school.models import Class, School, ClassMember
 from account.models import User
+from admission.models import AdmissionRequest
+from staff.models import Staff
+from fees.models import Invoice
+from session.models import Session
 
+from partial_date import PartialDateField as CustomPartialDateField
 
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
@@ -64,3 +69,57 @@ class ClassMemberSerializer(serializers.ModelSerializer):
         if data:
             return data
         return None
+    
+class AdminDashboardSerializer:
+    
+    @staticmethod
+    def get_dashboard_data(school_id):
+        try:
+            school = School.objects.get(id=school_id)
+        except School.DoesNotExist:
+            raise serializers.ValidationError("School does not exist.")
+        school=school.id
+        # Calculate your statistics here
+        male_student = AdmissionRequest.objects.filter(school=school, student_info__gender='male').count()
+        female_student = AdmissionRequest.objects.filter(school=school, student_info__gender='female').count()
+        total_student = AdmissionRequest.objects.filter(school=school).count()
+        total_approved_student = AdmissionRequest.objects.filter(school=school, status="approved").count()
+        total_pending_student = AdmissionRequest.objects.filter(school=school, status="pending").count()
+        total_denied_student = AdmissionRequest.objects.filter(school=school, status="denied").count()
+        male_staff = Staff.objects.filter(user__school=school, user__gender='male').count()
+        female_staff = Staff.objects.filter(user__school=school, user__gender='female').count()
+        total_staff = Staff.objects.filter(user__school=school).count()
+
+        # Retrieve invoices and calculate total and outstanding amounts
+        invoices = Invoice.objects.filter(school=school)
+        total_paid = sum(invoice.amount_paid for invoice in invoices)
+        total_outstanding = sum(invoice.outstanding_balance for invoice in invoices)
+        total_amount = total_paid + total_outstanding
+        
+        # Calculate percentages
+        paid_percentage = (total_paid / total_amount) * 100 if total_amount > 0 else 0
+        outstanding_percentage = (total_outstanding / total_amount) * 100 if total_amount > 0 else 0
+
+        session = Session.objects.filter(school=school, active=True).first()
+
+        data = {
+            'total_student': total_student,
+            'male_student_count': male_student,
+            'female_student_count': female_student,
+            'total_approved_student': total_approved_student,
+            'total_pending_student': total_pending_student,
+            'total_denied_student': total_denied_student,
+            'male_staff_count': male_staff,
+            'female_staff_count': female_staff,
+            'total_staff': total_staff,
+            'total_paid': total_paid,
+            'total_outstanding': total_outstanding,
+            'total_amount': total_amount,
+            'paid_percentage': paid_percentage,
+            'outstanding_percentage': outstanding_percentage,
+            'session': session.name,
+            'session_start_date': str(session.start_date),
+            'session_end_date': str(session.end_date),
+            'session_resumption_date': session.resumption_date,
+        }
+        return data

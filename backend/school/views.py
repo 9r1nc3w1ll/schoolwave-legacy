@@ -1,7 +1,7 @@
 import logging
 
 from django.contrib.auth import authenticate
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -10,13 +10,11 @@ from rest_framework.views import APIView
 from account.models import User
 from account.serializers import OwnerSerializer, UserSerializer
 from school.models import Class, School, ClassMember
-from school.serializers import ClassSerializer, SchoolSerializer, ClassMemberSerializer
+from school.serializers import ClassSerializer, SchoolSerializer, ClassMemberSerializer, AdminDashboardSerializer
 from utils.permissions import IsSchoolOwner
 from django.db.models import Q
 import uuid
-from admission.models import StudentInformation
-from staff.models import Staff
-from fees.models import Invoice
+
 
 logger = logging.getLogger(__name__)
 
@@ -314,34 +312,25 @@ class ListStudentClass(ListCreateAPIView):
         }
         return Response(resp)
 
-class DashboardStatsAPIView(APIView):
-    def get(self, request, format=None):
-        male_student = StudentInformation.objects.filter(gender='male').count()
-        female_student = StudentInformation.objects.filter(gender='female').count()
-        male_staff = Staff.objects.filter(user__gender='male').count()
-        female_staff = Staff.objects.filter(user__gender='female').count()
+class DashboardStatsAPIView(generics.GenericAPIView):
+    queryset = School.objects.all()
+    serializer_class = AdminDashboardSerializer
+    permission_classes = [IsAuthenticated, IsSchoolOwner]
 
-        # Retrieve invoices and calculate total and outstanding amounts
-        invoices = Invoice.objects.all()
+    def get(self, request, *args, **kwargs):
+        school_id = kwargs.get("school_id")
+
+        try:
+            school = School.objects.get(id=school_id)
+        except School.DoesNotExist:
+            return Response({"message" : "School does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+        data = AdminDashboardSerializer.get_dashboard_data(school.id)
         
-        total_paid = sum(invoice.amount_paid for invoice in invoices)
-        total_outstanding = sum(invoice.outstanding_balance for invoice in invoices)
-        total_amount = total_paid + total_outstanding
-        
-        # Calculate percentages
-        paid_percentage = (total_paid / total_amount) * 100 if total_amount > 0 else 0
-        outstanding_percentage = (total_outstanding / total_amount) * 100 if total_amount > 0 else 0
-       
-        
-        data = {
-            'male_student_count': male_student,
-            'female_student_count': female_student,
-            'male_staff_count': male_staff,
-            'female_staff_count': female_staff,
-            'total_paid': total_paid,
-            'total_outstanding': total_outstanding,
-            'total_amount': total_amount,
-            'paid_percentage': paid_percentage,
-            'outstanding_percentage': outstanding_percentage,
+        resp = {
+            "message": "Dashboard Stats retrieved successfully.",
+            "data": data,
         }
-        return Response(data)
+        return Response(resp)
+
+
+
