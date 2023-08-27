@@ -5,6 +5,7 @@ from school.models import School
 class SchoolSettings(BaseModel):
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     settings = models.JSONField()
+    staff_code_prefix = models.CharField(max_length=10, default="STAFF")
 
 class SchoolLogo(BaseModel):
     school = models.ForeignKey(School, on_delete=models.CASCADE)

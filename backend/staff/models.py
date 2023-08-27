@@ -1,5 +1,6 @@
 from django.db import models
 from account.models import User
+from school.models import School
 
 from config.models import BaseModel
 
@@ -23,6 +24,7 @@ class Staff(BaseModel):
     title = models.CharField(max_length=255)
     roles = models.ManyToManyField(StaffRole)  # Array of roles (e.g., ["Teacher", "Principal"])
     staff_number = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
 

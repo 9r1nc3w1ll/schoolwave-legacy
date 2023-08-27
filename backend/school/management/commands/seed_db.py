@@ -53,7 +53,7 @@ class Command(BaseCommand):
                 school = SchoolFactory.create(owner=owner)
                 teacher = UserFactory.create(role="teacher")
                 role = StaffRoleFactory.create()
-                staff = StaffFactory.create(user=teacher)
+                staff = StaffFactory.create(user=teacher, school=school)
 
                 for _ in range(random.randint(3, 6)):
                     student = UserFactory.create(role="student")

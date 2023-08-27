@@ -164,6 +164,7 @@ class StaffFactory(factory.django.DjangoModelFactory):
 
     user = factory.SubFactory(UserFactory, staff=None)
     title = factory.Faker('word')
+    school = factory.SubFactory(SchoolFactory)
 
 
 class SubjectStaffAssignmentFactory(factory.django.DjangoModelFactory):
