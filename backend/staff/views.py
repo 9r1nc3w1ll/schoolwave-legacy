@@ -9,6 +9,7 @@ from account.models import User
 from rest_framework.views import APIView
 from subject.serializers import SubjectSerializer
 from school.serializers import ClassSerializer
+from school_settings.models import SchoolSettings
 
 class ListCreateStaff(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -23,6 +24,16 @@ class ListCreateStaff(ListCreateAPIView):
             return self.queryset.all()
 
     def create(self, request, *args, **kwargs):
+        school = request.data.get("school")
+        school_settings = SchoolSettings.objects.get(school=school)
+
+        prefix = school_settings.staff_code_prefix
+        total_students = Staff.objects.filter(
+            school=school
+        ).count()
+        staff_number = f"{prefix}{total_students + 1:04d}"
+        request.data["student_number"] = staff_number
+
         data = request.data.copy()
 
         user_id = data.get("user_id")

@@ -22,6 +22,7 @@ class Staff(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
     title = models.CharField(max_length=255)
     roles = models.ManyToManyField(StaffRole)  # Array of roles (e.g., ["Teacher", "Principal"])
+    staff_number = models.CharField(max_length=20, unique=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):
 
