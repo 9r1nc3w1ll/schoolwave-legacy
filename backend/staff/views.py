@@ -32,7 +32,7 @@ class ListCreateStaff(ListCreateAPIView):
             school=school
         ).count()
         staff_number = f"{prefix}{total_students + 1:04d}"
-        request.data["student_number"] = staff_number
+        request.data["staff_number"] = staff_number
 
         data = request.data.copy()
 

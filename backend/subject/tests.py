@@ -319,7 +319,7 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
         )
 
         self.staff_user = User.objects.create(
-            username="staffuser", password="staffpassword", role="staff"
+            username="staffuser", password="staffpassword", role="staff", school=self.school
         )
 
         self.staff_role = StaffRole.objects.create(
@@ -335,6 +335,7 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
         self.staff = Staff.objects.create(
             user=self.staff_user,
             title="Staff Title",
+            school=self.school
         )
 
         role = StaffRole.objects.get(name="Class Teacher")

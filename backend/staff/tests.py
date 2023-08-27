@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from school.models import School
+from school_settings.models import SchoolSettings
 
 from staff.models import Staff, StaffRole
 
@@ -47,6 +48,19 @@ class StaffAPITestCase(APITestCase):
         self.staff = Staff.objects.create(
             user=self.staff_user,
             title="Staff Title",
+            school=self.school
+        )
+
+        self.school_setting = SchoolSettings.objects.create(
+            school=self.school,
+            settings={
+                "school_id": str(self.school.id),
+                "storage_options": {
+                    "driver": "local",
+                    "default": True
+                }
+                },
+            staff_code_prefix="Staff"
         )
 
         role1 = StaffRole.objects.get(name="Class Teacher")
@@ -69,16 +83,17 @@ class StaffAPITestCase(APITestCase):
     def test_create_staff(self):
         url = reverse("staff_list_create")
         self.client.force_authenticate(user=self.user)
-        data = {
-            "username": "newuser", 
-            "password": "newpassword", 
-            "first_name":"user_firstname", 
-            "last_name":"User_last_name",
-            "title": "Staff Title",
-            "roles": [self.staff_role2.id],
-        }
-             
-        response = self.client.post(url, data)
+        data = dict(
+            username="newuser", 
+            password="newpassword", 
+            first_name="user_firstname", 
+            last_name="User_last_name",
+            title="Staff Title",
+            roles=[self.staff_role2.id],
+            school=self.school.id
+        )
+
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["message"], "Staff created successfully.")
 
@@ -127,7 +142,7 @@ class StaffRoleAPITestCase(APITestCase):
         )
 
         self.staff_user = User.objects.create(
-            username="staffuser", password="staffpassword", role="staff"
+            username="staffuser", password="staffpassword", role="staff", school=self.school
         )
 
         self.staff_role1 = StaffRole.objects.create(

@@ -12,11 +12,15 @@ def validate(json_data):
         schema_data = f.read()
     schema = json.loads(schema_data)
 
+    json_data = json_data["settings"]
+
 
     validator = Draft7Validator(schema, format_checker=FormatChecker())
 
     if len(list(validator.iter_errors(json_data))) != 0:
         return False, str(list(validator.iter_errors(json_data)))
+    
+    return True, "Validation successful"
 
 
 def attach_remote_image(instance, remote_url):
