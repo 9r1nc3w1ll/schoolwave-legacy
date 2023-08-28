@@ -1,4 +1,4 @@
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from school.models import School, Class, ClassMember
 from fees.models import FeeItem, Transaction, FeeTemplate, Discount, Invoice
 from fees.serializers import BulkInvoiceSerializer, FeeItemSerializer, PaymentSerializer, TransactionSerializer, DiscountSerializer, \
-    FeeTemplateSerializer, InvoiceSerializer
+    FeeTemplateSerializer, InvoiceSerializer, InvoiceTemplateSerializer
 from utils.permissions import IsSchoolOwner
 from utils.flutterwave import verify_flutterwave_tx, generate_random_number
 
@@ -601,3 +601,24 @@ class ProcessInvoice(GenericAPIView):
 
         else:
             return Response({"error" : "Transaction failed, or invalid transaction id."}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class RetrieveInvoiceAPIView(generics.GenericAPIView):
+    queryset = Invoice.objects.all()
+    serializer_class = InvoiceTemplateSerializer
+
+    def get(self, request, *args, **kwargs):
+        invoice_id = kwargs.get("invoice_id")
+
+        try:
+            invoice = Invoice.objects.get(id=invoice_id)
+        except Invoice.DoesNotExist:
+            return Response({"message" : "Invoice does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(invoice)    
+
+        resp = {
+            "status": "success",
+            "message": "Invoice template fetched successfully.",
+            "data": serializer.data,
+        }
+        return Response(resp)

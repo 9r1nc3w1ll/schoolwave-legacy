@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from fees.models import FeeItem, Transaction, FeeTemplate, Discount, Invoice
+from school_settings.models import SchoolBrand
 
 
 class FeeTemplateSerializer(serializers.ModelSerializer):
@@ -185,3 +186,73 @@ class PaymentSerializer(serializers.Serializer):
 
     class Meta:
         fields = "__all__"
+
+class InvoiceTemplateSerializer(serializers.ModelSerializer):
+    school_info = serializers.SerializerMethodField()
+    template_info = serializers.SerializerMethodField()
+    items = serializers.SerializerMethodField()
+    student_info = serializers.SerializerMethodField()
+    school_brand_info = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Invoice
+        fields = "__all__"
+
+    def get_school_info(self, obj):
+        data =  {
+            'id': obj.school.id,
+            'name': obj.school.name,
+        }
+        if data:
+            return data
+        return None
+    
+    def get_template_info(self, obj):
+        data =  {
+            'id': obj.template.id,
+            'name': obj.template.name,
+        }
+        if data:
+            return data
+        return None
+    
+    def get_items(self, obj):
+        items = FeeItem.objects.filter(invoice=obj)  # Retrieve FeeItems related to the invoice
+        data = [
+            {
+                'id': item.id,
+                'name': item.name,
+                'description': item.description,
+                'amount': item.amount,
+                'tax': item.tax,
+                'discount': item.total_amount
+            }
+            for item in items
+        ]
+        if data:
+            return data
+        return None
+
+    def get_student_info(self, obj):
+        data =  {
+            'id': obj.student.id,
+            'first_name': obj.student.first_name,
+            'last_name': obj.student.last_name,
+        }
+        if data:
+            return data
+        return None
+    
+    def get_school_brand_info(self, obj):
+        school = obj.school.id
+        print(school)
+        try:
+            school_brand = SchoolBrand.objects.get(school=school)
+
+            data = {
+                'primary_color': school_brand.primary_color,
+                'secondary_color': school_brand.secondary_color,
+            }
+            return data
+        except SchoolBrand.DoesNotExist:
+            return None

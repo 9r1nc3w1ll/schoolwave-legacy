@@ -32,7 +32,7 @@ class ListCreateStudentAttendance(ListCreateAPIView):
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
         
         user = request.user
-        role = user.role       
+        role = user.role      
         
         if role == "admin":
             serializer.validated_data['staff_id'] = user.id
