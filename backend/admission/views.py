@@ -21,6 +21,7 @@ from admission.serializers import (
 )
 from school.models import School
 from utils.permissions import IsSchoolOwner
+from school_settings.models import SchoolSettings
 
 
 # Create your views here.
