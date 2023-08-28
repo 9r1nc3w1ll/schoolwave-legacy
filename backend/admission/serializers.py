@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import AdmissionRequest, StudentInformation
 from school.models import School
+from school_settings.models import SchoolSettings
 
 from django.contrib.auth import get_user_model
 
@@ -26,15 +27,25 @@ class StudentInformationSerializer(serializers.ModelSerializer):
         student_info = StudentInformation.objects.create(**validated_data)
 
         request = self.context["request"]
-        school = School.objects.get(owner=request.user)
+        school = request.data.get("school")
+        school_settings = SchoolSettings.objects.get(school=school)
 
-        req = AdmissionRequest.objects.create(student_info=student_info, school=school)
+        prefix = school_settings.student_code_prefix
+        total_students = AdmissionRequest.objects.filter(
+            school=school
+        ).count()
+        student_number = f"{prefix}{total_students + 1:04d}"
+        request.data["student_number"] = student_number
+        
+        school = School.objects.get(id=school)
+
+        req = AdmissionRequest.objects.create(student_info=student_info, school=school, student_number=student_number)
 
         return student_info
 
 
 class AdmissionRequestSerializer(serializers.ModelSerializer):
-    student_info = StudentNameSerializer(read_only=True)
+    student_info = StudentInformationSerializer(read_only=True)
 
     class Meta:
         model = AdmissionRequest
