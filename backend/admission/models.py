@@ -50,6 +50,7 @@ class AdmissionRequest(BaseModel):
     student_number = models.CharField(max_length=20, unique=True, null=True, blank=True)
 
     def create_student_user(self, **kwargs):
+        print(self.data)
         student_info_data = StudentInformation.objects.filter(
             username=self.student_info.username
         ).values().first()
@@ -66,6 +67,7 @@ class AdmissionRequest(BaseModel):
 def create_user_on_approved_request(
     sender, instance: AdmissionRequest, created, **kwargs
 ):
+    print("THis is me")
     if not created:
         if instance.status == "approved":
             instance.create_student_user()
