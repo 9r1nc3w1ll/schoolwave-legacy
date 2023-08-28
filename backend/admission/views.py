@@ -21,6 +21,7 @@ from admission.serializers import (
 )
 from school.models import School
 from utils.permissions import IsSchoolOwner
+from school_settings.models import SchoolSettings
 
 
 # Create your views here.
@@ -126,7 +127,19 @@ class ListCreateAdmissionRequests(ListCreateAPIView):
         return super().get_queryset()
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        school = request.data.get("school")
+        school_settings = SchoolSettings.objects.get(school=school)
+
+        prefix = school_settings.student_code_prefix
+        total_students = AdmissionRequest.objects.filter(
+            school=school
+        ).count()
+        student_number = f"{prefix}{total_students + 1:04d}"
+        request.data["student_number"] = student_number
+        print(f"Hello {request.data}")
+        data = request.data.copy()
+
+        serializer = self.get_serializer(data=data)
         if not serializer.is_valid():
             resp = {
                 "message": "Validation error",

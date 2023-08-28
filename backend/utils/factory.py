@@ -165,6 +165,7 @@ class StaffFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory, staff=None)
     title = factory.Faker('word')
     school = factory.SubFactory(SchoolFactory)
+    staff_number = factory.Faker('word')
 
 
 class SubjectStaffAssignmentFactory(factory.django.DjangoModelFactory):
@@ -215,7 +216,7 @@ class AdmissionRequestFactory(factory.django.DjangoModelFactory):
     student_info = factory.SubFactory(StudentInformationFactory)
     school = factory.SubFactory(SchoolFactory) 
     comment_if_declined = factory.Faker("text")
-
+    student_number = factory.Faker('word')
 
 class AttendanceRecordFactory(factory.django.DjangoModelFactory):
     class Meta:
