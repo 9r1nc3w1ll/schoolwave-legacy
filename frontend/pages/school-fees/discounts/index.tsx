@@ -68,12 +68,12 @@ const Export =  (props:any) => {
     if(items?.length ){
       return filteredsessions?.map((item:any) => {
         return (
-          <tr className={`${item.active? `bg-primary-light`: ''} !important`} key={item.id}>
+          <tr className={`${item.active? `bg-primary-light`: ''} !important`} key={item?.id}>
             <td>
-              <div className="whitespace-nowrap"><Link href={`/session/${item.id}`}>{item.discount_type} </Link></div>
+              <div className="whitespace-nowrap"><Link href={`/session/${item.id}`}>{item?.name} </Link></div>
             </td>
-            <td>{item.percentage}%</td>
-            <td>#{item.amount}</td>
+            <td>{item?.percentage ? item?.percentage + "%" : "-"}</td>
+            <td>{item.amount ? "NGN" + item?.amount : "-"}</td>
            
             <td className="text-center ">
              

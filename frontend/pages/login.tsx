@@ -1,9 +1,9 @@
+import BlankLayout from '@/components/Layouts/BlankLayout';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { AuthenticationRoute } from '@/components/Layouts/AuthenticationRoute';
-import BlankLayout from '@/components/Layouts/BlankLayout';
 import { showAlert } from '@/utility_methods/alert';
 
 

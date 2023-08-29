@@ -1,6 +1,6 @@
-import CreateInvoice from "@/components/CreateInvoice";
-import EditEmployee from "@/components/EditEmployee";
-import { getInvoices } from "@/apicalls/fees";
+import CreateTransaction from "@/components/CreateTransaction";
+import EditTransaction from "@/components/EditTransaction";
+import { getTransactions } from "@/apicalls/fees";
 import { setPageTitle } from "@/store/themeConfigSlice";
 import sortBy from "lodash/sortBy";
 import { useDispatch } from "react-redux";
@@ -23,9 +23,9 @@ const Export = () => {
     status,
     refetch,
   } = useQuery(
-    "getInvoices",
+    "transactions",
     async () => {
-      return getInvoices(userSession?.access_token as string);
+      return getTransactions(userSession?.access_token as string);
     },
     { enabled: false }
   );
@@ -248,29 +248,8 @@ const Export = () => {
     <div>
       <div className="panel">
         <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
-          <h5 className=" text-3xl font-semibold dark:text-white-light">Invoices</h5>
+          <h5 className=" text-3xl font-semibold dark:text-white-light">Transactions</h5>
           <div className="flex flex-wrap items-center">
-            <button type="button" onClick={() => exportTable("csv")} className="btn btn-primary btn-sm m-1 ">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-2 h-5 w-5">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15"
-                />
-              </svg>
-                            Export
-            </button>
-
-            <button type="button" onClick={() => exportTable("print")} className="btn btn-primary btn-sm m-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-2 h-5 w-5">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25"
-                />
-              </svg>
-                            Import
-            </button>
 
             <button
               type="button"
@@ -282,7 +261,7 @@ const Export = () => {
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-2 h-5 w-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-                            Generate Invoice
+                Create Transaction
             </button>
 
             <Transition appear show={modal} as={Fragment}>
@@ -302,7 +281,7 @@ const Export = () => {
                   <div className="flex min-h-screen items-start justify-center px-4">
                     <Dialog.Panel className="panel animate__animated animate__fadeInDown my-8 w-full max-w-xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
                       <div className="mx-auto w-4/5 py-5">
-                        <CreateInvoice user_session_status={sessionStatus} user_session={userSession} setmodal={setmodal} refreshEmployee={refetch} />
+                        <CreateTransaction user_session_status={sessionStatus} user_session={userSession} setmodal={setmodal} refreshEmployee={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -311,6 +290,7 @@ const Export = () => {
             </Transition>
 
             <button
+              disabled={!canEdit()}
               className={`btn ${canEdit() ? "btn-primary btn-sm " : "bg-[#f2f5f7] text-sm shadow-sm"} m-1`}
               onClick={() => {
                 seteditModal(true);
@@ -323,7 +303,7 @@ const Export = () => {
                   d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
                 />
               </svg>
-                            EDIT
+                Edit Transaction
             </button>
 
             <Transition appear show={editModal} as={Fragment}>
@@ -343,7 +323,7 @@ const Export = () => {
                   <div className="flex min-h-screen items-start justify-center px-4">
                     <Dialog.Panel className="panel animate__animated animate__fadeInDown my-8 w-full max-w-5xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
                       <div className="mx-auto w-4/5 py-5">
-                        <EditEmployee access_token={userSession?.access_token} id={selectedRecords[0]?.id} seteditModal={seteditModal} refreshEmployee={refetch} />
+                        <EditTransaction user_session_status={sessionStatus} user_session={userSession} record={selectedRecords[0]} seteditModal={seteditModal} refetchTransactions={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -361,13 +341,9 @@ const Export = () => {
             className="table-hover whitespace-nowrap"
             records={recordsData}
             columns={[
-              { accessor: "id", title: "Invoice No.", sortable: true },
-              { accessor: "student_info.first_name", title: "First Name", sortable: true },
-              { accessor: "student_info.last_name", title: "Last Name", sortable: true },
-              { accessor: "total", title: "Total", sortable: true },
-              { accessor: "amount_paid", title: "Amount Paid", sortable: true },
-              { accessor: "balance", title: "Balance", sortable: true },
-              { accessor: "status", title: "Status", sortable: true },
+              { accessor: "id", title: "Transaction ID.", sortable: true },
+              { accessor: "invoice_id", title: "Invoice No.", sortable: true },
+              { accessor: "status", render: ({ status }) => <div className={status === "paid" ? "badge bg-success" : status === "cancelled" ? "badge bg-danger" : "badge bg-warning" }>{status}</div>, sortable: true },
             ]}
             totalRecords={initialRecords ? initialRecords.length : 0}
             recordsPerPage={pageSize}

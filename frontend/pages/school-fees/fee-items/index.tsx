@@ -1,147 +1,136 @@
-import Link from 'next/link';
-import { useQuery } from 'react-query';
-import { useEffect, useState, Fragment, useCallback, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import DeleteSessions from '@/components/DeleteSessions';
-import CreateSessionForm from '@/components/CreateSessionForm';
-import EditSessionForm from '@/components/EditSessionForm';
-import { getSession } from '@/apicalls/session';
-import { dateInPast } from '@/utility_methods/datey';
-import { useSession } from 'next-auth/react';
-import ActivateSessions from '@/components/ActivateSessions';
-import EditFeeItem from '@/components/EditFeeItem';
-import CreateFeeItem from '@/components/CreateFeeItem';
-import { getFeeItems } from '@/apicalls/fees';
+import CreateFeeItem from "@/components/CreateFeeItem";
+import EditFeeItem from "@/components/EditFeeItem";
+import Link from "next/link";
+import { showAlert } from "@/utility_methods/alert";
+import { useSession } from "next-auth/react";
+import { Dialog, Transition } from "@headlessui/react";
+import { FeeItemInterface, IClientError, UserSession } from "@/types";
+import { Fragment, useEffect, useState } from "react";
+import { deleteFeeItem, getFeeItems } from "@/apicalls/fees";
+import { useMutation, useQuery } from "react-query";
 
-
-
-
-const Export =  (props:any) => {
- 
-  const [search, setSearch] = useState<string>('');
-  const [activeToolTip, setActiveToolTip] = useState<string>('');
-  const [visible, setVisible] = useState<boolean>(false);
-  const [items, setItems] = useState<[]>([])
-  const [filteredsessions, setFilteredsessions] = useState<any>(items);
+const Export = () => {
+  const [search, setSearch] = useState<string>("");
+  const [activeToolTip, setActiveToolTip] = useState<string>("");
+  const [items, setItems] = useState<FeeItemInterface[]>([]);
+  const [filteredsessions, setFilteredsessions] = useState<FeeItemInterface[]>(items);
   const [modal, setmodal] = useState(false);
-  const [selectedSession, setSelectedSession] = useState<any>();
-  const { data: sessionData , status:sessionStatus} = useSession();
-  
+  const [selectedSession, setSelectedSession] = useState<FeeItemInterface>();
+  const { data: sessionData, status: sessionStatus } = useSession();
 
+  useEffect(() => {
+    console.log("activeToolTip: ", activeToolTip);
 
-  useEffect(()=>{
-    if(activeToolTip != ''){
+    if (activeToolTip !== "") {
+      const x = items.find((t) => {
+        return t.id === activeToolTip;
+      });
 
-      const x = items.find((t:any)=>{
-        return t.id == activeToolTip
-      })
-  
-      if(x){
-
-        setSelectedSession(x)
+      if (x) {
+        setSelectedSession(x);
       }
     }
-    
-  }, [activeToolTip])
+  }, [activeToolTip]);
 
+  const { data, isSuccess, status, isLoading, refetch } = useQuery("feeitems", () => getFeeItems(sessionData?.access_token as string), { enabled: false });
 
-  
-  const {data, isSuccess, status, isLoading, refetch} = useQuery('feeitems', ()=> getFeeItems(sessionData?.access_token), {enabled: false })
-
-  useEffect(()=>{
-    if(sessionStatus == 'authenticated'){
-      refetch()
+  const { mutate } = useMutation(deleteFeeItem, {
+    onSuccess: () => {
+      showAlert("success", "Fee Item Deleted Successfuly");
+      refetch();
+    },
+    onError: (error: IClientError) => {
+      showAlert("error", error.message);
     }
-  }, [sessionStatus])
+  });
+
+  const onDeleteFeeItem = (id: string) => {
+    mutate({ id, accessToken: sessionData?.access_token as string });
+  };
+
+  useEffect(() => {
+    if (sessionStatus === "authenticated") {
+      refetch();
+    }
+  }, [sessionStatus]);
+
   useEffect(() => {
     setFilteredsessions(() => {
-      return items?.filter((item:any) => {
+      return items?.filter((item) => {
         return item.name.toLowerCase().includes(search.toLowerCase()) || item.description.toLowerCase().includes(search.toLowerCase());
       });
     });
   }, [search, items, status]);
-  useEffect(()=>{
 
-    if (isSuccess ){
-      setItems(data.data)
+  useEffect(() => {
+    if (isSuccess) {
+      setItems(data.data);
     }
+  }, [data, isSuccess, status]);
 
-  }, [data, isSuccess, status])
-  const displaySession: () => any=()=>{
-    if(items?.length ){
-      return filteredsessions?.map((item:any) => {
+  type DisplaySession = () => JSX.Element | JSX.Element[];
+
+  const displaySession: DisplaySession = () => {
+    if (items?.length) {
+      return filteredsessions?.map((item) => {
         return (
-          <tr className={`${item.active? `bg-primary-light`: ''} !important`} key={item.id}>
+          <tr key={item.id}>
             <td>
               <div className="whitespace-nowrap"><Link href={`/session/${item.id}`}>{item.name} </Link></div>
             </td>
             <td>{item.description}</td>
             <td>{item.amount}</td>
-           
+
             <td className="text-center ">
-             
-              <button type="button" className='relative' onClick={()=>{
-                setActiveToolTip(item.id)
-                
+
+              <button type="button" className="relative" onClick={() => {
+                setActiveToolTip(item.id);
               }}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                 </svg>
-                {      activeToolTip == item.id && selectedSession ? 
-                  (    
-                    <div className='bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[70%] w-[110px] z-10'>
-                      {!dateInPast (new Date(item.end_date), new Date)  && !item.active ?  
-                        <>
-                          <p className='mb-2 px-3 pt-2 hover:bg-white' onClick={() => {
-                            setmodal(true)} 
-                        
-                          }>Edit</p> 
-                        
-                          {/* props.sessionData.id, props.user_session.access_token */}
-                          <DeleteSessions sessionID = {item.id} user_session={sessionData} refreshSession={refetch}/>
-                        </>
-                        : item.active ?
-                      
-                          <>
-                            <p className='mb-2 px-3 pt-2 hover:bg-white' onClick={() => {
-                              setmodal(true)} 
-                        
-                            }>Edit</p> 
-                           
-                          </>
-                          : <>
-                            <p className='mb-2 px-2  hover:bg-white'>View Data</p>
-                          </>}
+                { activeToolTip === item.id && selectedSession
+                  ? (
+                    <div className="bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[70%] w-[110px] z-10">
+                      <>
+                        <p className="mb-2 px-3 pt-2 hover:bg-white" onClick={() => {
+                          setmodal(true);
+                        }
 
-                     
-                      
+                        }>Edit</p>
 
-                    </div>) : <></>}
+                        <p className=" px-2 pb-3 hover:bg-white text-danger" onClick={() => {
+                          onDeleteFeeItem(item.id);
+                        }}>Delete</p>
+                      </>
+
+                    </div>)
+                  : <></>}
               </button>
-           
-         
+
             </td>
           </tr>
         );
-      })
-    }else if(isLoading){
-      return<tr><td> Loading Data...</td></tr>
-    }else    {
-      return<tr><td> No Fee Item to display</td></tr>
+      });
+    } else if (isLoading) {
+      return <tr><td> Loading Data...</td></tr>;
+    } else {
+      return <tr><td> No Fee Item to display</td></tr>;
     }
-  }
+  };
+
   return (
-    <div className='lg:grid grid-cols-6 gap-6'>
-      <div className='panel col-span-2'>
-        <div className='panel bg-[#f5f6f7]'>
+    <div className="lg:grid grid-cols-6 gap-6">
+      <div className="panel col-span-2">
+        <div className="panel bg-[#f5f6f7]">
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create Fee Item</h5>
-          <CreateFeeItem   user_session={sessionData}  exit={setmodal} refreshList={refetch} user_session_status={sessionStatus} />
+          <CreateFeeItem user_session={sessionData as UserSession} exit={setmodal} refreshList={refetch} user_session_status={sessionStatus} />
         </div>
       </div>
-      <div className='panel col-span-4 ' >
-        <div className=' md:flex justify-between '>
+      <div className="panel col-span-4 " >
+        <div className=" md:flex justify-between ">
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Fee Items</h5>
-      
+
           <form className=" w-full sm:w-1/2 mb-5">
             <div className="relative">
               <input
@@ -159,12 +148,13 @@ const Export =  (props:any) => {
               </button>
             </div>
           </form>
-       
+
         </div>
-        <div className="table-responsive mb-5  pb-[100px] " onClick={(e:any)=>{
-      
-          if(e.target.localName != 'svg' && e.target.localName != 'path'){
-            setActiveToolTip('')
+        <div className="table-responsive mb-5  pb-[100px] " onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+          const target = e.target as HTMLDivElement;
+
+          if (target.localName !== "svg" && target.localName !== "path") {
+            setActiveToolTip("");
           }
         }}>
           <table className="table-striped">
@@ -182,9 +172,8 @@ const Export =  (props:any) => {
           </table>
         </div>
 
-
         <div>
-     
+
           <Transition appear show={modal} as={Fragment}>
             <Dialog as="div" open={modal} onClose={() => setmodal(false)}>
               <Transition.Child
@@ -203,9 +192,9 @@ const Export =  (props:any) => {
                   <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                     <div className="w-4/5 mx-auto py-5">
                       <h5 className=" text-lg font-semibold dark:text-white-light">Edit Fee Item</h5>
-                      <p className='text-primary mb-5 text-sm'>{selectedSession?selectedSession.name: ''}</p>
-                  
-                      <EditFeeItem create={false} user_session={sessionData} sessionData={selectedSession} exit={setmodal} refreshSession={refetch}  />
+                      <p className="text-primary mb-5 text-sm">{selectedSession ? selectedSession.name : ""}</p>
+
+                      <EditFeeItem create={false} user_session={sessionData} sessionData={selectedSession} exit={setmodal} refreshSession={refetch} />
                     </div>
                   </Dialog.Panel>
                 </div>

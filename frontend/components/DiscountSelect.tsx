@@ -27,7 +27,7 @@ const DiscountSelect =(props: any)=>{
       }}>
       <option>Discounts</option>
       {isLoading? <option>Loading ...</option>:
-        discounts.map((disc:any)=> <option key={disc.id} value={disc.id} >{disc.discount_type}</option>)
+        discounts.map((disc:any)=> <option key={disc.id} value={disc.id} >{disc.name}</option>)
       }
     </select>
   )
