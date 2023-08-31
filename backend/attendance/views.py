@@ -188,7 +188,8 @@ class CreateMultipleStudentAttendance(CreateAPIView):
                 "attendee": attendees[i],
                 "present": presents[i],
                 "remark": remarks[i],
-                "role": "student"
+                "role": "student",
+                "school": data.get("school")
             }
             serializer = self.get_serializer(data=attendance_data)
             if not serializer.is_valid():

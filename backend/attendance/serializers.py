@@ -21,7 +21,9 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
             'attendance_type',
             'attendance',
             'school',
-            "role"
+            "role",
+            "remark",
+            "present",
         )
 
     def get_class_info(self, obj):
@@ -48,6 +50,7 @@ class AttendanceRecordSerializer(serializers.ModelSerializer):
 
     def get_attendance(self, obj):
         attendance_records = AttendanceRecord.objects.filter(
+            id=obj.id,
             class_id=obj.class_id,
             subject=obj.subject,
             staff=obj.staff,
