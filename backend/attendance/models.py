@@ -12,7 +12,7 @@ class AttendanceRecord(BaseModel):
     
     date = models.DateField(default=date.today)
     attendee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='attendances')
-    class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE, blank=True, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
