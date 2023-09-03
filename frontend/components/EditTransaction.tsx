@@ -1,15 +1,14 @@
 import InvoiceSelect from "./InvoiceSelect";
-import { Session } from "next-auth/core/types";
 import { SetStateAction } from "react";
 import { editTransaction } from "@/apicalls/fees";
 import { showAlert } from "@/utility_methods/alert";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { IClientError, SessionStatus, TransactionInterface } from "@/types";
+import { IClientError, SessionStatus, TransactionInterface, UserSession } from "@/types";
 
 interface EditTransactionProps {
   record: TransactionInterface;
-  user_session: Session | null;
+  user_session: UserSession;
   seteditModal: React.Dispatch<SetStateAction<boolean>>;
   refetchTransactions: () => void;
   user_session_status: SessionStatus;

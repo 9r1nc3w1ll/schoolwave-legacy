@@ -10,8 +10,7 @@ import { useSession } from "next-auth/react";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
-
-const col = ["id", "firstName", "lastName", "company", "age", "dob", "email", "phone", "date_of_birth"];
+import { TransactionInterface, UserSession } from "@/types";
 
 const Export = () => {
   const router = useRouter();
@@ -19,8 +18,6 @@ const Export = () => {
 
   const {
     data: invoices,
-    isSuccess,
-    status,
     refetch,
   } = useQuery(
     "transactions",
@@ -47,7 +44,7 @@ const Export = () => {
   }, [router]);
 
   const dispatch = useDispatch();
-  const [selectedRecords, setSelectedRecords] = useState<any>([]);
+  const [selectedRecords, setSelectedRecords] = useState<TransactionInterface[]>([]);
   const [modal, setmodal] = useState(false);
   const [editModal, seteditModal] = useState(false);
   const canEdit = () => selectedRecords.length === 1;
@@ -68,16 +65,6 @@ const Export = () => {
   });
 
   useEffect(() => {
-    const inv = invoices?.data;
-
-    if (inv) {
-      inv.status = inv?.balance > inv?.amount_paid ? "paid" : inv?.amount_paid > 0 ? "partial" : "unpaid";
-    }
-
-    setInitialRecords(sortBy(inv, "id"));
-  }, [invoices, recordsData]);
-
-  useEffect(() => {
     setPage(1);
   }, [pageSize]);
 
@@ -89,18 +76,17 @@ const Export = () => {
   }, [page, pageSize, initialRecords]);
 
   useEffect(() => {
-    setInitialRecords(() => {
-      if (isSuccess && invoices.data.length) {
-        return invoices.data.filter((item: any) => {
-          return (
-            item.id.toString().includes(search.toLowerCase()) || item.first_name.toLowerCase().includes(search.toLowerCase()) || item.last_name.toLowerCase().includes(search.toLowerCase())
-          );
-        });
-      } else {
-        setInitialRecords([]);
-      }
-    });
-  }, [search, invoices, status]);
+    if (invoices?.data?.length) {
+      setInitialRecords(invoices.data);
+    }
+  }, [search, invoices]);
+
+  const filteredRecords = () => {
+    return recordsData.filter(
+      (item) =>
+        item.id.toString().includes(search.toLowerCase())
+    );
+  };
 
   useEffect(() => {
     const data = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -108,141 +94,6 @@ const Export = () => {
     setInitialRecords(sortStatus.direction === "desc" ? data.reverse() : data);
     setPage(1);
   }, [sortStatus]);
-  const header = ["Id", "Firstname", "Lastname", "Email", "Start Date", "Phone No.", "Age", "Company"];
-
-  const exportTable = (type: any) => {
-    const columns: any = col;
-    const records = invoices || [];
-    const filename = "table";
-
-    let newVariable: any;
-
-    newVariable = window.navigator;
-
-    if (type === "csv") {
-      const coldelimiter = ";";
-      const linedelimiter = "\n";
-      let result = columns
-        .map((d: any) => {
-          return capitalize(d);
-        })
-        .join(coldelimiter);
-
-      result += linedelimiter;
-
-      records.map((item: any) => {
-        columns.map((d: any, index: any) => {
-          if (index > 0) {
-            result += coldelimiter;
-          }
-
-          const val = item[d] ? item[d] : "";
-
-          result += val;
-        });
-        result += linedelimiter;
-      });
-
-      if (result == null) return;
-
-      if (!result.match(/^data:text\/csv/i) && !newVariable.msSaveOrOpenBlob) {
-        const data = "data:application/csv;charset=utf-8," + encodeURIComponent(result);
-        const link = document.createElement("a");
-
-        link.setAttribute("href", data);
-        link.setAttribute("download", filename + ".csv");
-        link.click();
-      } else {
-        const blob = new Blob([result]);
-
-        if (newVariable.msSaveOrOpenBlob) {
-          newVariable.msSaveBlob(blob, filename + ".csv");
-        }
-      }
-    } else if (type === "print") {
-      let rowhtml = "<p>" + filename + "</p>";
-
-      rowhtml +=
-                "<table style=\"width: 100%; \" cellpadding=\"0\" cellcpacing=\"0\"><thead><tr style=\"color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; \"> ";
-
-      columns.map((d: any) => {
-        rowhtml += "<th>" + capitalize(d) + "</th>";
-      });
-      rowhtml += "</tr></thead>";
-      rowhtml += "<tbody>";
-
-      records.map((item: any) => {
-        rowhtml += "<tr>";
-
-        columns.map((d: any) => {
-          const val = item[d] ? item[d] : "";
-
-          rowhtml += "<td>" + val + "</td>";
-        });
-        rowhtml += "</tr>";
-      });
-
-      rowhtml +=
-                "<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>";
-      rowhtml += "</tbody></table>";
-      const winPrint: any = window.open("", "", "left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0");
-
-      winPrint.document.write("<title>Print</title>" + rowhtml);
-      winPrint.document.close();
-      winPrint.focus();
-      winPrint.print();
-    } else if (type === "txt") {
-      const coldelimiter = ",";
-      const linedelimiter = "\n";
-      let result = columns
-        .map((d: any) => {
-          return capitalize(d);
-        })
-        .join(coldelimiter);
-
-      result += linedelimiter;
-
-      records.map((item: any) => {
-        columns.map((d: any, index: any) => {
-          if (index > 0) {
-            result += coldelimiter;
-          }
-
-          const val = item[d] ? item[d] : "";
-
-          result += val;
-        });
-        result += linedelimiter;
-      });
-
-      if (result == null) return;
-
-      if (!result.match(/^data:text\/txt/i) && !newVariable.msSaveOrOpenBlob) {
-        const data1 = "data:application/txt;charset=utf-8," + encodeURIComponent(result);
-        const link1 = document.createElement("a");
-
-        link1.setAttribute("href", data1);
-        link1.setAttribute("download", filename + ".txt");
-        link1.click();
-      } else {
-        const blob1 = new Blob([result]);
-
-        if (newVariable.msSaveOrOpenBlob) {
-          newVariable.msSaveBlob(blob1, filename + ".txt");
-        }
-      }
-    }
-  };
-
-  const capitalize = (text: any) => {
-    return text
-      .replace("_", " ")
-      .replace("-", " ")
-      .toLowerCase()
-      .split(" ")
-      .map((s: any) => s.charAt(0).toUpperCase() + s.substring(1))
-      .join(" ");
-  };
 
   return (
     <div>
@@ -281,7 +132,7 @@ const Export = () => {
                   <div className="flex min-h-screen items-start justify-center px-4">
                     <Dialog.Panel className="panel animate__animated animate__fadeInDown my-8 w-full max-w-xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
                       <div className="mx-auto w-4/5 py-5">
-                        <CreateTransaction user_session_status={sessionStatus} user_session={userSession} setmodal={setmodal} refreshEmployee={refetch} />
+                        <CreateTransaction user_session_status={sessionStatus} user_session={userSession as UserSession} setmodal={setmodal} refreshEmployee={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -323,7 +174,7 @@ const Export = () => {
                   <div className="flex min-h-screen items-start justify-center px-4">
                     <Dialog.Panel className="panel animate__animated animate__fadeInDown my-8 w-full max-w-5xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
                       <div className="mx-auto w-4/5 py-5">
-                        <EditTransaction user_session_status={sessionStatus} user_session={userSession} record={selectedRecords[0]} seteditModal={seteditModal} refetchTransactions={refetch} />
+                        <EditTransaction user_session_status={sessionStatus} user_session={userSession as UserSession} record={selectedRecords[0]} seteditModal={seteditModal} refetchTransactions={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -339,7 +190,7 @@ const Export = () => {
           <DataTable
             highlightOnHover
             className="table-hover whitespace-nowrap"
-            records={recordsData}
+            records={filteredRecords()}
             columns={[
               { accessor: "id", title: "Transaction ID.", sortable: true },
               { accessor: "invoice_id", title: "Invoice No.", sortable: true },
@@ -355,7 +206,7 @@ const Export = () => {
             onSortStatusChange={setSortStatus}
             minHeight={200}
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-            onRowClick={(x: any) => router.push("/employees/" + x.id)}
+            onRowClick={(x) => router.push("/employees/" + x.id)}
             selectedRecords={selectedRecords}
             onSelectedRecordsChange={setSelectedRecords}
           />

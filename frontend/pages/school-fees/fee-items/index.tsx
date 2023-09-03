@@ -194,7 +194,7 @@ const Export = () => {
                       <h5 className=" text-lg font-semibold dark:text-white-light">Edit Fee Item</h5>
                       <p className="text-primary mb-5 text-sm">{selectedSession ? selectedSession.name : ""}</p>
 
-                      <EditFeeItem create={false} user_session={sessionData} sessionData={selectedSession} exit={setmodal} refreshSession={refetch} />
+                      <EditFeeItem user_session_status={sessionStatus} create={false} user_session={sessionData as UserSession} sessionData={selectedSession as FeeItemInterface} exit={setmodal} refreshSession={refetch} />
                     </div>
                   </Dialog.Panel>
                 </div>

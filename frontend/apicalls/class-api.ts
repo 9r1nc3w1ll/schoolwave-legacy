@@ -1,3 +1,6 @@
+import { throwError } from "@/helpers/api";
+import { ClassTypes, ResponseInterface } from "@/types";
+
 export const createClass = async (data: any, access_token?: string) => {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class", {
     method: "POST",
@@ -65,15 +68,22 @@ export const deleteClass = async (id: string, access_token: string) => {
   return res;
 };
 
-export const getClasses = async (access_token?: string) => {
+export const getClasses = async (accessToken?: string): Promise<ClassTypes[]> => {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class", {
     method: "GET",
     headers: {
       "content-Type": "application/json",
-      "Authorization": "Bearer " + access_token,
+      "Authorization": "Bearer " + accessToken,
     }
   });
-  const tempData = await res.json();
+
+  if (!res.ok) {
+    await throwError(res);
+  }
+
+  const tempData = await res.json() as ResponseInterface<ClassTypes[]>;
+
+  console.log("te,pData:", tempData);
 
   return tempData.data;
 };

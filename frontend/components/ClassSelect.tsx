@@ -1,9 +1,18 @@
+import { Session } from "next-auth/core/types";
 import { getClasses } from "@/apicalls/class-api";
 import { useEffect } from "react";
 import { useQuery } from "react-query";
+import { FieldValues, UseFormRegister } from "react-hook-form";
 
-const ClassSelect = (props: any) => {
-  const { data: classes, isSuccess: classgotten, refetch } = useQuery("getClasses", () => {
+interface ClassSelectProps<TFieldValues extends FieldValues> {
+  register: UseFormRegister<TFieldValues>;
+  triggerFetch: boolean;
+  class_selector: string;
+  user_session: Session | null;
+}
+
+const ClassSelect = <TFieldValues extends FieldValues>(props: ClassSelectProps<TFieldValues>) => {
+  const { data: classes, refetch } = useQuery("getClasses", () => {
     return getClasses(props.user_session?.access_token);
   }, { enabled: false });
 
@@ -17,7 +26,7 @@ const ClassSelect = (props: any) => {
       <select className="form-select text-white-dark" id="class" {...props.register(`${props.class_selector ? props.class_selector : "class"}`, { required: "This field is required" })}
       >
         <option>-- select One-- </option>
-        {classes?.map((clss: any) => <option key={clss.id} value={clss.id}> {clss.name} </option>)}
+        {classes?.map((clss) => <option key={clss.id} value={clss.id}> {clss.name} </option>)}
       </select>
     </div>
   );

@@ -1,26 +1,28 @@
 import CreateInvoice from "@/components/CreateInvoice";
-import EditEmployee from "@/components/EditEmployee";
+import EditInvoice from "@/components/EditInvoice";
 import { getInvoices } from "@/apicalls/fees";
 import { setPageTitle } from "@/store/themeConfigSlice";
+import { showAlert } from "@/utility_methods/alert";
 import sortBy from "lodash/sortBy";
 import { useDispatch } from "react-redux";
 import { useQuery } from "react-query";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { ActionIcon, Avatar } from "@mantine/core";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, SyntheticEvent, useEffect, useState } from "react";
+import { InvoiceTypes, UserSession } from "@/types";
 
 const col = ["id", "firstName", "lastName", "company", "age", "dob", "email", "phone", "date_of_birth"];
 
 const Export = () => {
   const router = useRouter();
   const { status: sessionStatus, data: userSession } = useSession();
+  const userSessionValue = userSession as UserSession;
 
   const {
     data: invoices,
-    isSuccess,
-    status,
     refetch,
   } = useQuery(
     "getInvoices",
@@ -34,8 +36,6 @@ const Export = () => {
     if (sessionStatus === "authenticated") {
       refetch();
     }
-
-    console.log(invoices);
   }, [sessionStatus, refetch]);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Export = () => {
   }, [router]);
 
   const dispatch = useDispatch();
-  const [selectedRecords, setSelectedRecords] = useState<any>([]);
+  const [selectedRecords, setSelectedRecords] = useState<InvoiceTypes[]>([]);
   const [modal, setmodal] = useState(false);
   const [editModal, seteditModal] = useState(false);
   const canEdit = () => selectedRecords.length === 1;
@@ -55,6 +55,7 @@ const Export = () => {
   useEffect(() => {
     dispatch(setPageTitle("Schoolwave | Students"));
   });
+
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
@@ -67,15 +68,12 @@ const Export = () => {
     direction: "asc",
   });
 
-  useEffect(() => {
-    const inv = invoices?.data;
+  function getFirstLetters (str: string) {
+    const words = str.split(" ");
+    const firstLetters = words.map((word) => word.charAt(0));
 
-    if (inv) {
-      inv.status = inv?.balance > inv?.amount_paid ? "paid" : inv?.amount_paid > 0 ? "partial" : "unpaid";
-    }
-
-    setInitialRecords(sortBy(inv, "id"));
-  }, [invoices, recordsData]);
+    return firstLetters.join("");
+  }
 
   useEffect(() => {
     setPage(1);
@@ -89,18 +87,19 @@ const Export = () => {
   }, [page, pageSize, initialRecords]);
 
   useEffect(() => {
-    setInitialRecords(() => {
-      if (isSuccess && invoices.data.length) {
-        return invoices.data.filter((item: any) => {
-          return (
-            item.id.toString().includes(search.toLowerCase()) || item.first_name.toLowerCase().includes(search.toLowerCase()) || item.last_name.toLowerCase().includes(search.toLowerCase())
-          );
-        });
-      } else {
-        setInitialRecords([]);
-      }
-    });
-  }, [search, invoices, status]);
+    if (invoices?.data?.length) {
+      setInitialRecords(invoices.data);
+    }
+  }, [search, invoices]);
+
+  const filteredRecords = () => {
+    return recordsData.filter(
+      (item) =>
+        item.id.toString().includes(search.toLowerCase()) ||
+                item.student_info.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+                item.student_info.last_name?.toLowerCase().includes(search.toLowerCase())
+    );
+  };
 
   useEffect(() => {
     const data = sortBy(initialRecords, sortStatus.columnAccessor);
@@ -108,56 +107,47 @@ const Export = () => {
     setInitialRecords(sortStatus.direction === "desc" ? data.reverse() : data);
     setPage(1);
   }, [sortStatus]);
-  const header = ["Id", "Firstname", "Lastname", "Email", "Start Date", "Phone No.", "Age", "Company"];
 
-  const exportTable = (type: any) => {
-    const columns: any = col;
-    const records = invoices || [];
+  const exportTable = (type: string) => {
+    const columns = col;
+    const records = invoices?.data || [];
     const filename = "table";
-
-    let newVariable: any;
-
-    newVariable = window.navigator;
 
     if (type === "csv") {
       const coldelimiter = ";";
       const linedelimiter = "\n";
       let result = columns
-        .map((d: any) => {
+        .map((d: string) => {
           return capitalize(d);
         })
         .join(coldelimiter);
 
       result += linedelimiter;
 
-      records.map((item: any) => {
-        columns.map((d: any, index: any) => {
+      records.forEach((item) => {
+        columns.forEach((d, index) => {
           if (index > 0) {
             result += coldelimiter;
           }
 
-          const val = item[d] ? item[d] : "";
+          if (d in item) {
+            const val = item[d as keyof InvoiceTypes] ? item[d as keyof InvoiceTypes] : "";
 
-          result += val;
+            result += val;
+          }
         });
         result += linedelimiter;
       });
 
       if (result == null) return;
 
-      if (!result.match(/^data:text\/csv/i) && !newVariable.msSaveOrOpenBlob) {
+      if (!result.match(/^data:text\/csv/i)) {
         const data = "data:application/csv;charset=utf-8," + encodeURIComponent(result);
         const link = document.createElement("a");
 
         link.setAttribute("href", data);
         link.setAttribute("download", filename + ".csv");
         link.click();
-      } else {
-        const blob = new Blob([result]);
-
-        if (newVariable.msSaveOrOpenBlob) {
-          newVariable.msSaveBlob(blob, filename + ".csv");
-        }
       }
     } else if (type === "print") {
       let rowhtml = "<p>" + filename + "</p>";
@@ -165,19 +155,21 @@ const Export = () => {
       rowhtml +=
                 "<table style=\"width: 100%; \" cellpadding=\"0\" cellcpacing=\"0\"><thead><tr style=\"color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; \"> ";
 
-      columns.map((d: any) => {
+      columns.forEach((d: string) => {
         rowhtml += "<th>" + capitalize(d) + "</th>";
       });
       rowhtml += "</tr></thead>";
       rowhtml += "<tbody>";
 
-      records.map((item: any) => {
+      records.forEach((item) => {
         rowhtml += "<tr>";
 
-        columns.map((d: any) => {
-          const val = item[d] ? item[d] : "";
+        columns.forEach((d) => {
+          if (d in item) {
+            const val = item[d as keyof InvoiceTypes] ? item[d as keyof InvoiceTypes] : "";
 
-          rowhtml += "<td>" + val + "</td>";
+            rowhtml += "<td>" + val + "</td>";
+          }
         });
         rowhtml += "</tr>";
       });
@@ -185,63 +177,64 @@ const Export = () => {
       rowhtml +=
                 "<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>";
       rowhtml += "</tbody></table>";
-      const winPrint: any = window.open("", "", "left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0");
+      const winPrint = window.open("", "", "left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0");
 
-      winPrint.document.write("<title>Print</title>" + rowhtml);
-      winPrint.document.close();
-      winPrint.focus();
-      winPrint.print();
+      winPrint?.document.write("<title>Print</title>" + rowhtml);
+      winPrint?.document.close();
+      winPrint?.focus();
+      winPrint?.print();
     } else if (type === "txt") {
       const coldelimiter = ",";
       const linedelimiter = "\n";
       let result = columns
-        .map((d: any) => {
+        .map((d) => {
           return capitalize(d);
         })
         .join(coldelimiter);
 
       result += linedelimiter;
 
-      records.map((item: any) => {
-        columns.map((d: any, index: any) => {
+      records.forEach((item) => {
+        columns.forEach((d, index) => {
           if (index > 0) {
             result += coldelimiter;
           }
 
-          const val = item[d] ? item[d] : "";
+          if (d in item) {
+            const val = item[d as keyof InvoiceTypes] ? item[d as keyof InvoiceTypes] : "";
 
-          result += val;
+            result += val;
+          }
         });
         result += linedelimiter;
       });
 
       if (result == null) return;
 
-      if (!result.match(/^data:text\/txt/i) && !newVariable.msSaveOrOpenBlob) {
+      if (!result.match(/^data:text\/txt/i)) {
         const data1 = "data:application/txt;charset=utf-8," + encodeURIComponent(result);
         const link1 = document.createElement("a");
 
         link1.setAttribute("href", data1);
         link1.setAttribute("download", filename + ".txt");
         link1.click();
-      } else {
-        const blob1 = new Blob([result]);
-
-        if (newVariable.msSaveOrOpenBlob) {
-          newVariable.msSaveBlob(blob1, filename + ".txt");
-        }
       }
     }
   };
 
-  const capitalize = (text: any) => {
+  const capitalize = (text: string) => {
     return text
       .replace("_", " ")
       .replace("-", " ")
       .toLowerCase()
       .split(" ")
-      .map((s: any) => s.charAt(0).toUpperCase() + s.substring(1))
+      .map((s: string) => s.charAt(0).toUpperCase() + s.substring(1))
       .join(" ");
+  };
+
+  const copyInvoiceUrl = (id: string) => {
+    navigator.clipboard.writeText(`localhost:3000/checkout/${id}`);
+    showAlert("success", "Payment link copied to cliopboard");
   };
 
   return (
@@ -302,7 +295,7 @@ const Export = () => {
                   <div className="flex min-h-screen items-start justify-center px-4">
                     <Dialog.Panel className="panel animate__animated animate__fadeInDown my-8 w-full max-w-xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
                       <div className="mx-auto w-4/5 py-5">
-                        <CreateInvoice user_session_status={sessionStatus} user_session={userSession} setmodal={setmodal} refreshEmployee={refetch} />
+                        <CreateInvoice user_session_status={sessionStatus} user_session={userSession as UserSession} setmodal={setmodal} refreshEmployee={refetch} />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -315,6 +308,7 @@ const Export = () => {
               onClick={() => {
                 seteditModal(true);
               }}
+              disabled={!canEdit()}
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-2 h-4 w-4">
                 <path
@@ -343,7 +337,13 @@ const Export = () => {
                   <div className="flex min-h-screen items-start justify-center px-4">
                     <Dialog.Panel className="panel animate__animated animate__fadeInDown my-8 w-full max-w-5xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
                       <div className="mx-auto w-4/5 py-5">
-                        <EditEmployee access_token={userSession?.access_token} id={selectedRecords[0]?.id} seteditModal={seteditModal} refreshEmployee={refetch} />
+                        <EditInvoice
+                          school={userSessionValue?.school?.id}
+                          access_token={userSession?.access_token as string}
+                          invoice={selectedRecords[0]}
+                          seteditModal={seteditModal}
+                          refreshInvoice={refetch}
+                        />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -359,15 +359,44 @@ const Export = () => {
           <DataTable
             highlightOnHover
             className="table-hover whitespace-nowrap"
-            records={recordsData}
+            records={filteredRecords()}
             columns={[
+              {
+                accessor: "student name",
+                title: "Student Name",
+                render: (cell) => {
+                  const { student_info: studentInfo } = cell;
+
+                  return (
+                    <div className="flex items-center gap-3">
+                      <Avatar color="cyan" radius="xl">
+                        {getFirstLetters(`${studentInfo.first_name} ${studentInfo.last_name}`)}
+                      </Avatar>
+                      <span>
+                        {studentInfo.first_name} {studentInfo.last_name}
+                      </span>
+                    </div>
+                  );
+                },
+              },
               { accessor: "id", title: "Invoice No.", sortable: true },
-              { accessor: "student_info.first_name", title: "First Name", sortable: true },
-              { accessor: "student_info.last_name", title: "Last Name", sortable: true },
-              { accessor: "total", title: "Total", sortable: true },
+              { accessor: "outstanding_balance", title: "Outstanding Balance", sortable: true },
               { accessor: "amount_paid", title: "Amount Paid", sortable: true },
               { accessor: "balance", title: "Balance", sortable: true },
-              { accessor: "status", title: "Status", sortable: true },
+              {
+                accessor: "actions",
+                title: "Actions",
+                render: (cell) => (
+                  <div className="relative">
+                    <ActionIcon onClick={(e: SyntheticEvent) => {
+                      e.stopPropagation();
+                      copyInvoiceUrl(cell.id);
+                    }} color="black">
+                      <span className="text-xs text-black font-medium underline">Make payment</span>
+                    </ActionIcon>
+                  </div>
+                )
+              },
             ]}
             totalRecords={initialRecords ? initialRecords.length : 0}
             recordsPerPage={pageSize}
@@ -379,7 +408,7 @@ const Export = () => {
             onSortStatusChange={setSortStatus}
             minHeight={200}
             paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-            onRowClick={(x: any) => router.push("/employees/" + x.id)}
+            onRowClick={(x) => router.push("/employees/" + x.id)}
             selectedRecords={selectedRecords}
             onSelectedRecordsChange={setSelectedRecords}
           />

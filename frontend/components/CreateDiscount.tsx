@@ -1,86 +1,75 @@
+import { createDiscount } from "@/apicalls/fees";
+import { showAlert } from "@/utility_methods/alert";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
-import { createSession } from '@/apicalls/session';
-import {useEffect, useState} from 'react'
-import { createDiscount, createFeeItem } from "@/apicalls/fees";
-import React from "react";
+import { useMutation } from "react-query";
+import { DiscountFormValues, IClientError, UserSession } from "@/types";
+import React, { SetStateAction, useState } from "react";
 
+interface CreateDiscountProps {
+  user_session: UserSession;
+  exit: React.Dispatch<SetStateAction<boolean>>;
+  refreshList: () => void;
+}
 
+const CreateDiscount = (props: CreateDiscountProps) => {
+  const { register, handleSubmit, reset, watch } = useForm<DiscountFormValues>({
+    shouldUseNativeValidation: true,
+    defaultValues: {
+      name: "",
+      discount_type: "amount",
+      percentage: 0,
+      amount: 0,
+      description: ""
+    }
+  });
 
+  type DiscountType = "percentage" | "amount";
 
+  const [discountKind, setDiscountKind] = useState<DiscountType>("amount");
 
-interface FormValues {
-    start_date: string;
-    end_date: string;
-    resumption_date: string;
-    active: boolean
-   };
-
-
-
-const CreateDiscount = ( props:any) => {
-
-
-  const { register, handleSubmit, reset, watch } = useForm({ shouldUseNativeValidation: true, defaultValues: {
-    name: "",
-    discount_type: "amount",
-    percentage: null,
-    amount: null,
-    description: ""
-  } });
-
-  const queryClient = useQueryClient();
-  type DiscountType = "percentage" | "amount"
-  const [discountKind, setDiscountKind] = useState<DiscountType>("amount")
-
-  const { mutate, isLoading } = useMutation(
-    (data) =>
-      createDiscount(props.user_session.access_token, data),
+  const { mutate } = useMutation(createDiscount,
     {
-      onSuccess: (data) => {
-        console.log("data: ", data)
-        showAlert('success', 'Discount Created Successfuly')
-        props.refreshList()
-        props.exit(false)
-        reset()
+      onSuccess: () => {
+        showAlert("success", "Discount Created Successfuly");
+        props.refreshList();
+        props.exit(false);
+        reset();
       },
-      onError: (error:any) => {
-        showAlert("error", error.message)
-        let x =error.response.data.message.split(' ')
-
-        if(x.indexOf('duplicate') >=0 && x.indexOf('key') >=0  && x.indexOf('constraint') >=0){
-
-          showAlert('error', 'A session with same Start Date or End Date already exist')
-        }else{
-          showAlert('error', 'An Error Occured' )
-        }
+      onError: (error: IClientError) => {
+        showAlert("error", error.message);
       }
     }
   );
 
-  const onSubmit = async (tempData: any) => { 
-    tempData.school = props.user_session?.school.id
-    mutate(tempData);
-  };
+  const onSubmit = handleSubmit(async (tempData) => {
+    mutate({
+      data: {
+        ...tempData,
+        school: props.user_session?.school.id
+      },
+      accessToken: props.user_session.access_token
+    });
+  });
 
   React.useEffect(() => {
-    const subscription = watch(({ discount_type }) =>
-      setDiscountKind(discount_type as DiscountType)
-    )
-    return () => subscription.unsubscribe()
-  }, [watch])
+    const subscription = watch(({ discount_type: discountType }) =>
+      setDiscountKind(discountType as DiscountType)
+    );
+
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
   return (
-    <div  className="">
-      <form className="space-y-5"   onSubmit={handleSubmit(onSubmit)}>
-      
+    <div className="">
+      <form className="space-y-5" onSubmit={onSubmit}>
+
         <div>
           <label htmlFor="name">Name</label>
-          <input id="name" type="text"  className="form-input" {...register("name", { required: "This field is required" })} />
+          <input id="name" type="text" className="form-input" {...register("name", { required: "This field is required" })} />
         </div>
         <div>
           <label htmlFor="description">Description</label>
-          <input id="description" type="text"  className="form-input" {...register("description", { required: false })} />
+          <input id="description" type="text" className="form-input" {...register("description", { required: false })} />
         </div>
         <div>
           <label htmlFor="discount_type" className="block text-sm font-medium leading-6 text-gray-900">
@@ -96,14 +85,14 @@ const CreateDiscount = ( props:any) => {
         </div>
         {discountKind === "amount" && <div>
           <label htmlFor="name">Amount</label>
-          <input id="amount" type="number"  className="form-input" {...register("amount", { required: "This field is required" })} />
+          <input id="amount" type="number" className="form-input" {...register("amount", { required: "This field is required" })} />
         </div>}
         {discountKind === "percentage" && <div>
           <label htmlFor="name">Percentage</label>
-          <input id="percentage" type="number"  className="form-input" {...register("percentage", { required: "This field is required" })} />
+          <input id="percentage" type="number" className="form-input" {...register("percentage", { required: "This field is required" })} />
         </div>}
         <div className="flex justify-center items-center mt-8 mx-auto">
-          <button  type="submit"  className="btn btn-primary ltr:ml-4 rtl:mr-4">
+          <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
             Submit
           </button>
         </div>

@@ -1,82 +1,79 @@
-import { useEffect} from 'react';
+import DiscountSelect from "./DiscountSelect";
+import { editFeeItem } from "@/apicalls/fees";
+import { showAlert } from "@/utility_methods/alert";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
-import { editSession } from '@/apicalls/session';
-import { editFeeItem } from '@/apicalls/fees';
-import DiscountSelect from './DiscountSelect';
+import { FeeItemFormValues, FeeItemInterface, IClientError, ResponseInterface, SessionStatus, UserSession } from "@/types";
+import { QueryObserverResult, useMutation } from "react-query";
+import { SetStateAction, useEffect } from "react";
 
+interface EditFeeItemProps {
+  user_session_status: SessionStatus;
+  create: boolean;
+  user_session: UserSession;
+  sessionData: FeeItemInterface;
+  exit: React.Dispatch<SetStateAction<boolean>>;
+  refreshSession: () => Promise<QueryObserverResult<ResponseInterface<FeeItemInterface[]>, unknown>>;
+}
 
+const EditFeeItem = (props: EditFeeItemProps) => {
+  const { register, handleSubmit, reset } = useForm<FeeItemFormValues>({ shouldUseNativeValidation: true });
 
+  useEffect(() => {
+    reset({
+      name: props.sessionData.name,
+      amount: +props.sessionData.amount,
+      description: props.sessionData.description,
+      discount: props.sessionData.discount
+    });
+  }, []);
 
-
-interface FormValues {
-    start_date: string;
-    end_date: string;
-    resumption_date: string;
-   };
-
-
-
-const EditFeeItem = (props:any) => {
-
-  const { register, handleSubmit, reset } = useForm({ shouldUseNativeValidation: true });
- 
-  const queryClient = useQueryClient();
-  useEffect(()=>{
-    reset(props.sessionData)
-  },[])
-
-  const { mutate, isLoading, error } = useMutation(
-    (data) => editFeeItem(props.sessionData.id, props.user_session.access_token, data),
+  const { mutate } = useMutation(editFeeItem,
     {
-      onSuccess: async (data) => {
-        showAlert('success', 'Session Edited Successfuly')
-        props.refreshSession()
-        props.exit(false)
-        
-  
+      onSuccess: async () => {
+        showAlert("success", "Fee Item Edited Successfully");
+        props.refreshSession();
+        props.exit(false);
       },
-      onError: (error:any) => {
-        let x =error.response.data.message.split(' ')
-        
-  
-        if(x.indexOf('duplicate') >=0 && x.indexOf('key') >=0  && x.indexOf('constraint') >=0){
-
-          showAlert('error', 'A session with same Start Date or End Date already exist')
-        }else{
-          showAlert('error', 'An Error Occured' )
-        }
+      onError: (error: IClientError) => {
+        showAlert("error", error.message);
       }
     }
   );
 
+  const onSubmit = handleSubmit(async (data) => {
+    mutate({
+      data: {
+        name: data.name,
+        amount: data.amount,
+        school: props.user_session.school?.id,
+        description: data.description,
+        discount: data.discount,
+      },
+      id: props.sessionData.id,
+      accessToken: props.user_session?.access_token
+    });
+  });
 
-
-
-  const onSubmit = async (data: any) => { 
-
-    mutate(data); };
   return (
-    <div  className="">
-      <form className="space-y-5"   onSubmit={handleSubmit(onSubmit)}>
-      
+    <div className="">
+      <form className="space-y-5" onSubmit={onSubmit}>
+
         <div>
-          <input id="name" type="text" placeholder="Name"  className="form-input" {...register("name", { required: "This field is required" })} />
+          <input id="name" type="text" placeholder="Name" className="form-input" {...register("name", { required: "This field is required" })} />
         </div>
         <div>
-          <input id="description" type="text" placeholder="Description"  className="form-input" {...register("description")} />
+          <input id="description" type="text" placeholder="Description" className="form-input" {...register("description")} />
         </div>
         <div>
-          <DiscountSelect register={register} trigger={props.user_session_status == 'authenticated'} user_session={props.user_session} />
+          <DiscountSelect register={register} trigger={props.user_session_status === "authenticated"} user_session={props.user_session} />
         </div>
         <div>
-      
-          <input id="amount" type="number"  placeholder="Amount" className="form-input" {...register("amount", { required: "This field is required" })} />
+
+          <input id="amount" type="number" placeholder="Amount" className="form-input" {...register("amount", { required: "This field is required" })} />
         </div>
         <div className="flex justify-center items-center mt-8 mx-auto">
 
-          <button  type="submit"  className="btn btn-primary ltr:ml-4 rtl:mr-4">
+          <button type="submit" className="btn btn-primary ltr:ml-4 rtl:mr-4">
                                           Submit
           </button>
         </div>

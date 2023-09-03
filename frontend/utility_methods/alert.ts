@@ -1,41 +1,36 @@
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
-export const showAlert = async (icon: any, title: any) => {
+type Icon = "warning" | "error" | "success" | "info" | "question";
 
+export const showAlert = async (icon: Icon, title: string) => {
   const toast = Swal.mixin({
     toast: true,
-    position: 'top-end',
+    position: "top-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    customClass: {
-      popup: 'bg-success'
-    },
+    customClass: { popup: "bg-success" },
   });
+
   toast.fire({
-    icon: icon,
-    title: title,
-    padding: '10px 20px',
+    icon,
+    title,
+    padding: "10px 20px",
   });
+};
 
-}
-
-export const showPrompt = async (icon: any, title: string, text:string, confirmButton:string, callBack:any) => {
-
-
+export const showPrompt = async (icon: Icon, title: string, text: string, confirmButton: string, callBack: () => void) => {
   Swal.fire({
-    icon: icon,
-    title: title,
-    text: text,
+    icon,
+    title,
+    text,
     showCancelButton: true,
     confirmButtonText: confirmButton,
-    padding: '2em',
-    customClass: 'sweet-alerts',
+    padding: "2em",
+    customClass: "sweet-alerts",
   }).then((result) => {
     if (result.value) {
-      callBack()
+      callBack();
     }
   });
-
-
-}
+};

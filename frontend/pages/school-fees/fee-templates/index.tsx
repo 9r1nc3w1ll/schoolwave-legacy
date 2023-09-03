@@ -3,7 +3,7 @@ import EditFeeTemplate from "@/components/EditFeeTemplate";
 import Link from "next/link";
 import { showAlert } from "@/utility_methods/alert";
 import { useSession } from "next-auth/react";
-import { DeleteFeeTemplatePayload, FeeTemplateInterface, IClientError } from "@/types";
+import { DeleteFeeTemplatePayload, FeeTemplateInterface, IClientError, UserSession } from "@/types";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { deleteFeeTemplate, getFeeTemplates } from "@/apicalls/fees";
@@ -138,7 +138,7 @@ const Export = () => {
       <div className="panel col-span-2">
         <div className="panel bg-[#f5f6f7]">
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create Fee Template</h5>
-          <CreateFeeTemplate user_session={sessionData} user_session_status={sessionStatus} exit={setmodal} refreshList={refetch} />
+          <CreateFeeTemplate user_session={sessionData as UserSession} user_session_status={sessionStatus} exit={setmodal} refreshList={refetch} />
         </div>
       </div>
       <div className="panel col-span-4 " >
@@ -208,7 +208,7 @@ const Export = () => {
                       <h5 className=" text-lg font-semibold dark:text-white-light">Edit Fee Template</h5>
                       <p className="text-primary mb-5 text-sm">{selectedSession ? selectedSession.name : ""}</p>
 
-                      <EditFeeTemplate create={false} user_session={sessionData} sessionData={selectedSession} exit={setmodal} refreshSession={refetch} />
+                      <EditFeeTemplate user_session_status={sessionStatus} create={false} user_session={sessionData} sessionData={selectedSession as FeeTemplateInterface} exit={setmodal} refreshSession={refetch} />
                     </div>
                   </Dialog.Panel>
                 </div>

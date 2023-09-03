@@ -5,7 +5,7 @@ import { createFeeItem } from "@/apicalls/fees";
 import { showAlert } from "@/utility_methods/alert";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { IClientError, SessionStatus, UserSession } from "@/types";
+import { FeeItemFormValues, IClientError, SessionStatus, UserSession } from "@/types";
 
 interface CreateFeeItemProps {
   user_session_status: SessionStatus;
@@ -14,15 +14,8 @@ interface CreateFeeItemProps {
   refreshList: () => void;
 }
 
-interface CreateFeeFormValues {
-  name: string;
-  description: string;
-  amount: string;
-  discount: string;
-}
-
 const CreateFeeItem = (props: CreateFeeItemProps) => {
-  const { register, handleSubmit, reset } = useForm<CreateFeeFormValues>({ shouldUseNativeValidation: true });
+  const { register, handleSubmit, reset } = useForm<FeeItemFormValues>({ shouldUseNativeValidation: true });
 
   const { mutate, isLoading } = useMutation(
     createFeeItem,

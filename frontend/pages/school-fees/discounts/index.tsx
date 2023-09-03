@@ -1,144 +1,137 @@
-import Link from 'next/link';
-import { useQuery } from 'react-query';
-import { useEffect, useState, Fragment, useCallback, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import DeleteSessions from '@/components/DeleteSessions';
-import { dateInPast } from '@/utility_methods/datey';
-import { useSession } from 'next-auth/react';
-import EditFeeItem from '@/components/EditFeeItem';
-import { getDiscounts } from '@/apicalls/fees';
-import CreateDiscount from '@/components/CreateDiscount';
-import EditDiscount from '@/components/EditDiscount';
+import CreateDiscount from "@/components/CreateDiscount";
+import EditDiscount from "@/components/EditDiscount";
+import Link from "next/link";
+import { showAlert } from "@/utility_methods/alert";
+import { useSession } from "next-auth/react";
+import { Dialog, Transition } from "@headlessui/react";
+import { DiscountTypes, IClientError, UserSession } from "@/types";
+import { Fragment, useEffect, useState } from "react";
+import { deleteDiscount, getDiscounts } from "@/apicalls/fees";
+import { useMutation, useQuery } from "react-query";
 
-
-
-
-const Export =  (props:any) => {
- 
-  const [search, setSearch] = useState<string>('');
-  const [activeToolTip, setActiveToolTip] = useState<string>('');
-  const [visible, setVisible] = useState<boolean>(false);
-  const [items, setItems] = useState<[]>([])
-  const [filteredsessions, setFilteredsessions] = useState<any>(items);
+const Export = () => {
+  const [search, setSearch] = useState<string>("");
+  const [activeToolTip, setActiveToolTip] = useState<string>("");
+  const [items, setItems] = useState<DiscountTypes[]>([]);
+  const [filteredsessions, setFilteredsessions] = useState<DiscountTypes[]>(items);
   const [modal, setmodal] = useState(false);
-  const [selectedSession, setSelectedSession] = useState<any>();
-  const { data: sessionData , status:sessionStatus} = useSession();
-  
+  const [selectedSession, setSelectedSession] = useState<DiscountTypes>();
+  const { data: sessionData, status: sessionStatus } = useSession();
 
+  useEffect(() => {
+    if (activeToolTip !== "") {
+      const x = items.find((t) => {
+        return t.id === activeToolTip;
+      });
 
-  useEffect(()=>{
-    if(activeToolTip != ''){
-
-      const x = items.find((t:any)=>{
-        return t.id == activeToolTip
-      })
-  
-      if(x){
-
-        setSelectedSession(x)
+      if (x) {
+        setSelectedSession(x);
       }
     }
-    
-  }, [activeToolTip])
+  }, [activeToolTip]);
 
+  const { data, isSuccess, status, isLoading, refetch } = useQuery("feediscounts", () => getDiscounts(sessionData?.access_token as string), { enabled: false });
 
-  
-  const {data, isSuccess, status, isLoading, refetch} = useQuery('feediscounts', ()=> getDiscounts(sessionData?.access_token), {enabled: false })
-
-  useEffect(()=>{
-    if(sessionStatus == 'authenticated'){
-      refetch()
+  const { mutate } = useMutation(deleteDiscount, {
+    onSuccess: () => {
+      showAlert("success", "Discount Edited successfully");
+      refetch();
+    },
+    onError: (error: IClientError) => {
+      showAlert("error", error.message);
     }
-  }, [sessionStatus])
+  });
+
+  const onDeleteDiscount = (id: string) => {
+    mutate({
+      id,
+      accessToken: sessionData?.access_token as string
+    });
+  };
+
+  useEffect(() => {
+    if (sessionStatus === "authenticated") {
+      refetch();
+    }
+  }, [sessionStatus]);
+
   useEffect(() => {
     setFilteredsessions(() => {
-      return items?.filter((item:any) => {
-        return item?.discount_type?.toLowerCase().includes(search.toLowerCase()) ;
+      return items?.filter((item) => {
+        return item?.discount_type?.toLowerCase().includes(search.toLowerCase());
       });
     });
   }, [search, items, status]);
-  useEffect(()=>{
 
-    if (isSuccess ){
-      setItems(data)
+  useEffect(() => {
+    if (isSuccess) {
+      setItems(data);
     }
+  }, [data, isSuccess, status]);
 
-  }, [data, isSuccess, status])
-  const displaySession: () => any=()=>{
-    if(items?.length ){
-      return filteredsessions?.map((item:any) => {
+  const displaySession: () => JSX.Element | JSX.Element[] = () => {
+    if (items?.length) {
+      return filteredsessions?.map((item) => {
         return (
-          <tr className={`${item.active? `bg-primary-light`: ''} !important`} key={item?.id}>
+          <tr key={item?.id}>
             <td>
               <div className="whitespace-nowrap"><Link href={`/session/${item.id}`}>{item?.name} </Link></div>
             </td>
             <td>{item?.percentage ? item?.percentage + "%" : "-"}</td>
             <td>{item.amount ? "NGN" + item?.amount : "-"}</td>
-           
+
             <td className="text-center ">
-             
-              <button type="button" className='relative' onClick={()=>{
-                setActiveToolTip(item.id)
-                
+
+              <button type="button" className="relative" onClick={() => {
+                setActiveToolTip(item.id);
               }}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
                 </svg>
-                {      activeToolTip == item.id && selectedSession ? 
-                  (    
-                    <div className='bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[70%] w-[110px] z-10'>
-                      {!dateInPast (new Date(item.end_date), new Date)  && !item.active ?  
-                        <>
-                          <p className='mb-2 px-3 pt-2 hover:bg-white' onClick={() => {
-                            setmodal(true)} 
-                        
-                          }>Edit</p> 
-                        
-                          {/* props.sessionData.id, props.user_session.access_token */}
-                          <DeleteSessions sessionID = {item.id} user_session={sessionData} refreshSession={refetch}/>
-                        </>
-                        : item.active ?
-                      
-                          <>
-                            <p className='mb-2 px-3 pt-2 hover:bg-white' onClick={() => {
-                              setmodal(true)} 
-                        
-                            }>Edit</p> 
-                           
-                          </>
-                          : <>
-                            <p className='mb-2 px-2  hover:bg-white'>View Data</p>
-                          </>}
+                { activeToolTip === item.id && selectedSession
+                  ? (
+                    <div className="bg-[#f7f7f5] absolute bottom-0 left-0 text-left shadow-md mt-8 translate-x-[-105%] translate-y-[70%] w-[110px] z-10">
+                      <>
+                        <p className="mb-2 px-3 pt-2 hover:bg-white" onClick={() => {
+                          setmodal(true);
+                        }
 
-                     
-                      
+                        }>Edit</p>
 
-                    </div>) : <></>}
+                        {/* props.sessionData.id, props.user_session.access_token */}
+                        {/* <DeleteSessions sessionID = {item.id} user_session={sessionData} refreshSession={refetch}/> */}
+                        <p className=" px-2 pb-3 hover:bg-white text-danger" onClick={() => {
+                          onDeleteDiscount(item.id);
+                        }}>Delete</p>
+                      </>
+
+                    </div>)
+                  : <></>}
               </button>
-           
-         
+
             </td>
           </tr>
         );
-      })
-    }else if(isLoading){
-      return<tr><td> Loading Data...</td></tr>
-    }else    {
-      return<tr><td> No Discount Item to display</td></tr>
+      });
+    } else if (isLoading) {
+      return <tr><td> Loading Data...</td></tr>;
+    } else {
+      return <tr><td> No Discount Item to display</td></tr>;
     }
-  }
+  };
+
   return (
-    <div className='lg:grid grid-cols-6 gap-6'>
-      <div className='panel col-span-2'>
-        <div className='panel bg-[#f5f6f7]'>
+    <div className="lg:grid grid-cols-6 gap-6">
+      <div className="panel col-span-2">
+        <div className="panel bg-[#f5f6f7]">
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Create Discounts</h5>
-          <CreateDiscount  user_session={sessionData}  exit={setmodal} refreshList={refetch}  />
+          <CreateDiscount user_session={sessionData as UserSession} exit={setmodal} refreshList={refetch} />
         </div>
       </div>
-      <div className='panel col-span-4 ' >
-        <div className=' md:flex justify-between '>
+      <div className="panel col-span-4 " >
+        <div className=" md:flex justify-between ">
           <h5 className="mb-5 text-lg font-semibold dark:text-white-light">Discounts</h5>
-      
+
           <form className=" w-full sm:w-1/2 mb-5">
             <div className="relative">
               <input
@@ -156,12 +149,13 @@ const Export =  (props:any) => {
               </button>
             </div>
           </form>
-       
+
         </div>
-        <div className="table-responsive mb-5  pb-[100px] " onClick={(e:any)=>{
-      
-          if(e.target.localName != 'svg' && e.target.localName != 'path'){
-            setActiveToolTip('')
+        <div className="table-responsive mb-5  pb-[100px] " onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+          const target = e.target as HTMLDivElement;
+
+          if (target.localName !== "svg" && target.localName !== "path") {
+            setActiveToolTip("");
           }
         }}>
           <table className="table-striped">
@@ -179,9 +173,8 @@ const Export =  (props:any) => {
           </table>
         </div>
 
-
         <div>
-     
+
           <Transition appear show={modal} as={Fragment}>
             <Dialog as="div" open={modal} onClose={() => setmodal(false)}>
               <Transition.Child
@@ -200,9 +193,9 @@ const Export =  (props:any) => {
                   <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                     <div className="w-4/5 mx-auto py-5">
                       <h5 className=" text-lg font-semibold dark:text-white-light">Edit Discount</h5>
-                      <p className='text-primary mb-5 text-sm'>{selectedSession?selectedSession.name: ''}</p>
-                  
-                      <EditDiscount create={false} user_session={sessionData} sessionData={selectedSession} exit={setmodal} refreshSession={refetch}  />
+                      <p className="text-primary mb-5 text-sm">{selectedSession ? selectedSession.name : ""}</p>
+
+                      <EditDiscount create={false} user_session={sessionData as UserSession} sessionData={selectedSession as DiscountTypes} exit={setmodal} refreshSession={refetch} />
                     </div>
                   </Dialog.Panel>
                 </div>

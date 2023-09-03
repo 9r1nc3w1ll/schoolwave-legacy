@@ -1,5 +1,5 @@
 import { throwError } from "@/helpers/api";
-import { CreateFeeItemPayload, CreateInvoicePayload, CreateInvoiceResponse, CreateTransactionPayload, DeleteFeeItemPayload, FeeItemInterface, FeeTemplateInterface, InvoiceTypes, ResponseInterface, TransactionInterface } from "@/types";
+import { CreateDiscountPayload, CreateFeeItemPayload, CreateFeeTemplatePayload, CreateInvoicePayload, CreateInvoiceResponse, CreatePayload, CreateTransactionPayload, DeleteFeeItemPayload, DiscountTypes, EditFeeItemData, EditInvoicePayload, EditPayload, FeeItemInterface, FeeTemplateInterface, InvoiceTypes, ResponseInterface, TransactionInterface } from "@/types";
 
 export const createFeeItem = async (payload: CreateFeeItemPayload): Promise<ResponseInterface<FeeItemInterface>> => {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/fee_item", {
@@ -20,16 +20,21 @@ export const createFeeItem = async (payload: CreateFeeItemPayload): Promise<Resp
   return tempData;
 };
 
-export const editFeeItem = async (id: string, access_token: string, data: any) => {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/fee_item/" + id, {
+export const editFeeItem = async (payload: EditPayload<EditFeeItemData>): Promise<ResponseInterface<FeeItemInterface>> => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/fee_item/" + payload.id, {
     method: "PATCH",
     headers: {
       "content-Type": "application/json",
-      "Authorization": "Bearer " + access_token,
+      "Authorization": "Bearer " + payload.accessToken,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload.data),
   });
-  const tempData = await res.json();
+
+  if (!res.ok) {
+    await throwError(res);
+  }
+
+  const tempData = await res.json() as ResponseInterface<FeeItemInterface>;
 
   return tempData;
 };
@@ -82,63 +87,71 @@ export const getSingleFeeItem = async (id: any, access_token?: string) => {
   return tempData.data;
 };
 
-export const createDiscount = async (access_token: string, data: any) => {
-  try {
-    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/discount", {
-      method: "POST",
-      headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!res.ok) throwError(res);
-
-    const tempData = await res.json();
-
-    return tempData;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const editDiscount = async (id: string, access_token: string, data: any) => {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/discount/" + id, {
-    method: "PATCH",
+export const createDiscount = async (payload: CreatePayload<CreateDiscountPayload>): Promise<ResponseInterface<DiscountTypes>> => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/discount", {
+    method: "POST",
     headers: {
       "content-Type": "application/json",
-      "Authorization": "Bearer " + access_token,
+      "Authorization": "Bearer " + payload.accessToken,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload.data),
   });
-  const tempData = await res.json();
+
+  if (!res.ok) throwError(res);
+
+  const tempData = await res.json() as ResponseInterface<DiscountTypes>;
 
   return tempData;
 };
 
-export const deleteDiscount = async (id: string, access_token: string) => {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/discount/" + id, {
+export const editDiscount = async (payload: EditPayload<CreateDiscountPayload>): Promise<ResponseInterface<DiscountTypes>> => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/discount/" + payload.id, {
+    method: "PATCH",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": "Bearer " + payload.accessToken,
+    },
+    body: JSON.stringify(payload.data),
+  });
+
+  if (!res.ok) await throwError(res);
+
+  const tempData = await res.json() as ResponseInterface<DiscountTypes>;
+
+  return tempData;
+};
+
+export const deleteDiscount = async (payload: { id: string; accessToken: string }) => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/discount/" + payload.id, {
     method: "DELETE",
     headers: {
       "content-Type": "application/json",
-      "Authorization": "Bearer " + access_token,
+      "Authorization": "Bearer " + payload.accessToken,
     },
 
   });
 
+  if (!res.ok) {
+    await throwError(res);
+  }
+
   return res;
 };
 
-export const getDiscounts = async (access_token: any) => {
+export const getDiscounts = async (accessToken: string): Promise<DiscountTypes[]> => {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/discount", {
     method: "GET",
     headers: {
       "content-Type": "application/json",
-      "Authorization": "Bearer " + access_token,
+      "Authorization": "Bearer " + accessToken,
     }
   });
-  const tempData = await res.json();
+
+  if (!res.ok) {
+    await throwError(res);
+  }
+
+  const tempData = await res.json() as ResponseInterface<DiscountTypes[]>;
 
   return tempData.data;
 };
@@ -156,16 +169,16 @@ export const getSingleDiscount = async (id: any, access_token?: string) => {
   return tempData.data;
 };
 
-export const createFeeTemplate = async (accessToken: string, data: any): Promise<ResponseInterface<FeeTemplateInterface>> => {
-  console.log("data: ", data);
+export const createFeeTemplate = async (payload: CreatePayload<CreateFeeTemplatePayload>): Promise<ResponseInterface<FeeTemplateInterface>> => {
+  console.log("data: ", payload.data);
 
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/fee_template", {
     method: "POST",
     headers: {
       "content-Type": "application/json",
-      "Authorization": "Bearer " + accessToken,
+      "Authorization": "Bearer " + payload.accessToken,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload.data),
   });
 
   if (!res.ok) {
@@ -174,21 +187,24 @@ export const createFeeTemplate = async (accessToken: string, data: any): Promise
 
   const tempData = await res.json() as ResponseInterface<FeeTemplateInterface>;
 
-  console.log("crea6: ", tempData);
-
   return tempData;
 };
 
-export const editFeeTemplate = async (id: string, access_token: string, data: any) => {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/fee_template/" + id, {
+export const editFeeTemplate = async (payload: EditPayload<CreateFeeTemplatePayload>): Promise<ResponseInterface<FeeTemplateInterface>> => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/fee_template/" + payload.id, {
     method: "PATCH",
     headers: {
       "content-Type": "application/json",
-      "Authorization": "Bearer " + access_token,
+      "Authorization": "Bearer " + payload.accessToken,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload.data),
   });
-  const tempData = await res.json();
+
+  if (!res.ok) {
+    await throwError(res);
+  }
+
+  const tempData = await res.json() as ResponseInterface<FeeTemplateInterface>;
 
   return tempData;
 };
@@ -269,8 +285,6 @@ export const getInvoiceById = async (accessToken: string, id: string): Promise<R
 
   const tempData = await res.json() as ResponseInterface<InvoiceTypes>;
 
-  console.log("invoice by Id: ", tempData);
-
   return tempData;
 };
 
@@ -298,6 +312,21 @@ export const createInvoice = async (payload: CreateInvoicePayload): Promise<Resp
   return tempData;
 };
 
+export const editInvoice = async (payload: EditInvoicePayload) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/fees/invoice/${payload.id}`, {
+    method: "PATCH",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": "Bearer " + payload.accessToken,
+    },
+    body: JSON.stringify(payload.data),
+  });
+
+  if (!res.ok) {
+    throwError(res);
+  }
+};
+
 export const getTransactions = async (accessToken: string): Promise<ResponseInterface<TransactionInterface[]>> => {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/transaction", {
     method: "GET",
@@ -312,8 +341,6 @@ export const getTransactions = async (accessToken: string): Promise<ResponseInte
   }
 
   const tempData = await res.json() as ResponseInterface<TransactionInterface[]>;
-
-  console.log("tempData: ", tempData);
 
   return tempData;
 };
@@ -340,8 +367,6 @@ export const createTransaction = async (payload: CreateTransactionPayload): Prom
 
   const tempData = await res.json() as ResponseInterface<TransactionInterface>;
 
-  console.log("created: ", tempData);
-
   return tempData;
 };
 
@@ -360,8 +385,6 @@ export const editTransaction = async (payload: CreateTransactionPayload) => {
   }
 
   const tempData = await res.json() as ResponseInterface<TransactionInterface>;
-
-  console.log("edited: ", tempData);
 
   return tempData;
 };
