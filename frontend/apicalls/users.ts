@@ -65,8 +65,6 @@ export const getUser= async (access_token: any, id: any)=>{
     }
   })
   let tempData= await res.json()
-   
-
   return tempData.data
 }
 

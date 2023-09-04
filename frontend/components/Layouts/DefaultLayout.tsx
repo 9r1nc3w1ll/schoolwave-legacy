@@ -12,10 +12,8 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
 interface IProps {
-  children: ReactNode;
+    children: ReactNode;
 }
-
-
 
 const DefaultLayout = ({ children }: IProps) => {
   const { status: sessionStatus, data: user_session } = useSession();
@@ -26,18 +24,16 @@ const DefaultLayout = ({ children }: IProps) => {
   const [animation, setAnimation] = useState(themeConfig.animation);
   const dispatch = useDispatch();
 
-
-  useEffect(()=>{
-    if(sessionStatus === 'authenticated'){
-      if (user_session?.role!=='admin'){
+  useEffect(() => {
+    if (sessionStatus === 'authenticated') {
+      if (user_session?.role !== 'admin') {
         router.push({
           pathname: '/',
           query: { returnUrl: router.asPath },
         });
-     
-      }}
-  })
-
+      }
+    }
+  });
 
   const goToTop = () => {
     document.body.scrollTop = 0;
@@ -80,11 +76,8 @@ const DefaultLayout = ({ children }: IProps) => {
     }, 1100);
   }, [router.asPath]);
 
-
-  if (sessionStatus =="authenticated" && user_session?.role =='admin'){
-  
+  if (sessionStatus == 'authenticated' && user_session?.role == 'admin') {
     return (
-    
       <App>
         <div className="relative">
           {showLoader && (
@@ -120,7 +113,7 @@ const DefaultLayout = ({ children }: IProps) => {
               </button>
             )}
           </div>
-    
+
           {/* END APP SETTING LAUNCHER */}
           <div className={`${themeConfig.navbar} main-container min-h-screen text-black dark:text-white-dark`}>
             {/* BEGIN SIDEBAR */}
@@ -143,10 +136,9 @@ const DefaultLayout = ({ children }: IProps) => {
           </div>
         </div>
       </App>
-          
     );
   }
-  return <h1>Loading...</h1>
+  return <h1>Loading...</h1>;
 };
 
 export default DefaultLayout;

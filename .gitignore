@@ -1,6 +1,9 @@
 # Environment
 .env
 
+# dependencies
+/node_modules
+
 # Virtual environment
 .venv/
 
