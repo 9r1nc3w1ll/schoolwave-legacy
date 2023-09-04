@@ -17,60 +17,76 @@ import { getAdmissions, updateAdmission } from '@/apicalls/admissions';
 import { formatDate } from '@/utility_methods/datey';
 import { showAlert } from '@/utility_methods/alert';
 
+const col = [
+  'id',
+  'firstName',
+  'lastName',
+  'company',
+  'age',
+  'dob',
+  'email',
+  'phone',
+  'date_of_birth',
+];
 
-
-
-const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'phone', 'date_of_birth' ];
-
-const Export = (props:any) => {
-  const router = useRouter()
+const Export = (props: any) => {
+  const router = useRouter();
   const { status: sessionStatus, data: user_session } = useSession();
-  const {data:students, isSuccess, status, refetch} = useQuery('getAdmission', ()=> getAdmissions(user_session?.access_token), {enabled: false})
+  const {
+    data: students,
+    isSuccess,
+    status,
+    refetch,
+  } = useQuery(
+    'getAdmission',
+    () => getAdmissions(user_session?.access_token),
+    { enabled: false }
+  );
   const { mutate, isLoading, error } = useMutation(
-    (data:boolean) =>{
-   
-      return updateAdmission(selectedRecords[0].id, data, user_session?.access_token)},
+    (data: boolean) => {
+      return updateAdmission(
+        selectedRecords[0].id,
+        data,
+        user_session?.access_token
+      );
+    },
     {
       onSuccess: async (data) => {
-        if(!data.error){showAlert('success', 'Admission updated Successfully')
-          refetch()}else{
-          showAlert('error', 'An error occured')
+        if (!data.error) {
+          showAlert('success', 'Admission updated Successfully');
+          refetch();
+        } else {
+          showAlert('error', 'An error occured');
         }
       },
-      onError: (error:any) => {
-        showAlert('error', 'An Error Occured' )
-     
-      }
+      onError: (error: any) => {
+        showAlert('error', 'An Error Occured');
+      },
     }
   );
 
   useEffect(() => {
-    let path = router.asPath.split('#')
-    if(path[1] == 'create-admission'){
-      setmodal(true)
-    }else if(path[1] == 'create-bulk-upload'){
-      setuploadModal(true)
+    let path = router.asPath.split('#');
+    if (path[1] == 'create-admission') {
+      setmodal(true);
+    } else if (path[1] == 'create-bulk-upload') {
+      setuploadModal(true);
     }
   }, [router]);
   useEffect(() => {
-    if(sessionStatus == 'authenticated'){
-      refetch()
-  
+    if (sessionStatus == 'authenticated') {
+      refetch();
     }
-
   }, [sessionStatus, refetch]);
 
-
-  const dispatch = useDispatch();                          
+  const dispatch = useDispatch();
   const [selectedRecords, setSelectedRecords] = useState<any>([]);
   const [modal, setmodal] = useState(false);
   const [uploadModal, setuploadModal] = useState(false);
-  const canEdit = () => selectedRecords.length === 1
-
+  const canEdit = () => selectedRecords.length === 1;
 
   useEffect(() => {
     dispatch(setPageTitle('Schoolwave | Admissions'));
-   
   });
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -96,20 +112,21 @@ const Export = (props:any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      if(isSuccess && students.length ){
-
+      if (isSuccess && students.length) {
         return students.filter((item: any) => {
           return (
             item.id.toString().includes(search.toLowerCase()) ||
-                      item.student_info.first_name.toLowerCase().includes(search.toLowerCase()) ||
-                      item.student_info.last_name.toLowerCase().includes(search.toLowerCase()) ||
-                      item.status.toLowerCase().includes(search.toLowerCase())
-
-                  
+            item.student_info.first_name
+              .toLowerCase()
+              .includes(search.toLowerCase()) ||
+            item.student_info.last_name
+              .toLowerCase()
+              .includes(search.toLowerCase()) ||
+            item.status.toLowerCase().includes(search.toLowerCase())
           );
         });
-      }else{
-        setInitialRecords([])
+      } else {
+        setInitialRecords([]);
       }
     });
   }, [search, students, status]);
@@ -119,11 +136,20 @@ const Export = (props:any) => {
     setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
     setPage(1);
   }, [sortStatus]);
-  const header = ['Id', 'Firstname', 'Lastname', 'Email', 'Start Date', 'Phone No.', 'Age', 'Company'];
+  const header = [
+    'Id',
+    'Firstname',
+    'Lastname',
+    'Email',
+    'Start Date',
+    'Phone No.',
+    'Age',
+    'Company',
+  ];
 
   const exportTable = (type: any) => {
     let columns: any = col;
-    let records = students? students: [];
+    let records = students ? students : [];
     let filename = 'table';
 
     let newVariable: any;
@@ -151,7 +177,8 @@ const Export = (props:any) => {
 
       if (result == null) return;
       if (!result.match(/^data:text\/csv/i) && !newVariable.msSaveOrOpenBlob) {
-        var data = 'data:application/csv;charset=utf-8,' + encodeURIComponent(result);
+        var data =
+          'data:application/csv;charset=utf-8,' + encodeURIComponent(result);
         var link = document.createElement('a');
         link.setAttribute('href', data);
         link.setAttribute('download', filename + '.csv');
@@ -165,7 +192,7 @@ const Export = (props:any) => {
     } else if (type === 'print') {
       var rowhtml = '<p>' + filename + '</p>';
       rowhtml +=
-                '<table style="width: 100%; " cellpadding="0" cellcpacing="0"><thead><tr style="color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; "> ';
+        '<table style="width: 100%; " cellpadding="0" cellcpacing="0"><thead><tr style="color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; "> ';
       columns.map((d: any) => {
         rowhtml += '<th>' + capitalize(d) + '</th>';
       });
@@ -180,9 +207,13 @@ const Export = (props:any) => {
         rowhtml += '</tr>';
       });
       rowhtml +=
-                '<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>';
+        '<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>';
       rowhtml += '</tbody></table>';
-      var winPrint: any = window.open('', '', 'left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0');
+      var winPrint: any = window.open(
+        '',
+        '',
+        'left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0'
+      );
       winPrint.document.write('<title>Print</title>' + rowhtml);
       winPrint.document.close();
       winPrint.focus();
@@ -209,7 +240,8 @@ const Export = (props:any) => {
 
       if (result == null) return;
       if (!result.match(/^data:text\/txt/i) && !newVariable.msSaveOrOpenBlob) {
-        var data1 = 'data:application/txt;charset=utf-8,' + encodeURIComponent(result);
+        var data1 =
+          'data:application/txt;charset=utf-8,' + encodeURIComponent(result);
         var link1 = document.createElement('a');
         link1.setAttribute('href', data1);
         link1.setAttribute('download', filename + '.txt');
@@ -234,73 +266,137 @@ const Export = (props:any) => {
   };
   return (
     <div>
-      <div className="panel">
-        <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
-
-          <h5 className=" text-3xl font-semibold dark:text-white-light">Admissions</h5>
-          <div className="flex flex-wrap items-center">
-            <button type="button" onClick={()=>{
-              if(canEdit()){
-                mutate(true)
-              }
-            }} className={`btn ${canEdit()? 'btn-success':' bg-grey' } btn-sm m-1 `}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" />
+      <div className='panel'>
+        <div className='mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center'>
+          <h5 className=' text-3xl font-semibold dark:text-white-light'>
+            Admissions
+          </h5>
+          <div className='flex flex-wrap items-center'>
+            <button
+              type='button'
+              onClick={() => {
+                if (canEdit()) {
+                  mutate(true);
+                }
+              }}
+              className={`btn ${
+                canEdit() ? 'btn-success' : ' bg-grey'
+              } btn-sm m-1 `}
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='mr-2 h-5 w-5'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12'
+                />
               </svg>
-
-
-                           Approve
+              Approve
             </button>
-            <button type="button"  onClick={()=>{
-              if(canEdit()){
-                mutate(false)
-              }
-            }} className={`btn ${canEdit()? 'btn-danger':' bg-grey' } btn-sm m-1 `}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+            <button
+              type='button'
+              onClick={() => {
+                if (canEdit()) {
+                  mutate(false);
+                }
+              }}
+              className={`btn ${
+                canEdit() ? 'btn-danger' : ' bg-grey'
+              } btn-sm m-1 `}
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='mr-2 h-5 w-5'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z'
+                />
               </svg>
-
-
-                           Decline
+              Decline
             </button>
-            <button type="button" onClick={() => setuploadModal(true)} className="btn btn-primary btn-sm m-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
+            <button
+              type='button'
+              onClick={() => setuploadModal(true)}
+              className='btn btn-primary btn-sm m-1'
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='mr-2 h-5 w-5'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15'
+                />
               </svg>
-
-                            Bulk Admission
+              Bulk Admission
             </button>
-     
-            <button type="button"  className="btn btn-primary btn-sm m-1" onClick={()=>{
-              setmodal(true)
-            }}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+
+            <button
+              type='button'
+              className='btn btn-primary btn-sm m-1'
+              onClick={() => {
+                setmodal(true);
+              }}
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='mr-2 h-5 w-5'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z'
+                />
               </svg>
-
-
-                            Create Admission
+              Create Admission
             </button>
-  
+
             <Transition appear show={modal} as={Fragment}>
-              <Dialog as="div" open={modal} onClose={() => setmodal(false)}>
+              <Dialog as='div' open={modal} onClose={() => setmodal(false)}>
                 <Transition.Child
                   as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
+                  enter='ease-out duration-300'
+                  enterFrom='opacity-0'
+                  enterTo='opacity-100'
+                  leave='ease-in duration-200'
+                  leaveFrom='opacity-100'
+                  leaveTo='opacity-0'
                 >
-                  <div className="fixed inset-0" />
+                  <div className='fixed inset-0' />
                 </Transition.Child>
-                <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
-                  <div className="flex items-start justify-center min-h-screen px-4">
-                    <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-5xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
-                      <div className="w-4/5 mx-auto py-5">
-                                         
-                        <CreateAdmission user_session={user_session} setmodal={setmodal}  refreshAdmission={refetch} />
+                <div
+                  id='fadein_left_modal'
+                  className='fixed inset-0 z-[999] overflow-y-auto bg-[black]/60'
+                >
+                  <div className='flex min-h-screen items-start justify-center px-4'>
+                    <Dialog.Panel className='panel animate__animated animate__fadeInDown my-8 w-full max-w-5xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark'>
+                      <div className='mx-auto w-4/5 py-5'>
+                        <CreateAdmission
+                          user_session={user_session}
+                          setmodal={setmodal}
+                          refreshAdmission={refetch}
+                        />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -308,27 +404,35 @@ const Export = (props:any) => {
               </Dialog>
             </Transition>
 
-   
-     
             <Transition appear show={uploadModal} as={Fragment}>
-              <Dialog as="div" open={uploadModal} onClose={() => setuploadModal(false)}>
+              <Dialog
+                as='div'
+                open={uploadModal}
+                onClose={() => setuploadModal(false)}
+              >
                 <Transition.Child
                   as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
+                  enter='ease-out duration-300'
+                  enterFrom='opacity-0'
+                  enterTo='opacity-100'
+                  leave='ease-in duration-200'
+                  leaveFrom='opacity-100'
+                  leaveTo='opacity-0'
                 >
-                  <div className="fixed inset-0" />
+                  <div className='fixed inset-0' />
                 </Transition.Child>
-                <div id="fadein_left_modal" className="fixed inset-0 bg-[black]/60 z-[999] overflow-y-auto">
-                  <div className="flex items-start justify-center min-h-screen px-4">
-                    <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInDown">
-                      <div className="w-4/5 mx-auto py-5">
-                                         
-                        <BulkAdmission user_session={user_session} closeModal={setuploadModal} refreshAdmission={refetch} />
+                <div
+                  id='fadein_left_modal'
+                  className='fixed inset-0 z-[999] overflow-y-auto bg-[black]/60'
+                >
+                  <div className='flex min-h-screen items-start justify-center px-4'>
+                    <Dialog.Panel className='panel animate__animated animate__fadeInDown my-8 w-full max-w-xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark'>
+                      <div className='mx-auto w-4/5 py-5'>
+                        <BulkAdmission
+                          user_session={user_session}
+                          closeModal={setuploadModal}
+                          refreshAdmission={refetch}
+                        />
                       </div>
                     </Dialog.Panel>
                   </div>
@@ -337,32 +441,57 @@ const Export = (props:any) => {
             </Transition>
           </div>
 
-          <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          <input
+            type='text'
+            className='form-input w-auto'
+            placeholder='Search...'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-   
-        <div className="datatables">
-          
+
+        <div className='datatables'>
           <DataTable
             highlightOnHover
-            className="table-hover whitespace-nowrap"
+            className='table-hover whitespace-nowrap'
             records={recordsData}
             columns={[
               { accessor: 'id', title: 'Admission No.', sortable: true },
-              { accessor: 'student_info.first_name', title: 'First Name', sortable: true },
-              { accessor: 'student_info.last_name', title: 'Last Name', sortable: true },
-              { accessor: 'status', 
-                render: ({ status }) => <div className={status=='approved'? 'badge bg-success': status=='denied'? 'badge bg-danger': 'badge bg-warning' }>{status}</div>,
-                sortable: true },
+              {
+                accessor: 'student_info.first_name',
+                title: 'First Name',
+                sortable: true,
+              },
+              {
+                accessor: 'student_info.last_name',
+                title: 'Last Name',
+                sortable: true,
+              },
+              {
+                accessor: 'status',
+                render: ({ status }) => (
+                  <div
+                    className={
+                      status == 'approved'
+                        ? 'badge bg-success'
+                        : status == 'denied'
+                          ? 'badge bg-danger'
+                          : 'badge bg-warning'
+                    }
+                  >
+                    {status}
+                  </div>
+                ),
+                sortable: true,
+              },
               {
                 accessor: 'created_at',
                 title: 'Request Date',
                 sortable: true,
                 render: ({ created_at }) => <div>{formatDate(created_at)}</div>,
               },
-                         
-           
             ]}
-            totalRecords={initialRecords? initialRecords.length : 0}
+            totalRecords={initialRecords ? initialRecords.length : 0}
             recordsPerPage={pageSize}
             page={page}
             onPageChange={(p) => setPage(p)}
@@ -371,12 +500,10 @@ const Export = (props:any) => {
             sortStatus={sortStatus}
             onSortStatusChange={setSortStatus}
             minHeight={200}
-            paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-
-            onRowClick={(x:any) =>
-              router.push('#')
+            paginationText={({ from, to, totalRecords }) =>
+              `Showing  ${from} to ${to} of ${totalRecords} entries`
             }
-
+            onRowClick={(x: any) => router.push('#')}
             selectedRecords={selectedRecords}
             onSelectedRecordsChange={setSelectedRecords}
           />
