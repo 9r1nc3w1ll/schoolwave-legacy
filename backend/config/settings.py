@@ -148,7 +148,7 @@ DATABASES = {
     }
 }
 
-FLUTTERWAVE_SECRET_KEY = config("FLUTTERWAVE_SECRET_KEY")
+FLUTTERWAVE_SECRET_KEY = config("FLUTTERWAVE_SECRET_KEY", default="Test")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
