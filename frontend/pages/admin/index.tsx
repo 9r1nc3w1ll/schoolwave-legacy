@@ -36,6 +36,7 @@ const Admin = (props: any) => {
     data: students,
     isSuccess,
     status,
+    isFetching,
     refetch,
   } = useQuery(
     'getAdmission',
@@ -138,6 +139,7 @@ const Admin = (props: any) => {
     setPage(1);
   }, [sortStatus]);
 
+  console.log({ recordsData });
   return (
     <div>
       <div className='panel'>
@@ -217,39 +219,32 @@ const Admin = (props: any) => {
             className='table-hover whitespace-nowrap'
             records={recordsData}
             columns={[
-              { accessor: 'id', title: 'Admission No.', sortable: true },
+              { accessor: 'id', title: 'School ID', sortable: true },
               {
                 accessor: 'student_info.first_name',
-                title: 'First Name',
+                title: 'Name',
                 sortable: true,
               },
               {
                 accessor: 'student_info.last_name',
-                title: 'Last Name',
+                title: 'Description',
                 sortable: true,
               },
               {
-                accessor: 'status',
-                render: ({ status }) => (
-                  <div
-                    className={
-                      status == 'approved'
-                        ? 'badge bg-success'
-                        : status == 'denied'
-                          ? 'badge bg-danger'
-                          : 'badge bg-warning'
-                    }
-                  >
-                    {status}
-                  </div>
-                ),
+                accessor: 'student_info.last_name',
+                title: 'Owner',
                 sortable: true,
               },
               {
                 accessor: 'created_at',
-                title: 'Request Date',
+                title: 'Date of establishment',
                 sortable: true,
                 render: ({ created_at }) => <div>{formatDate(created_at)}</div>,
+              },
+              {
+                accessor: 'student_info.last_name',
+                title: 'Motto',
+                sortable: true,
               },
             ]}
             totalRecords={initialRecords ? initialRecords.length : 0}
@@ -267,6 +262,7 @@ const Admin = (props: any) => {
             onRowClick={(x: any) => router.push('#')}
             selectedRecords={selectedRecords}
             onSelectedRecordsChange={setSelectedRecords}
+            fetching={isFetching}
           />
         </div>
       </div>
