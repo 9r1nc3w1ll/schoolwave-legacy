@@ -52,6 +52,6 @@ urlpatterns = [
     ),
     path("healthz", HealthCheck.as_view(), name="health_check"),
     path("fetch_ref", FetchRef.as_view()),
-    path("verify_tx", VerifyFlutterwaveTx.as_view())
+    path("verify_tx", VerifyFlutterwaveTx.as_view()),
     path("check_entities", CheckEntities.as_view())
 ]

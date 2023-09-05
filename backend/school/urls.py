@@ -9,7 +9,8 @@ from school.views import (
     ListCreateClassMember,
     RetrieveUpdateDestoryClassMember,
     ListStudentClass,
-    DashboardStatsAPIView
+    DashboardStatsAPIView,
+    CreateSchoolAndOwner
 )
 
 urlpatterns = [
@@ -30,4 +31,5 @@ urlpatterns = [
     ),
     path("/student-class", ListStudentClass.as_view(), name="list_student_class"),
     path("/dashboard-stats/<uuid:school_id>", DashboardStatsAPIView.as_view(), name="dashboard_stats"),
+    path('/create-school-and-owner', CreateSchoolAndOwner.as_view(), name='create_school_and_owner'),
 ]

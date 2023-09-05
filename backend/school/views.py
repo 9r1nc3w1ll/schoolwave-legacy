@@ -333,4 +333,44 @@ class DashboardStatsAPIView(generics.GenericAPIView):
         return Response(resp)
 
 
-
+class CreateSchoolAndOwner(APIView):
+    def post(self, request, format=None):
+        data = request.data.copy()
+        
+        if not request.user.is_superuser:
+            return Response({"detail": "Only superusers can create schools."}, status=status.HTTP_403_FORBIDDEN)
+        
+        serializer_owner = UserSerializer(data=data)
+        if serializer_owner.is_valid():
+            owner_instance = serializer_owner.save()
+            data["owner"] = owner_instance.id
+            serializer_school = SchoolSerializer(data=data)
+            if serializer_owner.is_valid() and serializer_school.is_valid():
+                serializer = SchoolSerializer(data=data)
+                if serializer.is_valid():
+                    school = serializer.save()
+                    message = "Owner and School created successfully."
+                    data = SchoolSerializer(school).data
+                    resp = {
+                        "message": message,
+                        "data": data,
+                    }
+                    return Response(resp, status=status.HTTP_201_CREATED)
+                else:
+                        resp = {
+                            "message": "Validation Error.",
+                            "errors": serializer.errors,
+                        }
+                        return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                resp = {
+                        "message": "Validation Error.",
+                        "errors": serializer_school.errors,
+                    }
+                return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            resp = {
+                "message": "Validation Error.",
+                "errors": serializer_owner.errors,
+            }
+            return Response(resp, status=status.HTTP_400_BAD_REQUEST)

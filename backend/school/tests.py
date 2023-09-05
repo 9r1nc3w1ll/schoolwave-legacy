@@ -209,3 +209,28 @@ class ClassMemberTests(APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class CreateSchoolAndOwner(APITestCase):
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword", is_superuser=True
+        )
+
+    def test_create_school_and_owner(self):
+        url = reverse("create_school_and_owner")
+        self.client.force_authenticate(user=self.user)
+        data = {
+            "name": "Sample School",
+            "date_of_establishment": "2023-09-01",
+            "username": "testuser77",
+            "password": "testpassword",
+            "first_name": "first_name",
+            "last_name":"last_name"
+        }
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Owner and School created successfully.")
+
+
