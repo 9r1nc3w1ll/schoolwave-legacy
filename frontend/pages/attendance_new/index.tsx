@@ -75,8 +75,6 @@ const Attendance = () => {
     },
   });
 
-  console.log({ studentist });
-
   useEffect(() => {
     if (selectedClass) {
       getstudents();

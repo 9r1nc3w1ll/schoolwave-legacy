@@ -1,16 +1,13 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
-import { createUser } from '@/apicalls/users';
-import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
-import { parse } from 'json2csv';
 import { useSession } from 'next-auth/react';
-import { BulkAdmissionUpload, createAdmission } from '@/apicalls/admissions';
+import { createSchool } from '@/apicalls/schools';
 
 const CreateSchool = (props: any) => {
   const { status: sessionStatus, data: user_session } = useSession();
@@ -65,7 +62,7 @@ const CreateSchool = (props: any) => {
   const queryClient = useQueryClient();
   const { mutate, isLoading, error } = useMutation(
     (data: any) => {
-      return createAdmission(data, user_session?.access_token);
+      return createSchool(data, user_session?.access_token);
     },
     {
       onSuccess: async (data) => {
@@ -91,36 +88,23 @@ const CreateSchool = (props: any) => {
   return (
     <div className='panel flex-1 px-3 py-6 ltr:xl:mr-6 rtl:xl:ml-6'>
       <div className='mt-0 w-full border-b-2 pt-0 '>
-        <div className='pl-3 text-lg font-bold'> Create School</div>
+        <div className='pl-3 text-2xl font-bold'> Create School</div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className='px-2 py-4 '>
-          <div className='py-6 text-lg  font-bold'> School Details</div>
+          <div className='py-6 text-base  font-bold'> School Details</div>
 
           <div className=' grid grid-cols-2 gap-5 md:grid-cols-3 md:gap-5'>
             <div className='my-3'>
               <label htmlFor='first_name'>Name </label>
               <input
-                {...register('first_name', {
+                {...register('name', {
                   required: 'This field is required',
                 })}
                 className='form-input'
               />
             </div>
-            {/* <div className='my-3'>
-              <label htmlFor='last_name'> Description </label>
-              <input
-                {...register('last_name', {
-                  required: 'This field is required',
-                })}
-                className='form-input'
-              />
-            </div> */}
 
-            <div className='my-3'>
-              <label htmlFor='email'> Owner </label>
-              <input {...register('email')} className='form-input' />
-            </div>
             <div className='my-3'>
               <label htmlFor='username'> Username </label>
               <input
@@ -141,10 +125,12 @@ const CreateSchool = (props: any) => {
             </div>
 
             <div className='my-3'>
-              <label htmlFor='date_of_birth'> Date of Establishment </label>
+              <label htmlFor='date_of_establishment'>
+                Date of Establishment
+              </label>
               <input
                 type='date'
-                {...register('date_of_birth', {
+                {...register('date_of_establishment', {
                   required: 'This field is required',
                 })}
                 className='form-input'
@@ -152,49 +138,73 @@ const CreateSchool = (props: any) => {
             </div>
 
             <div className='my-3'>
-              <label htmlFor='gender'> Motto </label>
-
-              <select
-                {...register('gender', { required: 'This field is required' })}
-                className='form-input'
-                placeholder='Choose'
-              >
-                <option value='male'>male</option>
-                <option value='female'>female</option>
-              </select>
-            </div>
-
-            <div className='my-3'>
-              <label htmlFor='bloogGroup'> Tag </label>
-              <select
-                {...register('blood_group', {
-                  required: 'This field is required',
-                })}
-                className='form-input'
-                placeholder='Choose'
-              >
-                <option value='O+'>O+</option>
-                <option value='O+'>O+ </option>
-                <option value='A+'>A+</option>
-                <option value='A-'>A-</option>
-                <option value='B+'>B+</option>
-                <option value='B-'>B- </option>
-                <option value='AB+'>AB+</option>
-                <option value='AB-'>AB-</option>
-              </select>
-            </div>
-
-            <div className='my-3'>
-              <label htmlFor='religion'>Website Url </label>
+              <label htmlFor='website_url'>Website Url </label>
               <input
-                {...register('religion', {
+                {...register('website_url', {
+                  required: 'This field is required',
+                })}
+                className='form-input'
+                type='url'
+              />
+            </div>
+
+            <div className='my-3'>
+              <label htmlFor='city'> City </label>
+              <input
+                {...register('city', { required: 'This field is required' })}
+                className='form-input'
+              />
+            </div>
+
+            <div className='my-3'>
+              <label htmlFor='state'> State </label>
+              <input
+                {...register('state', { required: 'This field is required' })}
+                className='form-input'
+              />
+            </div>
+          </div>
+          <div className='my-3'>
+            <label htmlFor='school description'> Description </label>
+            <textarea
+              id='ctnTextarea'
+              rows={3}
+              className='form-textarea'
+              {...register('address', { required: 'This field is required' })}
+              placeholder='A brief Description about your school'
+              required
+            ></textarea>
+          </div>
+        </div>
+        <div className='px-2 py-4 '>
+          <div className='py-6 text-base  font-bold'>Owner Details</div>
+          <div className=' grid grid-cols-2 gap-5 md:grid-cols-3 md:gap-5'>
+            <div className='my-3'>
+              <label htmlFor='first_name'>First Name </label>
+              <input
+                {...register('first_name', {
                   required: 'This field is required',
                 })}
                 className='form-input'
               />
             </div>
 
-            {/* <div className='my-3'>
+            <div className='my-3'>
+              <label htmlFor='last_name'> Last Name </label>
+              <input
+                {...register('last_name', {
+                  required: 'This field is required',
+                })}
+                className='form-input'
+              />
+            </div>
+
+            <div className='my-3'>
+              <label htmlFor='email'> Email </label>
+              <input {...register('email')} className='form-input' />
+            </div>
+
+            <div className='my-3'>
               <label htmlFor='phone_number'> Mobile No </label>
               <input
                 {...register('phone_number', {
@@ -202,35 +212,18 @@ const CreateSchool = (props: any) => {
                 })}
                 className='form-input'
               />
-            </div> */}
-
-            {/* <div className='my-3'>
-              <label htmlFor='city'> City </label>
-              <input
-                {...register('city', { required: 'This field is required' })}
-                className='form-input'
-              />
-            </div> */}
-
-            {/* <div className='my-3'>
-              <label htmlFor='state'> State </label>
-              <input
-                {...register('state', { required: 'This field is required' })}
-                className='form-input'
-              />
-            </div> */}
+            </div>
           </div>
-          {/* <div className='my-3'>
-            <label htmlFor='address'> Address </label>
-            <textarea
-              id='ctnTextarea'
-              rows={3}
-              className='form-textarea'
-              {...register('address', { required: 'This field is required' })}
-              placeholder='Enter Address'
-              required
-            ></textarea>
-          </div> */}
+          <button type='submit' className='btn btn-primary btn-lg !mt-6'>
+            {isLoading ? (
+              <>
+                <span className='inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-l-transparent align-middle ltr:mr-4 rtl:ml-4'></span>
+                Loading
+              </>
+            ) : (
+              <>Save</>
+            )}
+          </button>
         </div>
       </form>
     </div>

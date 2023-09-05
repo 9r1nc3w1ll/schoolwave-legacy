@@ -140,7 +140,6 @@ const Admin = (props: any) => {
     setPage(1);
   }, [sortStatus]);
 
-  console.log({ recordsData });
   return (
     <div>
       <div className='panel'>
