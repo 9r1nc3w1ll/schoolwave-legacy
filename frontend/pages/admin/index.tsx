@@ -16,6 +16,7 @@ import { getAdmissions, updateAdmission } from '@/apicalls/admissions';
 import { formatDate } from '@/utility_methods/datey';
 import { showAlert } from '@/utility_methods/alert';
 import { useDispatch } from 'react-redux';
+import CreateSchool from '@/components/CreateSchool';
 
 const col = [
   'id',
@@ -192,7 +193,7 @@ const Admin = (props: any) => {
                   <div className='flex min-h-screen items-start justify-center px-4'>
                     <Dialog.Panel className='panel animate__animated animate__fadeInDown my-8 w-full max-w-5xl overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark'>
                       <div className='mx-auto w-4/5 py-5'>
-                        <CreateAdmission
+                        <CreateSchool
                           user_session={user_session}
                           setmodal={setmodal}
                           refreshAdmission={refetch}
