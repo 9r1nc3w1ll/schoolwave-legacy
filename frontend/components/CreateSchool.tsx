@@ -95,11 +95,11 @@ const CreateSchool = (props: any) => {
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className='px-2 py-4 '>
-          <div className='py-6 text-lg  font-bold'> Student Details</div>
+          <div className='py-6 text-lg  font-bold'> School Details</div>
 
           <div className=' grid grid-cols-2 gap-5 md:grid-cols-3 md:gap-5'>
             <div className='my-3'>
-              <label htmlFor='first_name'> First Name </label>
+              <label htmlFor='first_name'>Name </label>
               <input
                 {...register('first_name', {
                   required: 'This field is required',
@@ -107,22 +107,22 @@ const CreateSchool = (props: any) => {
                 className='form-input'
               />
             </div>
-            <div className='my-3'>
-              <label htmlFor='last_name'> Last Name </label>
+            {/* <div className='my-3'>
+              <label htmlFor='last_name'> Description </label>
               <input
                 {...register('last_name', {
                   required: 'This field is required',
                 })}
                 className='form-input'
               />
-            </div>
+            </div> */}
 
             <div className='my-3'>
-              <label htmlFor='email'> email </label>
+              <label htmlFor='email'> Owner </label>
               <input {...register('email')} className='form-input' />
             </div>
             <div className='my-3'>
-              <label htmlFor='username'> User Name </label>
+              <label htmlFor='username'> Username </label>
               <input
                 className='form-input'
                 {...register('username', {
@@ -141,7 +141,7 @@ const CreateSchool = (props: any) => {
             </div>
 
             <div className='my-3'>
-              <label htmlFor='date_of_birth'> Date of Birth </label>
+              <label htmlFor='date_of_birth'> Date of Establishment </label>
               <input
                 type='date'
                 {...register('date_of_birth', {
@@ -152,7 +152,7 @@ const CreateSchool = (props: any) => {
             </div>
 
             <div className='my-3'>
-              <label htmlFor='gender'> Gender </label>
+              <label htmlFor='gender'> Motto </label>
 
               <select
                 {...register('gender', { required: 'This field is required' })}
@@ -165,7 +165,7 @@ const CreateSchool = (props: any) => {
             </div>
 
             <div className='my-3'>
-              <label htmlFor='bloogGroup'> Blood group </label>
+              <label htmlFor='bloogGroup'> Tag </label>
               <select
                 {...register('blood_group', {
                   required: 'This field is required',
@@ -185,7 +185,7 @@ const CreateSchool = (props: any) => {
             </div>
 
             <div className='my-3'>
-              <label htmlFor='religion'>Religion </label>
+              <label htmlFor='religion'>Website Url </label>
               <input
                 {...register('religion', {
                   required: 'This field is required',
@@ -194,7 +194,7 @@ const CreateSchool = (props: any) => {
               />
             </div>
 
-            <div className='my-3'>
+            {/* <div className='my-3'>
               <label htmlFor='phone_number'> Mobile No </label>
               <input
                 {...register('phone_number', {
@@ -202,25 +202,25 @@ const CreateSchool = (props: any) => {
                 })}
                 className='form-input'
               />
-            </div>
+            </div> */}
 
-            <div className='my-3'>
+            {/* <div className='my-3'>
               <label htmlFor='city'> City </label>
               <input
                 {...register('city', { required: 'This field is required' })}
                 className='form-input'
               />
-            </div>
+            </div> */}
 
-            <div className='my-3'>
+            {/* <div className='my-3'>
               <label htmlFor='state'> State </label>
               <input
                 {...register('state', { required: 'This field is required' })}
                 className='form-input'
               />
-            </div>
+            </div> */}
           </div>
-          <div className='my-3'>
+          {/* <div className='my-3'>
             <label htmlFor='address'> Address </label>
             <textarea
               id='ctnTextarea'
@@ -230,72 +230,7 @@ const CreateSchool = (props: any) => {
               placeholder='Enter Address'
               required
             ></textarea>
-          </div>
-
-          <div className='px-2 py-4 '>
-            <div className='py-6 text-lg font-bold'> Guardain details</div>
-            <div className=' grid grid-cols-2 gap-5'>
-              <div className='my-3'>
-                <label htmlFor='guardian_name'> Name </label>
-                <input
-                  {...register('guardian_name', {
-                    required: 'This field is required',
-                  })}
-                  className='form-input'
-                />
-              </div>
-
-              <div className='my-3'>
-                <label htmlFor='relation'> Relation </label>
-                <input
-                  type='text'
-                  name='relation'
-                  className='form-input'
-                  placeholder='REM-10011'
-                />
-              </div>
-              <div className='my-3'>
-                <label htmlFor='guardian_occupation'>
-                  {' '}
-                  Guardian Occupation{' '}
-                </label>
-                <input
-                  {...register('guardian_occupation', {
-                    required: 'This field is required',
-                  })}
-                  className='form-input'
-                />
-              </div>
-              <div className='my-3'>
-                <label htmlFor='guardian_phone_number'>
-                  {' '}
-                  Guardian Phone Number{' '}
-                </label>
-                <input
-                  {...register('guardian_phone_number', {
-                    required: 'This field is required',
-                  })}
-                  className='rtl:rounded-r-none" form-input ltr:rounded-l-none'
-                />
-              </div>
-            </div>
-            <div className='my-3'>
-              <label htmlFor='guardian_address'> Guardian Address</label>
-              <textarea
-                id='ctnTextarea'
-                rows={3}
-                className='form-textarea'
-                {...register('guardian_address', {
-                  required: 'This field is required',
-                })}
-                placeholder='Enter Address'
-                required
-              ></textarea>
-            </div>
-            <button type='submit' className='btn btn-primary !mt-6 w-[15%] '>
-              Save
-            </button>
-          </div>
+          </div> */}
         </div>
       </form>
     </div>
