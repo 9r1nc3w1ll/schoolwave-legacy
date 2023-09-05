@@ -4,14 +4,15 @@ from .models import AttendanceRecord
 from .serializers import AttendanceRecordSerializer, MultipleAttendanceRecordSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from school.models import School, ClassMember
+from school.models import School, ClassMember, Class
+from school.serializers import ClassMemberSerializer
 from account.models import User
 from django.db.models import Q
 import uuid
 from datetime import datetime, timedelta
 
 class ListCreateStudentAttendance(ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = AttendanceRecord.objects.all()
     serializer_class = AttendanceRecordSerializer
 
@@ -90,8 +91,29 @@ class ListCreateStudentAttendance(ListCreateAPIView):
 
 
     def list(self, request, *args, **kwargs):
+
+        class_id = request.GET.get("class_id", "")
+
         queryset = self.filter_queryset(self.get_queryset())
         queryset = queryset.filter(role='student')
+
+        if class_id:
+            class_instance = Class.objects.filter(id=class_id)
+
+            if not class_instance.exists():
+                return Response({"error" : "Class does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+            
+
+            students = ClassMember.objects.filter(class_id=class_instance[0])
+
+            if queryset.count() == 0:
+                print("got here")
+                resp = {
+                    "message": "No attendance record exists for supplied class_id",
+                    "data": ClassMemberSerializer(students, many=True).data,
+                }
+
+                return Response(resp)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
