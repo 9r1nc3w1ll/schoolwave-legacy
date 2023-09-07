@@ -380,6 +380,18 @@ class SuperAdminCreateView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'Super admin created successfully.'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            super_admin = serializer.save()
+            message = "Super admin created successfully."
+            data = SuperAdminCreateSerializer(super_admin).data
+
+            resp = {
+                "message": message,
+                "data": data,
+            }
+            return Response(resp, status=status.HTTP_201_CREATED)
+        else:
+            resp = {
+                "message": "Invalid data.",
+                "errors": serializer.errors,
+            }
+            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
