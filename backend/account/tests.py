@@ -123,3 +123,16 @@ class UserCRUDTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["data"]["first_name"], data["first_name"])
         self.assertEqual(response.data["data"]["last_name"], data["last_name"])
+
+class CreateSuperAdminTestCase(APITestCase):
+
+    def test_create_user(self):
+        url = reverse("create_super_admin")
+
+        data = {"username": "super_admin", 
+                "password": "newpassword", 
+                "first_name":"user_firstname", 
+                "last_name":"User_last_name"}
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
