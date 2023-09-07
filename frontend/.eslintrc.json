@@ -1,7 +1,7 @@
 {
   "parserOptions": {
     "project": [
-      "./frontend/tsconfig.json"
+      "./tsconfig.json"
     ]
   },
   "extends": [
