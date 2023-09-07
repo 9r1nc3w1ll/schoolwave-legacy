@@ -1,52 +1,74 @@
-import { useEffect,useRef,FC } from 'react';
-import { useDispatch } from 'react-redux';
-import Image from 'next/image';
-import { setPageTitle } from '../store/themeConfigSlice';
-import ReactToPrint from 'react-to-print'
+import Image from "next/image";
+import { InvoiceTypes } from "@/types";
+import ReactToPrint from "react-to-print";
+import { formatDate } from "@/utility_methods/datey";
+import { setPageTitle } from "../store/themeConfigSlice";
+import { useDispatch } from "react-redux";
+import { FC, useEffect, useRef } from "react";
 
-interface InvoiceProps{
-  items: itemsProp[];
-  columns: columnsProp[];
-  clientDetails: clientProp[];
-  invoiceDetails: invoiceProp[]
-}
-
-interface itemsProp{
+interface itemsProp {
   id: number;
   title: string;
   quantity: number;
   price: string;
-  amount: string
+  amount: string;
 }
 
-interface columnsProp{
-  key: string;
-  label: string;
-  class?:string
-}
-
-interface clientProp{
+interface clientProp {
   title: string;
-  value: string
+  value: string;
 }
 
-interface invoiceProp{
+interface invoiceProp {
   title: string;
-  value: string
+  value: string;
 }
 
-const Invoice:FC<InvoiceProps> = ({items,columns,clientDetails,invoiceDetails}) => {
+interface InvoiceProps {
+  invoice: InvoiceTypes;
+  items?: itemsProp[];
+  clientDetails?: clientProp[];
+  invoiceDetails: invoiceProp[];
+}
+
+const columns = [
+  {
+    key: "id",
+    label: "Items",
+  },
+  {
+    key: "title",
+    label: "Item Description",
+  },
+  {
+    key: "quantity",
+    label: "Quantity",
+  },
+  {
+    key: "discount",
+    label: "Discount",
+    class: "ltr:text-right rtl:text-left",
+  },
+  {
+    key: "amount",
+    label: "Total Amount",
+    class: "ltr:text-right rtl:text-left",
+  },
+];
+
+const Invoice: FC<InvoiceProps> = ({ invoiceDetails, invoice }) => {
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(setPageTitle('Invoice Preview'));
+    dispatch(setPageTitle("Invoice Preview"));
   });
 
-  const componentRef = useRef<any>()
+  const componentRef = useRef<any>();
 
   return (
-    <div className='container max-w-5xl mx-auto'>
+    <div className="container max-w-5xl mx-auto">
       <div className="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
-        <ReactToPrint trigger={()=>(
+        <ReactToPrint trigger={() => (
           <button type="button" className="btn btn-primary gap-2" >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -74,7 +96,7 @@ const Invoice:FC<InvoiceProps> = ({items,columns,clientDetails,invoiceDetails}) 
             </svg>
                     Print
           </button>)}
-        content={()=>componentRef.current}
+        content={() => componentRef.current}
         />
       </div>
 
@@ -88,15 +110,15 @@ const Invoice:FC<InvoiceProps> = ({items,columns,clientDetails,invoiceDetails}) 
         <div className="flex flex-wrap justify-between gap-4 px-4">
           <div className="mt-6 space-y-1 text-white-dark">
             <div>
-              <strong>Invoice Date: </strong> July 1, 2023
+              <strong>Invoice Date: </strong> {formatDate(invoice?.created_at)}
             </div>
             <div>
-              <strong>Invoice No.: </strong> 22-373
+              <strong>Invoice No.: </strong> {invoice?.id}
             </div>
           </div>
           <div className="px-4 ltr:text-right rtl:text-left ">
             <div className="mt-6 space-y-1 text-white-dark">
-              <div>Innovar Academy</div>
+              <div>{invoice?.school_info?.name}</div>
               <div>13 Tetrick Road, Cypress Gardens, Florida, 33884, US</div>
               <div>vristo@gmail.com</div>
               <div>+1 (070) 123-4567</div>
@@ -109,12 +131,10 @@ const Invoice:FC<InvoiceProps> = ({items,columns,clientDetails,invoiceDetails}) 
           <div className="min-w-[60%] px-1">
             <div className="space-y-1 text-white-dark">
               <h5 className="mb-4 text-base font-bold text-primary">Client Details</h5>
-              {clientDetails.map((detail) => (
-                <div key={detail.value} className="font-semibold  dark:text-white">
-                  <strong>{detail.title}: </strong>
-                  {detail.value}
-                </div>
-              ))}
+              <div className="font-semibold  dark:text-white">
+                <strong>Name: </strong>
+                {invoice?.student_info?.first_name} {invoice?.student_info?.last_name}
+              </div>
             </div>
           </div>
           <div className="flex-1">
@@ -141,14 +161,14 @@ const Invoice:FC<InvoiceProps> = ({items,columns,clientDetails,invoiceDetails}) 
               </tr>
             </thead>
             <tbody>
-              {items.map((item) => {
+              {invoice?.items.map((item) => {
                 return (
                   <tr key={item.id}>
-                    <td>{item.id}</td>
-                    <td>{item.title}</td>
-                    <td>{item.quantity}</td>
-                    <td className="ltr:text-right rtl:text-left">${item.price}</td>
-                    <td className="ltr:text-right rtl:text-left">${item.amount}</td>
+                    <td>{item.name}</td>
+                    <td>{item.description ?? "-"}</td>
+                    <td>1</td>
+                    <td className="ltr:text-right rtl:text-left">NGN{item.discount}</td>
+                    <td className="ltr:text-right rtl:text-left">NGN{item.amount}</td>
                   </tr>
                 );
               })}

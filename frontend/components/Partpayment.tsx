@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { UsePayWithFlutterWaveParams, usePayWithFlutterWave } from "@/hooks/usePayWithFlutterWave";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface PartPaymemtFormValues {
   amount: number;
@@ -9,7 +9,11 @@ interface PartPaymemtFormValues {
   phone_number: string;
 }
 
-const PartPayment = () => {
+interface PartPaymentPropsType {
+  amount?: string;
+}
+
+const PartPayment = ({ amount }: PartPaymentPropsType) => {
   const { register, handleSubmit, getValues, reset } = useForm<PartPaymemtFormValues>({ shouldUseNativeValidation: true });
   const [config, setConfig] = useState<UsePayWithFlutterWaveParams>();
 
@@ -27,6 +31,12 @@ const PartPayment = () => {
     }
   };
   const { handlePayment } = usePayWithFlutterWave(config as UsePayWithFlutterWaveParams);
+
+  useEffect(() => {
+    if (amount) {
+      reset({ amount: +amount });
+    }
+  }, [amount]);
 
   const onSubmit = handleSubmit((data) => {
     options.amount = data.amount;

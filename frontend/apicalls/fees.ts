@@ -288,6 +288,20 @@ export const getInvoiceById = async (accessToken: string, id: string): Promise<R
   return tempData;
 };
 
+export const getInvoiceTemplateById = async (id: string): Promise<ResponseInterface<InvoiceTypes>> => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/fees/invoice_template/${id}`, { method: "GET" });
+
+  if (!res.ok) {
+    await throwError(res);
+  }
+
+  const tempData = await res.json() as ResponseInterface<InvoiceTypes>;
+
+  console.log("tempData templete: ", tempData);
+
+  return tempData;
+};
+
 export const createInvoice = async (payload: CreateInvoicePayload): Promise<ResponseInterface<CreateInvoiceResponse>> => {
   const template = {
     template: payload.template,
