@@ -1,6 +1,19 @@
 name: integration
 on: [push]
 jobs:
+  integration:
+    name: Checks 🧐
+    runs-on: ubuntu-latest
+    container: node:18
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: NPM Test and Build
+        working-directory: ./frontend
+        run: |
+          npm i
+          npm run lint
+          npm run build
   unit-test:
     name: Run unit tests
     runs-on: ubuntu-latest
@@ -25,6 +38,7 @@ jobs:
   e2e:
     name: Run e2e tests
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@v3

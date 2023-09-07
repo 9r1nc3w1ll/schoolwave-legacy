@@ -55,7 +55,6 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         const { username, password } = credentials as any
         const { data: { user, access_token, refresh_token, school } } = await api.loginWithCredentials(username, password)
-
         if (!(user && access_token)) {
           return null;
         }
