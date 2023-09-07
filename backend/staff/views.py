@@ -14,6 +14,7 @@ from school_settings.models import SchoolSettings
 from rest_framework.parsers import MultiPartParser
 import csv
 import io
+from school.models import School
 
 class BatchUploadStaff(APIView):
     permission_classes = [IsAuthenticated]
@@ -21,6 +22,12 @@ class BatchUploadStaff(APIView):
 
     def post(self, request, *args, **kwargs):
         csv_file = request.FILES['csv']
+        school_id = request.POST['school_id']
+
+        if not csv_file.name.endswith('.csv'):
+            return Response({'error': 'Invalid file format. Please upload a CSV file.'}, status=400)
+
+        school = School.objects.get(id=school_id)
 
         data = csv_file.read().decode('utf-8')
 
@@ -34,7 +41,7 @@ class BatchUploadStaff(APIView):
             last_name = row['last_name']
             email = row['email']
             title = row['title']
-            role_names = row['roles'].split(',')  # Split roles into a list
+            role_names = row['roles'].split(',')
 
             user, _ = User.objects.get_or_create(username=username, first_name=first_name, last_name=last_name, email=email)
 
@@ -43,7 +50,7 @@ class BatchUploadStaff(APIView):
                 role, _ = StaffRole.objects.get_or_create(name=role_name.strip())
                 roles.append(role)
 
-            staff = Staff(user=user, title=title)
+            staff = Staff(user=user, title=title, school=school)
             staff.save()
             staff.roles.set(roles)
             staff_list.append(staff)

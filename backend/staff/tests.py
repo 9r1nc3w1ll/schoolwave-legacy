@@ -104,7 +104,8 @@ class StaffAPITestCase(APITestCase):
         with open("staff/sample_upload.csv") as csv:
             response = self.client.post(
                 path=url,
-                data={"csv": csv},
+                data={"csv": csv,
+                      "school_id":self.school.id},
             )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
