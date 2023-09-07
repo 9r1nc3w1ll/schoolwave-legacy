@@ -11,7 +11,7 @@ from account.models import User
 from account.serializers import OwnerSerializer, UserSerializer
 from school.models import Class, School, ClassMember
 from school.serializers import ClassSerializer, SchoolSerializer, ClassMemberSerializer, AdminDashboardSerializer
-from utils.permissions import IsSchoolOwner
+from utils.permissions import IsSchoolOwner, IsSuperAdmin
 from django.db.models import Q
 import uuid
 
@@ -374,28 +374,30 @@ class CreateSchoolAndOwner(APIView):
                 "errors": serializer_owner.errors,
             }
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
 class SchoolListAPIView(generics.GenericAPIView):
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
-    permission_classes = [IsAuthenticated, IsSchoolOwner]
+    permission_classes = [IsSuperAdmin]
 
-
-    def get(self, request, *args, **kwargs):
-        school_owner = self.request.user
-        school_owner_serializer = UserSerializer(school_owner)
-
+    def get(self, request):
+        school_owners = User.objects.filter(school_owner__isnull=False)
         
-        try:
+        response_data = []
+
+        for school_owner in school_owners:
             schools = School.objects.filter(owner=school_owner)
-        except School.DoesNotExist:
-            return Response({"message" : "User does not own a school."}, status=status.HTTP_400_BAD_REQUEST)
-        schools_serializer = SchoolSerializer(schools, many=True)
 
+            school_owner_serializer = UserSerializer(school_owner)
+            schools_serializer = SchoolSerializer(schools, many=True)
 
-        resp ={
-            'message':'School owner schools retrieved successfully',
-            'owner': school_owner_serializer.data,
-            'schools': schools_serializer.data,
-        }
-        return Response(resp)
+            owner_and_schools_data = {
+                'message':'School owner schools retrieved successfully',
+                'owner': school_owner_serializer.data,
+                'schools': schools_serializer.data,
+            }
+
+            response_data.append(owner_and_schools_data)
+
+        return Response(response_data)
