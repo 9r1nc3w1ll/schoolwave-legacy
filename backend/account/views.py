@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 from account.utils import send_user_mail
 from school.models import School, ClassMember
 from school.serializers import SchoolSerializer, ClassMemberSerializer
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 
 from .models import PasswordResetRequest, User
 from .serializers import (
@@ -24,7 +24,8 @@ from .serializers import (
     PasswordChangeSerializer,
     PasswordResetRequestSerializer,
     UserSerializer,
-    ProfilePhotoSerializer
+    ProfilePhotoSerializer,
+    SuperAdminCreateSerializer
 )
 
 
@@ -372,3 +373,13 @@ class RetrieveUpdateUserProfile(RetrieveUpdateAPIView):
             return Response({"message": message, "data": data})
 
         return Response({"message": "Invalid data.", "errors": serializer.errors})
+
+class SuperAdminCreateView(CreateAPIView):
+    serializer_class = SuperAdminCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Super admin created successfully.'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

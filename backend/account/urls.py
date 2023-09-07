@@ -11,7 +11,8 @@ from account.views import (
     UserRoles,
     UserViewSet,
     UserClass,
-    RetrieveUpdateUserProfile
+    RetrieveUpdateUserProfile,
+    SuperAdminCreateView
 )
 
 urlpatterns = [
@@ -41,4 +42,5 @@ urlpatterns = [
         RetrieveUpdateUserProfile.as_view(),
         name="user-profile",
     ),
+    path('/create-super-admin', SuperAdminCreateView.as_view(), name='create_super_admin'),
 ]

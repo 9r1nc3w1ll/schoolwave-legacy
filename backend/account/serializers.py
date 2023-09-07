@@ -100,3 +100,18 @@ class OwnerSerializer(UserSerializer):
             "last_name",
             "password",
         ]
+
+class SuperAdminCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "password",
+        ]
+
+    def create(self, validated_data):
+        user = User.objects.create_superuser(**validated_data, role='super_admin')
+        return user
