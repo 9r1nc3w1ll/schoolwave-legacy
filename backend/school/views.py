@@ -374,3 +374,28 @@ class CreateSchoolAndOwner(APIView):
                 "errors": serializer_owner.errors,
             }
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+        
+class SchoolListAPIView(generics.GenericAPIView):
+    queryset = School.objects.all()
+    serializer_class = SchoolSerializer
+    permission_classes = [IsAuthenticated, IsSchoolOwner]
+
+
+    def get(self, request, *args, **kwargs):
+        school_owner = self.request.user
+        school_owner_serializer = UserSerializer(school_owner)
+
+        
+        try:
+            schools = School.objects.filter(owner=school_owner)
+        except School.DoesNotExist:
+            return Response({"message" : "User does not own a school."}, status=status.HTTP_400_BAD_REQUEST)
+        schools_serializer = SchoolSerializer(schools, many=True)
+
+
+        resp ={
+            'message':'School owner schools retrieved successfully',
+            'owner': school_owner_serializer.data,
+            'schools': schools_serializer.data,
+        }
+        return Response(resp)
