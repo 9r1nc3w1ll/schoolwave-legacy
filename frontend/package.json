@@ -11,7 +11,6 @@
     "cypress:run": "cypress run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.22.15",
     "@ckeditor/ckeditor5-build-classic": "^38.1.1",
     "@ckeditor/ckeditor5-react": "^6.1.0",
     "@emotion/react": "^11.11.1",

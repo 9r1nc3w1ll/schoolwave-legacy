@@ -170,8 +170,6 @@ export const getSingleDiscount = async (id: any, access_token?: string) => {
 };
 
 export const createFeeTemplate = async (payload: CreatePayload<CreateFeeTemplatePayload>): Promise<ResponseInterface<FeeTemplateInterface>> => {
-  console.log("data: ", payload.data);
-
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/fee_template", {
     method: "POST",
     headers: {
@@ -296,8 +294,6 @@ export const getInvoiceTemplateById = async (id: string): Promise<ResponseInterf
   }
 
   const tempData = await res.json() as ResponseInterface<InvoiceTypes>;
-
-  console.log("tempData templete: ", tempData);
 
   return tempData;
 };
