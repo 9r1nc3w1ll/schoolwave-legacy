@@ -869,7 +869,7 @@ return (
                             ))}
            
                           </select> */}
-                          <ClassSelect register={(x: any)=>{console.log(x)}} setSelectedClass={handleClassChange} user_session={user_session} triggerFetch= {sessionStatus == 'authenticated'} />
+                          <ClassSelect user_session={user_session} triggerFetch= {sessionStatus == 'authenticated'} />
                         </div>
                         <div className='mb-5'>
                           <label htmlFor="files">Files:</label>

@@ -55,7 +55,7 @@ const EditSubjectForm = (props:any) => {
 
 
   useEffect(()=>{
-    setclassOptions(clasii)
+    setclassOptions(clasii as classOption[])
     settermOptions(term)
     refetch()
     refetch2()

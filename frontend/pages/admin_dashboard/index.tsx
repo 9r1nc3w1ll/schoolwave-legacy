@@ -278,7 +278,8 @@ const Dashboard = (props: any) => {
   const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false
 
   return (
-    <div className='pb-10'>
+    // <ClientOnly>
+      <div className='pb-10'>
       {/* OVERVIEW TABS */}
       <div className="mb-6 grid grid-cols-1 gap-6 text-white sm:grid-cols-2 xl:grid-cols-4">
         {/* SESSION */}
@@ -468,21 +469,23 @@ const Dashboard = (props: any) => {
       <div className='grid grid-cols-2 gap-6'>
         <div>
           {/* <h1 className='text-xl py-2'>Students Count</h1> */}
-          <ReactApexChart series={studentsCount.series} options={studentsCount.options} className="rounded-lg shadow-sm bg-white dark:bg-black overflow-hidden p-4 h-auto" type="bar" height={300} />
+          {/* <ReactApexChart series={studentsCount.series} options={studentsCount.options} className="rounded-lg shadow-sm bg-white dark:bg-black overflow-hidden p-4 h-auto" type="bar" height={300} /> */}
         </div>
         <div>
-          <ReactApexChart series={admissionChart.series} options={admissionChart.options} className="rounded-lg shadow-sm bg-white dark:bg-black overflow-hidden p-4 h-auto" type="bar" height={300} />
+          {/* <ReactApexChart series={admissionChart.series} options={admissionChart.options} className="rounded-lg shadow-sm bg-white dark:bg-black overflow-hidden p-4 h-auto" type="bar" height={300} /> */}
         </div>
         <div>
-          <ReactApexChart series={studentsChart.series} options={studentsChart.options} className="rounded-lg shadow-sm bg-white dark:bg-black overflow-hidden p-4 h-full" type="radialBar" height={300} />
+          {/* <ReactApexChart series={studentsChart.series} options={studentsChart.options} className="rounded-lg shadow-sm bg-white dark:bg-black overflow-hidden p-4 h-full" type="radialBar" height={300} /> */}
         </div>
         <div>
           {/* <h1 className='text-xl py-2'>Teachers Count</h1> */}
-          <ReactApexChart series={teachersChart.series} options={teachersChart.options} className="rounded-lg shadow-sm border-1 bg-white dark:bg-black overflow-hidden p-4 h-full" type="pie" height={300} />
+          {/* <ReactApexChart series={teachersChart.series} options={teachersChart.options} className="rounded-lg shadow-sm border-1 bg-white dark:bg-black overflow-hidden p-4 h-full" type="pie" height={300} /> */}
         </div>
       </div>
       {/* END OF STUDENTS HISTOGRAM CHART */}
     </div>
+    // </ClientOnly>
+
   )
 }
 

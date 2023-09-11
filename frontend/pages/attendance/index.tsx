@@ -127,8 +127,7 @@ const Attendance =()=>{
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-6">
           <div>
-            <ClassSelect register={register} setSelectedClass={setSelectedClass} user_session={user_session} triggerFetch= {sessionStatus == 'authenticated'} />
-           
+            <ClassSelect {...register("class_id", { required: "This field is required" })} user_session={user_session} triggerFetch= {sessionStatus == 'authenticated'} />
             <div>
               <label>Term</label>
               <select className="form-select text-white-dark" id='term' {...register("term", { required: "This field is required" })} >

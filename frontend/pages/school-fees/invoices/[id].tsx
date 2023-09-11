@@ -1,4 +1,8 @@
+import { getInvoiceTemplateById } from "@/apicalls/fees";
 import Invoice from "@/components/Invoice";
+import { InvoiceTypes } from "@/types";
+import { useRouter } from "next/router";
+import { useQuery } from "react-query";
 
 const items = [
   {
@@ -72,7 +76,8 @@ const invoiceDetails = [
 ];
 
 export default function InvoicePage(props: any) {
-
-
-  return <Invoice items={items} columns={columns} clientDetails={clientDetails} invoiceDetails={invoiceDetails} />;
+  const router = useRouter();
+  const { id } = router.query;
+  const { data, isLoading } = useQuery(["invoices", id], async () => getInvoiceTemplateById(id as string), { enabled: router.isReady && id !== undefined && id !== null });
+  return <Invoice invoice={data?.data as InvoiceTypes} items={items} clientDetails={clientDetails} invoiceDetails={invoiceDetails} />;
 }

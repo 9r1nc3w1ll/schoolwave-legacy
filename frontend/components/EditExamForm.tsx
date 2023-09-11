@@ -67,7 +67,7 @@ const EditExamForm = (props:any) => {
   useEffect(()=>{
   
     
-    setclassOptions(clasii)
+    setclassOptions(clasii as classOption[])
     setexamquestionsOptions(examsQuestions)
     setsubjectsOptions(subjects); 
     refetch()

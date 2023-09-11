@@ -56,7 +56,7 @@ const CreateFeeItem = (props: CreateFeeItemProps) => {
           <input id="description" type="text" placeholder="Description" className="form-input" {...register("description")} />
         </div>
         <div>
-          <DiscountSelect register={register} trigger={props.user_session_status === "authenticated"} user_session={props.user_session} />
+          <DiscountSelect {...register("discount")} trigger={props.user_session_status === "authenticated"} user_session={props.user_session} />
         </div>
         <div>
 

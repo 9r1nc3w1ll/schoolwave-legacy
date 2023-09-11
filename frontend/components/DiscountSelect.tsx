@@ -1,16 +1,14 @@
 import { getDiscounts } from "@/apicalls/fees";
 import { useQuery } from "react-query";
 import { DiscountTypes, UserSession } from "@/types";
-import { FieldValues, UseFormRegister } from "react-hook-form";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-interface DiscountSelectProps<TFieldValues extends FieldValues> {
-  register: UseFormRegister<TFieldValues>;
+interface DiscountSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   trigger: boolean;
   user_session: UserSession;
 }
 
-const DiscountSelect = <TFieldValues extends FieldValues>({ user_session: userSession, trigger, register }: DiscountSelectProps<TFieldValues>) => {
+const DiscountSelect = React.forwardRef<HTMLSelectElement, DiscountSelectProps>(({ user_session: userSession, trigger }, ref) => {
   const [discounts, setDiscount] = useState<DiscountTypes[]>([]);
   const { data, isLoading, refetch } = useQuery("feediscounts", () => getDiscounts(userSession?.access_token), { enabled: false });
 
@@ -27,7 +25,7 @@ const DiscountSelect = <TFieldValues extends FieldValues>({ user_session: userSe
   }, [data]);
 
   return (
-    <select placeholder="Discount" className="form-input" {...(register && register("discount"))}
+    <select placeholder="Discount" className="form-input"
       onClick={() => {
         refetch();
       }}>
@@ -38,6 +36,6 @@ const DiscountSelect = <TFieldValues extends FieldValues>({ user_session: userSe
       }
     </select>
   );
-};
+});
 
 export default DiscountSelect;

@@ -83,10 +83,10 @@ const EditFeeTemplate = (props: EditFeeTemplateProps) => {
           <input id="name" type="text" className="form-input" {...register("name", { required: "This field is required" })} />
         </div>
         <div>
-          <ClassSelect register={register} user_session={props.user_session} triggerFetch= {props.user_session_status === "authenticated"} class_selector="class_id" />
+          <ClassSelect {...register("class_id", { required: "This field is required" })} user_session={props.user_session} triggerFetch= {props.user_session_status === "authenticated"} />
         </div>
         <div>
-          <DiscountSelect register={register} trigger={props.user_session_status === "authenticated"} user_session={props.user_session as UserSession} />
+          <DiscountSelect {...register("discount")} trigger={props.user_session_status === "authenticated"} user_session={props.user_session as UserSession} />
         </div>
         <div>
           <label htmlFor="name">Required Fee Items</label>

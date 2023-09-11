@@ -60,7 +60,7 @@ const CreateInvoice = (props: CreateInvoiceProps) => {
       <form className="space-y-5" onSubmit={onSubmit}>
         <h1>Generate Invoice</h1>
         <div>
-          <ClassSelect register={register} user_session={props.user_session} triggerFetch= {props.user_session_status === "authenticated"} class_selector="classId" />
+          <ClassSelect {...register("classId", { required: "This field is required" })}  user_session={props.user_session} triggerFetch= {props.user_session_status === "authenticated"} />
         </div>
         <div>
           <FeeTemplateSelect setItems={setItems} watch={watch} register={register} user_session_status={props.user_session_status} user_session={props.user_session} />

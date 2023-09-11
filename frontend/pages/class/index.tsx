@@ -10,6 +10,7 @@ import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 import { showAlert } from '@/utility_methods/alert';
 import { useSession } from 'next-auth/react';
 import ClassUserAssignment from '@/components/ClassUserAssignment';
+import { ClassTypes, UserSession } from '@/types';
 
 
 
@@ -19,7 +20,7 @@ const Export = (props: any) => {
   const { status: sessionStatus, data: user_session } = useSession();
   const [search, setSearch] = useState<string>('');
   const [activeToolTip, setActiveToolTip] = useState<string>('');
-  const [sessions, setSessions] = useState([])
+  const [sessions, setSessions] = useState<ClassTypes[]>([])
   const [filteredsessions, setFilteredsessions] = useState<any>(sessions);
   const [modal, setmodal] = useState(false);
   const [usermodal,setusermodal ] = useState(false);
@@ -243,7 +244,7 @@ const Export = (props: any) => {
                   <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                     <div className="w-4/5 mx-auto py-5 text-center">
                       <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a class <span className='text-sm'>{`(${selectedSession.name})`}</span></h5>
-                      <ClassUserAssignment student={assignStudent} user_session={user_session} classData={selectedSession}  refreshClasses={refetch}/>
+                      <ClassUserAssignment student={assignStudent} user_session={user_session as UserSession} classData={selectedSession}  refreshClasses={refetch}/>
                     </div>
                   </Dialog.Panel>
                 </div>
