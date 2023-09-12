@@ -16,25 +16,7 @@ const AttendanceAccordion = (props: any) => {
     //   props.attendance ? props.attendance.students : props.students
     // );
 
-    // const { mutate, isLoading, error } = useMutation(
-    //   (data: any) => {
-    //     return markBulkAttendance(data, props.access_token);
-    //   },
-    //   {
-    //     onSuccess: async (data) => {
-    //       if (!data.error) {
-    //         showAlert('success', 'Attendance saved successfuly');
-    //       } else {
-    //         showAlert('error', data.message);
-    //       }
-    //     },
-    //     onError: (error) => {
-    //       showAlert('error', 'An Error Occured');
-    //     },
-    //   }
-    // );
-
-    const { setAttendanceState, bulkMarkAttendance, query } = useMarkAttendance();
+    const { setAttendanceState, bulkMarkAttendance, query, addRemark } = useMarkAttendance();
 
     const handleChange = (i: number, remarks: string, att: boolean) => {
         let attnd: any = userATT;
@@ -76,10 +58,8 @@ const AttendanceAccordion = (props: any) => {
                                 <AttendanceTabletNew
                                     key={student?.student_info?.id}
                                     student={student}
-                                    handlePresentChange={(e) => setAttendanceState({ field: 'present', value: [] })}
-                                    handleRemarkChange={(e) => setAttendanceState({ field: 'remark', value: query.remark?.push(e.target.value) })}
-                                    remark={''}
-                                    status={''}
+                                    handleRemarkChange={(e) => addRemark({ index, remark: e.target.value, studentID: student?.student_info?.id })}
+                                    remark={query?.remark!}
                                     identifier={index}
                                 />
                             );
@@ -88,12 +68,12 @@ const AttendanceAccordion = (props: any) => {
                     <button
                         className="btn btn-primary"
                         onClick={() => {
-                            mutate({
+                            bulkMarkAttendance({
                                 date: props.today,
                                 attendance_type: 'Daily',
-                                present: userATT,
-                                remark: attRemarks,
-                                student: userID,
+                                present: query?.present,
+                                remark: query?.remark,
+                                student: query?.student,
                                 class_id: props.class_id,
                             });
                         }}
