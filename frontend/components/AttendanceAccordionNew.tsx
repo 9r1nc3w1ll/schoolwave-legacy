@@ -1,10 +1,11 @@
 import AnimateHeight from 'react-animate-height';
-import { useState } from 'react';
-import AttendanceTablet from './AttendanceTablet';
+import { ChangeEvent, useState } from 'react';
 import { useMutation } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import { markBulkAttendance } from '@/apicalls/attendance';
 import { useMarkAttendance } from '@/hooks/useMarkAttendance';
+import AttendanceTabletNew from './AttendanceTabletNew';
+import { Student, StudentInfo } from '@/models/Attendance';
 
 const AttendanceAccordion = (props: any) => {
     const [search, setSearch] = useState<string>('');
@@ -70,14 +71,16 @@ const AttendanceAccordion = (props: any) => {
             {props?.attendance ? (
                 <AnimateHeight duration={300} height="auto">
                     <div className="my-4 flex flex-wrap gap-2 space-y-2 border-t border-[#d3d3d3]  text-[13px] text-white-dark dark:border-[#1b2e4b]">
-                        {props.attendance?.map((student: any) => {
+                        {props.attendance?.map((student: Student, index: number) => {
                             return (
-                                <AttendanceTablet
-                                    key={student.id}
+                                <AttendanceTabletNew
+                                    key={student?.student_info?.id}
                                     student={student}
-                                    // handleChange={() => {
-                                    //   handleChange;
-                                    // }}
+                                    handlePresentChange={(e) => setAttendanceState({ field: 'present', value: [] })}
+                                    handleRemarkChange={(e) => setAttendanceState({ field: 'remark', value: query.remark?.push(e.target.value) })}
+                                    remark={''}
+                                    status={''}
+                                    identifier={index}
                                 />
                             );
                         })}
