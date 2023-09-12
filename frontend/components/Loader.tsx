@@ -3,6 +3,7 @@ import React from 'react';
 interface LoaderProps {
     loadingText?: string;
 }
+
 const Loader: React.FC<LoaderProps> = ({ loadingText }) => {
     return (
         <section>

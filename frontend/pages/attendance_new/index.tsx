@@ -8,7 +8,6 @@ import { getClassStudents } from '@/apicalls/class-api';
 import { getAttendance } from '@/apicalls/attendance';
 import { useForm } from 'react-hook-form';
 import { showAlert } from '@/utility_methods/alert';
-// import AttendanceAccordion from '@/components/AttendanceAccordion';
 import ClassSelect from '@/components/ClassSelect';
 import AjaxLoader from '@/components/Layouts/AjaxLoader';
 import AttendanceAccordion from '@/components/AttendanceAccordionNew';
@@ -39,8 +38,6 @@ const Attendance = () => {
         mutate,
         data: attendance,
         isLoading: loadingattendance,
-        isSuccess: attendancegotten,
-        error,
     } = useMutation((data) => getAttendance(data, user_session?.access_token), {
         onSuccess: async (data) => {
             showAlert('success', 'Saved Successfuly');
@@ -166,7 +163,13 @@ const Attendance = () => {
             <div>{isLoading && <AjaxLoader />}</div>
 
             <div className="mt-4">
-                <AttendanceAccordion class_id={classId} attendance={students_attendance} togglePara={togglePara} active={active} access_token={user_session?.access_token} />
+                <AttendanceAccordion
+                    class_id={classId}
+                    attendance={students_attendance}
+                    role={user_session?.role! as 'admin' | 'student'}
+                    school={user_session?.school?.id}
+                    attendee={user_session?.id!}
+                />
             </div>
         </div>
     );

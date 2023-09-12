@@ -52,17 +52,14 @@ function AttendanceReducer(state: AttendancePayload, action: AttendanceAction): 
         case 'ADD_REMARK':
             const { index, remark, studentID } = action.payload;
 
-            if (index >= 0 && index < state.student.length) {
+            if (index >= 0) {
                 // Clone the remarks and present arrays
                 const updatedRemarks = [...state.remark];
                 const updatedPresent = [...state.present];
                 const updatedStudents = [...state.student];
 
-                // Update the remark and present arrays at the specified index
                 updatedRemarks[index] = remark;
-
                 updatedPresent[index] = ['Late', 'Punctual'].includes(remark) ?? false;
-                // Update the student object at the specified index
                 updatedStudents[index] = studentID;
 
                 return {
@@ -82,7 +79,7 @@ function AttendanceReducer(state: AttendancePayload, action: AttendanceAction): 
 }
 
 export const useMarkAttendance = (): MarkAttendanceTypes => {
-    const { status: sessionStatus, data: user_session } = useSession();
+    const { data: user_session } = useSession();
     const [{ attendance_type, attendee, class_id, subject, staff, date, present, remark, student }, dispatch] = React.useReducer(AttendanceReducer, initialAttendanceState);
 
     const setAttendanceState = React.useCallback(

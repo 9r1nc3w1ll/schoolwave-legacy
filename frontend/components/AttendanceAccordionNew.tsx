@@ -1,84 +1,55 @@
 import AnimateHeight from 'react-animate-height';
-import { ChangeEvent, useState } from 'react';
-import { useMutation } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
-import { markBulkAttendance } from '@/apicalls/attendance';
+import React from 'react';
 import { useMarkAttendance } from '@/hooks/useMarkAttendance';
 import AttendanceTabletNew from './AttendanceTabletNew';
-import { Student, StudentInfo } from '@/models/Attendance';
+import { Student } from '@/models/Attendance';
+import Loader from './Loader';
 
-const AttendanceAccordion = (props: any) => {
-    const [search, setSearch] = useState<string>('');
-    const [userID, setuserId] = useState([]);
-    const [userATT, setuserATT] = useState([]);
-    const [attRemarks, setAttRemarks] = useState([]);
-    // const [filteredItems, setFilteredItems] = useState<any>(
-    //   props.attendance ? props.attendance.students : props.students
-    // );
-
-    const { setAttendanceState, bulkMarkAttendance, query, addRemark } = useMarkAttendance();
-
-    const handleChange = (i: number, remarks: string, att: boolean) => {
-        let attnd: any = userATT;
-        let rmrks: any = attRemarks;
-        attnd[i] = att;
-        rmrks[i] = remarks;
-
-        setuserATT(attnd);
-        setAttRemarks(rmrks);
-    };
-
-    // useEffect(() => {
-    //   setFilteredItems(() => {
-    //     if (props.attendance) {
-    //       return props.attendance?.students.filter((item: any) => {
-    //         return (
-    //           item?.first_name?.toLowerCase()?.includes(search?.toLowerCase()) ||
-    //           item?.last_name?.toLowerCase()?.includes(search.toLowerCase())
-    //         );
-    //       });
-    //     } else {
-    //       return props.students?.filter((item: any) => {
-    //         return (
-    //           item?.first_name?.toLowerCase()?.includes(search.toLowerCase()) ||
-    //           item?.last_name?.toLowerCase()?.includes(search?.toLowerCase())
-    //         );
-    //       });
-    //     }
-    //   });
-    // }, [search]);
+interface AttendanceAccordion {
+    class_id: string;
+    attendance: Student[];
+    role: 'student' | 'admin';
+    school: string;
+    attendee: string;
+}
+const AttendanceAccordion: React.FC<AttendanceAccordion> = ({ class_id, attendance, role, school, attendee }) => {
+    const { bulkMarkAttendance, query, addRemark, isMarkingAttendance } = useMarkAttendance();
 
     return (
         <div>
-            {props?.attendance ? (
+            {attendance && attendance ? (
                 <AnimateHeight duration={300} height="auto">
                     <div className="my-4 flex flex-wrap gap-2 space-y-2 border-t border-[#d3d3d3]  text-[13px] text-white-dark dark:border-[#1b2e4b]">
-                        {props.attendance?.map((student: Student, index: number) => {
-                            return (
-                                <AttendanceTabletNew
-                                    key={student?.student_info?.id}
-                                    student={student}
-                                    handleRemarkChange={(e) => addRemark({ index, remark: e.target.value, studentID: student?.student_info?.id })}
-                                    remark={query?.remark!}
-                                    identifier={index}
-                                />
-                            );
-                        })}
+                        {attendance &&
+                            attendance?.map((student: Student, index: number) => {
+                                return (
+                                    <AttendanceTabletNew
+                                        key={student?.student_info?.id}
+                                        student={student}
+                                        handleRemarkChange={(e) => addRemark({ index, remark: e.target.value, studentID: student?.student_info?.id })}
+                                        remark={query?.remark!}
+                                        identifier={index}
+                                    />
+                                );
+                            })}
                     </div>
                     <button
                         className="btn btn-primary"
                         onClick={() => {
                             bulkMarkAttendance({
-                                date: props.today,
+                                date: new Date().toISOString(),
                                 attendance_type: 'Daily',
                                 present: query?.present,
                                 remark: query?.remark,
                                 student: query?.student,
-                                class_id: props.class_id,
+                                class_id: class_id,
+                                school,
+                                attendee,
+                                role,
                             });
                         }}
                     >
-                        Save
+                        {isMarkingAttendance ? <Loader /> : 'Save'}
                     </button>
                 </AnimateHeight>
             ) : null}
