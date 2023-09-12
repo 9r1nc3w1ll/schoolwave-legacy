@@ -11,6 +11,7 @@ import { showAlert } from '@/utility_methods/alert';
 import ClassSelect from '@/components/ClassSelect';
 import AjaxLoader from '@/components/Layouts/AjaxLoader';
 import AttendanceAccordion from '@/components/AttendanceAccordionNew';
+import Error500 from '../ui-template/pages/error500';
 
 const Attendance = () => {
     const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const Attendance = () => {
         data: _studentList,
         isSuccess,
         isLoading,
+        error: clasListError,
         refetch: getstudents,
     } = useQuery(['getClassStudents', classId], () => {
         return getClassStudents(classId, user_session?.access_token);
@@ -37,7 +39,7 @@ const Attendance = () => {
     const {
         mutate,
         data: attendance,
-        isLoading: loadingattendance,
+        error: isAttendanceError,
     } = useMutation((data) => getAttendance(data, user_session?.access_token), {
         onSuccess: async (data) => {
             showAlert('success', 'Saved Successfuly');
@@ -160,9 +162,9 @@ const Attendance = () => {
 
             <hr />
 
-            <div>{isLoading && <AjaxLoader />}</div>
-
-            <div className="mt-4">
+            <div className="py-6">{isLoading && <AjaxLoader />}</div>
+            <div>{isAttendanceError || clasListError ? "Oops! Something wen wrong" : null}</div>
+            <div className="mt-4 py-4">
                 <AttendanceAccordion
                     class_id={classId}
                     attendance={students_attendance}
