@@ -9,9 +9,7 @@ import { getAttendance } from '@/apicalls/attendance';
 import { useForm } from 'react-hook-form';
 import { showAlert } from '@/utility_methods/alert';
 import ClassSelect from '@/components/ClassSelect';
-import AjaxLoader from '@/components/Layouts/AjaxLoader';
 import AttendanceAccordion from '@/components/AttendanceAccordionNew';
-import Error500 from '../ui-template/pages/error500';
 import { Student } from '@/models/Attendance';
 
 const Attendance = () => {
@@ -32,6 +30,7 @@ const Attendance = () => {
         isSuccess,
         isLoading,
         error: clasListError,
+        isFetching: isFetchingClass,
         refetch: getstudents,
     } = useQuery(['getClassStudents', classId], () => {
         return getClassStudents(classId, user_session?.access_token);
@@ -59,6 +58,7 @@ const Attendance = () => {
     const onSubmit = (data: any) => {
         settoday(presentday === data.startDate || presentday === data.endDate);
         mutate(data);
+        getstudents();
     };
 
     const [active, setActive] = useState<string>('0');
@@ -163,16 +163,15 @@ const Attendance = () => {
 
             <hr />
 
-            <div className="py-6">{isLoading && <AjaxLoader />}</div>
-            <div>{isAttendanceError || clasListError ? 'Oops! Something wen wrong' : null}</div>
-            <div className="mt-4 py-4">
+            <div>{isAttendanceError || clasListError ? 'Oops! Something went wrong' : null}</div>
+            <div className="mt-4">
                 <AttendanceAccordion
                     class_id={classId}
                     attendance={students_attendance}
                     role={user_session?.role! as 'admin' | 'student'}
                     school={user_session?.school?.id}
                     attendee={user_session?.id!}
-                    loading={isLoading}
+                    loading={isLoading || isFetchingClass}
                 />
             </div>
         </div>

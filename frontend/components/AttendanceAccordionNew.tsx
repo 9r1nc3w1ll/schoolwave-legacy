@@ -4,6 +4,7 @@ import { useMarkAttendance } from '@/hooks/useMarkAttendance';
 import AttendanceTabletNew from './AttendanceTabletNew';
 import { Student } from '@/models/Attendance';
 import Loader from './Loader';
+import AjaxLoader from './Layouts/AjaxLoader';
 
 interface AttendanceAccordion {
     class_id: string;
@@ -20,9 +21,14 @@ const AttendanceAccordion: React.FC<AttendanceAccordion> = ({ class_id, attendan
         <div>
             <h3 className="text-lg font-medium">Students Attendance List</h3>
             <hr />
+            {loading && (
+                <div className="py-6">
+                    <AjaxLoader />
+                </div>
+            )}
             {attendance && attendance ? (
                 <AnimateHeight duration={300} height="auto">
-                    <div className="my-4 flex flex-wrap gap-2 space-y-2 border-[#d3d3d3]  text-[13px] text-white-dark dark:border-[#1b2e4b]">
+                    <div className="my-4 mb-6 flex flex-wrap gap-2 space-y-2 border-[#d3d3d3]  text-[13px] text-white-dark dark:border-[#1b2e4b]">
                         {attendance &&
                             attendance?.map((student: Student, index: number) => {
                                 return (
