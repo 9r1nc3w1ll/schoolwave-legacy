@@ -12,6 +12,7 @@ import ClassSelect from '@/components/ClassSelect';
 import AjaxLoader from '@/components/Layouts/AjaxLoader';
 import AttendanceAccordion from '@/components/AttendanceAccordionNew';
 import Error500 from '../ui-template/pages/error500';
+import { Student } from '@/models/Attendance';
 
 const Attendance = () => {
     const dispatch = useDispatch();
@@ -68,10 +69,10 @@ const Attendance = () => {
     };
 
     const students_attendance = useMemo(
-        () =>
+        (): Omit<Student[], 'status'> =>
             _studentList &&
             attendance &&
-            _studentList?.map((student: any, idx: number) => ({
+            _studentList?.map((student: Student, idx: number) => ({
                 ...student,
                 status: attendance[idx]?.present ?? false,
             })),
@@ -163,7 +164,7 @@ const Attendance = () => {
             <hr />
 
             <div className="py-6">{isLoading && <AjaxLoader />}</div>
-            <div>{isAttendanceError || clasListError ? "Oops! Something wen wrong" : null}</div>
+            <div>{isAttendanceError || clasListError ? 'Oops! Something wen wrong' : null}</div>
             <div className="mt-4 py-4">
                 <AttendanceAccordion
                     class_id={classId}
@@ -171,6 +172,7 @@ const Attendance = () => {
                     role={user_session?.role! as 'admin' | 'student'}
                     school={user_session?.school?.id}
                     attendee={user_session?.id!}
+                    loading={isLoading}
                 />
             </div>
         </div>

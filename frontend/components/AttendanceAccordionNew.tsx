@@ -11,15 +11,18 @@ interface AttendanceAccordion {
     role: 'student' | 'admin';
     school: string;
     attendee: string;
+    loading: boolean;
 }
-const AttendanceAccordion: React.FC<AttendanceAccordion> = ({ class_id, attendance, role, school, attendee }) => {
+const AttendanceAccordion: React.FC<AttendanceAccordion> = ({ class_id, attendance, role, school, attendee, loading }) => {
     const { bulkMarkAttendance, query, addRemark, isMarkingAttendance } = useMarkAttendance();
 
     return (
         <div>
+            <h3 className="text-lg font-medium">Students Attendance List</h3>
+            <hr />
             {attendance && attendance ? (
                 <AnimateHeight duration={300} height="auto">
-                    <div className="my-4 flex flex-wrap gap-2 space-y-2 border-t border-[#d3d3d3]  text-[13px] text-white-dark dark:border-[#1b2e4b]">
+                    <div className="my-4 flex flex-wrap gap-2 space-y-2 border-[#d3d3d3]  text-[13px] text-white-dark dark:border-[#1b2e4b]">
                         {attendance &&
                             attendance?.map((student: Student, index: number) => {
                                 return (
@@ -52,6 +55,8 @@ const AttendanceAccordion: React.FC<AttendanceAccordion> = ({ class_id, attendan
                         {isMarkingAttendance ? <Loader /> : 'Save'}
                     </button>
                 </AnimateHeight>
+            ) : attendance && (attendance as Student[]).length === 0 && !loading ? (
+                <p>No Data Found</p>
             ) : null}
         </div>
     );
