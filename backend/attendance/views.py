@@ -10,6 +10,10 @@ from account.models import User
 from django.db.models import Q
 import uuid
 from datetime import datetime, timedelta
+from utils.views import get_user_location
+from school_settings.models import SchoolSettings
+from haversine import haversine
+from math import radians
 
 class ListCreateStudentAttendance(ListCreateAPIView):
     # permission_classes = [IsAuthenticated]
@@ -107,7 +111,6 @@ class ListCreateStudentAttendance(ListCreateAPIView):
             students = ClassMember.objects.filter(class_id=class_instance[0])
 
             if queryset.count() == 0:
-                print("got here")
                 resp = {
                     "message": "No attendance record exists for supplied class_id",
                     "data": ClassMemberSerializer(students, many=True).data,
@@ -242,13 +245,37 @@ class ListCreateStaffAttendance(ListCreateAPIView):
             return self.queryset.all()
 
     def create(self, request, *args, **kwargs):
+        school = request.data.get("school")
+
+        try:
+            school_settings = SchoolSettings.objects.get(school=school)
+            school_latitude = school_settings.school_latitude
+            school_longitude = school_settings.school_longitude
+            school_radius = school_settings.school_radius
+        except SchoolSettings.DoesNotExist:
+            return Response({"error" : "Settings for school have not been created."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        user_location = get_user_location()
+
+        if user_location and len(user_location) == 2:
+            user_latitude, user_longitude = user_location
+        else:
+            user_latitude = user_longitude = None
+
+        distance = haversine((user_latitude, user_longitude), (school_latitude, school_longitude), unit='m')
+        if distance > school_radius:
+            resp = {
+                    "message": "Staff is outside the school's radius.",
+                }
+            return Response(resp, status=status.HTTP_403_FORBIDDEN)
+        
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             resp = {
                 "message": "Validation error",
                 "errors": serializer.errors,
             }
-            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+            return Response(resp, status=status.HTTP_400_BAD_REQUEST)       
         
         user = request.user
         role = user.role       

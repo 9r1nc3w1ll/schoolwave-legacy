@@ -10,6 +10,7 @@ from utils.flutterwave import verify_flutterwave_tx, generate_random_number
 import hashlib
 import hmac
 from django.conf import settings
+import geocoder
 
 
 class PaystackWebhook(APIView):
@@ -46,3 +47,18 @@ class VerifyFlutterwaveTx(APIView):
         return Response({"status" : status, "data" : data})
 
 
+def get_user_location():
+    try:
+        user_location = geocoder.ip('me')
+
+        if user_location.ok:
+            latitude = user_location.latlng[0]
+            longitude = user_location.latlng[1]
+
+            return latitude, longitude
+        else:
+            print("Failed to retrieve user location.")
+            return None
+    except Exception as e:
+        print("An error occurred:", str(e))
+        return None
