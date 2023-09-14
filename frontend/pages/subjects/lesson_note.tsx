@@ -8,7 +8,7 @@ import Dropdown from '@/components/Dropdown';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { CreateLesssonNote, getLesssonNote, editLessonNote, deleteLessonNote } from '@/apicalls/lesson-notes';
 import { useRouter } from 'next/router';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { useSession } from 'next-auth/react';
 import { getClasses } from '@/apicalls/class-api';
 import { Parser } from 'html-to-react';
@@ -25,7 +25,7 @@ const Notes = () => {
     });
 
     const router = useRouter();
-    const { status: sessionStatus, data: user_session } = useSession();
+    const { data: user_session } = useSession();
 
     const [notesList, setNoteList] = useState([]);
 
