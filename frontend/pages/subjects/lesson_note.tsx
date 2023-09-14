@@ -75,7 +75,6 @@ const Notes = () => {
     }
     const initialDeletedNote: Note | null = null;
 
-    console.log(user_session?.school);
     const [params, setParams] = useState<any>(JSON.parse(JSON.stringify(defaultParams)));
     const [addContactModal, setAddContactModal] = useState<boolean>(false);
     const [isDeleteNoteModal, setIsDeleteNoteModal] = useState<boolean>(false);
@@ -104,7 +103,6 @@ const Notes = () => {
         refetch2();
         if (isSuccess2) {
             setFilterdNotesList(notes);
-            console.log('here are the notes', notes);
         }
     }, [isSuccess2, notes]);
 
@@ -184,7 +182,7 @@ const Notes = () => {
             setParams({ ...params, [id]: value, week: ['1', '2'], created_by: user_session?.id, last_updated_by: user_session?.id });
         } else {
             let text = e;
-            // console.log(text)
+
             setParams({ ...params, content: text, week: ['1', '2'], created_by: user_session?.id, last_updated_by: user_session?.id });
         }
     };
@@ -248,7 +246,7 @@ const Notes = () => {
     }, [selectedTab, notesList]);
 
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
-    console.log({ params });
+
     return (
         <div>
             <div className="relative flex h-full gap-5 sm:h-[calc(100vh_-_150px)]">
@@ -785,21 +783,6 @@ const Notes = () => {
                                                                 style={{ minHeight: '200px' }}
                                                             />
                                                         </div>
-                                                        {/* <CKEditor
-                            editor={ ClassicEditor }
-                            data={params.content}
-                            onReady={ editor => {
-                              // You can store the "editor" and use when it is needed.
-                              console.log( 'Editor is ready to use!', editor );
-                            } }
-                            onChange={(event, editor)=>{changeValue(editor)}}
-                            onBlur={ ( event, editor ) => {
-                              console.log( 'Blur.', editor );
-                            } }
-                            onFocus={ ( event, editor ) => {
-                              console.log( 'Focus.', editor );
-                            } }
-                          /> */}
                                                     </div>
 
                                                     <div>

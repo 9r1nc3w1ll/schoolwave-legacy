@@ -6,6 +6,7 @@ components/
 !pages/school-fees/discounts/index.tsx
 !pages/school-fees/transactions/index.tsx
 !pages/attendance_new/index.tsx
+!pages/subjects/lesson_note.tsx
 !components/CreateFeeItem.tsx
 !components/EditFeeItem.tsx
 !components/DiscountSelect.tsx
@@ -19,5 +20,7 @@ components/
 !components/EditDiscount.tsx
 !components/CreateTransaction.tsx
 !components/EditTransaction.tsx
-!utility_methods/alert.ts
 !components/AttendanceAccordionNew.tsx
+!utility_methods/alert.ts
+
+
