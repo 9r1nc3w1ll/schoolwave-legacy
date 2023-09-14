@@ -15,6 +15,7 @@ import { Parser } from 'html-to-react';
 import { formatDate } from '@/utility_methods/datey';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
+import AjaxLoader from '@/components/Layouts/AjaxLoader';
 const ReactQuill = dynamic(import('react-quill'), { ssr: false });
 
 const Notes = () => {
@@ -84,6 +85,7 @@ const Notes = () => {
     const [selectedTab, setSelectedTab] = useState<string>('all');
     const [deletedNote, setDeletedNote] = useState<any>(null);
     const [classOptions, setclassOptions] = useState<classOption[]>([]);
+    const [loadingCreateNote, setLoadingCreateNote] = useState<boolean>(false);
 
     const { data: clasii, isSuccess, status, refetch, error } = useQuery('classes', () => getClasses(user_session?.access_token), { enabled: false });
 
@@ -114,22 +116,28 @@ const Notes = () => {
             return false;
         }
 
+        setLoadingCreateNote(true);
         try {
             if (params.id) {
                 // Update existing note
                 await editLessonNote(params.id, user_session?.access_token, params);
+                setLoadingCreateNote(false);
                 refetch2();
             } else {
                 // Create new note
                 await CreateLesssonNote(params, user_session?.access_token);
                 refetch2();
+                setLoadingCreateNote(false);
             }
 
             showMessage('Note has been saved successfully.');
             setAddContactModal(false);
             searchNotes();
+            setLoadingCreateNote(false);
         } catch (error) {
             // Handle error
+            setLoadingCreateNote(false);
+            showMessage('Error creating Notes successfully.');
         }
     };
 
@@ -811,7 +819,15 @@ const Notes = () => {
                                                         <input type="file" id="files" onChange={handleFileChange} multiple className="form-input" />
                                                     </div>
                                                     <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={saveNote}>
-                                                        {params.id ? 'Update Note' : 'Add Note'}
+                                                        {loadingCreateNote ? (
+                                                            <span>
+                                                                <AjaxLoader /> <span className="ml-3">Loading</span>
+                                                            </span>
+                                                        ) : params.id ? (
+                                                            'Update Note'
+                                                        ) : (
+                                                            'Add Note'
+                                                        )}
                                                     </button>
                                                 </form>
                                             </div>
