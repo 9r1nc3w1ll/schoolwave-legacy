@@ -27,7 +27,7 @@ const ClassSelect = <TFieldValues extends FieldValues>(props: ClassSelectProps<T
     return (
         <div className="mb-8">
             <label>Class</label>
-            <select className="form-select text-white-dark" id="class" {...props.register!(props.class_selector ? props.class_selector : 'class', { required: 'This field is required' })}>
+            <select className="form-select text-white-dark" id="class" {...props?.register!(props.class_selector ? props.class_selector : 'class', { required: 'This field is required' })}>
                 <option value="">-- select One-- </option>
                 {classes?.map((clss) => (
                     <option key={clss.id} value={clss.id}>
