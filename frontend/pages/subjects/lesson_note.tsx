@@ -182,7 +182,6 @@ const Notes = () => {
             setParams({ ...params, [id]: value, week: ['1', '2'], created_by: user_session?.id, last_updated_by: user_session?.id });
         } else {
             let text = e;
-
             setParams({ ...params, content: text, week: ['1', '2'], created_by: user_session?.id, last_updated_by: user_session?.id });
         }
     };
@@ -246,7 +245,6 @@ const Notes = () => {
     }, [selectedTab, notesList]);
 
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
-
     return (
         <div>
             <div className="relative flex h-full gap-5 sm:h-[calc(100vh_-_150px)]">
