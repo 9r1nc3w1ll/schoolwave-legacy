@@ -1,7 +1,9 @@
-import ReactApexChart from 'react-apexcharts';
 import Dropdown from '@/components/Dropdown';
 import { useSelector } from 'react-redux';
 import { IRootState } from '@/store';
+import dynamic from 'next/dynamic';
+
+const ReactApexChart = dynamic(import('react-apexcharts'), { ssr: false });
 
 // studentsCountOptions
 const studentsCount: any = {
