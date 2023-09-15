@@ -94,6 +94,14 @@ class ClassTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["data"]), 1)
         self.assertEqual(response.data["data"][0]["name"], "Test Class")
+    
+
+    def test_list_students_with_no_class(self):
+        url = reverse("students_no_class")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_retrieve_class(self):
         url = reverse("retrieve_update_destroy_class", args=[self.class_obj.id])
@@ -119,6 +127,8 @@ class ClassTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Class.objects.count(), 0)
+    
+    
 
 
 class ClassMemberTests(APITestCase):

@@ -401,3 +401,23 @@ class SchoolListAPIView(generics.GenericAPIView):
             response_data.append(owner_and_schools_data)
 
         return Response(response_data)
+
+
+class StudentsWithNoClass(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsSchoolOwner]
+
+    def get(self, request):
+        school = School.objects.get(owner=self.request.user)
+
+        users_in_school = User.objects.filter(school=school).filter(role="student")
+
+        class_members = ClassMember.objects.filter(user__in=users_in_school)
+
+        users_with_no_class = users_in_school.exclude(id__in=class_members.values('user_id'))
+
+        resp = {
+            "message": "Students retrieved successfully.",
+            "data": self.serializer_class(users_with_no_class, many=True).data,
+        }
+        return Response(resp)
