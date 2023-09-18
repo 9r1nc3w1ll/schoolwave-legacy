@@ -340,27 +340,6 @@ const Dashboard = (props: any) => {
         [data]
     );
 
-    // {
-    //     "total_student": 8,
-    //     "male_student_count": 4,
-    //     "female_student_count": 4,
-    //     "total_approved_student": 7,
-    //     "total_pending_student": 0,
-    //     "total_denied_student": 1,
-    //     "male_staff_count": 1,
-    //     "female_staff_count": 1,
-    //     "total_staff": 2,
-    //     "total_paid": 0,
-    //     "total_outstanding": 0,
-    //     "total_amount": 0,
-    //     "paid_percentage": 0,
-    //     "outstanding_percentage": 0,
-    //     "session": "2023-09-07/2023-12-30",
-    //     "session_start_date": "2023-09-07",
-    //     "session_end_date": "2023-12-30",
-    //     "session_resumption_date": "2023-09-22"
-    // }
-
     return (
         <div className="pb-10">
             {/* OVERVIEW TABS */}
