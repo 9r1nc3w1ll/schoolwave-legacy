@@ -173,65 +173,6 @@ const admissionChart: any = {
     },
 };
 
-// studentsChartOptions
-const studentsChart: any = {
-    series: [44, 55, 41],
-    options: {
-        chart: {
-            height: 300,
-            type: 'radialBar',
-            zoom: {
-                enabled: false,
-            },
-            toolbar: {
-                show: false,
-            },
-        },
-        colors: ['#4361ee', '#805dca', '#e2a03f'],
-        grid: {
-            // borderColor: isDark ? '#191e3a' : '#e0e6ed',
-        },
-        plotOptions: {
-            radialBar: {
-                dataLabels: {
-                    name: {
-                        fontSize: '22px',
-                    },
-                    value: {
-                        fontSize: '16px',
-                    },
-                    total: {
-                        show: true,
-                        label: 'Total',
-                        formatter: function (w: any) {
-                            // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
-                            return 249;
-                        },
-                    },
-                },
-            },
-        },
-        labels: ['Present', 'Regular', 'Absent'],
-        fill: {
-            opacity: 0.85,
-        },
-        title: {
-            text: 'Students Count',
-            align: 'left',
-            margin: 10,
-            offsetX: 0,
-            offsetY: 0,
-            floating: false,
-            style: {
-                fontSize: '18px',
-                fontWeight: 'bold',
-                fontFamily: undefined,
-                color: '#263238',
-            },
-        },
-    },
-};
-
 // teachersChartOptions
 
 const Dashboard = (props: any) => {
@@ -290,6 +231,7 @@ const Dashboard = (props: any) => {
         }),
         [data]
     );
+
     const teachersChart: any = useMemo(
         () => ({
             series: [data?.male_staff_count, data?.female_staff_count],
@@ -324,6 +266,67 @@ const Dashboard = (props: any) => {
                 },
                 title: {
                     text: 'Teachers Count',
+                    align: 'left',
+                    margin: 10,
+                    offsetX: 0,
+                    offsetY: 0,
+                    floating: false,
+                    style: {
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#263238',
+                    },
+                },
+            },
+        }),
+        [data]
+    );
+
+    const studentsChart: any = useMemo(
+        () => ({
+            series: [data?.paid_percentage, data?.outstanding_percentage],
+            options: {
+                chart: {
+                    height: 300,
+                    type: 'radialBar',
+                    zoom: {
+                        enabled: false,
+                    },
+                    toolbar: {
+                        show: false,
+                    },
+                },
+                colors: ['#4361ee', '#e2a03f'],
+                grid: {
+                    // borderColor: isDark ? '#191e3a' : '#e0e6ed',
+                },
+                plotOptions: {
+                    radialBar: {
+                        dataLabels: {
+                            name: {
+                                fontSize: '22px',
+                            },
+                            value: {
+                                fontSize: '16px',
+                            },
+                            total: {
+                                show: true,
+                                label: 'Total',
+                                formatter: function (w: any) {
+                                    // By default this function returns the average of all series. The below is just an example to show the use of custom formatter function
+                                    return 249;
+                                },
+                            },
+                        },
+                    },
+                },
+                labels: ['Paid', 'Outstanding'],
+                fill: {
+                    opacity: 0.85,
+                },
+                title: {
+                    text: 'Students Count',
                     align: 'left',
                     margin: 10,
                     offsetX: 0,
