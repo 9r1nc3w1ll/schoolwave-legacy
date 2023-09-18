@@ -2,6 +2,11 @@ import Dropdown from '@/components/Dropdown';
 import { useSelector } from 'react-redux';
 import { IRootState } from '@/store';
 import dynamic from 'next/dynamic';
+import { useQuery } from 'react-query';
+import { getDashboardStats } from '@/apicalls/dashboard';
+import { useSession } from 'next-auth/react';
+import { formatDate, getYear } from '@/utility_methods/datey';
+import { useMemo } from 'react';
 
 const ReactApexChart = dynamic(import('react-apexcharts'), { ssr: false });
 
@@ -228,56 +233,134 @@ const studentsChart: any = {
 };
 
 // teachersChartOptions
-const teachersChart: any = {
-    series: [34, 55],
-    options: {
-        chart: {
-            height: 300,
-            type: 'pie',
-            zoom: {
-                enabled: false,
-            },
-            toolbar: {
-                show: false,
-            },
-        },
-        labels: ['Male', 'Female'],
-        colors: ['#e2a03f', '#805dca'],
-        responsive: [
-            {
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        width: 200,
-                    },
-                },
-            },
-        ],
-        stroke: {
-            show: false,
-        },
-        legend: {
-            position: 'bottom',
-        },
-        title: {
-            text: 'Teachers Count',
-            align: 'left',
-            margin: 10,
-            offsetX: 0,
-            offsetY: 0,
-            floating: false,
-            style: {
-                fontSize: '18px',
-                fontWeight: 'bold',
-                fontFamily: undefined,
-                color: '#263238',
-            },
-        },
-    },
-};
 
 const Dashboard = (props: any) => {
     const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
+    const { data: user_session } = useSession();
+
+    const { data, refetch } = useQuery('dashboard-stats', () => getDashboardStats(user_session?.school?.id, user_session?.access_token));
+
+    const addmissionChart: any = useMemo(
+        () => ({
+            series: [data?.total_approved_student, data?.total_pending_student, data?.total_denied_student],
+            options: {
+                chart: {
+                    height: 300,
+                    type: 'pie',
+                    zoom: {
+                        enabled: false,
+                    },
+                    toolbar: {
+                        show: false,
+                    },
+                },
+                labels: ['Admitted', 'Pending', 'Denied'],
+                colors: ['#00BCD4', '#805dca', '#F44336'],
+                responsive: [
+                    {
+                        breakpoint: 480,
+                        options: {
+                            chart: {
+                                width: 200,
+                            },
+                        },
+                    },
+                ],
+                stroke: {
+                    show: false,
+                },
+                legend: {
+                    position: 'bottom',
+                },
+                title: {
+                    text: 'Addmissions Stats',
+                    align: 'left',
+                    margin: 10,
+                    offsetX: 0,
+                    offsetY: 0,
+                    floating: false,
+                    style: {
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#263238',
+                    },
+                },
+            },
+        }),
+        [data]
+    );
+    const teachersChart: any = useMemo(
+        () => ({
+            series: [data?.male_staff_count, data?.female_staff_count],
+            options: {
+                chart: {
+                    height: 300,
+                    type: 'pie',
+                    zoom: {
+                        enabled: false,
+                    },
+                    toolbar: {
+                        show: false,
+                    },
+                },
+                labels: ['Male', 'Female'],
+                colors: ['#e2a03f', '#805dca'],
+                responsive: [
+                    {
+                        breakpoint: 480,
+                        options: {
+                            chart: {
+                                width: 200,
+                            },
+                        },
+                    },
+                ],
+                stroke: {
+                    show: false,
+                },
+                legend: {
+                    position: 'bottom',
+                },
+                title: {
+                    text: 'Teachers Count',
+                    align: 'left',
+                    margin: 10,
+                    offsetX: 0,
+                    offsetY: 0,
+                    floating: false,
+                    style: {
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        fontFamily: undefined,
+                        color: '#263238',
+                    },
+                },
+            },
+        }),
+        [data]
+    );
+
+    // {
+    //     "total_student": 8,
+    //     "male_student_count": 4,
+    //     "female_student_count": 4,
+    //     "total_approved_student": 7,
+    //     "total_pending_student": 0,
+    //     "total_denied_student": 1,
+    //     "male_staff_count": 1,
+    //     "female_staff_count": 1,
+    //     "total_staff": 2,
+    //     "total_paid": 0,
+    //     "total_outstanding": 0,
+    //     "total_amount": 0,
+    //     "paid_percentage": 0,
+    //     "outstanding_percentage": 0,
+    //     "session": "2023-09-07/2023-12-30",
+    //     "session_start_date": "2023-09-07",
+    //     "session_end_date": "2023-12-30",
+    //     "session_resumption_date": "2023-09-22"
+    // }
 
     return (
         <div className="pb-10">
@@ -312,7 +395,7 @@ const Dashboard = (props: any) => {
                         </div>
                     </div>
                     <div className="mt-5 flex items-center">
-                        <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 2023 </div>
+                        <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> {data?.session} </div>
                         <div className="badge bg-white/30">+ 0.35% </div>
                     </div>
                     <div className="mt-5 flex items-center font-semibold">
@@ -357,7 +440,7 @@ const Dashboard = (props: any) => {
                         </div>
                     </div>
                     <div className="mt-5 flex items-center">
-                        <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 170 </div>
+                        <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3">{data?.total_staff} </div>
                         <div className="badge bg-white/30">+ 2.35% </div>
                     </div>
                     <div className="mt-5 flex items-center font-semibold">
@@ -370,7 +453,7 @@ const Dashboard = (props: any) => {
                             />
                             <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" strokeWidth="1.5" />
                         </svg>
-                        Last Term 135
+                        Resumption Date {formatDate(data?.session_resumption_date)}
                     </div>
                 </div>
                 {/* TOTAL STUDENTS */}
@@ -402,7 +485,7 @@ const Dashboard = (props: any) => {
                         </div>
                     </div>
                     <div className="mt-5 flex items-center">
-                        <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 5,137 </div>
+                        <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3">{data?.total_student} </div>
                         <div className="badge bg-white/30">+ 2.35% </div>
                     </div>
                     <div className="mt-5 flex items-center font-semibold">
@@ -415,7 +498,7 @@ const Dashboard = (props: any) => {
                             />
                             <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" strokeWidth="1.5" />
                         </svg>
-                        Last Term 4,709
+                        Session Starts {formatDate(data?.session_start_date)}
                     </div>
                 </div>
                 {/*  ADMISSION */}
@@ -447,7 +530,7 @@ const Dashboard = (props: any) => {
                         </div>
                     </div>
                     <div className="mt-5 flex items-center">
-                        <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> 1,085 </div>
+                        <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> {data?.total_approved_student} </div>
                         <div className="badge bg-white/30">+ 1.35% </div>
                     </div>
                     <div className="mt-5 flex items-center font-semibold">
@@ -460,7 +543,7 @@ const Dashboard = (props: any) => {
                             />
                             <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" strokeWidth="1.5" />
                         </svg>
-                        Last Session 894
+                        Session Ends {formatDate(data?.session_end_date)}
                     </div>
                 </div>
             </div>
@@ -480,10 +563,10 @@ const Dashboard = (props: any) => {
                 </div>
                 <div>
                     <ReactApexChart
-                        series={admissionChart.series}
-                        options={admissionChart.options}
-                        className="h-auto overflow-hidden rounded-lg bg-white p-4 shadow-sm dark:bg-black"
-                        type="bar"
+                        series={addmissionChart.series}
+                        options={addmissionChart.options}
+                        className="border-1 h-full overflow-hidden rounded-lg bg-white p-4 shadow-sm dark:bg-black"
+                        type="pie"
                         height={300}
                     />
                 </div>
