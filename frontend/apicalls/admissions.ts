@@ -38,7 +38,7 @@ export const createAdmission = async (data: any, access_token?: string) => {
     }
   );
   let tempData = await res.json();
-  console.log(tempData);
+
   let msg = 'an error occured';
 
   if (
