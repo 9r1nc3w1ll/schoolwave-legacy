@@ -29,3 +29,24 @@ export const createSchool = async (data: any, access_token?: string) => {
     };
   }
 };
+
+export const getSchools = async (access_token?: string) => {
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/school-list',
+    {
+      method: 'GET',
+      headers: {
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
+      },
+    }
+  );
+  let tempData = await res.json();
+  if (res.ok) {
+    return tempData.data;
+  } else {
+    return {
+      error: true,
+    };
+  }
+};
