@@ -110,8 +110,6 @@ const Admin = (props: any) => {
     setPage(1);
   }, [sortStatus]);
 
-  console.log({ students });
-
   return (
     <div>
       <div className='panel'>
