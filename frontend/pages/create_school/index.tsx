@@ -10,8 +10,6 @@ import CreateAdmission from '@/components/CreateAdmission';
 import { Dialog, Transition } from '@headlessui/react';
 import EditParent from '@/components/EditParent';
 import { useSession } from 'next-auth/react';
-import UploadAdmission from '@/components/UploadFile';
-import BulkAdmission from '@/components/BulkAdmission';
 import { getAdmissions, updateAdmission } from '@/apicalls/admissions';
 import { formatDate } from '@/utility_methods/datey';
 import { showAlert } from '@/utility_methods/alert';
@@ -33,17 +31,20 @@ const col = [
 const Admin = (props: any) => {
   const router = useRouter();
   const { status: sessionStatus, data: user_session } = useSession();
+
+  console.log(user_session);
   const {
     data: students,
     isSuccess,
     status,
     isFetching,
     refetch,
-  } = useQuery(
-    'getAdmission',
-    () => getAdmissions(user_session?.access_token),
-    { enabled: false }
-  );
+  } = useQuery('getSchools', () => getSchools(user_session?.access_token), {
+    enabled: false,
+  });
+
+  console.log({ students });
+
   const { mutate, isLoading, error } = useMutation(
     (data: boolean) => {
       return updateAdmission(
@@ -104,41 +105,12 @@ const Admin = (props: any) => {
   });
 
   useEffect(() => {
-    setPage(1);
-  }, [pageSize]);
-
-  useEffect(() => {
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize;
-    setRecordsData([...initialRecords.slice(from, to)]);
-  }, [page, pageSize, initialRecords]);
-
-  useEffect(() => {
-    setInitialRecords(() => {
-      if (isSuccess && students.length) {
-        return students.filter((item: any) => {
-          return (
-            item.id.toString().includes(search.toLowerCase()) ||
-            item.student_info.first_name
-              .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            item.student_info.last_name
-              .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            item.status.toLowerCase().includes(search.toLowerCase())
-          );
-        });
-      } else {
-        setInitialRecords([]);
-      }
-    });
-  }, [search, students, status]);
-
-  useEffect(() => {
     const data = sortBy(initialRecords, sortStatus.columnAccessor);
     setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
     setPage(1);
   }, [sortStatus]);
+
+  console.log({ students });
 
   return (
     <div>
