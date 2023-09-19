@@ -9,7 +9,6 @@ from account.models import User
 from rest_framework.views import APIView
 from subject.serializers import SubjectSerializer
 from school.serializers import ClassSerializer
-from school_settings.models import SchoolSettings
 
 from rest_framework.parsers import MultiPartParser
 import csv
@@ -74,9 +73,9 @@ class ListCreateStaff(ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         school = request.data.get("school")
-        school_settings = SchoolSettings.objects.get(school=school)
+        school_settings = School.objects.get(id=school)
 
-        prefix = school_settings.staff_code_prefix
+        prefix = school_settings.settings["staff_code_prefix"]
         total_students = Staff.objects.filter(
             school=school
         ).count()

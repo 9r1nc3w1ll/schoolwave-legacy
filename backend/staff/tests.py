@@ -6,7 +6,6 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from school.models import School
-from school_settings.models import SchoolSettings
 
 from staff.models import Staff, StaffRole
 
@@ -51,17 +50,6 @@ class StaffAPITestCase(APITestCase):
             school=self.school
         )
 
-        self.school_setting = SchoolSettings.objects.create(
-            school=self.school,
-            settings={
-                "school_id": str(self.school.id),
-                "storage_options": {
-                    "driver": "local",
-                    "default": True
-                }
-                },
-            staff_code_prefix="Staff"
-        )
 
         role1 = StaffRole.objects.get(name="Class Teacher")
         role2 = StaffRole.objects.get(name="Lesson Teacher")

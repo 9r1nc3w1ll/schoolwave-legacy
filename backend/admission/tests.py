@@ -9,7 +9,6 @@ from rest_framework.test import APIClient
 from account.models import User
 from admission.models import AdmissionRequest, StudentInformation
 from school.models import School
-from school_settings.models import SchoolSettings
 
 
 class BatchUploadAdmissionRequestTestCase(TestCase):
@@ -62,18 +61,6 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
             first_name="John",
             last_name="Doe",
             date_of_birth=datetime.now(),
-        )
-
-        self.school_setting = SchoolSettings.objects.create(
-            school=self.school,
-            settings={
-                "school_id": str(self.school.id),
-                "storage_options": {
-                    "driver": "local",
-                    "default": True
-                }
-                },
-            staff_code_prefix="Staff"
         )
 
         # Create an admission request

@@ -40,7 +40,6 @@ urlpatterns = [
     path("fees", include("fees.urls")),
     path("grading", include("grading.urls")),
     path("lessonnotes", include("lessonnotes.urls")),
-    path("school_settings", include("school_settings.urls")),
     path("api/schema", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/docs",

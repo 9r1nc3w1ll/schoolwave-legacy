@@ -1,32 +1,72 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "properties": {
-      "school_id": {
-        "type": "string"
-      },
-      "storage_options": {
-        "type": "object",
-        "properties": {
-          "default": {
-            "type": "boolean"
-          },
-          "driver": {
-            "type": "string",
-            "enum": ["s3", "local"]
-          },
-          "base_path": {
-            "type": "string"
-          },
-          "token": {
-            "type": "string"
-          }
-        },
-        "required": ["default", "driver"],
-        "additionalProperties": false
-      }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "school_id": {
+      "type": "string"
     },
-    "required": ["school_id", "storage_options"],
-    "additionalProperties": false
-  }
-  
+    "school_name": {
+      "type": "string"
+    },
+    "storage_options": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "type": "boolean"
+        },
+        "driver": {
+          "type": "string",
+          "enum": ["s3", "local"]
+        },
+        "base_path": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      },
+      "required": ["default", "driver"],
+      "additionalProperties": false
+    },
+    "staff_code_prefix": {
+      "type": "string"
+    },
+    "student_code_prefix": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string"
+        }
+      },
+      "required": ["file"],
+      "additionalProperties": false
+    },
+    "brand": {
+      "type": "object",
+      "properties": {
+        "primary_color": {
+          "type": "string"
+        },
+        "secondary_color": {
+          "type": "string"
+        }
+      },
+      "required": ["primary_color", "secondary_color"],
+      "additionalProperties": false
+    },
+    "school_latitude": {
+      "type": "number"
+    },
+    "school_longitude": {
+      "type": "number"
+    },
+    "school_radius": {
+      "type": "number"
+    }
+  },
+  "required": ["school_id", "storage_options", "staff_code_prefix", "student_code_prefix", "brand", "school_latitude", "school_longitude", "school_radius"],
+  "additionalProperties": false
+}

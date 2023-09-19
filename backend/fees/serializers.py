@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from fees.models import FeeItem, Transaction, FeeTemplate, Discount, Invoice
-from school_settings.models import SchoolBrand
-
+from school.models import School
 
 class FeeTemplateSerializer(serializers.ModelSerializer):
     school_info = serializers.SerializerMethodField()
@@ -245,14 +244,14 @@ class InvoiceTemplateSerializer(serializers.ModelSerializer):
     
     def get_school_brand_info(self, obj):
         school = obj.school.id
-        print(school)
         try:
-            school_brand = SchoolBrand.objects.get(school=school)
+            school = School.objects.get(school=school)
+            school_brand = school.settings["brand"]
 
             data = {
                 'primary_color': school_brand.primary_color,
                 'secondary_color': school_brand.secondary_color,
             }
             return data
-        except SchoolBrand.DoesNotExist:
+        except School.DoesNotExist:
             return None

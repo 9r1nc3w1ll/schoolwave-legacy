@@ -15,6 +15,11 @@ from utils.permissions import IsSchoolOwner, IsSuperAdmin
 from django.db.models import Q
 import uuid
 
+from .serializers import SchoolLogoSerializer, SchoolSettingsSerializer, SchoolBrandSerializer
+from utils.permissions import IsSchoolOwner
+from .utils import attach_remote_image, validate
+from rest_framework.parsers import MultiPartParser
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -421,3 +426,141 @@ class StudentsWithNoClass(generics.GenericAPIView):
             "data": self.serializer_class(users_with_no_class, many=True).data,
         }
         return Response(resp)
+
+class SchoolSettingsRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = School.objects.all()
+    serializer_class = SchoolSettingsSerializer
+    permission_classes = [IsAuthenticated, IsSchoolOwner]
+
+
+    def get_object(self):
+        school_id = self.kwargs.get("school_id", "")
+
+        try:
+            settings_qs = School.objects.get(id=school_id, owner=self.request.user)
+            return settings_qs
+        except School.DoesNotExist:
+            return Response({"error" : "Access denied. School not found."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def retrieve(self, request, *args, **kwargs):
+        school = self.get_object()
+        settings_qs = School.objects.filter(id=school.id)
+
+        if not settings_qs.exists():
+            return Response({"error" : "Settings for school have not been created."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(SchoolSettingsSerializer(settings_qs[0]).data) 
+
+    def patch(self, request, *args, **kwargs):
+
+        is_valid, message = validate({"settings" : request.data['settings']})
+
+        if not is_valid:
+            return Response({"error" : message}, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().update(request, *args, **kwargs)
+
+class RetrieveUpdateSchoolLogo(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = School.objects.all()
+    serializer_class = SchoolLogoSerializer
+    
+    def get_object(self):
+        school_id = self.kwargs.get("school_id", "")
+
+        try:
+            school = School.objects.get(id=school_id, owner=self.request.user)
+            return school
+        except School.DoesNotExist:
+            return Response({"error": "Access denied. School not found."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def retrieve(self, request, *args, **kwargs):
+        school = self.get_object()
+
+        if not school.settings.get("logo"):
+            return Response({"error": "Logo settings for school have not been created."}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        settings_dict = school.settings
+
+        driver = settings_dict.get("storage_options", {}).get("driver", "")
+        base_path = settings_dict.get("storage_options", {}).get("base_path", "")
+        token = settings_dict.get("storage_options", {}).get("token", "")
+
+
+        # logo instance
+        try:
+            logo = SchoolLogoSerializer(school).data['logo']
+        except School.DoesNotExist:
+            return Response({"error" : "School Logo does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if driver == "local":
+            file_url = f"{settings.MEDIA_URL}{logo['file']}"
+        elif driver == "s3":
+            s3_base_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+            file_url = f"{s3_base_url}/{base_path}/{logo['file']}"
+        else:
+            return Response({"error": "Invalid storage driver"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            "message": "School Logo retrieved successfully.",
+            "logo_url": file_url}, status=status.HTTP_200_OK)
+    
+
+    def partial_update(self, request, *args, **kwargs):
+        logo = self.get_object()
+
+        
+        
+        data = request.data.get("logo", {})
+        logo_url = data.get("logo_url", "")
+
+        if not logo_url:
+            return Response({"error" : "logo_url is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        do_attach = attach_remote_image(logo, logo_url)
+
+        if do_attach:
+            return Response({"message": "Logo updated successfully"}, status=status.HTTP_200_OK)
+
+        else:
+            return Response({"error": "Failed to update logo"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class RetrieveUpdateSchoolBrand(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = School.objects.all()
+    serializer_class = SchoolBrandSerializer
+    
+    def get_object(self):
+        school_id = self.kwargs.get("school_id", "")
+
+        try:
+            school = School.objects.get(id=school_id, owner=self.request.user)
+            return school
+        except School.DoesNotExist:
+            return Response({"error": "Access denied. School not found."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def retrieve(self, request, *args, **kwargs):
+        school = self.get_object()
+
+        if not school.settings.get("brand"):
+            return Response({"error": "Brand settings for school have not been created."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({
+            "message": "School Brand retrieved successfully.",
+            "data": SchoolBrandSerializer(school).data
+        })
+     
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data.get("brand", {})
+
+        instance.settings["brand"] = data
+        instance.save()
+
+        return Response({
+            "message": "School Brand updated successfully.",
+            "data": SchoolBrandSerializer(instance).data
+        })

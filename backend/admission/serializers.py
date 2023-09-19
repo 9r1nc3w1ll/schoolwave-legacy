@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import AdmissionRequest, StudentInformation
 from school.models import School
-from school_settings.models import SchoolSettings
 
 from django.contrib.auth import get_user_model
 
@@ -28,9 +27,10 @@ class StudentInformationSerializer(serializers.ModelSerializer):
 
         request = self.context["request"]
         school = request.data.get("school")
-        school_settings = SchoolSettings.objects.get(school=school)
+        school_settings = School.objects.get(id=school)
 
-        prefix = school_settings.student_code_prefix
+
+        prefix = school_settings.settings["student_code_prefix"]
         total_students = AdmissionRequest.objects.filter(
             school=school
         ).count()

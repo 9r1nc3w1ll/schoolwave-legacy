@@ -11,7 +11,7 @@ from django.db.models import Q
 import uuid
 from datetime import datetime, timedelta
 from utils.views import get_user_location
-from school_settings.models import SchoolSettings
+from school.models import School
 from haversine import haversine
 from math import radians
 
@@ -248,12 +248,12 @@ class ListCreateStaffAttendance(ListCreateAPIView):
         school = request.data.get("school")
 
         try:
-            school_settings = SchoolSettings.objects.get(school=school)
-            school_latitude = school_settings.school_latitude
-            school_longitude = school_settings.school_longitude
-            school_radius = school_settings.school_radius
-        except SchoolSettings.DoesNotExist:
-            return Response({"error" : "Settings for school have not been created."}, status=status.HTTP_400_BAD_REQUEST)
+            school_settings = School.objects.get(id=school)
+            school_latitude = school_settings.settings["school_latitude"]
+            school_longitude = school_settings.settings["school_longitude"]
+            school_radius = school_settings.settings["school_radius"]
+        except School.DoesNotExist:
+            return Response({"error" : "School does not exist."}, status=status.HTTP_400_BAD_REQUEST)
             
         user_location = get_user_location()
 
@@ -384,4 +384,3 @@ class RetrieveStaffAttendance(RetrieveUpdateDestroyAPIView):
             "data": serializer.data,
         }
         return Response(resp)
-

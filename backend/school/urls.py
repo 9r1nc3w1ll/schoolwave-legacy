@@ -12,7 +12,10 @@ from school.views import (
     DashboardStatsAPIView,
     CreateSchoolAndOwner,
     SchoolListAPIView,
-    StudentsWithNoClass
+    StudentsWithNoClass,
+    SchoolSettingsRetrieveUpdateView,
+    RetrieveUpdateSchoolLogo,
+    RetrieveUpdateSchoolBrand
 )
 
 urlpatterns = [
@@ -35,5 +38,8 @@ urlpatterns = [
     path("/dashboard-stats/<uuid:school_id>", DashboardStatsAPIView.as_view(), name="dashboard_stats"),
     path('/create-school-and-owner', CreateSchoolAndOwner.as_view(), name='create_school_and_owner'),
     path('/school-list', SchoolListAPIView.as_view(), name='school-list'),
-    path('/students-with-no-class/', StudentsWithNoClass.as_view(), name="students_no_class")
+    path('/students-with-no-class/', StudentsWithNoClass.as_view(), name="students_no_class"),
+    path("/school-settings/<uuid:school_id>", SchoolSettingsRetrieveUpdateView.as_view(), name="school_settings_create"),
+    path('/school-logo/<uuid:school_id>', RetrieveUpdateSchoolLogo.as_view(), name='school_logo_detail'),
+    path('/school-brand/<uuid:school_id>', RetrieveUpdateSchoolBrand.as_view(), name='school_brand_detail'),
 ]

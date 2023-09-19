@@ -123,3 +123,29 @@ class AdminDashboardSerializer:
             'session_resumption_date': session.resumption_date,
         }
         return data
+
+class SchoolSettingsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = School
+        fields = ("id", "settings")
+
+class SchoolLogoSerializer(serializers.ModelSerializer):
+    logo = serializers.SerializerMethodField()
+
+    class Meta:
+        model = School
+        fields = ("id", "logo")
+
+    def get_logo(self, obj):
+        return obj.settings.get("logo", {})
+
+class SchoolBrandSerializer(serializers.ModelSerializer):
+    brand = serializers.SerializerMethodField()
+
+    class Meta:
+        model = School
+        fields = ("id", "brand")
+
+    def get_brand(self, obj):
+        return obj.settings.get("brand", {})
