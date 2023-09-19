@@ -39,7 +39,7 @@ const Export = (props: any) => {
     refetch,
   } = useQuery(
     'getAdmission',
-    () => getAdmissions(user_session?.access_token),
+    () => getAdmissions(user_session?.access_token!),
     { enabled: false }
   );
   const { mutate, isLoading, error } = useMutation(
@@ -475,8 +475,8 @@ const Export = (props: any) => {
                       status == 'approved'
                         ? 'badge bg-success'
                         : status == 'denied'
-                          ? 'badge bg-danger'
-                          : 'badge bg-warning'
+                        ? 'badge bg-danger'
+                        : 'badge bg-warning'
                     }
                   >
                     {status}
