@@ -160,9 +160,7 @@ const Attendance = () => {
                     </div>
                 </div>
             </form>
-
             <hr />
-
             <div className="mt-4">
                 <AttendanceAccordion
                     class_id={classId}

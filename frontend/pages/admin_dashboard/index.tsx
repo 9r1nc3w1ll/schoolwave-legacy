@@ -529,16 +529,16 @@ const Dashboard = (props: any) => {
 
             {/* STUDENTS HISTOGRAM CHART */}
             <div className="grid grid-cols-2 gap-6">
-                <div>
+                {/* <div> */}
                     {/* <h1 className='text-xl py-2'>Students Count</h1> */}
-                    <ReactApexChart
+                    {/* <ReactApexChart
                         series={studentsCount.series}
                         options={studentsCount.options}
                         className="h-auto overflow-hidden rounded-lg bg-white p-4 shadow-sm dark:bg-black"
                         type="bar"
                         height={300}
-                    />
-                </div>
+                    /> */}
+                {/* </div> */}
                 <div>
                     <ReactApexChart
                         series={addmissionChart.series}
