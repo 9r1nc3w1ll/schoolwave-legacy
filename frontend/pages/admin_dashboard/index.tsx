@@ -374,7 +374,7 @@ const Dashboard = (props: any) => {
                     </div>
                     <div className="mt-5 flex items-center">
                         <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> {data?.session} </div>
-                        <div className="badge bg-white/30">+ 0.35% </div>
+                        <div className="badge h-10 w-10 bg-white/30"> </div>
                     </div>
                     <div className="mt-5 flex items-center font-semibold">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr:mr-2 rtl:ml-2">
@@ -419,7 +419,7 @@ const Dashboard = (props: any) => {
                     </div>
                     <div className="mt-5 flex items-center">
                         <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3">{data?.total_staff} </div>
-                        <div className="badge bg-white/30">+ 2.35% </div>
+                        <div className="badge h-10 w-10 bg-white/30"> </div>
                     </div>
                     <div className="mt-5 flex items-center font-semibold">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr:mr-2 rtl:ml-2">
@@ -464,7 +464,7 @@ const Dashboard = (props: any) => {
                     </div>
                     <div className="mt-5 flex items-center">
                         <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3">{data?.total_student} </div>
-                        <div className="badge bg-white/30">+ 2.35% </div>
+                        <div className="badge h-10 w-10 bg-white/30"> </div>
                     </div>
                     <div className="mt-5 flex items-center font-semibold">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr:mr-2 rtl:ml-2">
@@ -509,7 +509,7 @@ const Dashboard = (props: any) => {
                     </div>
                     <div className="mt-5 flex items-center">
                         <div className="text-3xl font-bold ltr:mr-3 rtl:ml-3"> {data?.total_approved_student} </div>
-                        <div className="badge bg-white/30">+ 1.35% </div>
+                        <div className="badge h-10 w-10 bg-white/30"></div>
                     </div>
                     <div className="mt-5 flex items-center font-semibold">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="ltr:mr-2 rtl:ml-2">
@@ -530,8 +530,8 @@ const Dashboard = (props: any) => {
             {/* STUDENTS HISTOGRAM CHART */}
             <div className="grid grid-cols-2 gap-6">
                 {/* <div> */}
-                    {/* <h1 className='text-xl py-2'>Students Count</h1> */}
-                    {/* <ReactApexChart
+                {/* <h1 className='text-xl py-2'>Students Count</h1> */}
+                {/* <ReactApexChart
                         series={studentsCount.series}
                         options={studentsCount.options}
                         className="h-auto overflow-hidden rounded-lg bg-white p-4 shadow-sm dark:bg-black"
