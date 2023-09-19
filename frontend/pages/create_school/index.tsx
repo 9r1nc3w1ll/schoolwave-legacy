@@ -15,6 +15,7 @@ import { formatDate } from '@/utility_methods/datey';
 import { showAlert } from '@/utility_methods/alert';
 import { useDispatch } from 'react-redux';
 import CreateSchool from '@/components/CreateSchool';
+import { getSchools } from '@/apicalls/schools';
 
 const col = [
   'id',
