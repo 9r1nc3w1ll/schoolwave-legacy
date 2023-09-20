@@ -149,3 +149,10 @@ class SchoolBrandSerializer(serializers.ModelSerializer):
 
     def get_brand(self, obj):
         return obj.settings.get("brand", {})
+    
+class SchoolListSerializer(serializers.ModelSerializer):
+    
+
+    class Meta:
+        model = School
+        fields = "__all__"

@@ -15,7 +15,7 @@ from utils.permissions import IsSchoolOwner, IsSuperAdmin
 from django.db.models import Q
 import uuid
 
-from .serializers import SchoolLogoSerializer, SchoolSettingsSerializer, SchoolBrandSerializer
+from .serializers import SchoolLogoSerializer, SchoolSettingsSerializer, SchoolBrandSerializer, SchoolListSerializer
 from utils.permissions import IsSchoolOwner
 from .utils import attach_remote_image, validate
 from rest_framework.parsers import MultiPartParser
@@ -383,7 +383,7 @@ class CreateSchoolAndOwner(APIView):
 
 class SchoolListAPIView(generics.GenericAPIView):
     queryset = School.objects.all()
-    serializer_class = SchoolSerializer
+    serializer_class = SchoolListSerializer
     permission_classes = [IsSuperAdmin]
 
     def get(self, request):
@@ -395,18 +395,59 @@ class SchoolListAPIView(generics.GenericAPIView):
             schools = School.objects.filter(owner=school_owner)
 
             school_owner_serializer = UserSerializer(school_owner)
-            schools_serializer = SchoolSerializer(schools, many=True)
+            schools_serializer = SchoolListSerializer(schools, many=True)
 
-            owner_and_schools_data = {
-                'message':'School owner schools retrieved successfully',
-                'owner': school_owner_serializer.data,
-                'schools': schools_serializer.data,
+            owner = school_owner_serializer.data
+            schools_data = schools_serializer.data  # Make sure schools_data is a list of dictionaries
+
+            owner_data = {
+                'owner_id': str(school_owner.id),
+                'owner_username': school_owner.username,
+                'owner_email': school_owner.email,
+                'owner_fullname': school_owner.first_name + ' ' + school_owner.last_name,
             }
+
+            for school in schools_data:
+                formatted_school_data = {
+                    'school_id': str(school['id']),
+                    'created_at': str(school['created_at']),
+                    'updated_at': str(school['updated_at']),
+                    'deleted_at': str(school['deleted_at']),
+                    'name': str(school['name']),
+                    'description': str(school['description']),
+                    'logo_file_name': school['logo_file_name'],
+                    'date_of_establishment': str(school['date_of_establishment']),
+                    'motto': school['motto'],
+                    'tag': school['tag'],
+                    'website_url': school['website_url'],
+                }
+                owner_and_schools_data = {**owner_data, **formatted_school_data}
 
             response_data.append(owner_and_schools_data)
 
-        return Response(response_data)
+        return Response({
+            'message': 'School owner schools retrieved successfully',
+            'data': response_data
+        })
+            
 
+# owner_and_schools_data = {
+#                 'id': str(school.id),
+#                 'created_at': str(school.created_at),
+#                 'updated_at': str(school.updated_at),
+#                 'deleted_at': str(school.deleted_at),
+#                 'name': school.name,
+#                 'description': school.description,
+#                 'logo_file_name': school.logo_file_name.url if school.profile_photo else None,
+#                 'date_of_establishment': str(school.date_of_establishment),
+#                 'motto': school.motto,
+#                 'tag': school.tag, 
+#                 'website_url': school.website_url,
+#                 'owner': str(school_owner.id),
+#                 'owner_username': school_owner.username,
+#                 'owner_email': school_owner.email,
+#                 'owner_fullname': school_owner.first_name + school.owner.last_name 
+#             }
 
 class StudentsWithNoClass(generics.GenericAPIView):
     serializer_class = UserSerializer
