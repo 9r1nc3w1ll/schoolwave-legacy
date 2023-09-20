@@ -1,5 +1,5 @@
-pages/
-components/
+pages/*
+components/*
 !pages/school-fees/fee-items/index.tsx
 !pages/school-fees/fee-templates/index.tsx
 !pages/school-fees/invoices/index.tsx
@@ -7,6 +7,7 @@ components/
 !pages/school-fees/transactions/index.tsx
 !pages/attendance_new/index.tsx
 !pages/subjects/lesson_note.tsx
+# !pages/employee
 !components/CreateFeeItem.tsx
 !components/EditFeeItem.tsx
 !components/DiscountSelect.tsx
@@ -22,5 +23,7 @@ components/
 !components/EditTransaction.tsx
 !components/AttendanceAccordionNew.tsx
 !utility_methods/alert.ts
-
-
+!components/CreateEmployee.tsx
+# !components/ClassUserAssignment.tsx
+!components/BulkEmployee.tsx
+!middleware.ts
