@@ -10,6 +10,12 @@ services:
     rootDir: ./backend
     healthCheckPath: /healthz
     envVars:
+      - key: DEBUG
+        value: True
+      - key: FRONTEND_URL
+        value: https://schoolwave-staging.vercel.app
+      - key: ALLOWED_HOSTS
+        value: sw-api-staging.onrender.com,schoolwave-staging.vercel.app
       - key: PYTHON_VERSION
         value: 3.9.10
       - key: DATABASE_NAME
