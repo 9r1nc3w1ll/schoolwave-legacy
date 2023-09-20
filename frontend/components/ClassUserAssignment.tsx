@@ -1,63 +1,67 @@
 import { AssignUserToClass } from "@/apicalls/class-api";
-import { getStaffs, getStudents } from "@/apicalls/users";
+import { Avatar } from "@mantine/core";
+import CheckboxWithState from "./CheckboxWithState";
+import Select from "react-select";
+import { getAllStaff } from "@/apicalls/staffs";
+import { getFirstLetters } from "@/helpers/api";
+import { getStudentsWithoutClass } from "@/apicalls/users";
 import { showAlert } from "@/utility_methods/alert";
+import { ClassUserAssignmentProps, GetAllStaffType, GetClassStudentMembersResponse, IClientError } from "@/types";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import Select from "react-select";
-import CheckboxWithState from "./CheckboxWithState";
-import { ClassUserAssignmentProps } from "@/types";
+
+type UserType = GetClassStudentMembersResponse & GetAllStaffType;
 
 const ClassUserAssignment = (props: ClassUserAssignmentProps) => {
   const [search, setSearch] = useState<string>("");
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<UserType[]>([]);
   const [selectedOption, setSelectedOption] = useState<number>();
 
-  const { data, isSuccess, status, isLoading } = useQuery("getUsers", async () => {
-    const api = props.student ? getStudents : getStaffs;
+  const { data, isSuccess, isLoading } = useQuery("getUsers", async () => {
+    const api = props.student ? getStudentsWithoutClass : getAllStaff;
 
     return api(props.user_session?.access_token);
   });
 
   const queryClient = useQueryClient();
 
-  const { mutate, error } = useMutation(
-    (data: any) =>
-
-      AssignUserToClass(data, props.user_session.access_token),
+  const { mutate } = useMutation(AssignUserToClass,
     {
-      onSuccess: async (data) => {
+      onSuccess: async () => {
         showAlert("success", "User assigned to class Successfuly");
         queryClient.invalidateQueries(["getStaff"]);
         props.refreshClasses();
       },
-      onError: (error: any) => {
-        showAlert("error", "An Error Occured");
+      onError: (error: IClientError) => {
+        showAlert("error", error.message);
       }
     }
   );
 
   useEffect(() => {
     if (isSuccess) {
-      setItems(data);
+      setItems(data as UserType[]);
     }
-  }, [isSuccess, data]);
-  const [filteredItems, setFilteredItems] = useState<any>(items);
+  }, [isSuccess, data, props.student]);
+  const [filteredItems, setFilteredItems] = useState<UserType[]>(items);
 
   useEffect(() => {
-    setFilteredItems(() => {
-      return items.filter((item: any) => {
-        return item.first_name.toLowerCase().includes(search.toLowerCase()) || item.last_name.toLowerCase().includes(search.toLowerCase());
-      });
-    });
-  }, [search, items]);
+    const filterFunction = (item: UserType) => {
+      const firstName = props.student ? item?.student_info?.first_name : item?.user_info?.first_name;
+      const lastName = props.student ? item?.student_info?.last_name : item?.user_info?.last_name;
+      const fullName = `${firstName} ${lastName}`.toLowerCase();
 
-  const roles: any = [
+      return fullName.includes(search.toLowerCase());
+    };
+
+    setFilteredItems(items.filter(filterFunction));
+  }, [search, items, props.student]);
+
+  const roles = [
     { value: "Class Teacher", label: "Class Teacher" },
     { value: "Staff Assistant", label: "Staff Assistant" },
     { value: "Counselor", label: "Counselor" },
   ];
-
-  console.log("props: ", props);
 
   return (
 
@@ -81,56 +85,66 @@ const ClassUserAssignment = (props: ClassUserAssignmentProps) => {
       </form>
       <div>
         <div className="p-4 space-y-4  w-full block">
-          {filteredItems ? filteredItems.map((item: any, i: number) => {
-            return (
-              <div
-                key={item.id}
-                className="bg-white dark:bg-[#1b2e4b] rounded-xl border mx-auto p-3 grid grid-cols-2 items-center gap-10
+          {filteredItems
+            ? filteredItems.map((item, i: number) => {
+              return (
+                <div
+                  key={item.id}
+                  className="bg-white dark:bg-[#1b2e4b] rounded-xl border mx-auto p-3 grid grid-cols-2 items-center gap-10
                         text-gray-500 font-semibold w-[90%] hover:text-primary transition-all duration-300 hover:scale-[1.01]"
-              >
-                <div className="user-profile flex gap-8 items-center">
-                  <img src={`/assets/images/profile-${Math.round(Math.random() * 35)}.jpeg`} alt="img" className="w-8 h-8 rounded-md object-cover" />
-                  <div>{item.first_name + " " + item.last_name}</div>
+                >
+                  <div className="user-profile flex gap-8 items-center">
+                    {/* <img src={`/assets/images/profile-${Math.round(Math.random() * 35)}.jpeg`} alt="img" className="w-8 h-8 rounded-md object-cover" /> */}
+                    <Avatar color="cyan" radius="xl">
+                      {getFirstLetters(`${(props.student
+                        ? item?.student_info?.first_name
+                        : item?.user_info?.first_name)} ${(props.student
+                        ? item?.student_info?.last_name
+                        : item?.user_info?.last_name)}`)}
+                    </Avatar>
+                    <div>{(props.student
+                      ? item?.student_info?.first_name
+                      : item?.user_info?.first_name) + " " + (props.student
+                      ? item?.student_info?.last_name
+                      : item?.user_info?.last_name)}</div>
+                  </div>
+                  <div className="w-full">
+                    {!props.student
+                      ? <Select defaultValue="Select a Role" options={roles} isSearchable={false}
+                        onChange={(e) => {
+                          const data = {
+                            user: item?.user,
+                            class_id: props.classData.id,
+                            role: e.value,
+                          };
+
+                          mutate({ data: { ...data, school: props?.user_session?.school?.id }, accessToken: props.user_session?.access_token });
+                        }}
+                        onFocus={() => {
+                          setSelectedOption(i);
+                        }}
+                        onBlur={() => {
+                          setSelectedOption(-5);
+                        }}
+
+                        className={`${selectedOption === (i - 1) || selectedOption === (i - 2) ? "hidden" : ""}`}
+                      />
+                      : <CheckboxWithState click={() => {
+                        const data = {
+                          user: item?.id,
+                          class_id: props.classData.id,
+                          role: "student",
+                        };
+
+                        mutate({ data: { ...data, school: props?.user_session?.school?.id }, accessToken: props?.user_session?.access_token });
+                      }} />
+                    }
+                  </div>
+
                 </div>
-                <div className="w-full">
-                  {!props.student ? <Select defaultValue="Select a Role" options={roles} isSearchable={false}
-                    onChange={(e: any) => {
-                      const data = {
-                        user: item.id,
-                        class_id: props.classData.id,
-                        role: e.value,
-                      // first_name: item.first_name,
-                      // last_name: item.last_name,
-                      };
-
-                      mutate({ ...data, school: props?.user_session?.school?.id });
-                    }}
-                    onFocus={() => {
-                      setSelectedOption(i);
-                    }}
-                    onBlur={() => {
-                      setSelectedOption(-5);
-                    }}
-
-                    className={`${selectedOption == (i - 1) || selectedOption == (i - 2) ? "hidden" : ""}`}
-                  />
-                    : <CheckboxWithState click={() => {
-                      const data = {
-                        user: item.id,
-                        class_id: props.classData.id,
-                        role: "student",
-                      // first_name: item.first_name,
-                      // last_name: item.last_name,
-                      };
-
-                      mutate({ ...data, school: props?.user_session?.school?.id });
-                    }} />
-                  }
-                </div>
-
-              </div>
-            );
-          }) : <p>{`${isLoading ? "Loading items ..." : "xxx"}`}</p>}
+              );
+            })
+            : <p>{`${isLoading ? "Loading items ..." : "xxx"}`}</p>}
         </div>
       </div>
       {/* <button onClick={props.closeIt(false)}>Done</button> */}

@@ -105,8 +105,23 @@ export const getSessionUser = async (accessToken?: string): ApiCall<TRefreshUser
 };
 
 export const throwError = async (res: Response): Promise<void> => {
-  if (res.status >= 500) {
-    const error = { message: "Server error" };
+  if (res.status === 500) {
+    let error = { message: "" };
+    const tempError = await res.json() as IErrorResponse;
+
+    if (tempError?.message) {
+      if (tempError.message.split(" ")[0] === "duplicate") {
+        error = { message: "One or more rows with similar record already exists" };
+      } else {
+        error = { message: tempError.message };
+      }
+    } else {
+      error = { message: "Server Error" };
+    }
+
+    throw error;
+  } else if (res.status > 500) {
+    const error = { message: "Server Error" };
 
     throw error;
   } else {
@@ -120,6 +135,13 @@ export const throwError = async (res: Response): Promise<void> => {
 const getTypedJson = async <T>(response: Response): Promise<T> => {
   return response.json();
 };
+
+export function getFirstLetters (str: string) {
+  const words = str.split(" ");
+  const firstLetters = words.map((word) => word.charAt(0));
+
+  return firstLetters.join("");
+}
 
 const api = {
   loginWithCredentials,

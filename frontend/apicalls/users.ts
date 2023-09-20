@@ -1,102 +1,112 @@
-export const getStudents= async (access_token: any)=>{
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users' , {
+import { GetClassStudentMembersResponse, GetUsersResponseInterface, ResponseInterface } from "@/types";
+
+export const getStudents = async (accessToken: string): Promise<GetUsersResponseInterface[]> => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users", {
     method: "GET",
     headers: {
       "content-Type": "application/json",
-      "Authorization": 'Bearer '+ access_token, 
+      "Authorization": "Bearer " + accessToken,
     }
-  })
-  let tempData= await res.json()
-   
-  let students = tempData.data.filter((x:any)=> x.role == 'student')
-  return students
-}
+  });
+  const tempData = await res.json() as ResponseInterface<GetUsersResponseInterface[]>;
+  const students = tempData.data.filter((x) => x.role === "student");
 
-export const getStaffs= async (access_token ?: string)=>{
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users' , {
+  return students;
+};
+
+export const getStaffs = async (access_token?: string) => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users", {
     method: "GET",
     headers: {
       "content-Type": "application/json",
-      "Authorization": 'Bearer '+ access_token , 
+      "Authorization": "Bearer " + access_token,
     }
-  })
-  let tempData= await res.json()
-   
-  let staffs = tempData.data.filter((x:any)=> x.is_staff )
-  return staffs
-}
+  });
+  const tempData = await res.json();
+  const staffs = tempData.data.filter((x: any) => x.is_staff);
 
-export const getAllUsers= async (access_token ?: string)=>{
+  return staffs;
+};
 
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users' , {
+export const getAllUsers = async (access_token?: string) => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users", {
     method: "GET",
     headers: {
       "content-Type": "application/json",
-      "Authorization": 'Bearer '+ access_token , 
+      "Authorization": "Bearer " + access_token,
     }
-  })
-  let tempData= await res.json()
-  
-  return tempData
-}
+  });
+  const tempData = await res.json();
 
+  return tempData;
+};
 
-export const getParents= async (access_token ?: string)=>{
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users' , {
+export const getParents = async (access_token?: string) => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users", {
     method: "GET",
     headers: {
       "content-Type": "application/json",
-      "Authorization": 'Bearer '+ access_token , 
+      "Authorization": "Bearer " + access_token,
     }
-  })
-  let tempData= await res.json()
-   
-  let parents = tempData.data.filter((x:any)=> x.role == 'parent' )
-  return parents
-}
+  });
+  const tempData = await res.json();
+  const parents = tempData.data.filter((x: any) => x.role == "parent");
 
-export const getUser= async (access_token: any, id: any)=>{
+  return parents;
+};
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/account/users/${id.id}` , {
+export const getUser = async (access_token: any, id: any) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/account/users/${id.id}`, {
     method: "GET",
     headers: {
       "content-Type": "application/json",
-      "Authorization": 'Bearer '+ access_token, 
+      "Authorization": "Bearer " + access_token,
     }
-  })
-  let tempData= await res.json()
-  return tempData.data
-}
+  });
+  const tempData = await res.json();
 
-export const EditUser= async (access_token: any, data: any, id: any)=>{
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users/' + id.id , {
+  return tempData.data;
+};
+
+export const EditUser = async (access_token: any, data: any, id: any) => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users/" + id.id, {
     method: "PATCH",
     headers: {
       "content-Type": "application/json",
-      "Authorization": 'Bearer '+ access_token, 
+      "Authorization": "Bearer " + access_token,
     },
- 
+
     body: JSON.stringify(data),
-  })
-  let tempData= await res.json()
+  });
+  const tempData = await res.json();
 
+  return tempData;
+};
 
-  return tempData
-}
-
-
-export const createUser= async ( data: any, access_token ?: string)=>{
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users', {
+export const createUser = async (data: any, access_token?: string) => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users", {
     method: "POST",
     headers: {
       "content-Type": "application/json",
-      "Authorization": 'Bearer '+ access_token,
-   
+      "Authorization": "Bearer " + access_token,
+
     },
     body: JSON.stringify(data),
-  })
-  let tempData= await res.json()
+  });
+  const tempData = await res.json();
 
+  return tempData;
+};
 
-  return tempData
-}
+export const getStudentsWithoutClass = async (accessToken: string): Promise<ResponseInterface<GetClassStudentMembersResponse>> => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/school/students-with-no-class/", {
+    method: "GET",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": "Bearer " + accessToken,
+    }
+  });
+  const tempData = await res.json() as ResponseInterface<GetClassStudentMembersResponse>;
+
+  return tempData;
+};

@@ -1,5 +1,5 @@
 import { throwError } from "@/helpers/api";
-import { ClassTypes, ResponseInterface } from "@/types";
+import { AssignUserToClassPayload, AssignUserToClassResponse, ClassTypes, CreatePayload, GetClassStudentMembersResponse, ResponseInterface } from "@/types";
 
 export const createClass = async (data: any, access_token?: string) => {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class", {
@@ -83,8 +83,6 @@ export const getClasses = async (accessToken?: string): Promise<ClassTypes[]> =>
 
   const tempData = await res.json() as ResponseInterface<ClassTypes[]>;
 
-  console.log("te,pData:", tempData);
-
   return tempData.data;
 };
 
@@ -127,18 +125,39 @@ export const getClassStaffs = async (id: any, access_token?: string) => {
   return tempData.data.filter((staff: {role: string}) => staff.role != "student");
 };
 
-export const AssignUserToClass = async (data: any, access_token?: string) => {
-  console.log("data: ", data);
-
+export const AssignUserToClass = async (payload: CreatePayload<AssignUserToClassPayload>): Promise<ResponseInterface<AssignUserToClassResponse>> => {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class-member", {
     method: "POST",
     headers: {
       "content-Type": "application/json",
-      "Authorization": "Bearer " + access_token,
+      "Authorization": "Bearer " + payload.accessToken,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload.data),
   });
-  const tempData = await res.json();
+
+  if (!res.ok) {
+    await throwError(res);
+  }
+
+  const tempData = await res.json() as ResponseInterface<AssignUserToClassResponse>;
+
+  return tempData;
+};
+
+export const getClassStudentMembers = async (accessToken: string): Promise<ResponseInterface<GetClassStudentMembersResponse[]>> => {
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class-member", {
+    method: "GET",
+    headers: {
+      "content-Type": "application/json",
+      "Authorization": "Bearer " + accessToken,
+    }
+  });
+
+  if (!res.ok) {
+    await throwError(res);
+  }
+
+  const tempData = await res.json() as ResponseInterface<GetClassStudentMembersResponse[]>;
 
   return tempData;
 };

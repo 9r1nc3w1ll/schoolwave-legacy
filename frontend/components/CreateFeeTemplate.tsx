@@ -70,29 +70,24 @@ const CreateFeeTemplate = (props: CreateFeeTemplateProps) => {
     return (
         <div className="">
             <form className="space-y-5" onSubmit={onSubmit}>
-                <div>
-                    <label htmlFor="name">Name</label>
-                    <input id="name" type="text" className="form-input" {...register('name', { required: 'This field is required' })} />
-                </div>
-                <div>
-                    <label htmlFor="description">Description</label>
-                    <input id="description" type="text" className="form-input" {...register('description', { required: 'This field is required' })} />
-                </div>
-                <div>
-                    <ClassSelect {...register('class_id', { required: 'This field is required' })} user_session={props.user_session} triggerFetch={props.user_session_status === 'authenticated'} />
-                </div>
-                <div>
-                    <DiscountSelect {...register('discount')} trigger={props.user_session_status === 'authenticated'} user_session={props.user_session} />
-                </div>
-                <div>
-                    <label htmlFor="name">Required Fee Items</label>
-                    <Select
-                        placeholder="Select an option"
-                        options={feeItems}
-                        isMulti
-                        isSearchable={true}
-                        onChange={(e) => {
-                            const dataofInterest: string[] = [];
+        <div>
+          <label htmlFor="name">Name</label>
+          <input id="name" type="text" className="form-input" {...register("name", { required: "This field is required" })} />
+        </div>
+        <div>
+          <label htmlFor="description">Description</label>
+          <input id="description" type="text" className="form-input" {...register("description", { required: "This field is required" })} />
+        </div>
+        <div>
+          <ClassSelect {...register("class_id", { required: "This field is required" })} user_session={props.user_session} triggerFetch= {props.user_session_status === "authenticated"} />
+        </div>
+        <div>
+          <DiscountSelect {...register("discount")} trigger={props.user_session_status === "authenticated"} user_session={props.user_session} />
+        </div>
+        <div>
+          <label htmlFor="name">Required Fee Items</label>
+          <Select placeholder="Select an option" options={feeItems} isMulti isSearchable={true} onChange={(e) => {
+            const dataofInterest: string[] = [];
 
                             e.forEach((itm) => {
                                 dataofInterest.push(itm.value);
