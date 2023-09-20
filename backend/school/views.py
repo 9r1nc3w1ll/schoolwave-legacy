@@ -395,7 +395,7 @@ class SchoolListAPIView(generics.GenericAPIView):
             schools = School.objects.filter(owner=school_owner)
 
             school_owner_serializer = UserSerializer(school_owner)
-            schools_serializer = SchoolListSerializer(schools, many=True)
+            schools_serializer = SchoolSerializer(schools, many=True)
 
             owner = school_owner_serializer.data
             schools_data = schools_serializer.data  # Make sure schools_data is a list of dictionaries
