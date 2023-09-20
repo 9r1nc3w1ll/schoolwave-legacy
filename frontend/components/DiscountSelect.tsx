@@ -8,7 +8,7 @@ interface DiscountSelectProps extends React.SelectHTMLAttributes<HTMLSelectEleme
   user_session: UserSession;
 }
 
-const DiscountSelect = React.forwardRef<HTMLSelectElement, DiscountSelectProps>(({ user_session: userSession, trigger }, ref) => {
+const DiscountSelect = React.forwardRef<HTMLSelectElement, DiscountSelectProps>(({ user_session: userSession, trigger, ...rest }, ref) => {
   const [discounts, setDiscount] = useState<DiscountTypes[]>([]);
   const { data, isLoading, refetch } = useQuery("feediscounts", () => getDiscounts(userSession?.access_token), { enabled: false });
 
@@ -25,10 +25,10 @@ const DiscountSelect = React.forwardRef<HTMLSelectElement, DiscountSelectProps>(
   }, [data]);
 
   return (
-    <select placeholder="Discount" className="form-input"
+    <select placeholder="Discount" className="form-input" ref={ref}
       onClick={() => {
         refetch();
-      }}>
+      }} {...rest}>
       <option>Discounts</option>
       {isLoading
         ? <option>Loading ...</option>
@@ -37,5 +37,7 @@ const DiscountSelect = React.forwardRef<HTMLSelectElement, DiscountSelectProps>(
     </select>
   );
 });
+
+DiscountSelect.displayName = "DiscountSelect";
 
 export default DiscountSelect;

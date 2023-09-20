@@ -127,7 +127,7 @@ const Attendance = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-6 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2">
                     <div>
-                        <ClassSelect register={register} user_session={user_session} triggerFetch={sessionStatus == 'authenticated'} class_selector={selectedClass} />
+                        <ClassSelect {...register(selectedClass, { required: "This field is required" })} userSession={user_session} triggerFetch={sessionStatus == 'authenticated'} />
                         <button className="btn btn-primary mt-4" type="submit">
                             Update
                         </button>
@@ -163,7 +163,7 @@ const Attendance = () => {
             <hr />
             <div className="mt-4">
                 <AttendanceAccordion
-                    class_id={classId}
+                    classId={classId}
                     attendance={students_attendance}
                     role={user_session?.role! as 'admin' | 'student'}
                     school={user_session?.school?.id}

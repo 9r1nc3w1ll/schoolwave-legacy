@@ -79,7 +79,7 @@ const CreateFeeTemplate = (props: CreateFeeTemplateProps) => {
           <input id="description" type="text" className="form-input" {...register("description", { required: "This field is required" })} />
         </div>
         <div>
-          <ClassSelect {...register("class_id", { required: "This field is required" })} user_session={props.user_session} triggerFetch= {props.user_session_status === "authenticated"} />
+          <ClassSelect {...register("class_id", { required: "This field is required" })} userSession={props.user_session} triggerFetch= {props.user_session_status === "authenticated"} />
         </div>
         <div>
           <DiscountSelect {...register("discount")} trigger={props.user_session_status === "authenticated"} user_session={props.user_session} />
