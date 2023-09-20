@@ -27,7 +27,7 @@ const Export = (props: any) => {
   }
 
   const { data: students, isSuccess, status, refetch } = useQuery('getStudents', () => {
-    return getStudents(session?.access_token)
+    return getStudents(session?.access_token ?? "")
   }, {
     enabled: false
   })
@@ -65,22 +65,19 @@ const Export = (props: any) => {
     setRecordsData([...initialRecords.slice(from, to)]);
   }, [page, pageSize, initialRecords]);
 
+  const filteredRecords = () => {
+    return recordsData.filter(
+      (item) =>
+        item.id.toString().includes(search.toLowerCase()) ||
+                item.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+                item.last_name?.toLowerCase().includes(search.toLowerCase())
+    );
+  };
+
   useEffect(() => {
-    setInitialRecords(() => {
-      if(isSuccess && students.length ){
-
-        return students.filter((item: any) => {
-          return (
-            item.id.toString().includes(search.toLowerCase()) ||
-            item.first_name.toLowerCase().includes(search.toLowerCase()) ||
-            item.last_name.toLowerCase().includes(search.toLowerCase())
-
-          );
-        });
-      } else {
-        setInitialRecords([])
-      }
-    });
+    if (isSuccess) {
+      setInitialRecords(students)
+    }
   }, [search, students, status]);
 
   useEffect(() => {

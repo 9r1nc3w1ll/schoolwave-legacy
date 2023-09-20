@@ -1,5 +1,5 @@
 import { AssignStaffToSubject, getSingleSubject } from '@/apicalls/subjects';
-import { getAllStaffs } from '@/apicalls/staffs';
+import { getAllStaff } from '@/apicalls/staffs';
 import { getRoles } from '@/apicalls/roles';
 import { showAlert } from '@/utility_methods/alert';
 import { useState, useEffect } from 'react';
@@ -9,6 +9,7 @@ import { active } from 'sortablejs';
 import CheckboxWithState from './CheckboxWithState';
 import Option from 'react-select/dist/declarations/src/components/Option';
 import { AnyARecord } from 'dns';
+import { GetAllStaffType } from '@/types';
 
 
 
@@ -17,10 +18,10 @@ const SubjectUserAssignments = (props: any) => {
 
 
   const [search, setSearch] = useState<string>('');
-  const [items, setItems] = useState<{ value: string }[]>([]);
+  const [items, setItems] = useState<GetAllStaffType[]>([]);
   const [roles, setRoles] = useState<{ value: string }[]>([]);
-  const { data: staffsDetails, isSuccess: teachersSuccess, isLoading: teachersLoading, refetch:refetchTeacher } = useQuery('getAllStaffs', async () => {
-    return getAllStaffs (props.user_session.access_token);
+  const { data: staffsDetails, isSuccess: teachersSuccess, isLoading: teachersLoading, refetch:refetchTeacher } = useQuery('getAllStaff', async () => {
+    return getAllStaff (props.user_session.access_token);
   });
   const { data: roleDetails, isSuccess: rolesSuccess, isLoading: rlesLoading, refetch:refetchRole } = useQuery('getAllRoles', async () => {
     return getRoles (props.user_session.access_token);
@@ -55,7 +56,7 @@ const SubjectUserAssignments = (props: any) => {
       // setItems(teachersData);
       refetchTeacher()
       refetchRole()
-      setItems(staffsDetails.data),
+      setItems(staffsDetails),
       setRoles(roleDetails)
       
       

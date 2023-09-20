@@ -70,21 +70,19 @@ const Export = () => {
     setRecordsData([...initialRecords.slice(from, to)]);
   }, [page, pageSize, initialRecords]);
 
+  const filteredRecords = () => {
+    return recordsData.filter(
+      (item) =>
+        item.id.toString().includes(search.toLowerCase()) ||
+                item.user_info.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+                item.user_info.last_name?.toLowerCase().includes(search.toLowerCase())
+    );
+  };
+  
   useEffect(() => {
-    setInitialRecords(() => {
-      if (isSuccess && students?.length) {
-        return students.filter((item: any) => {
-          return (
-            item.id.toString().includes(search.toLowerCase()) ||
-                      item.first_name.toLowerCase().includes(search.toLowerCase()) ||
-                      item.last_name.toLowerCase().includes(search.toLowerCase())
-
-          );
-        });
-      } else {
-        setInitialRecords([]);
-      }
-    });
+    if (isSuccess) {
+      setInitialRecords(students);
+    }
   }, [search, students, status]);
 
   useEffect(() => {
@@ -250,7 +248,7 @@ const Export = () => {
           <DataTable
             highlightOnHover
             className="table-hover whitespace-nowrap"
-            records={recordsData}
+            records={filteredRecords()}
             columns={[
               { accessor: "id", title: "Staff No.", sortable: true },
               { accessor: "user_info.first_name", title: "First Name", sortable: true },

@@ -1,7 +1,7 @@
 import { AssignUserToClass } from "@/apicalls/class-api";
 import { Avatar } from "@mantine/core";
 import CheckboxWithState from "./CheckboxWithState";
-import Select from "react-select";
+import Select, { GroupBase, OptionsOrGroups } from "react-select";
 import { getAllStaff } from "@/apicalls/staffs";
 import { getFirstLetters } from "@/helpers/api";
 import { getStudentsWithoutClass } from "@/apicalls/users";
@@ -110,15 +110,21 @@ const ClassUserAssignment = (props: ClassUserAssignmentProps) => {
                   </div>
                   <div className="w-full">
                     {!props.student
-                      ? <Select defaultValue="Select a Role" options={roles} isSearchable={false}
+                      ? <Select placeholder="Select a Role" options={roles as OptionsOrGroups<{
+                        label: string;
+                        value: string;
+                    }, GroupBase<{
+                        label: string;
+                        value: string;
+                    }>>} isSearchable={false}
                         onChange={(e) => {
                           const data = {
                             user: item?.user,
                             class_id: props.classData.id,
-                            role: e.value,
+                            role: e?.value,
                           };
 
-                          mutate({ data: { ...data, school: props?.user_session?.school?.id }, accessToken: props.user_session?.access_token });
+                          mutate({ data: { ...data, role: data?.role ?? "", school: props?.user_session?.school?.id }, accessToken: props.user_session?.access_token });
                         }}
                         onFocus={() => {
                           setSelectedOption(i);
