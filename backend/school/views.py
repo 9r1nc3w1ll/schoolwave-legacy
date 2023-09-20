@@ -15,7 +15,7 @@ from utils.permissions import IsSchoolOwner, IsSuperAdmin
 from django.db.models import Q
 import uuid
 
-from .serializers import SchoolLogoSerializer, SchoolSettingsSerializer, SchoolBrandSerializer, SchoolListSerializer
+from .serializers import SchoolLogoSerializer, SchoolSettingsSerializer, SchoolBrandSerializer
 from utils.permissions import IsSchoolOwner
 from .utils import attach_remote_image, validate
 from rest_framework.parsers import MultiPartParser
@@ -383,7 +383,7 @@ class CreateSchoolAndOwner(APIView):
 
 class SchoolListAPIView(generics.GenericAPIView):
     queryset = School.objects.all()
-    serializer_class = SchoolListSerializer
+    serializer_class = SchoolSerializer
     permission_classes = [IsSuperAdmin]
 
     def get(self, request):
