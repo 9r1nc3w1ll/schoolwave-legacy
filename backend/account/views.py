@@ -378,7 +378,14 @@ class SuperAdminCreateView(CreateAPIView):
     serializer_class = SuperAdminCreateSerializer
 
     def post(self, request, *args, **kwargs):
+
+        users = User.objects.all().count()
+
+        if users > 0:
+            return Response({"error" : "Users are present in the system."}, status=status.HTTP_400_BAD_REQUEST)
+        
         serializer = self.get_serializer(data=request.data)
+
         if serializer.is_valid():
             super_admin = serializer.save()
             message = "Super admin created successfully."
