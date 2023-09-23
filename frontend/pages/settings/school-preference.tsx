@@ -12,6 +12,7 @@ import { getSession } from '@/apicalls/session';
 import { forEach } from 'lodash';
 import { getSchoolSettings } from '@/apicalls/settings';
 import { useSession } from 'next-auth/react';
+import { useSettings } from '@/hooks/useSchoolSettings';
 
 const MySwal = withReactContent(Swal);
 
@@ -130,11 +131,13 @@ const Step1 = (props: any) => {
     const { token }: FormResponse = await (await mutateAsync(data)).json();
   };
   const { data: userSession } = useSession();
-  const { data, isSuccess, isFetching } = useQuery('fetch-settings', () =>
-    getSchoolSettings(userSession?.access_token!, userSession?.school?.id)
-  );
+  // const { data, isSuccess, isFetching } = useQuery('fetch-settings', () =>
+  //   getSchoolSettings(userSession?.access_token!, userSession?.school?.id)
+  // );
 
-  console.log({ data });
+  const { settingsConfig } = useSettings();
+
+  console.log({ settingsConfig });
   return (
     <div>
       <div className='panel'>

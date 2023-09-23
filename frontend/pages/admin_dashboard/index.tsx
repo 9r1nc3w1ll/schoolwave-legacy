@@ -206,7 +206,7 @@ const Dashboard = (props: any) => {
 
   const addmissionChart: any = useMemo(
     () => ({
-      series: [
+      series: data && [
         data?.total_approved_student,
         data?.total_pending_student,
         data?.total_denied_student,
@@ -261,7 +261,10 @@ const Dashboard = (props: any) => {
 
   const teachersChart: any = useMemo(
     () => ({
-      series: [data?.male_staff_count, data?.female_staff_count],
+      series: [
+        data && data?.male_staff_count,
+        data && data?.female_staff_count,
+      ],
       options: {
         chart: {
           height: 300,
