@@ -30,85 +30,29 @@ interface FormValues {
   username: string;
 }
 
-interface FormResponse {
-  ok: boolean;
-  token: string;
-}
-const Step1 = (props: any) => {
+const Step1 = () => {
   const dispatch = useDispatch();
   const [currentTab, setCurrentTab] = useState('basic');
   const [SessionList, setSessionList] = useState<any>([]);
 
-  useEffect(() => {
-    async function x() {
-      let SessionDetails = await getSession(props.user_session?.access_token);
-      if (SessionDetails.status == 'success') {
-        let z: any = [];
-        SessionDetails.data.forEach((session: any) => {
-          z.push({ value: session.name, label: session.name });
-        });
-        setSessionList(z);
-      }
-    }
-    x();
-  }, []);
+  // useEffect(() => {
+  //   async function x() {
+  //     let SessionDetails = await getSession(props.user_session?.access_token);
+  //     if (SessionDetails.status == 'success') {
+  //       let z: any = [];
+  //       SessionDetails.data.forEach((session: any) => {
+  //         z.push({ value: session.name, label: session.name });
+  //       });
+  //       setSessionList(z);
+  //     }
+  //   }
+  //   x();
+  // }, []);
 
   useEffect(() => {
     dispatch(setPageTitle('Contact Form'));
   });
   const router = useRouter();
-  const { mutateAsync, isLoading, error } = useMutation<
-    Response,
-    unknown,
-    FormValues,
-    unknown
-  >(
-    (post) =>
-      fetch(
-        `${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/api/auth/user_onboarding/`,
-        {
-          method: 'POST',
-          body: JSON.stringify(post),
-          headers: { 'Content-Type': 'application/json' },
-        }
-      ),
-    {
-      onSuccess: async (data) => {
-        MySwal.fire({
-          confirmButtonText: 'Next Step',
-          html: (
-            <div className='center mx-auto w-3/5'>
-              {' '}
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={2.5}
-                stroke='currentColor'
-                className='mx-auto h-12 w-12 text-success'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-                />
-              </svg>
-              <p className='text-center text-success'>
-                User Created successfully{' '}
-              </p>
-            </div>
-          ),
-        }).then(() => {
-          router.push('/onboarding/step2');
-        });
-      },
-      onError: (error) => {
-        MySwal.fire({
-          title: 'An Error Occured',
-        });
-      },
-    }
-  );
 
   const {
     register,
@@ -116,18 +60,14 @@ const Step1 = (props: any) => {
     getValues,
     formState: { errors },
   } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    data.username = data.email;
-    const { token }: FormResponse = await (await mutateAsync(data)).json();
-  };
 
-  const { settingsConfig } = useSettings();
+  const { _settingsConfig, query } = useSettings();
 
   const tabs: SettingsTabs = {
     basic: {
       id: 'basic',
       title: 'Basic Details',
-      component: <BasicSettings />,
+      component: <BasicSettings  />,
     },
     session: {
       id: 'session',
@@ -140,7 +80,7 @@ const Step1 = (props: any) => {
       component: <EmailSettings />,
     },
   };
-  console.log(Object.values(tabs));
+
   return (
     <div>
       <div className='panel'>
@@ -150,10 +90,7 @@ const Step1 = (props: any) => {
         <div className='grid grid-cols-6 gap-5 '>
           <ul className='panel col-span-1'>
             {Object.values(tabs).map(
-              (
-                key: { id: string; title: string; component: JSX.Element },
-                idx
-              ) => (
+              (key: { id: string; title: string; component: JSX.Element }) => (
                 <li
                   className={`mb-4 cursor-pointer ${
                     currentTab == tabs[key?.id].id ? 'text-primary' : ''
@@ -165,7 +102,11 @@ const Step1 = (props: any) => {
               )
             )}
           </ul>
-          <div className='col-span-5'>{tabs[currentTab].component}</div>
+          <div className='col-span-5'>
+            <form>
+              {tabs[currentTab].component}
+            </form>
+          </div>
         </div>
       </div>
     </div>
