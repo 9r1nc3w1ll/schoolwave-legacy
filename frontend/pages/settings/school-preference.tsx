@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useRouter } from 'next/router';
@@ -13,6 +13,10 @@ import { forEach } from 'lodash';
 import { getSchoolSettings } from '@/apicalls/settings';
 import { useSession } from 'next-auth/react';
 import { useSettings } from '@/hooks/useSchoolSettings';
+import BasicSettings from './widgets/basic';
+import SessionSettings from './widgets/session';
+import EmailSettings from './widgets/email';
+import { SettingsTabs } from '@/models/Settings';
 
 const MySwal = withReactContent(Swal);
 
@@ -48,21 +52,7 @@ const Step1 = (props: any) => {
     }
     x();
   }, []);
-  const [images, setImages] = useState<any>([]);
-  const maxNumber = 69;
 
-  const onChange = (
-    imageList: ImageListType,
-    addUpdateIndex: number[] | undefined
-  ) => {
-    setImages(imageList as never[]);
-  };
-
-  const options4 = [
-    { value: '1st Term', label: '1st Term' },
-    { value: '2nd Term', label: '2nd Term' },
-    { value: '3rd Term', label: '3rd Term' },
-  ];
   useEffect(() => {
     dispatch(setPageTitle('Contact Form'));
   });
@@ -130,14 +120,27 @@ const Step1 = (props: any) => {
     data.username = data.email;
     const { token }: FormResponse = await (await mutateAsync(data)).json();
   };
-  const { data: userSession } = useSession();
-  // const { data, isSuccess, isFetching } = useQuery('fetch-settings', () =>
-  //   getSchoolSettings(userSession?.access_token!, userSession?.school?.id)
-  // );
 
   const { settingsConfig } = useSettings();
 
-  console.log({ settingsConfig });
+  const tabs: SettingsTabs = {
+    basic: {
+      id: 'basic',
+      title: 'Basic Details',
+      component: <BasicSettings />,
+    },
+    session: {
+      id: 'session',
+      title: 'Session Details',
+      component: <SessionSettings />,
+    },
+    email: {
+      id: 'email',
+      title: 'Email Settings',
+      component: <EmailSettings />,
+    },
+  };
+  console.log(Object.values(tabs));
   return (
     <div>
       <div className='panel'>
@@ -146,261 +149,23 @@ const Step1 = (props: any) => {
         </h5>
         <div className='grid grid-cols-6 gap-5 '>
           <ul className='panel col-span-1'>
-            <li
-              className={`mb-4 cursor-pointer ${
-                currentTab == 'basic' ? 'text-primary' : ''
-              }`}
-              onClick={() => setCurrentTab('basic')}
-            >
-              {' '}
-              {'>'} Basic Details
-            </li>
-            <li
-              className={`mb-4 cursor-pointer ${
-                currentTab == 'session' ? 'text-primary' : ''
-              }`}
-              onClick={() => setCurrentTab('session')}
-            >
-              {' '}
-              {'>'} Session Details{' '}
-            </li>
-            <li
-              className={`mb-4 cursor-pointer ${
-                currentTab == 'email' ? 'text-primary' : ''
-              }`}
-              onClick={() => setCurrentTab('email')}
-            >
-              {' '}
-              {'>'} Email Settings{' '}
-            </li>
-          </ul>
-          <div className='col-span-5'>
-            {currentTab == 'basic' ? (
-              <form className='space-y-5 ' onSubmit={() => onSubmit()}>
-                <div className='flex flex-col sm:flex-row'>
-                  <label
-                    htmlFor='horizontalEmail'
-                    className='mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2'
-                  >
-                    School Name
-                  </label>
-                  <input
-                    id='School Name'
-                    type='text'
-                    placeholder='School Name'
-                    className='form-input flex-1'
-                  />
-                </div>
-
-                <div className='flex flex-col sm:flex-row'>
-                  <label
-                    htmlFor='horizontalEmail'
-                    className='mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2'
-                  >
-                    Email
-                  </label>
-                  <input
-                    id='horizontalEmail'
-                    type='email'
-                    placeholder='Enter Email'
-                    className='form-input flex-1'
-                  />
-                </div>
-                <div className='flex flex-col sm:flex-row'>
-                  <label
-                    htmlFor='horizontalPassword'
-                    className='mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2'
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    id='phoneNumber'
-                    type='number'
-                    className='form-input flex-1'
-                  />
-                </div>
-                <div className='flex flex-col sm:flex-row'>
-                  <label
-                    htmlFor='horizontalPassword'
-                    className='mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2'
-                  >
-                    Currency
-                  </label>
-                  <input
-                    id='currency'
-                    type='text'
-                    className='form-input flex-1'
-                  />
-                </div>
-                <div className='flex flex-col sm:flex-row'>
-                  <label
-                    htmlFor='currencySymbol'
-                    className='mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2'
-                  >
-                    Currency Symbol
-                  </label>
-                  <select id='currencySymbol' className='form-select flex-1'>
-                    <option value='NGN'>NGN (₦)</option>
-                    <option value='USD'>USD ($)</option>
-                    <option value='EUR'>EUR (€)</option>
-                    <option value='JPY'>JPY (¥)</option>
-                    <option value='GBP'>GBP (£)</option>
-                    <option value='AUD'>AUD (A$)</option>
-                    <option value='CAD'>CAD (C$)</option>
-                    <option value='CHF'>CHF (Fr)</option>
-                    <option value='CNY'>CNY (¥)</option>
-                    <option value='SEK'>SEK (kr)</option>
-                    <option value='NZD'>NZD (NZ$)</option>
-                  </select>
-                </div>
-                <div className='flex flex-col sm:flex-row'>
-                  <label
-                    htmlFor='horizontalPassword'
-                    className='mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2'
-                  >
-                    City
-                  </label>
-                  <input id='city' type='text' className='form-input flex-1' />
-                </div>
-                <div className='flex flex-col sm:flex-row'>
-                  <label
-                    htmlFor='horizontalPassword'
-                    className='mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2'
-                  >
-                    State
-                  </label>
-                  <input id='state' type='text' className='form-input flex-1' />
-                </div>
-                <div className='flex flex-col sm:flex-row'>
-                  <label
-                    htmlFor='horizontalPassword'
-                    className='mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2'
-                  >
-                    Address
-                  </label>
-                  <textarea className='form-input flex-1'></textarea>
-                </div>
-                <div className='flex flex-col sm:flex-row'>
-                  <label
-                    htmlFor='horizontalPassword'
-                    className='mb-0 rtl:ml-2 sm:w-1/4 sm:ltr:mr-2'
-                  >
-                    Language
-                  </label>
-                  <input
-                    id='language'
-                    type='text'
-                    className='form-input flex-1'
-                  />
-                </div>
-
-                <div
-                  className='custom-file-container'
-                  data-upload-id='myFirstImage'
+            {Object.values(tabs).map(
+              (
+                key: { id: string; title: string; component: JSX.Element },
+                idx
+              ) => (
+                <li
+                  className={`mb-4 cursor-pointer ${
+                    currentTab == tabs[key?.id].id ? 'text-primary' : ''
+                  }`}
+                  onClick={() => setCurrentTab(tabs[key?.id].id)}
                 >
-                  <div className='label-container'>
-                    <label>School Logo Upload </label>
-                    <button
-                      type='button'
-                      className='custom-file-container__image-clear'
-                      title='Clear Image'
-                      onClick={() => {
-                        setImages([]);
-                      }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                  <label className='custom-file-container__custom-file'></label>
-                  <input
-                    type='file'
-                    className='custom-file-container__custom-file__custom-file-input'
-                    accept='image/*'
-                  />
-                  <input type='hidden' name='MAX_FILE_SIZE' value='10485760' />
-                  <ImageUploading
-                    value={images}
-                    onChange={onChange}
-                    maxNumber={maxNumber}
-                  >
-                    {({
-                      imageList,
-                      onImageUpload,
-                      onImageRemoveAll,
-                      onImageUpdate,
-                      onImageRemove,
-                      isDragging,
-                      dragProps,
-                    }) => (
-                      <div className='upload__image-wrapper'>
-                        <button
-                          className='custom-file-container__custom-file__custom-file-control'
-                          type='button'
-                          onClick={onImageUpload}
-                        >
-                          Choose File...
-                        </button>
-                        &nbsp;
-                        {imageList.map((image, index) => (
-                          <div
-                            key={index}
-                            className='custom-file-container__image-preview relative'
-                          >
-                            <img
-                              src={image.dataURL}
-                              alt='img'
-                              className='m-auto'
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </ImageUploading>
-                  {images.length === 0 ? (
-                    <img
-                      src='/assets/images/file-preview.svg'
-                      className='m-auto w-full max-w-md'
-                      alt=''
-                    />
-                  ) : (
-                    ''
-                  )}
-                </div>
-
-                <button type='submit' className='btn btn-primary !mt-6'>
-                  Submit
-                </button>
-              </form>
-            ) : (
-              ''
+                  {'>'} {key.title}
+                </li>
+              )
             )}
-
-            {currentTab == 'session' ? (
-              <form onSubmit={() => onSubmit()}>
-                <label>Current Session</label>
-                <Select
-                  placeholder={SessionList[0]?.value}
-                  options={SessionList}
-                />
-
-                <label className='mt-8'>Current Term</label>
-                <Select placeholder={options4[0]?.value} options={options4} />
-
-                <label className='mt-8'>
-                  Preferred Name for a School year (e.g Session, Year, Grade
-                  e.t.c)
-                </label>
-                <input type='text' className='form-input' />
-
-                <label className='mt-8'>
-                  Preferred Name for a Term (e.g Term, Semester e.t.c)
-                </label>
-                <input type='text' className='form-input' />
-              </form>
-            ) : (
-              ''
-            )}
-          </div>
+          </ul>
+          <div className='col-span-5'>{tabs[currentTab].component}</div>
         </div>
       </div>
     </div>

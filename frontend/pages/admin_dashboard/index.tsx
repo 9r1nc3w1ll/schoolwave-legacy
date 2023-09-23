@@ -206,11 +206,12 @@ const Dashboard = (props: any) => {
 
   const addmissionChart: any = useMemo(
     () => ({
-      series: data && [
-        data?.total_approved_student,
-        data?.total_pending_student,
-        data?.total_denied_student,
-      ],
+      series:
+        [
+          data?.total_approved_student,
+          data?.total_pending_student,
+          data?.total_denied_student,
+        ] ?? [],
       options: {
         chart: {
           height: 300,
@@ -261,10 +262,9 @@ const Dashboard = (props: any) => {
 
   const teachersChart: any = useMemo(
     () => ({
-      series: [
-        data && data?.male_staff_count,
-        data && data?.female_staff_count,
-      ],
+      series:
+        [data && data?.male_staff_count, data && data?.female_staff_count] ??
+        [],
       options: {
         chart: {
           height: 300,
@@ -315,10 +315,7 @@ const Dashboard = (props: any) => {
 
   const studentsChart: any = useMemo(
     () => ({
-      series: [
-        data && data?.paid_percentage,
-        data && data?.outstanding_percentage,
-      ],
+      series: [data?.paid_percentage, data?.outstanding_percentage] ?? [],
       options: {
         chart: {
           height: 300,
