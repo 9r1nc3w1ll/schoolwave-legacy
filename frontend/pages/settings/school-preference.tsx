@@ -3,13 +3,15 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useRouter } from 'next/router';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import Select from 'react-select';
 import ImageUploading, { ImageListType } from 'react-images-uploading';
 import { getSession } from '@/apicalls/session';
 import { forEach } from 'lodash';
+import { getSchoolSettings } from '@/apicalls/settings';
+import { useSession } from 'next-auth/react';
 
 const MySwal = withReactContent(Swal);
 
@@ -127,7 +129,12 @@ const Step1 = (props: any) => {
     data.username = data.email;
     const { token }: FormResponse = await (await mutateAsync(data)).json();
   };
+  const { data: userSession } = useSession();
+  const { data, isSuccess, isFetching } = useQuery('fetch-settings', () =>
+    getSchoolSettings(userSession?.access_token!, userSession?.school?.id)
+  );
 
+  console.log({ data });
   return (
     <div>
       <div className='panel'>
