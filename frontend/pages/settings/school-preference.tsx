@@ -30,7 +30,7 @@ interface FormValues {
   username: string;
 }
 
-const Step1 = () => {
+const SchoolSettings = () => {
   const dispatch = useDispatch();
   const [currentTab, setCurrentTab] = useState('basic');
   const [SessionList, setSessionList] = useState<any>([]);
@@ -50,7 +50,7 @@ const Step1 = () => {
   // }, []);
 
   useEffect(() => {
-    dispatch(setPageTitle('Contact Form'));
+    dispatch(setPageTitle('School Settings'));
   });
   const router = useRouter();
 
@@ -61,13 +61,30 @@ const Step1 = () => {
     formState: { errors },
   } = useForm<FormValues>();
 
-  const { _settingsConfig, query } = useSettings();
+  const {
+    _settingsConfig,
+    query,
+    resetSettingsState,
+    setActiveTab,
+    setSettingsState,
+  } = useSettings();
 
   const tabs: SettingsTabs = {
     basic: {
       id: 'basic',
       title: 'Basic Details',
-      component: <BasicSettings  />,
+      component: (
+        <BasicSettings
+          query={query}
+          resetSettingsState={resetSettingsState}
+          setActiveTab={function (): void {
+            throw new Error('Function not implemented.');
+          }}
+          setSettingsState={function (): void {
+            throw new Error('Function not implemented.');
+          }}
+        />
+      ),
     },
     session: {
       id: 'session',
@@ -81,6 +98,8 @@ const Step1 = () => {
     },
   };
 
+  console.log({ query });
+
   return (
     <div>
       <div className='panel'>
@@ -93,9 +112,13 @@ const Step1 = () => {
               (key: { id: string; title: string; component: JSX.Element }) => (
                 <li
                   className={`mb-4 cursor-pointer ${
-                    currentTab == tabs[key?.id].id ? 'text-primary' : ''
+                    query?.activeTab == tabs[key?.id].id ? 'text-primary' : ''
                   }`}
-                  onClick={() => setCurrentTab(tabs[key?.id].id)}
+                  onClick={() =>
+                    setActiveTab(
+                      tabs[key?.id].id as 'basic' | 'session' | 'email'
+                    )
+                  }
                 >
                   {'>'} {key.title}
                 </li>
@@ -103,9 +126,7 @@ const Step1 = () => {
             )}
           </ul>
           <div className='col-span-5'>
-            <form>
-              {tabs[currentTab].component}
-            </form>
+            <form>{tabs[currentTab].component}</form>
           </div>
         </div>
       </div>
@@ -113,4 +134,4 @@ const Step1 = () => {
   );
 };
 
-export default Step1;
+export default SchoolSettings;
