@@ -126,7 +126,7 @@ const SchoolSettings = () => {
             )}
           </ul>
           <div className='col-span-5'>
-            <form>{tabs[currentTab].component}</form>
+            <form>{tabs[query?.activeTab].component}</form>
           </div>
         </div>
       </div>
