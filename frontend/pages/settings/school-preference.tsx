@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useRouter } from 'next/router';
@@ -16,24 +16,12 @@ import { useSettings } from '@/hooks/useSchoolSettings';
 import BasicSettings from './widgets/basic';
 import SessionSettings from './widgets/session';
 import EmailSettings from './widgets/email';
-import { SettingsTabs } from '@/models/Settings';
+import { ISettings, SettingsTabs } from '@/models/Settings';
 
 const MySwal = withReactContent(Swal);
 
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  password: string;
-  confirmPassword: string;
-  username: string;
-}
-
 const SchoolSettings = () => {
   const dispatch = useDispatch();
-  const [currentTab, setCurrentTab] = useState('basic');
-  const [SessionList, setSessionList] = useState<any>([]);
 
   // useEffect(() => {
   //   async function x() {
@@ -55,19 +43,26 @@ const SchoolSettings = () => {
   const router = useRouter();
 
   const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-  } = useForm<FormValues>();
-
-  const {
     _settingsConfig,
     query,
     resetSettingsState,
     setActiveTab,
     setSettingsState,
   } = useSettings();
+
+  const initialValues: ISettings = useMemo(
+    () => ({ ...query, ['activeTab']: undefined }),
+    [query]
+  );
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<ISettings>({
+    defaultValues: initialValues,
+    shouldUseNativeValidation: true,
+  });
 
   const tabs: SettingsTabs = {
     basic: {
@@ -77,12 +72,10 @@ const SchoolSettings = () => {
         <BasicSettings
           query={query}
           resetSettingsState={resetSettingsState}
-          setActiveTab={function (): void {
-            throw new Error('Function not implemented.');
-          }}
           setSettingsState={function (): void {
             throw new Error('Function not implemented.');
           }}
+          register={register}
         />
       ),
     },
