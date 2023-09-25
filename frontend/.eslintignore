@@ -6,6 +6,7 @@ components/*
 !pages/school-fees/discounts/index.tsx
 !pages/school-fees/transactions/index.tsx
 !pages/attendance_new/index.tsx
+!pages/settings/school-preference.tsx
 !pages/subjects/lesson_note.tsx
 !pages/create_school/index.tsx
 # !pages/employee

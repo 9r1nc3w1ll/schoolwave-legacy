@@ -1,22 +1,13 @@
-import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
-import { useRouter } from 'next/router';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { useMutation, useQuery } from 'react-query';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import Select from 'react-select';
-import ImageUploading, { ImageListType } from 'react-images-uploading';
-import { getSession } from '@/apicalls/session';
-import { forEach } from 'lodash';
-import { getSchoolSettings } from '@/apicalls/settings';
-import { useSession } from 'next-auth/react';
 import { useSettings } from '@/hooks/useSchoolSettings';
 import BasicSettings from './widgets/basic';
 import SessionSettings from './widgets/session';
 import EmailSettings from './widgets/email';
-import { ISettings, SettingsTabs } from '@/models/Settings';
+import { ISettings, ISettingsPayload, SettingsTabs } from '@/models/Settings';
 
 const MySwal = withReactContent(Swal);
 
@@ -25,14 +16,14 @@ const SchoolSettings = () => {
   useEffect(() => {
     dispatch(setPageTitle('School Settings'));
   });
-  const router = useRouter();
 
   const {
-    _settingsConfig,
     query,
     resetSettingsState,
     setActiveTab,
     setSettingsState,
+    saveSettings,
+    isSavingSettings,
   } = useSettings();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,6 +65,34 @@ const SchoolSettings = () => {
     },
   };
 
+  const settingsPayload: ISettingsPayload = useMemo(
+    () => ({
+      settings: {
+        logo: {
+          file: query?.logo?.file,
+        },
+        brand: {
+          primary_color: query?.brand?.primaryColor,
+          secondary_color: query?.brand?.secondaryColor,
+        },
+        school_id: query?.schoolId,
+        school_name: query?.schoolName,
+        school_radius: query?.schoolRadius,
+        school_latitude: query?.schoolLatitude,
+        storage_options: {
+          token: query?.storageOptions?.token,
+          driver: query?.storageOptions?.driver,
+          default: query?.storageOptions?.default,
+          base_path: query?.storageOptions?.basePath,
+        },
+        school_longitude: query?.schoolLongitude,
+        staff_code_prefix: query?.staffCodePrefix,
+        student_code_prefix: query?.studentCodePrefix,
+      },
+    }),
+    [query]
+  );
+
   return (
     <div>
       <div className='panel'>
@@ -101,10 +120,19 @@ const SchoolSettings = () => {
             )}
           </ul>
           <div className='col-span-5'>
-            <form>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                saveSettings(settingsPayload);
+              }}
+            >
               {tabs[query?.activeTab].component}
-              <button type='submit' className='btn btn-primary !mt-6'>
-                Submit
+              <button
+                type='submit'
+                className='btn btn-primary !mt-6'
+                disabled={isSavingSettings}
+              >
+                {isSavingSettings ? 'Loading' : '   Submit'}
               </button>
             </form>
           </div>
