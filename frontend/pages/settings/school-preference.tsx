@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useRouter } from 'next/router';
@@ -22,21 +22,6 @@ const MySwal = withReactContent(Swal);
 
 const SchoolSettings = () => {
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   async function x() {
-  //     let SessionDetails = await getSession(props.user_session?.access_token);
-  //     if (SessionDetails.status == 'success') {
-  //       let z: any = [];
-  //       SessionDetails.data.forEach((session: any) => {
-  //         z.push({ value: session.name, label: session.name });
-  //       });
-  //       setSessionList(z);
-  //     }
-  //   }
-  //   x();
-  // }, []);
-
   useEffect(() => {
     dispatch(setPageTitle('School Settings'));
   });
@@ -50,20 +35,12 @@ const SchoolSettings = () => {
     setSettingsState,
   } = useSettings();
 
-  const initialValues: ISettings = useMemo(
-    () => ({ ...query, ['activeTab']: undefined }),
-    [query]
-  );
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-  } = useForm<ISettings>({
-    defaultValues: initialValues,
-    shouldUseNativeValidation: true,
-  });
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSettingsState({
+      field: e.target.name as keyof ISettings,
+      value: e.target.value,
+    });
+  };
   const tabs: SettingsTabs = {
     basic: {
       id: 'basic',
@@ -72,17 +49,23 @@ const SchoolSettings = () => {
         <BasicSettings
           query={query}
           resetSettingsState={resetSettingsState}
+          handleChange={handleChange}
           setSettingsState={function (): void {
             throw new Error('Function not implemented.');
           }}
-          register={register}
         />
       ),
     },
     session: {
       id: 'session',
       title: 'Session Details',
-      component: <SessionSettings />,
+      component: (
+        <SessionSettings
+          query={query}
+          resetSettingsState={resetSettingsState}
+          handleChange={handleChange}
+        />
+      ),
     },
     email: {
       id: 'email',
@@ -90,8 +73,6 @@ const SchoolSettings = () => {
       component: <EmailSettings />,
     },
   };
-
-  console.log({ query });
 
   return (
     <div>
@@ -104,6 +85,7 @@ const SchoolSettings = () => {
             {Object.values(tabs).map(
               (key: { id: string; title: string; component: JSX.Element }) => (
                 <li
+                  key={key?.id}
                   className={`mb-4 cursor-pointer ${
                     query?.activeTab == tabs[key?.id].id ? 'text-primary' : ''
                   }`}
@@ -119,7 +101,12 @@ const SchoolSettings = () => {
             )}
           </ul>
           <div className='col-span-5'>
-            <form>{tabs[query?.activeTab].component}</form>
+            <form>
+              {tabs[query?.activeTab].component}
+              <button type='submit' className='btn btn-primary !mt-6'>
+                Submit
+              </button>
+            </form>
           </div>
         </div>
       </div>
