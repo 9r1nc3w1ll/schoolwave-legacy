@@ -26,26 +26,6 @@ const BasicSettings: React.FC<IBasicSettings> = ({
     setImages(imageList as never[]);
   };
 
-  //   logo: { file: '' },
-  //   brand: {
-  //     primaryColor: '',
-  //     secondaryColor: '',
-  //   },
-  //   schoolId: '',
-  //   schoolName: '',
-  //   schoolRadius: 0,
-  //   schoolLatitude: 0,
-  //   storageOptions: {
-  //     token: '',
-  //     driver: '',
-  //     default: false,
-  //     basePath: '',
-  //   },
-  //   schoolLongitude: 0,
-  //   staffCodePrefix: '',
-  //   studentCodePrefix: '',
-  //   activeTab: 'basic',
-
   return (
     <div>
       <div className='mb-3 flex flex-col sm:flex-row'>
