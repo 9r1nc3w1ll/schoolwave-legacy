@@ -29,3 +29,4 @@ components/*
 # !components/ClassUserAssignment.tsx
 !components/BulkEmployee.tsx
 !middleware.ts
+!hooks/useSchoolSettings.tsx

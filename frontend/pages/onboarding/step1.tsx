@@ -329,8 +329,7 @@ const Step1 = () => {
 Step1.getLayout = (page: any) => {
   return (
     <SessionProvider session={page.props.session}>
-      {' '}
-      <OnboardingLayout>{page}</OnboardingLayout>{' '}
+      <OnboardingLayout>{page}</OnboardingLayout>
     </SessionProvider>
   );
 };
