@@ -75,7 +75,7 @@ export type SettingsPayloadTypes = {
 };
 
 export type ISettingsNavTypes = {
-  activeTab: 'basic' | 'session' | 'email';
+  activeTab: "basic" | "session" | "email";
 };
 
 export type SettingsTabs = {

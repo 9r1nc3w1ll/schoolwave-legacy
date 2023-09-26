@@ -30,3 +30,4 @@ components/*
 !components/BulkEmployee.tsx
 !middleware.ts
 !hooks/useSchoolSettings.tsx
+!models/Settings.tsx
