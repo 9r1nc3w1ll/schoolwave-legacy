@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { IClientError } from "@/types";
+import { TSchool } from "@/models";
+import { showAlert } from "@/utility_methods/alert";
+import { useSession } from "next-auth/react";
 import {
   ISettings,
   ISettingsNavTypes,
   ISettingsPayload,
+  ISettingsResponse,
   SettingsPayloadTypes,
 } from "@/models/Settings";
-import { useMutation, useQuery } from "react-query";
+import React, { useEffect, useState } from "react";
 import { getSchoolSettings, updateSettings } from "@/apicalls/settings";
-import { useSession } from "next-auth/react";
-import { showAlert } from "@/utility_methods/alert";
-import { IClientError } from "@/types";
+import { useMutation, useQuery } from "react-query";
 
 type ISettingsTypes = ISettings & ISettingsNavTypes;
 
@@ -75,6 +77,7 @@ function SettinsReducer (
 }
 
 export const useSettings = () => {
+  // eslint-disable-next-line unused-imports/no-unused-vars
   const [fetchedSettings, setFectchedSettings] =
     useState<ISettingsTypes>(initialSettingState);
 
@@ -155,10 +158,12 @@ export const useSettings = () => {
     data: settingsConfig,
     isSuccess,
     isFetching: isLoadingSettingsConfig,
-  } = useQuery(
+  }: { data: ISettingsResponse | undefined; isSuccess: boolean; isFetching: boolean } = useQuery(
     "fetch-settings",
-    () =>
-      getSchoolSettings(userSession?.access_token!, userSession?.school?.id),
+    (): Promise<ISettingsResponse > =>
+      getSchoolSettings(
+        userSession!.access_token!, (userSession!.school as unknown as TSchool).id
+      ),
     { enabled: true }
   );
 
@@ -185,6 +190,7 @@ export const useSettings = () => {
         studentCodePrefix: settingsConfig?.student_code_prefix,
         activeTab: "basic",
       };
+
       setState(defaultState);
     }
   }, [isSuccess, setState, settingsConfig]);
@@ -194,7 +200,7 @@ export const useSettings = () => {
       return updateSettings(
         data,
         userSession?.access_token,
-        userSession?.school?.id
+        (userSession?.school as unknown as TSchool).id
       );
     },
     {

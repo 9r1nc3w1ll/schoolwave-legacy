@@ -1,1 +1,1 @@
-export { type TSchool } from './School'
+export { type TSchool } from "./School";
