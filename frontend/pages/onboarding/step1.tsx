@@ -71,7 +71,7 @@ const Step1 = () => {
     <div className='panel m-6 w-full max-w-lg sm:w-[640px]'>
       <h2 className='mb-5 text-2xl font-bold'>Create Super Admin</h2>
       <p className='mb-7'>
-        Provide the information below so we can setup a super admin account{' '}
+        Provide the information below so we can setup a super user account{' '}
       </p>
       <form onSubmit={handleSubmit(onSubmit)}>
         <fieldset
@@ -309,8 +309,16 @@ const Step1 = () => {
               {errors.confirm_password ? errors.confirm_password.message : ''}
             </p>
           </div>
-          <button type='submit' className='btn btn-primary w-full'>
-            Create Super User
+          <button
+            type='submit'
+            className='btn btn-primary w-full'
+            disabled={createOwnerMutation.isLoading}
+          >
+            {createOwnerMutation.isLoading ? (
+              <span className='inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-l-transparent align-middle ltr:mr-4 rtl:ml-4'></span>
+            ) : (
+              ' Create Super User'
+            )}
           </button>
         </fieldset>
       </form>

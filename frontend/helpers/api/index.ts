@@ -34,13 +34,20 @@ type TCreateOwnerInput = {
 
 const LOGIN_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/login`;
 const GET_SESSION_USER_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/refresh-auth-user`;
-const CREATE_OWNER_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/school/register-admin`;
+const CREATE_OWNER_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/create-super-admin`;
 
-class ApiCall<TSuccess, TError> extends Promise<TSuccess> {
-  constructor (executor: (resolve: (value: TSuccess | PromiseLike<TSuccess>) => void, reject: (reason: TError) => void) => void) {
-    super(executor);
-  }
-}
+// class ApiCall<TSuccess, TError> extends Promise<TSuccess> {
+//   constructor (
+//     executor: (
+//       resolve: (value: TSuccess | PromiseLike<TSuccess>) => void,
+//       reject: (reason: TError) => void
+//     ) => void
+//   ) {
+//     super(executor);
+//   }
+// }
+
+class ApiCall<TSuccess, _TError> extends Promise<TSuccess> {}
 
 class ApiError extends Error {
   public message!: string;
@@ -54,7 +61,10 @@ class ApiError extends Error {
   }
 }
 
-export const loginWithCredentials = async (username: string, password: string): ApiCall<TLoginResponse, ApiError> => {
+export const loginWithCredentials = async (
+  username: string,
+  password: string
+): ApiCall<TLoginResponse, ApiError> => {
   return new ApiCall<TLoginResponse, ApiError>(async (resolve, reject) => {
     try {
       const response = await fetch(LOGIN_URL, {
@@ -76,38 +86,52 @@ export const loginWithCredentials = async (username: string, password: string): 
   });
 };
 
-export const createOwner = async (input: TCreateOwnerInput): ApiCall<TLoginResponse, ApiError> => {
+export const createOwner = async (
+  input: TCreateOwnerInput
+): ApiCall<TLoginResponse, ApiError> => {
   return new ApiCall<TLoginResponse, ApiError>((resolve, reject) => {
     fetch(CREATE_OWNER_URL, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(input)
-    }).then((response) => {
-      getTypedJson<TLoginResponse>(response).then((typedData) => resolve(typedData));
+      body: JSON.stringify(input),
     })
-      .catch((error) => reject(new ApiError("refreshLoggedInUser failed", { cause: error })));
+      .then((response) => {
+        getTypedJson<TLoginResponse>(response).then((typedData) =>
+          resolve(typedData)
+        );
+      })
+      .catch((error) =>
+        reject(new ApiError("refreshLoggedInUser failed", { cause: error }))
+      );
   });
 };
 
-export const getSessionUser = async (accessToken?: string): ApiCall<TRefreshUserResponse, ApiError> => {
+export const getSessionUser = async (
+  accessToken?: string
+): ApiCall<TRefreshUserResponse, ApiError> => {
   return new ApiCall<TRefreshUserResponse, ApiError>((resolve, reject) => {
     fetch(GET_SESSION_USER_URL, {
       method: "GET",
       headers: {
         "content-type": "application/json",
-        ...(accessToken ? { "authorization": `Bearer ${accessToken}` } : {}),
+        ...(accessToken ? { authorization: `Bearer ${accessToken}` } : {}),
       },
-    }).then((response) => {
-      getTypedJson<TRefreshUserResponse>(response).then((typedData) => resolve(typedData));
     })
-      .catch((error) => reject(new ApiError("refreshLoggedInUser failed", { cause: error })));
+      .then((response) => {
+        getTypedJson<TRefreshUserResponse>(response).then((typedData) =>
+          resolve(typedData)
+        );
+      })
+      .catch((error) =>
+        reject(new ApiError("refreshLoggedInUser failed", { cause: error }))
+      );
   });
 };
 
 export const throwError = async (res: Response): Promise<void> => {
   if (res.status === 500) {
     let error = { message: "" };
-    const tempError = await res.json() as IErrorResponse;
+    const tempError = (await res.json()) as IErrorResponse;
 
     if (tempError?.message) {
       if (tempError.message.split(" ")[0] === "duplicate") {
@@ -125,7 +149,7 @@ export const throwError = async (res: Response): Promise<void> => {
 
     throw error;
   } else {
-    const tempError = await res.json() as IErrorResponse;
+    const tempError = (await res.json()) as IErrorResponse;
     const error = { message: tempError.message };
 
     throw error;
@@ -133,7 +157,7 @@ export const throwError = async (res: Response): Promise<void> => {
 };
 
 const getTypedJson = async <T>(response: Response): Promise<T> => {
-  return response.json();
+  return response.json() as T;
 };
 
 export function getFirstLetters (str: string) {
