@@ -1,23 +1,23 @@
 export const BulkAdmissionUpload = async (data: any, access_token?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/admission/batch_upload_requests',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/admission/batch_upload_requests",
     {
-      method: 'POST',
+      method: "POST",
       body: data,
-      headers: {
-        Authorization: 'Bearer ' + access_token,
-      },
+      headers: { Authorization: "Bearer " + access_token },
     }
   );
-  let tempData = await res.json();
+  const tempData = await res.json();
+
   if (res.ok) {
     return tempData;
   } else {
-    let msg = 'an error occured';
+    let msg = "an error occured";
 
-    if (tempData.message.split(' ')[0] == 'duplicate') {
-      msg = 'one or more admission with similar record already exist';
+    if (tempData.message.split(" ")[0] == "duplicate") {
+      msg = "one or more admission with similar record already exist";
     }
+
     return {
       error: true,
       message: msg,
@@ -27,26 +27,27 @@ export const BulkAdmissionUpload = async (data: any, access_token?: string) => {
 
 export const createAdmission = async (data: any, access_token?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/admission/requests/create',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/admission/requests/create",
     {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(data),
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + access_token,
       },
     }
   );
-  let tempData = await res.json();
+  const tempData = await res.json();
 
-  let msg = 'an error occured';
+  let msg = "an error occured";
 
   if (
-    tempData.message.split(' ')[tempData.message.split(' ').length - 1] ==
-    'exists.'
+    tempData.message.split(" ")[tempData.message.split(" ").length - 1] ==
+    "exists."
   ) {
-    msg = 'student information with this username already exists.';
+    msg = "student information with this username already exists.";
   }
+
   if (res.ok) {
     return tempData.data;
   } else {
@@ -58,26 +59,24 @@ export const createAdmission = async (data: any, access_token?: string) => {
 };
 
 export const getAdmissions = async (
-  schoolID: string,
   access_token?: string
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/admission/requests/' + schoolID,
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/admission/requests",
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + access_token,
       },
     }
   );
-  let tempData = await res.json();
+  const tempData = await res.json();
+
   if (res.ok) {
     return tempData.data;
   } else {
-    return {
-      error: true,
-    };
+    return { error: true };
   }
 };
 
@@ -87,25 +86,27 @@ export const updateAdmission = async (
   access_token?: string
 ) => {
   const bdy: any = {};
-  bdy.status = approve ? 'approved' : 'denied';
+
+  bdy.status = approve ? "approved" : "denied";
+
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/admission/requests/' + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/admission/requests/" + id,
     {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(bdy),
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + access_token,
       },
     }
   );
-  let tempData = await res.json();
+  const tempData = await res.json();
+
   if (res.ok) {
     return tempData.data;
   } else {
     console.log(res);
-    return {
-      error: true,
-    };
+
+    return { error: true };
   }
 };

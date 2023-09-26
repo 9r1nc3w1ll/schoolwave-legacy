@@ -50,7 +50,7 @@ export default function BulkAdmission(props:any){
     <div className="text-center">
       <h1 className="text-xl mb-6 text-primary">Bulk Admission Upload</h1>
       <UploadFile useFile={handleUpload}  />
-      <p className="text-sm text-black-100 mt-3"> Click here to download sample template</p>
+      <a href="https://firebasestorage.googleapis.com/v0/b/lunar-c17b7.appspot.com/o/schoolwave-example-csv%2Fsample_admission_requests.csv?alt=media&token=bcca5789-1734-4bb0-b936-e20323186fb0" className="text-sm text-black-100 mt-3"> Click here to download sample template</a>
     </div>
   )
 }

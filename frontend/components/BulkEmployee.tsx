@@ -47,7 +47,7 @@ export default function BulkEmployee (props: BulkEmployeePropsType) {
     <div className="text-center">
       <h1 className="text-xl mb-6 text-primary">Bulk Employee Upload</h1>
       <UploadFile useFile={handleUpload} />
-      <p className="text-sm text-black-100 mt-3"> Click here to download sample template</p>
+      <a href="https://firebasestorage.googleapis.com/v0/b/lunar-c17b7.appspot.com/o/schoolwave-example-csv%2Fsample_upload.csv?alt=media&token=a0ae4254-3f6b-460a-96a4-17c66c239765" className="text-sm text-black-100 mt-3"> Click here to download sample template</a>
     </div>
   );
 }
