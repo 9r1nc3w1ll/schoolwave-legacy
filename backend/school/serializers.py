@@ -5,9 +5,11 @@ from account.models import User
 from admission.models import AdmissionRequest
 from staff.models import Staff
 from fees.models import Invoice
-from session.models import Session
+from session.models import Session, Term
+from django.db.models import Count, Q
 
 from partial_date import PartialDateField as CustomPartialDateField
+
 
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
@@ -100,7 +102,34 @@ class AdminDashboardSerializer:
         paid_percentage = (total_paid / total_amount) * 100 if total_amount > 0 else 0
         outstanding_percentage = (total_outstanding / total_amount) * 100 if total_amount > 0 else 0
 
-        session = Session.objects.filter(school=school, active=True).first()
+        session = Session.objects.filter(school=school_id, active=True).first()
+        
+        if session is not None:
+            session_name = session.name
+            session_start_date = str(session.start_date)
+            session_end_date = str(session.end_date)
+            session_resumption_date = session.resumption_date
+        else:
+            session_name = None
+            session_start_date = None
+            session_end_date = None
+            session_resumption_date = None
+
+        active_term = Term.objects.filter(school=school, active=True).first()
+        
+        if active_term is not None:
+            active_term_name = active_term.name
+        else:
+            active_term_name = None
+
+        class_members_query = ClassMember.objects.filter(user__role='student')\
+            .values('class_id')\
+            .annotate(m=Count('user', filter=Q(user__gender='male')),
+                    f=Count('user', filter=Q(user__gender='female')))
+    
+        class_names = dict(Class.objects.values_list('id', 'name'))
+
+        student_class_data = [{'class': class_names.get(item['class_id'], 'Unknown'), 'm': item['m'], 'f': item['f']} for item in class_members_query]
 
         data = {
             'total_student': total_student,
@@ -117,10 +146,12 @@ class AdminDashboardSerializer:
             'total_amount': total_amount,
             'paid_percentage': paid_percentage,
             'outstanding_percentage': outstanding_percentage,
-            'session': session.name,
-            'session_start_date': str(session.start_date),
-            'session_end_date': str(session.end_date),
-            'session_resumption_date': session.resumption_date,
+            'session': session_name,
+            'session_start_date': session_start_date,
+            'session_end_date': session_end_date,
+            'session_resumption_date': session_resumption_date,
+            'term': active_term_name,
+            'student_class': student_class_data
         }
         return data
 
