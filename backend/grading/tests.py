@@ -116,8 +116,8 @@ class GradeAPITest(APITestCase):
         self.session = Session.objects.create(
             school=self.school,
             resumption_date=datetime.now().date(),
-            start_date="2040",
-            end_date="2050"
+            start_date="2040-11-18",
+            end_date="2050-11-18"
         )
 
         self.term = Term.objects.create(
