@@ -104,28 +104,6 @@ const CreateSchoolPage = (props: any) => {
     setPage(1);
   }, [sortStatus]);
 
-  console.log({ recordsData });
-
-  console.log({ students });
-
-  //   {
-  //     "owner_id": "ba0570d6-919d-4f78-8dcc-f1e229dc8fc2",
-  //     "owner_username": "kingskids",
-  //     "owner_email": "ajaezokingsley@gmail.com",
-  //     "owner_fullname": "Ajaezo Kingsley",
-  //     "school_id": "d255bd9f-cf33-4b84-aa62-5dafaa76a261",
-  //     "created_at": "2023-09-28T14:32:37.258367Z",
-  //     "updated_at": "2023-09-28T14:32:37.258383Z",
-  //     "deleted_at": "None",
-  //     "name": "Ajaezo Kingsley",
-  //     "description": "None",
-  //     "logo_file_name": null,
-  //     "date_of_establishment": "2023-09-14",
-  //     "motto": null,
-  //     "tag": null,
-  //     "website_url": "https://url.com"
-  // }
-
   return (
     <div>
       <div className='panel'>

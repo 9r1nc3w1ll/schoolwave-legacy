@@ -7,6 +7,7 @@ components/*
 !pages/school-fees/transactions/index.tsx
 !pages/attendance_new/index.tsx
 !pages/subjects/lesson_note.tsx
+!pages/create_school/index.tsx
 # !pages/employee
 !components/CreateFeeItem.tsx
 !components/EditFeeItem.tsx
