@@ -57,8 +57,6 @@ const Step1  = (props:any) => {
     setImages(imageList as never[]);
   };
 
-
-
   const options4 = [
     { value: '1st Term', label: '1st Term' },
     { value: '2nd Term', label: '2nd Term' },

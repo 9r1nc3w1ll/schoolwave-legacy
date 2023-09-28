@@ -26,7 +26,7 @@ const DefaultLayout = ({ children }: IProps) => {
 
   useEffect(() => {
     if (sessionStatus === 'authenticated') {
-      if (!['admin', 'student'].includes(user_session?.role)) {
+      if (!['admin', 'student', 'super_admin'].includes(user_session?.role)) {
         console.log('access granted');
         router.push({
           pathname: '/',
@@ -82,7 +82,7 @@ const DefaultLayout = ({ children }: IProps) => {
 
   if (
     sessionStatus == 'authenticated' &&
-    ['admin', 'student'].includes(user_session?.role)
+    ['admin', 'student', 'super_admin'].includes(user_session?.role)
   ) {
     return (
       <App>

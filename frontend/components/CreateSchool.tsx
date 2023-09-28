@@ -15,7 +15,6 @@ const CreateSchool = (props: any) => {
   useEffect(() => {
     dispatch(setPageTitle('Admission Request'));
   });
-  const [date1, setDate1] = useState<any>('2022-07-05');
 
   const { register, reset, handleSubmit } = useForm({
     shouldUseNativeValidation: true,
@@ -47,6 +46,7 @@ const CreateSchool = (props: any) => {
     { value: 'male', label: 'Male' },
     { value: 'female', label: 'Female' },
   ];
+  
   const bloodOptions = [
     { value: 'choose', label: 'choose' },
     { value: 'O+', label: 'O+' },
@@ -59,7 +59,6 @@ const CreateSchool = (props: any) => {
     { value: 'AB -', label: 'AB-' },
   ];
 
-  const queryClient = useQueryClient();
   const { mutate, isLoading, error } = useMutation(
     (data: any) => {
       return createSchool(data, user_session?.access_token);
@@ -67,7 +66,7 @@ const CreateSchool = (props: any) => {
     {
       onSuccess: async (data) => {
         if (!data.error) {
-          showAlert('success', 'Admission created Successfully');
+          showAlert('success', 'School has been created successfully');
           reset();
           props.refreshAdmission();
           props.setmodal(false);
@@ -214,7 +213,11 @@ const CreateSchool = (props: any) => {
               />
             </div>
           </div>
-          <button type='submit' className='btn btn-primary btn-lg !mt-6'>
+          <button
+            type='submit'
+            className='btn btn-primary btn-lg !mt-6'
+            disabled={isLoading}
+          >
             {isLoading ? (
               <>
                 <span className='inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-l-transparent align-middle ltr:mr-4 rtl:ml-4'></span>

@@ -1,16 +1,12 @@
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState, Fragment } from 'react';
 import sortBy from 'lodash/sortBy';
-import { downloadExcel } from 'react-export-table-to-excel';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useMutation, useQuery } from 'react-query';
-import { getParents } from '@/apicalls/users';
 import { useRouter } from 'next/router';
-import CreateAdmission from '@/components/CreateAdmission';
 import { Dialog, Transition } from '@headlessui/react';
-import EditParent from '@/components/EditParent';
 import { useSession } from 'next-auth/react';
-import { getAdmissions, updateAdmission } from '@/apicalls/admissions';
+import { updateAdmission } from '@/apicalls/admissions';
 import { formatDate } from '@/utility_methods/datey';
 import { showAlert } from '@/utility_methods/alert';
 import { useDispatch } from 'react-redux';
@@ -29,22 +25,17 @@ const col = [
   'date_of_birth',
 ];
 
-const Admin = (props: any) => {
+const CreateSchoolPage = (props: any) => {
   const router = useRouter();
   const { status: sessionStatus, data: user_session } = useSession();
 
-  console.log(user_session);
   const {
     data: students,
-    isSuccess,
-    status,
     isFetching,
     refetch,
   } = useQuery('getSchools', () => getSchools(user_session?.access_token), {
     enabled: false,
   });
-
-  console.log({ students });
 
   const { mutate, isLoading, error } = useMutation(
     (data: boolean) => {
@@ -96,7 +87,9 @@ const Admin = (props: any) => {
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-  const [initialRecords, setInitialRecords] = useState(sortBy(students, 'id'));
+  const [initialRecords, setInitialRecords] = useState(
+    sortBy(students, 'school_id')
+  );
   const [recordsData, setRecordsData] = useState(initialRecords);
 
   const [search, setSearch] = useState('');
@@ -111,7 +104,27 @@ const Admin = (props: any) => {
     setPage(1);
   }, [sortStatus]);
 
+  console.log({ recordsData });
+
   console.log({ students });
+
+  //   {
+  //     "owner_id": "ba0570d6-919d-4f78-8dcc-f1e229dc8fc2",
+  //     "owner_username": "kingskids",
+  //     "owner_email": "ajaezokingsley@gmail.com",
+  //     "owner_fullname": "Ajaezo Kingsley",
+  //     "school_id": "d255bd9f-cf33-4b84-aa62-5dafaa76a261",
+  //     "created_at": "2023-09-28T14:32:37.258367Z",
+  //     "updated_at": "2023-09-28T14:32:37.258383Z",
+  //     "deleted_at": "None",
+  //     "name": "Ajaezo Kingsley",
+  //     "description": "None",
+  //     "logo_file_name": null,
+  //     "date_of_establishment": "2023-09-14",
+  //     "motto": null,
+  //     "tag": null,
+  //     "website_url": "https://url.com"
+  // }
 
   return (
     <div>
@@ -190,34 +203,47 @@ const Admin = (props: any) => {
           <DataTable
             highlightOnHover
             className='table-hover whitespace-nowrap'
-            records={recordsData}
+            records={students}
             columns={[
-              { accessor: 'id', title: 'School ID', sortable: true },
+              { accessor: 'owner_username', title: 'Username', sortable: true },
               {
-                accessor: 'student_info.first_name',
-                title: 'Name',
+                accessor: 'name',
+                title: 'School Name',
                 sortable: true,
               },
               {
-                accessor: 'student_info.last_name',
+                accessor: 'owner_email',
+                title: 'Owner Email',
+                sortable: true,
+              },
+              {
+                accessor: 'description',
                 title: 'Description',
                 sortable: true,
+                render: ({ description }) => (
+                  <div>{description === 'None' ? '-' : description}</div>
+                ),
               },
               {
-                accessor: 'student_info.last_name',
+                accessor: 'owner_fullname',
                 title: 'Owner',
                 sortable: true,
               },
               {
-                accessor: 'created_at',
+                accessor: 'date_of_establishment',
                 title: 'Date of establishment',
                 sortable: true,
-                render: ({ created_at }) => <div>{formatDate(created_at)}</div>,
+                render: ({ date_of_establishment }) => (
+                  <div>{formatDate(date_of_establishment)}</div>
+                ),
               },
               {
-                accessor: 'student_info.last_name',
+                accessor: 'motto',
                 title: 'Motto',
                 sortable: true,
+                render: ({ description }) => (
+                  <div>{description === 'None' ? '-' : description}</div>
+                ),
               },
             ]}
             totalRecords={initialRecords ? initialRecords.length : 0}
@@ -243,4 +269,4 @@ const Admin = (props: any) => {
   );
 };
 
-export default Admin;
+export default CreateSchoolPage;

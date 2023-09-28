@@ -18,7 +18,7 @@ export type AttendancePayload = {
   start_time: string;
   end_time: string;
   attendance_type: string;
-  role: "student" | "admin";
+  role: "student" | "admin" | "super_admin";
   attendee: string;
   class_id: string;
   subject: string;
@@ -42,7 +42,7 @@ export type AttendancePayloadTypes = {
 
 export type Student = {
   user: string;
-  role: "student" | "admin";
+  role: "student" | "admin" | "super_admin";
   class_id: string;
   class_info: ClassInfo;
   student_info: StudentInfo;

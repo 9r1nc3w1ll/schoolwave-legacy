@@ -36,17 +36,6 @@ const LOGIN_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/login`;
 const GET_SESSION_USER_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/refresh-auth-user`;
 const CREATE_OWNER_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/create-super-admin`;
 
-// class ApiCall<TSuccess, TError> extends Promise<TSuccess> {
-//   constructor (
-//     executor: (
-//       resolve: (value: TSuccess | PromiseLike<TSuccess>) => void,
-//       reject: (reason: TError) => void
-//     ) => void
-//   ) {
-//     super(executor);
-//   }
-// }
-
 class ApiCall<TSuccess, _TError> extends Promise<TSuccess> {}
 
 class ApiError extends Error {

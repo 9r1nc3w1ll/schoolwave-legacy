@@ -1,20 +1,14 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
-import { useRouter } from 'next/router';
 import OnboardingLayout from '@/components/Layouts/OnboardingLayout';
 import Link from 'next/link';
+
 const Step0 = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setPageTitle('Contact Form'));
+    dispatch(setPageTitle('Create Super Admin'));
   });
-  const router = useRouter();
-
-  const submitForm = (e: any) => {
-    e.preventDefault();
-    router.push('/');
-  };
 
   return (
    
@@ -38,10 +32,13 @@ const Step0 = () => {
         </svg>
                     Welcome to Schoolwave
       </h2>
-      <p className="mb-7 text-center">It appears your school portal is not set up; click next to set up school admin/owner account.</p>
-     
-      <button type="button" className="btn btn-primary w-2/3 mx-auto">  <Link href='/onboarding/step1'>  Next
-      </Link></button>
+      <p className='mb-7 text-center'>
+        click next to set up super admin account.
+      </p>
+
+      <button type='button' className='btn btn-primary mx-auto w-2/3'>
+        <Link href='/onboarding/step1'> Next</Link>
+      </button>
     </div>
  
   );
