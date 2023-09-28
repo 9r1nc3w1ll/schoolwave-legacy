@@ -90,6 +90,7 @@ const CreateSchoolPage = (props: any) => {
   const [initialRecords, setInitialRecords] = useState(
     sortBy(students, 'school_id')
   );
+  
   const [recordsData, setRecordsData] = useState(initialRecords);
 
   const [search, setSearch] = useState('');
