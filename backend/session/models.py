@@ -18,8 +18,8 @@ class Session(BaseModel):
     resumption_date = models.DateField()
 
     def save(self, *args, **kwargs):
-        start_date_obj = datetime.strptime(self.start_date, '%Y-%m-%d')
-        end_date_obj = datetime.strptime(self.end_date, '%Y-%m-%d')
+        start_date_obj = datetime.strptime(str(self.start_date), '%Y-%m-%d')
+        end_date_obj = datetime.strptime(str(self.end_date), '%Y-%m-%d')
 
         start_year = start_date_obj.year
         end_year = end_date_obj.year

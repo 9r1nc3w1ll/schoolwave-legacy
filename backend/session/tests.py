@@ -53,11 +53,12 @@ class SessionAPITestCase(APITestCase):
         data = {
             "school": self.school.id,
             "resumption_date": datetime.now().date(),
-            "start_date": "2022",
-            "end_date": "2023",
+            "start_date": "2022-11-18",
+            "end_date": "2023-11-18",
         }
 
         response = self.client.post(url, data)
+        print(response.data)
 
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -79,7 +80,7 @@ class SessionAPITestCase(APITestCase):
         url = reverse("retrieve_update_destroy_session", kwargs={"pk": self.session.id})
         self.client.force_authenticate(user=self.user)
 
-        data = {"start_date": "2023", "end_date": "2024"}
+        data = {"start_date": "2023-11-18", "end_date": "2024-11-18"}
 
         response = self.client.patch(url, data)
 
