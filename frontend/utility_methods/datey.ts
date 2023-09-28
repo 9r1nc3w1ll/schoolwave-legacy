@@ -8,7 +8,7 @@ export const dateInPast = function (firstDate: Date, secondDate: Date) {
   return false;
 };
 
-export const formatDate = (date: Date) => {
+export const formatDate = (date: Date | string) => {
   if (date) {
     const dt = new Date(date);
     const month = dt.getMonth() + 1 < 10 ? "0" + (dt.getMonth() + 1) : dt.getMonth() + 1;
