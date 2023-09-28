@@ -232,6 +232,11 @@ class InvoiceTestCase(APITestCase):
             discount=self.discount, school=self.school 
         )
 
+        self.fee_item_2 = FeeItem.objects.create(
+            name="Fee Item", description="Test Fee Item", amount=200,
+            discount=self.discount, school=self.school 
+        )
+
         self.fee_template = FeeTemplate.objects.create(
             school=self.school, class_id=self.class_obj, discount=self.discount
         )
@@ -247,10 +252,9 @@ class InvoiceTestCase(APITestCase):
             "name": "First Invoice",
             "description": "invoice description",
             "school": self.school.id,
-            "items" : [self.fee_item.id,],
+            "items" : [self.fee_item.id, self.fee_item_2.id],
             "student" : self.student.id,
             "template" : self.fee_template.id,
-            "amount_paid": 32000
         }
         self.client.force_authenticate(user=self.user)
         response = self.client.post(url, data, format="json")
@@ -261,7 +265,7 @@ class InvoiceTestCase(APITestCase):
     def test_bulk_create_invoice(self):
         url = reverse("bulk_create_invoice", args=[self.class_obj.id])
         data = {
-            "items" : [self.fee_item.id,],
+            "items" : [self.fee_item.id, self.fee_item_2.id],
             "template" : self.fee_template.id,
         }
         self.client.force_authenticate(user=self.user)

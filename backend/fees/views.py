@@ -438,6 +438,8 @@ class BulkCreateInvoice(GenericAPIView):
 
             invoice.items.set(serializer.validated_data["items"])
 
+            invoice.calculate_outstanding_balance_on_create()
+
             invoice.save()
 
 

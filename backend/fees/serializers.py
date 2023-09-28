@@ -166,6 +166,13 @@ class InvoiceSerializer(serializers.ModelSerializer):
         if data:
             return data
         return None
+    
+    def create(self, validated_data):
+        instance = Invoice.objects.create(**validated_data)
+        
+        instance.calculate_outstanding_balance_on_create()
+
+        return instance
 
 
 

@@ -94,6 +94,17 @@ class Invoice(BaseModel):
         self.amount_paid += amount_paid
         self.outstanding_balance = self.total_amount - amount_paid
         self.save()
+    
+    def calculate_outstanding_balance_on_create(self):
+        total_amount = Decimal(0.00)
+
+        for item in self.items.all():
+            total_amount += item.amount
+
+        print(total_amount)
+        
+        self.outstanding_balance = total_amount
+        self.save()
         
 
 # Signal to create the Invoice items based on the related FeeTemplate
