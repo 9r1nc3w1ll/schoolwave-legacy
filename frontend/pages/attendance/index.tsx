@@ -83,11 +83,6 @@ const Attendance = () => {
     return getClasses(user_session?.access_token);
   });
 
-  console.log({ students_attendance });
-  console.log({ _studentList });
-  console.log({ attendance });
-
-  console.log({ classId });
   return (
     <div className='panel min-h-[70%] '>
       <div className='mb-4 flex justify-between'>

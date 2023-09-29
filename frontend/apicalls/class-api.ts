@@ -1,5 +1,5 @@
-import { throwError } from "@/helpers/api";
-import { TResponse } from "@/models";
+import { throwError } from '@/helpers/api';
+import { TResponse } from '@/models';
 import {
   AssignUserToClassPayload,
   AssignUserToClassResponse,
@@ -7,16 +7,16 @@ import {
   CreatePayload,
   GetClassStudentMembersResponse,
   ResponseInterface,
-} from "@/types";
+} from '@/types';
 
 export const createClass = async (data: ClassTypes, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class',
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
       },
       body: JSON.stringify(data),
     }
@@ -26,13 +26,13 @@ export const createClass = async (data: ClassTypes, accessToken?: string) => {
   if (res.ok) {
     return tempData;
   } else {
-    let msg = "An error occured";
+    let msg = 'An error occured';
 
     if (
-      tempData.message.split(" ")[tempData.message.split(" ").length - 1] ==
-      "exists."
+      tempData.message.split(' ')[tempData.message.split(' ').length - 1] ==
+      'exists.'
     ) {
-      msg = "Class with class Code already exists";
+      msg = 'Class with class Code already exists';
     }
 
     return {
@@ -48,12 +48,12 @@ export const editClass = async (
   data: ClassTypes
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class/" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class/' + id,
     {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
       },
       body: JSON.stringify(data),
     }
@@ -63,13 +63,13 @@ export const editClass = async (
   if (res.ok) {
     return tempData;
   } else {
-    let msg = "An error occured";
+    let msg = 'An error occured';
 
     if (
-      tempData.message.split(" ")[tempData.message.split(" ").length - 1] ==
-      "exists."
+      tempData.message.split(' ')[tempData.message.split(' ').length - 1] ==
+      'exists.'
     ) {
-      msg = "Class with class Code already exists";
+      msg = 'Class with class Code already exists';
     }
 
     return {
@@ -81,12 +81,12 @@ export const editClass = async (
 
 export const deleteClass = async (id: string, access_token: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class/" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class/' + id,
     {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
       },
     }
   );
@@ -98,12 +98,12 @@ export const getClasses = async (
   accessToken?: string
 ): Promise<ClassTypes[]> => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class',
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
       },
     }
   );
@@ -119,12 +119,12 @@ export const getClasses = async (
 
 export const getClass = async (id: any, access_token?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class/" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class/' + id,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
       },
     }
   );
@@ -134,44 +134,39 @@ export const getClass = async (id: any, access_token?: string) => {
 };
 
 export const getClassStudents = async (id: any, accessToken?: string) => {
-  console.log("hey");
-
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class-member/" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class-member/' + id,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
       },
     }
   );
 
-  console.log({ res });
   const tempData = await res.json();
 
-  console.log({ tempData });
-
   return tempData.data.filter(
-    (student: { role: string }) => student.role === "student"
+    (student: { role: string }) => student.role === 'student'
   );
 };
 
 export const getClassStaffs = async (id: any, access_token?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class-member/" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class-member/' + id,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
       },
     }
   );
   const tempData = await res.json();
 
   return tempData.data.filter(
-    (staff: { role: string }) => staff.role != "student"
+    (staff: { role: string }) => staff.role != 'student'
   );
 };
 
@@ -179,12 +174,12 @@ export const AssignUserToClass = async (
   payload: CreatePayload<AssignUserToClassPayload>
 ): Promise<ResponseInterface<AssignUserToClassResponse>> => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class-member",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class-member',
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + payload.accessToken,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + payload.accessToken,
       },
       body: JSON.stringify(payload.data),
     }
@@ -204,12 +199,12 @@ export const getClassStudentMembers = async (
   accessToken: string
 ): Promise<ResponseInterface<GetClassStudentMembersResponse[]>> => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/class-member",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class-member',
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
       },
     }
   );
@@ -219,7 +214,7 @@ export const getClassStudentMembers = async (
   }
 
   const tempData = (await res.json()) as ResponseInterface<
-  GetClassStudentMembersResponse[]
+    GetClassStudentMembersResponse[]
   >;
 
   return tempData;
