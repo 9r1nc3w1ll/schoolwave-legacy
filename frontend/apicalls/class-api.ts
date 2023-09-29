@@ -1,15 +1,14 @@
 import { throwError } from '@/helpers/api';
-import { TResponse } from '@/models';
 import {
   AssignUserToClassPayload,
   AssignUserToClassResponse,
-  ClassTypes,
   CreatePayload,
   GetClassStudentMembersResponse,
   ResponseInterface,
+  ClassTypes,
 } from '@/types';
 
-export const createClass = async (data: ClassTypes, accessToken?: string) => {
+export const createClass = async (data: any, accessToken?: string) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class',
     {
@@ -21,7 +20,7 @@ export const createClass = async (data: ClassTypes, accessToken?: string) => {
       body: JSON.stringify(data),
     }
   );
-  const tempData = (await res.json()) as unknown;
+  const tempData = await res.json();
 
   if (res.ok) {
     return tempData;
@@ -42,11 +41,7 @@ export const createClass = async (data: ClassTypes, accessToken?: string) => {
   }
 };
 
-export const editClass = async (
-  id: string,
-  accessToken: string,
-  data: ClassTypes
-) => {
+export const editClass = async (id: string, accessToken: string, data: any) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + '/school/class/' + id,
     {
@@ -58,7 +53,7 @@ export const editClass = async (
       body: JSON.stringify(data),
     }
   );
-  const tempData: TResponse<T> = await res.json();
+  const tempData = await res.json();
 
   if (res.ok) {
     return tempData;
