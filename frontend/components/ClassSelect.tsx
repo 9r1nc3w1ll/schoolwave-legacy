@@ -15,7 +15,7 @@ const ClassSelect = React.forwardRef<HTMLSelectElement, ClassSelectProps>(({ tri
 
   useEffect(() => {
     refetch();
-  }, [triggerFetch]);
+  }, [refetch, triggerFetch]);
 
   return (
     <div className="mb-8">
