@@ -75,10 +75,10 @@ const Export = () => {
         return (
           <tr className={`${item.active ? "bg-primary-light" : ""} !important`} key={item.id}>
             <td>
-              <div className="whitespace-nowrap"><Link href={`/session/${item.id}`}>{item.id} </Link></div>
+              <div className="whitespace-nowrap"><Link href={`/session/${item.id}`}>{item.name} </Link></div>
             </td>
-            <td>{item.class_id}</td>
-            <td>{item.tax}</td>
+            <td>{item.class_info.name}</td>
+            <td>{item.description ?? "-"}</td>
 
             <td className="text-center ">
 
@@ -174,9 +174,9 @@ const Export = () => {
           <table className="table-striped">
             <thead>
               <tr>
-                <th>Template Id</th>
-                <th>Class Id</th>
-                <th>Tax</th>
+                <th>Template Name</th>
+                <th>Class Name</th>
+                <th>Description</th>
                 <th></th>
               </tr>
             </thead>

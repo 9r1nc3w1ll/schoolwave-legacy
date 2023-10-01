@@ -46,6 +46,9 @@ const ClassUserAssignment = (props: ClassUserAssignmentProps) => {
   const [filteredItems, setFilteredItems] = useState<UserType[]>(items);
 
   useEffect(() => {
+    if (!items.length) {
+      return;
+    }
     const filterFunction = (item: UserType) => {
       const firstName = props.student ? item?.student_info?.first_name : item?.user_info?.first_name;
       const lastName = props.student ? item?.student_info?.last_name : item?.user_info?.last_name;

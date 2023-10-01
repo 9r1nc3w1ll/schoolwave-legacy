@@ -95,7 +95,7 @@ const CreateAdmission  = (props:any) => {
 
           const onSubmit = async (data: any) => { 
                
-            mutate(data)
+            mutate({...data, school: user_session?.school?.id})
 
           };
 
