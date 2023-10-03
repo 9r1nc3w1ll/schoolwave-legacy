@@ -8,7 +8,6 @@ import { showAlert } from '@/utility_methods/alert';
 
 const LoginBoxed = () => {
   const router = useRouter();
-
   const {
     register,
     handleSubmit,
