@@ -345,8 +345,11 @@ class CreateSchoolAndOwner(APIView):
         if not request.user.is_superuser:
             return Response({"detail": "Only superusers can create schools."}, status=status.HTTP_403_FORBIDDEN)
         
+        data["role"] = "admin"
+        
         serializer_owner = UserSerializer(data=data)
         if serializer_owner.is_valid():
+            print(serializer_owner)
             owner_instance = serializer_owner.save()
             data["owner"] = owner_instance.id
             serializer_school = SchoolSerializer(data=data)
