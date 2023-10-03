@@ -349,7 +349,6 @@ class CreateSchoolAndOwner(APIView):
         
         serializer_owner = UserSerializer(data=data)
         if serializer_owner.is_valid():
-            print(serializer_owner)
             owner_instance = serializer_owner.save()
             data["owner"] = owner_instance.id
             serializer_school = SchoolSerializer(data=data)
@@ -433,24 +432,6 @@ class SchoolListAPIView(generics.GenericAPIView):
             'data': response_data
         })
             
-
-# owner_and_schools_data = {
-#                 'id': str(school.id),
-#                 'created_at': str(school.created_at),
-#                 'updated_at': str(school.updated_at),
-#                 'deleted_at': str(school.deleted_at),
-#                 'name': school.name,
-#                 'description': school.description,
-#                 'logo_file_name': school.logo_file_name.url if school.profile_photo else None,
-#                 'date_of_establishment': str(school.date_of_establishment),
-#                 'motto': school.motto,
-#                 'tag': school.tag, 
-#                 'website_url': school.website_url,
-#                 'owner': str(school_owner.id),
-#                 'owner_username': school_owner.username,
-#                 'owner_email': school_owner.email,
-#                 'owner_fullname': school_owner.first_name + school.owner.last_name 
-#             }
 
 class StudentsWithNoClass(generics.GenericAPIView):
     serializer_class = UserSerializer
