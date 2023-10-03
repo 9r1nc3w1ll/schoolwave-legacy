@@ -390,7 +390,8 @@ const Export = () => {
                   <div className="relative">
                     <ActionIcon onClick={(e: SyntheticEvent) => {
                       e.stopPropagation();
-                      copyInvoiceUrl(cell.id);
+                      // copyInvoiceUrl(cell.id);
+                      router.push(`/checkout/${cell.id}`)
                     }} color="black">
                       <span className="text-xs text-black font-medium underline">Make payment</span>
                     </ActionIcon>
