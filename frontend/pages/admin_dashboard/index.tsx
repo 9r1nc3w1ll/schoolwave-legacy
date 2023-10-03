@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { useQuery } from 'react-query';
 import { getDashboardStats } from '@/apicalls/dashboard';
 import { useSession } from 'next-auth/react';
-import { formatDate, getYear } from '@/utility_methods/datey';
+import { formatDate } from '@/utility_methods/datey';
 import { useMemo } from 'react';
 
 const ReactApexChart = dynamic(import('react-apexcharts'), { ssr: false });
@@ -245,8 +245,7 @@ const Dashboard = (props: any) => {
           </div>
           <div className='mt-5 flex items-center'>
             <div className='text-3xl font-bold ltr:mr-3 rtl:ml-3'>
-              {' '}
-              {data?.session}{' '}
+              {data?.session}
             </div>
             <div className='badge h-10 w-10 bg-white/30'> </div>
           </div>

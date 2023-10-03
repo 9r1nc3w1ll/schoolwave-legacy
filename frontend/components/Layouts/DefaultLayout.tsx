@@ -28,7 +28,7 @@ const DefaultLayout = ({ children }: IProps) => {
     if (sessionStatus === 'authenticated') {
       if (!['admin', 'super_admin'].includes(user_session?.role)) {
         router.push({
-          pathname: '/admin_dashboard',
+          pathname: '/',
           query: { returnUrl: router.asPath },
         });
       }
