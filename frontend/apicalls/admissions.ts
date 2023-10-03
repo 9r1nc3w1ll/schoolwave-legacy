@@ -105,7 +105,6 @@ export const updateAdmission = async (
   if (res.ok) {
     return tempData.data;
   } else {
-    console.log(res);
 
     return { error: true };
   }

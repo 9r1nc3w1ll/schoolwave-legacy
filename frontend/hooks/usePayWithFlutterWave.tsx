@@ -45,7 +45,6 @@ export const usePayWithFlutterWave = (payload: UsePayWithFlutterWaveParams) => {
 
     handleFlutterPayment({
       callback: (response) => {
-        console.log(response);
         closePaymentModal(); // this will close the modal programmatically
       },
       onClose: () => {
