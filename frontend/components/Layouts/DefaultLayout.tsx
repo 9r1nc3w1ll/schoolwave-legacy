@@ -26,10 +26,9 @@ const DefaultLayout = ({ children }: IProps) => {
 
   useEffect(() => {
     if (sessionStatus === 'authenticated') {
-      if (!['admin', 'student', 'super_admin'].includes(user_session?.role)) {
-        console.log('access granted');
+      if (!['admin', 'super_admin'].includes(user_session?.role)) {
         router.push({
-          pathname: '/',
+          pathname: '/admin_dashboard',
           query: { returnUrl: router.asPath },
         });
       }
@@ -82,7 +81,7 @@ const DefaultLayout = ({ children }: IProps) => {
 
   if (
     sessionStatus == 'authenticated' &&
-    ['admin', 'student', 'super_admin'].includes(user_session?.role)
+    ['admin', 'super_admin'].includes(user_session?.role)
   ) {
     return (
       <App>

@@ -8,16 +8,13 @@ type Props = {
 
 export const AuthenticationRoute = ({ children }: Props): JSX.Element => {
   const router = useRouter();
-  const { status: sessionStatus, data:user_session } = useSession();
+  const { status: sessionStatus, data: user_session } = useSession();
 
   useEffect(() => {
     if (sessionStatus == 'loading' || !router.isReady) return;
-
     if (sessionStatus == 'authenticated') {
-  
-      
       router.push({
-        pathname: '/',
+        pathname: '/admin_dashboard',
         query: { returnUrl: router.asPath },
       });
     }
@@ -28,6 +25,6 @@ export const AuthenticationRoute = ({ children }: Props): JSX.Element => {
   }
 
   // TODO: Redirect to 403 or 404
-  
+
   return sessionStatus !== 'authenticated' ? <>{children}</> : <></>;
 };

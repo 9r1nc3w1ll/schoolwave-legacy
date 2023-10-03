@@ -26,9 +26,6 @@ export const ProtectedLayout = ({ children }: ProtectedLayoutProps) => {
   if (sessionStatus == 'loading') {
     return <>Loading bb...</>;
   }
-  // if (sessionStatus == 'authenticated'){
-
-  // }
 
   return sessionStatus == 'authenticated' ? (
     <DefaultLayout>{children}</DefaultLayout>
