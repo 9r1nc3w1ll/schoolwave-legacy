@@ -27,6 +27,7 @@ GENDERS = (
 class User(BaseModel, AbstractUser):
     class Meta:
         db_table = "users"
+        unique_together = ("school", "username")
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
