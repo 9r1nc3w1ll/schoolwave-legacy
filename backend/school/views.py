@@ -349,7 +349,7 @@ class CreateSchoolAndOwner(APIView):
         
         serializer_owner = UserSerializer(data=data)
         if serializer_owner.is_valid():
-            owner_instance = serializer_owner.save()
+            owner_instance = serializer_owner.save(is_active=True, role="admin")
             data["owner"] = owner_instance.id
             serializer_school = SchoolSerializer(data=data)
             if serializer_owner.is_valid() and serializer_school.is_valid():
