@@ -56,7 +56,7 @@ class AdmissionRequest(BaseModel):
 
         username = student_info_data.pop("username", None)
 
-        user, created = User.objects.get_or_create(username=username, defaults=student_info_data)
+        user, created = User.objects.get_or_create(username=username, defaults=student_info_data, school=self.school)
 
         if created:
             self.student_info.user = user
