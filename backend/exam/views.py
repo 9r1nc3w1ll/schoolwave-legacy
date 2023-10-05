@@ -35,9 +35,19 @@ class ListCreateQuestion(ListCreateAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        qs = self.queryset.all()
 
-        qs = self.queryset.filter(school=school)
+        school_id = self.request.GET.get("school_id", "")
+
+        if not school_id:
+            return qs
+        
+        school = School.objects.filter(id=school_id)
+
+        if not school.exists():
+            return qs
+
+        qs = qs.filter(school=school)
         return qs
 
     def create(self, request, *args, **kwargs):
@@ -72,9 +82,19 @@ class RetrieveUpdateDestroyQuestion(RetrieveUpdateDestroyAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        qs = self.queryset.all()
 
-        qs = self.queryset.filter(school=school)
+        school_id = self.request.GET.get("school_id", "")
+
+        if not school_id:
+            return qs
+        
+        school = School.objects.filter(id=school_id)
+
+        if not school.exists():
+            return qs
+
+        qs = qs.filter(school=school)
         return qs
     
     def get_object(self):
@@ -131,9 +151,19 @@ class ListCreateQuestionOption(ListCreateAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        qs = self.queryset.all()
 
-        qs = self.queryset.filter(school=school)
+        school_id = self.request.GET.get("school_id", "")
+
+        if not school_id:
+            return qs
+        
+        school = School.objects.filter(id=school_id)
+
+        if not school.exists():
+            return qs
+
+        qs = qs.filter(school=school)
         return qs
 
     def create(self, request, *args, **kwargs):
@@ -168,9 +198,19 @@ class RetrieveUpdateDestroyQuestionOption(RetrieveUpdateDestroyAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        qs = self.queryset.all()
 
-        qs = self.queryset.filter(school=school)
+        school_id = self.request.GET.get("school_id", "")
+
+        if not school_id:
+            return qs
+        
+        school = School.objects.filter(id=school_id)
+
+        if not school.exists():
+            return qs
+
+        qs = qs.filter(school=school)
         return qs
     
     def get_object(self):
@@ -236,9 +276,19 @@ class ListCreateExam(ListCreateAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        qs = self.queryset.all()
 
-        qs = self.queryset.filter(school=school)
+        school_id = self.request.GET.get("school_id", "")
+
+        if not school_id:
+            return qs
+        
+        school = School.objects.filter(id=school_id)
+
+        if not school.exists():
+            return qs
+
+        qs = qs.filter(school=school)
         return qs
 
     def create(self, request, *args, **kwargs):
@@ -273,9 +323,19 @@ class RetrieveUpdateDestroyExam(RetrieveUpdateDestroyAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        qs = self.queryset.all()
 
-        qs = self.queryset.filter(school=school)
+        school_id = self.request.GET.get("school_id", "")
+
+        if not school_id:
+            return qs
+        
+        school = School.objects.filter(id=school_id)
+
+        if not school.exists():
+            return qs
+
+        qs = qs.filter(school=school)
         return qs
     
     def get_object(self):
@@ -341,11 +401,21 @@ class ListCreateAnswer(ListCreateAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        qs = self.queryset.all()
 
-        qs = self.queryset.filter(school=school)
+        school_id = self.request.GET.get("school_id", "")
+
+        if not school_id:
+            return qs
+        
+        school = School.objects.filter(id=school_id)
+
+        if not school.exists():
+            return qs
+
+        qs = qs.filter(school=school)
         return qs
-
+    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -378,9 +448,19 @@ class RetrieveUpdateDestroyAnswer(RetrieveUpdateDestroyAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        qs = self.queryset.all()
 
-        qs = self.queryset.filter(school=school)
+        school_id = self.request.GET.get("school_id", "")
+
+        if not school_id:
+            return qs
+        
+        school = School.objects.filter(id=school_id)
+
+        if not school.exists():
+            return qs
+
+        qs = qs.filter(school=school)
         return qs
     
     def get_object(self):
