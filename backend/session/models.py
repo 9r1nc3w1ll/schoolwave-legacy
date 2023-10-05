@@ -39,8 +39,8 @@ class Term(BaseModel):
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     code = models.CharField(max_length=150, unique=True)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(null=True)
 
     def save(self, *args, **kwargs):
 
