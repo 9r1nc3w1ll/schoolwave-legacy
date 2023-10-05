@@ -53,7 +53,6 @@ class Term(BaseModel):
         while current_date <= self.end_date:
             week_number = (current_date - self.start_date).days // 7 + 1
             week_duration = f"Week {week_number}"
-            # weeks.append({"name": week_duration, "duration": ""})
             weeks.append(week_duration)
             current_date += relativedelta(weeks=1)
         return weeks
