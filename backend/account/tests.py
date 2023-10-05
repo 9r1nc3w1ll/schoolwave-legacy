@@ -1,8 +1,12 @@
+from datetime import datetime
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.core.files import File
+
+from school.models import School
 
 User = get_user_model()
 
@@ -56,6 +60,12 @@ class UserCRUDTestCase(APITestCase):
         self.user = User.objects.create(username="username", password="password")
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
 
+        self.school = School.objects.create(
+            name="Test School",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
+
     def test_create_user(self):
         url = reverse("users")
         self.client.force_authenticate(user=self.user)
@@ -63,10 +73,10 @@ class UserCRUDTestCase(APITestCase):
         data = {"username": "newuser", 
                 "password": "newpassword", 
                 "first_name":"user_firstname", 
-                "last_name":"User_last_name"}
+                "last_name":"User_last_name",
+                "school":self.school.id}
 
         response = self.client.post(url, data)
-        print(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_retrieve_user(self):

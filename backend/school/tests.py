@@ -218,6 +218,11 @@ class CreateSchoolAndOwner(APITestCase):
         self.user = User.objects.create_user(
             username="testuser", password="testpassword", is_superuser=True
         )
+        self.school = School.objects.create(
+            name="Test School",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
 
     def test_create_school_and_owner(self):
         url = reverse("create_school_and_owner")
@@ -228,7 +233,8 @@ class CreateSchoolAndOwner(APITestCase):
             "username": "testuser77",
             "password": "testpassword",
             "first_name": "first_name",
-            "last_name":"last_name"
+            "last_name":"last_name",
+            "school":self.school.id
         }
 
         response = self.client.post(url, data)
