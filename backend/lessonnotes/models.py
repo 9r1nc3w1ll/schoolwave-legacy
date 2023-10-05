@@ -1,15 +1,20 @@
 from django.db import models
 from account.models import User
 from school.models import School, Class
+from subject.models import Subject
 from config.models import BaseModel
+from session.models import Term
+
 
 class LessonNote(BaseModel):
     class Meta:
         db_table = "lesson_notes"
 
-    week = models.JSONField()
+    term = models.ForeignKey(Term, on_delete=models.CASCADE, blank=True, null=True)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)
     files = models.ManyToManyField('File', related_name='lesson_notes', blank=True)
+    week = models.CharField(max_length=200, default="Week 1")
     topic = models.CharField(max_length=150)
     description = models.TextField()
     tag = models.CharField(max_length=150, blank=True, null=True)
@@ -21,7 +26,10 @@ class LessonNote(BaseModel):
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)
 
+
+
 class File(BaseModel):
+
     class Meta:
         db_table = "files"
 

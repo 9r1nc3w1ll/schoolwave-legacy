@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from school.models import Class, School
-
+from session.models import Session, Term
 from lessonnotes.models import LessonNote
 
 User = get_user_model()
@@ -23,6 +23,23 @@ class LessonNoteAPITestCase(APITestCase):
             name="chrisland",
             owner=self.user,
             date_of_establishment=datetime.now().date(),
+        )
+
+        self.session = Session.objects.create(
+            school=self.school,
+            resumption_date=datetime.now().date(),
+            start_date="2040-11-18",
+            end_date="2050-11-18"
+        )
+
+        self.term = Term.objects.create(
+            name="1st Term",
+            active="True",
+            school=self.school,
+            session=self.session,
+            code="Term45",
+            start_date="2023-10-01",
+            end_date="2023-12-01"
         )
 
         self.class_obj = Class.objects.create(
@@ -51,6 +68,7 @@ class LessonNoteAPITestCase(APITestCase):
         data = {
             "week":"1",
             "class_id":self.class_obj.id,
+            "term" : self.term.id,
             "content":"This is another content",
             "created_by":self.user.id,
             "last_updated_by":self.user.id,

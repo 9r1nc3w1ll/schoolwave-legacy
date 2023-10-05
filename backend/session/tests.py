@@ -123,7 +123,9 @@ class TermCRUDTestCase(APITestCase):
             active="True",
             school=self.school,
             session=self.session,
-            code="Term45"
+            code="Term45",
+            start_date="2023-10-01",
+            end_date="2023-12-01"
         )
 
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.user.tokens['access']}")
@@ -147,7 +149,9 @@ class TermCRUDTestCase(APITestCase):
             "active":True,
             "school":self.school.id,
             "session":self.session.id,
-            "code":"Term46"
+            "code":"Term46",
+            "start_date" : "2023-01-01",
+            "end_date" : "2023-02-01"
         }
 
         response = self.client.post(url, data)
