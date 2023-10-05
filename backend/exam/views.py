@@ -32,7 +32,13 @@ class ListCreateQuestion(ListCreateAPIView):
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
-        return self.queryset.all()
+        """
+        Modify in case user can have more than one school
+        """
+        school = School.objects.get(owner=self.request.user)
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -62,6 +68,15 @@ class RetrieveUpdateDestroyQuestion(RetrieveUpdateDestroyAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
+    def get_queryset(self):
+        """
+        Modify in case user can have more than one school
+        """
+        school = School.objects.get(owner=self.request.user)
+
+        qs = self.queryset.filter(school=school)
+        return qs
+    
     def get_object(self):
         question_id = self.kwargs.get("pk")
         try:
@@ -113,7 +128,13 @@ class ListCreateQuestionOption(ListCreateAPIView):
     serializer_class = QuestionOptionSerializer
 
     def get_queryset(self):
-        return self.queryset.all()
+        """
+        Modify in case user can have more than one school
+        """
+        school = School.objects.get(owner=self.request.user)
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -143,6 +164,15 @@ class RetrieveUpdateDestroyQuestionOption(RetrieveUpdateDestroyAPIView):
     queryset = QuestionOption.objects.all()
     serializer_class = QuestionOptionSerializer
 
+    def get_queryset(self):
+        """
+        Modify in case user can have more than one school
+        """
+        school = School.objects.get(owner=self.request.user)
+
+        qs = self.queryset.filter(school=school)
+        return qs
+    
     def get_object(self):
         pk = self.kwargs.get("pk")
         try:
@@ -203,7 +233,13 @@ class ListCreateExam(ListCreateAPIView):
     serializer_class = ExamSerializer
 
     def get_queryset(self):
-        return self.queryset.all()
+        """
+        Modify in case user can have more than one school
+        """
+        school = School.objects.get(owner=self.request.user)
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -233,6 +269,15 @@ class RetrieveUpdateDestroyExam(RetrieveUpdateDestroyAPIView):
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
 
+    def get_queryset(self):
+        """
+        Modify in case user can have more than one school
+        """
+        school = School.objects.get(owner=self.request.user)
+
+        qs = self.queryset.filter(school=school)
+        return qs
+    
     def get_object(self):
         exam_id = self.kwargs.get("pk")
         try:
@@ -293,7 +338,13 @@ class ListCreateAnswer(ListCreateAPIView):
     serializer_class = AnswerSerializer
 
     def get_queryset(self):
-        return self.queryset.all()
+        """
+        Modify in case user can have more than one school
+        """
+        school = School.objects.get(owner=self.request.user)
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -323,6 +374,15 @@ class RetrieveUpdateDestroyAnswer(RetrieveUpdateDestroyAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
 
+    def get_queryset(self):
+        """
+        Modify in case user can have more than one school
+        """
+        school = School.objects.get(owner=self.request.user)
+
+        qs = self.queryset.filter(school=school)
+        return qs
+    
     def get_object(self):
         answer_id = self.kwargs.get("pk")
         try:
@@ -382,6 +442,7 @@ class BatchUploadAPI(GenericAPIView):
     parser_classes = (MultiPartParser,)
     permission_classes = [IsAuthenticated]
 
+    
     def post(self, request, *args, **kwargs):
         csv_file = request.FILES.get('csv')
         school_id = request.POST['school_id']
