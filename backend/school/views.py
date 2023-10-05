@@ -429,25 +429,7 @@ class SchoolListAPIView(generics.GenericAPIView):
             'message': 'School owner schools retrieved successfully',
             'data': response_data
         })
-            
 
-# owner_and_schools_data = {
-#                 'id': str(school.id),
-#                 'created_at': str(school.created_at),
-#                 'updated_at': str(school.updated_at),
-#                 'deleted_at': str(school.deleted_at),
-#                 'name': school.name,
-#                 'description': school.description,
-#                 'logo_file_name': school.logo_file_name.url if school.profile_photo else None,
-#                 'date_of_establishment': str(school.date_of_establishment),
-#                 'motto': school.motto,
-#                 'tag': school.tag, 
-#                 'website_url': school.website_url,
-#                 'owner': str(school_owner.id),
-#                 'owner_username': school_owner.username,
-#                 'owner_email': school_owner.email,
-#                 'owner_fullname': school_owner.first_name + school.owner.last_name 
-#             }
 
 class StudentsWithNoClass(generics.GenericAPIView):
     serializer_class = UserSerializer
