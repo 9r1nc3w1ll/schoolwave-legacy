@@ -1,25 +1,26 @@
-export const createSchool = async (data: any, access_token?: string) => {
+export const createSchool = async (data: any, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/create-school-and-owner',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/create-school-and-owner",
     {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(data),
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
       },
     }
   );
-  let tempData = await res.json();
+  const tempData = await res.json();
 
-  let msg = 'an error occured';
+  let msg = "an error occured";
 
   if (
-    tempData.message.split(' ')[tempData.message.split(' ').length - 1] ==
-    'exists.'
+    tempData.message.split(" ")[tempData.message.split(" ").length - 1] ==
+    "exists."
   ) {
-    msg = 'student information with this username already exists.';
+    msg = "student information with this username already exists.";
   }
+
   if (res.ok) {
     return tempData.data;
   } else {
@@ -30,23 +31,24 @@ export const createSchool = async (data: any, access_token?: string) => {
   }
 };
 
-export const getSchools = async (access_token?: string) => {
+export const getSchools = async (schoolID?: string, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/school-list',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/school-list",
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
+        "X-Client-Id": schoolID,
       },
     }
   );
-  let tempData = await res.json();
+
+  const tempData = await res.json();
+
   if (res.ok) {
     return tempData.data;
   } else {
-    return {
-      error: true,
-    };
+    return { error: true };
   }
 };
