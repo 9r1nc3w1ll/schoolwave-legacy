@@ -79,7 +79,7 @@ const Dashboard = (props: any) => {
 
   const teachersChart: any = useMemo(
     () => ({
-      series: [data?.male_staff_count, data?.female_staff_count] ?? [],
+      series: [data && data?.male_staff_count, data?.female_staff_count] ?? [],
       options: {
         chart: {
           height: 300,
