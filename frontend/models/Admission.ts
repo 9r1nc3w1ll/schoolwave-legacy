@@ -25,6 +25,7 @@ export type TStudentInfo = {
 
 export type TBulkAdmissionResponse = {
   message: string;
+  error?: string;
 };
 
 export type TAdmissionPayload = {
