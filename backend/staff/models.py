@@ -18,12 +18,13 @@ class StaffRole(BaseModel):
 class Staff(BaseModel):
     class Meta:
         db_table = "staffs"
+        unique_together = ("school", "staff_number")
 
     # Additional fields specific to staff
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
     title = models.CharField(max_length=255)
     roles = models.ManyToManyField(StaffRole)  # Array of roles (e.g., ["Teacher", "Principal"])
-    staff_number = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    staff_number = models.CharField(max_length=20, null=True, blank=True)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
