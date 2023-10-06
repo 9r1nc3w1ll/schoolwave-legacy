@@ -126,7 +126,7 @@ const AssignStudentsToClass = (props: ClassUserAssignmentProps) => {
                   className='mx-auto grid w-[90%] grid-cols-2 items-center gap-10 rounded-xl border bg-white p-3
                         font-semibold text-gray-500 transition-all duration-300 hover:scale-[1.01] hover:text-primary dark:bg-[#1b2e4b]'
                 >
-                  <div className='user-profile flex items-center gap-8'>
+                  <div className='user-profile flex items-center gap-4'>
                     {/* <img src={`/assets/images/profile-${Math.round(Math.random() * 35)}.jpeg`} alt="img" className="w-8 h-8 rounded-md object-cover" /> */}
                     <Avatar color='cyan' radius='xl'>
                       {getFirstLetters(
@@ -147,11 +147,12 @@ const AssignStudentsToClass = (props: ClassUserAssignmentProps) => {
                         : item?.user_info?.first_name) +
                         ' ' +
                         (props.student
-                          ? item?.student_info?.last_name
+                          ? item?.last_name
                           : item?.user_info?.last_name)}
                     </div>
                   </div>
-                  <div className='w-full'>
+                  <div className='flex w-full items-center justify-between'>
+                    <div></div>
                     {!props.student ? (
                       <Select
                         placeholder='Select a Role'
