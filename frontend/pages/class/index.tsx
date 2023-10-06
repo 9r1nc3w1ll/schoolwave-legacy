@@ -11,6 +11,7 @@ import { showAlert } from '@/utility_methods/alert';
 import { useSession } from 'next-auth/react';
 import ClassUserAssignment from '@/components/ClassUserAssignment';
 import { ClassTypes, UserSession } from '@/types';
+import AssignStudentsToClass from '@/components/AssignStudentsToClass';
 
 
 
@@ -244,7 +245,7 @@ const Export = (props: any) => {
                   <Dialog.Panel className="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-3xl my-8 text-black dark:text-white-dark animate__animated animate__fadeInUp">
                     <div className="w-4/5 mx-auto py-5 text-center">
                       <h5 className=" text-lg font-semibold dark:text-white-light">Assign <span>{assignStudent?'Student' : 'Teacher'}</span> to a class <span className='text-sm'>{`(${selectedSession.name})`}</span></h5>
-                      <ClassUserAssignment student={assignStudent} user_session={user_session as UserSession} classData={selectedSession}  refreshClasses={refetch}/>
+                      <AssignStudentsToClass student={assignStudent} user_session={user_session as UserSession} classData={selectedSession}  refreshClasses={refetch}/>
                     </div>
                   </Dialog.Panel>
                 </div>
