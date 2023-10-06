@@ -58,9 +58,7 @@ export const createAdmission = async (data: any, access_token?: string) => {
   }
 };
 
-export const getAdmissions = async (
-  access_token?: string
-) => {
+export const getAdmissions = async (access_token?: string) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + "/admission/requests",
     {
@@ -83,17 +81,19 @@ export const getAdmissions = async (
 export const updateAdmission = async (
   id: string,
   approve: boolean,
-  access_token?: string
+  access_token?: string,
+  schoolID?: string
 ) => {
-  const bdy: any = {};
-
-  bdy.status = approve ? "approved" : "denied";
+  const body = {
+    status: approve ? "approved" : "denied",
+    school: schoolID,
+  };
 
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + "/admission/requests/" + id,
     {
       method: "PATCH",
-      body: JSON.stringify(bdy),
+      body: JSON.stringify(body),
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + access_token,
@@ -105,7 +105,6 @@ export const updateAdmission = async (
   if (res.ok) {
     return tempData.data;
   } else {
-
     return { error: true };
   }
 };

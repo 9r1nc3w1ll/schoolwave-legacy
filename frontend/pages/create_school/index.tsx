@@ -37,12 +37,15 @@ const CreateSchoolPage = (props: any) => {
     enabled: false,
   });
 
+
+  console.log({user_session})
   const { mutate, isLoading, error } = useMutation(
     (data: boolean) => {
       return updateAdmission(
         selectedRecords[0].id,
         data,
-        user_session?.access_token
+        user_session?.access_token,
+        user_session?.school?.id
       );
     },
     {

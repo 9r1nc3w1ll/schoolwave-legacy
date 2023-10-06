@@ -26,7 +26,7 @@ const DefaultLayout = ({ children }: IProps) => {
 
   useEffect(() => {
     if (sessionStatus === 'authenticated') {
-      if (!['admin', 'super_admin'].includes(user_session?.role)) {
+      if (!['admin', 'super_admin', 'student'].includes(user_session?.role)) {
         router.push({
           pathname: '/',
           query: { returnUrl: router.asPath },
@@ -81,7 +81,7 @@ const DefaultLayout = ({ children }: IProps) => {
 
   if (
     sessionStatus == 'authenticated' &&
-    ['admin', 'super_admin'].includes(user_session?.role)
+    ['admin', 'super_admin', 'student'].includes(user_session?.role)
   ) {
     return (
       <App>

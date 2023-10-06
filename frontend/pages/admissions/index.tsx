@@ -47,7 +47,8 @@ const Export = (props: any) => {
       return updateAdmission(
         selectedRecords[0].id,
         data,
-        user_session?.access_token
+        user_session?.access_token,
+        user_session?.school?.id
       );
     },
     {
