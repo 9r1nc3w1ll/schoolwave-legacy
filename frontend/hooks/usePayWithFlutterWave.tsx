@@ -37,8 +37,6 @@ export const usePayWithFlutterWave = (payload: UsePayWithFlutterWaveParams) => {
   const handleFlutterPayment = useFlutterwave(config);
 
   const handlePayment = () => {
-    console.log("config: ", config);
-
     if (!payload) {
       return;
     }

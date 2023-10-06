@@ -25,7 +25,6 @@ const Export = () => {
       });
 
       if (x) {
-        console.log("x: ", x);
         setSelectedSession(x);
       }
     }

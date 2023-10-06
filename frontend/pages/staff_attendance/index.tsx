@@ -5,18 +5,6 @@ const StaffAttendance = (props: any) => {
   const [staffData, setStaffData] = useState<any>([])
   const [search, setSearch] = useState<string>('');
 
-  // useEffect(() => {
-  //   const fetchStaffData = async () =>{
-  //     try {
-  //       const {data: response} = await axios.get('https://jsonplaceholder.typicode.com/users');
-  //       setStaffData((prevState: any) => ({...prevState, response}));
-  //     } catch (error: any) {
-  //       console.error(error.message);
-  //     }
-  //   }
-  //   fetchStaffData();
-  // }, [staffData]);
-
   useEffect(() => {
     const fetchStaffData = () => {
       try {
@@ -34,12 +22,6 @@ const StaffAttendance = (props: any) => {
     fetchStaffData()
   }, [staffData]);
   
-  // useEffect(() => {
-  //   setStaffData(axios.get('https://jsonplaceholder.typicode.com/users/').then(res => res).then(data => data))
-  // }
-  // // fetchStaffData()
-  // // }
-  // , [staffData]);
 
   useEffect(() => {
     setStaffData(() => {

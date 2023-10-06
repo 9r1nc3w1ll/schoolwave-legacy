@@ -2,13 +2,11 @@ import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import { useEffect, useState, Fragment } from 'react';
 import sortBy from 'lodash/sortBy';
 import { setPageTitle } from '../../store/themeConfigSlice';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
-import { updateAdmission } from '@/apicalls/admissions';
 import { formatDate } from '@/utility_methods/datey';
-import { showAlert } from '@/utility_methods/alert';
 import { useDispatch } from 'react-redux';
 import CreateSchool from '@/components/CreateSchool';
 import { getSchools } from '@/apicalls/schools';
@@ -37,31 +35,6 @@ const CreateSchoolPage = (props: any) => {
     enabled: false,
   });
 
-
-  console.log({user_session})
-  const { mutate, isLoading, error } = useMutation(
-    (data: boolean) => {
-      return updateAdmission(
-        selectedRecords[0].id,
-        data,
-        user_session?.access_token,
-        user_session?.school?.id
-      );
-    },
-    {
-      onSuccess: async (data) => {
-        if (!data.error) {
-          showAlert('success', 'Admission updated Successfully');
-          refetch();
-        } else {
-          showAlert('error', 'An error occured');
-        }
-      },
-      onError: (error: any) => {
-        showAlert('error', 'An Error Occured');
-      },
-    }
-  );
 
   useEffect(() => {
     let path = router.asPath.split('#');
@@ -94,8 +67,6 @@ const CreateSchoolPage = (props: any) => {
     sortBy(students, 'school_id')
   );
   
-  const [recordsData, setRecordsData] = useState(initialRecords);
-
   const [search, setSearch] = useState('');
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
     columnAccessor: 'id',

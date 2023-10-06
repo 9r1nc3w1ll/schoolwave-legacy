@@ -32,7 +32,6 @@ const Export = () => {
       refetch();
     }
 
-    console.log(invoices);
   }, [sessionStatus, refetch]);
 
   useEffect(() => {

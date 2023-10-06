@@ -64,8 +64,7 @@ const CreateEmployee = (props: CreateEmployeePropsType) => {
   }, [data]);
 
   const { mutate } = useMutation(CreateStaff, {
-    onSuccess: async (data) => {
-      console.log("data: ", data);
+    onSuccess: async () => {
       showAlert("success", "Saved Successfuly");
       props.refreshEmployee();
       props.setmodal(false);

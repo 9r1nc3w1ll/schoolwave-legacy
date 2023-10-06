@@ -48,7 +48,6 @@ const AccountSetting = (props: any) => {
   useEffect(() => {
     if (sessionStatus == 'authenticated') {
       refetch();
-      console.log('Working now', examData);
     } else {
       console.log('Not working');
     }

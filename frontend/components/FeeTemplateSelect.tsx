@@ -25,7 +25,6 @@ const FeeTemplateSelect = (props: FeeTemplateSelectProps) => {
 
   useEffect(() => {
     if (data) {
-      console.log(data.data);
       setFeeTemplates(data.data);
     }
   }, [data]);
@@ -35,14 +34,9 @@ const FeeTemplateSelect = (props: FeeTemplateSelectProps) => {
       console.log("template: ", template);
       let templateItems: string[] = [];
 
-      console.log("discounts: ", feeTemplates);
-
       feeTemplates.forEach((item) => {
-        console.log("item: ", item);
-
         if (item.id === template) {
           templateItems = item.optional_items.concat(item.required_items);
-          console.log("values: ", item.optional_items.concat(item.required_items));
         }
       });
       props.setItems(templateItems);
