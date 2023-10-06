@@ -51,7 +51,7 @@ const AssignStudentsToClass = (props: ClassUserAssignmentProps) => {
 
   useEffect(() => {
     if (isSuccess) {
-      setItems((students as any).data);
+      setItems(props.student ? (students as any).data : students);
     }
   }, [isSuccess, students, props.student]);
 
@@ -225,7 +225,6 @@ const AssignStudentsToClass = (props: ClassUserAssignmentProps) => {
           )}
         </div>
       </div>
-      {/* <button onClick={props.closeIt(false)}>Done</button> */}
     </div>
   );
 };

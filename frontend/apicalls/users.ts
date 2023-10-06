@@ -26,14 +26,14 @@ export const getStudents = async (
   return students;
 };
 
-export const getStaffs = async (access_token?: string) => {
+export const getStaffs = async (accessToken?: string) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users",
     {
       method: "GET",
       headers: {
         "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
+        "Authorization": "Bearer " + accessToken,
       },
     }
   );
