@@ -16,6 +16,8 @@ import BulkAdmission from '@/components/BulkAdmission';
 import { getAdmissions, updateAdmission } from '@/apicalls/admissions';
 import { formatDate } from '@/utility_methods/datey';
 import { showAlert } from '@/utility_methods/alert';
+import { ResponseInterface } from '@/types';
+import { TAdmissionResponse } from '@/models/Admission';
 
 const col = [
   'id',
@@ -43,7 +45,7 @@ const Export = (props: any) => {
     { enabled: false }
   );
   const { mutate, isLoading, error } = useMutation(
-    (data: boolean) => {
+    (data: any): any => {
       return updateAdmission(
         selectedRecords[0].id,
         data,
@@ -52,8 +54,8 @@ const Export = (props: any) => {
       );
     },
     {
-      onSuccess: async (data) => {
-        if (!data.error) {
+      onSuccess: async (data: ResponseInterface<TAdmissionResponse>) => {
+        if (!(data.status === 'error')) {
           showAlert('success', 'Admission updated Successfully');
           refetch();
         } else {
@@ -113,8 +115,8 @@ const Export = (props: any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      if (isSuccess && students.length) {
-        return students.filter((item: any) => {
+      if (isSuccess && (students as any).length) {
+        return (students as any).filter((item: any) => {
           return (
             item.id.toString().includes(search.toLowerCase()) ||
             item.student_info.first_name
@@ -165,7 +167,7 @@ const Export = (props: any) => {
         })
         .join(coldelimiter);
       result += linedelimiter;
-      records.map((item: any) => {
+      (records as any).map((item: any) => {
         columns.map((d: any, index: any) => {
           if (index > 0) {
             result += coldelimiter;
@@ -199,7 +201,7 @@ const Export = (props: any) => {
       });
       rowhtml += '</tr></thead>';
       rowhtml += '<tbody>';
-      records.map((item: any) => {
+     ( records as any).map((item: any) => {
         rowhtml += '<tr>';
         columns.map((d: any) => {
           let val = item[d] ? item[d] : '';
@@ -228,7 +230,7 @@ const Export = (props: any) => {
         })
         .join(coldelimiter);
       result += linedelimiter;
-      records.map((item: any) => {
+      (records as any).map((item: any) => {
         columns.map((d: any, index: any) => {
           if (index > 0) {
             result += coldelimiter;
