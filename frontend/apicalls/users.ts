@@ -117,7 +117,7 @@ export const createUser = async (data: any, access_token?: string) => {
       method: "POST",
       headers: {
         "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
+        "Authorization": "Bearer " + accessToken,
       },
       body: JSON.stringify(data),
     }
