@@ -94,7 +94,7 @@ class RefreshAuthUser(APIView):
         try:
             # TODO: Fetch the school that the user is trying to access
             # from a request header
-            school = School.objects.get(owner=request.user)
+            school = self.request.headers.get("x-client-id")
             schoolData = SchoolSerializer(school).data
         except School.DoesNotExist:
             schoolData = None
