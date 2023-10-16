@@ -20,7 +20,7 @@ class ListCreateSession(ListCreateAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -115,11 +115,10 @@ class ListCreateTerm(ListCreateAPIView):
 
     def get_queryset(self):
 
-        term_id = self.kwargs.get("term_id")
-        if term_id:
-            return self.queryset.filter(id=term_id)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         serializer = TermSerializer(data=request.data)
@@ -225,5 +224,3 @@ class RetrieveUpdateDestroyTerm(RetrieveUpdateDestroyAPIView):
             return Response(resp, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "Term not found."}, status=status.HTTP_404_NOT_FOUND)
-
-

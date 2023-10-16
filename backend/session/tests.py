@@ -39,7 +39,7 @@ class SessionAPITestCase(APITestCase):
     def test_list_sessions(self):
         url = reverse("list_create_session")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -58,8 +58,6 @@ class SessionAPITestCase(APITestCase):
         }
 
         response = self.client.post(url, data)
-        print(response.data)
-
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["status"], "success")
@@ -133,7 +131,7 @@ class TermCRUDTestCase(APITestCase):
     def test_list_terms(self):
         url = reverse("list_create_term")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
