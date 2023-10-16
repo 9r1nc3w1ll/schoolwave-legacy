@@ -37,7 +37,7 @@ class ListCreateQuestion(ListCreateAPIView):
         """
         qs = self.queryset.all()
 
-        school_id = self.request.GET.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         if not school_id:
             return qs
@@ -84,7 +84,7 @@ class RetrieveUpdateDestroyQuestion(RetrieveUpdateDestroyAPIView):
         """
         qs = self.queryset.all()
 
-        school_id = self.request.GET.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         if not school_id:
             return qs
@@ -153,7 +153,7 @@ class ListCreateQuestionOption(ListCreateAPIView):
         """
         qs = self.queryset.all()
 
-        school_id = self.request.GET.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         if not school_id:
             return qs
@@ -200,7 +200,7 @@ class RetrieveUpdateDestroyQuestionOption(RetrieveUpdateDestroyAPIView):
         """
         qs = self.queryset.all()
 
-        school_id = self.request.GET.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         if not school_id:
             return qs
@@ -278,7 +278,7 @@ class ListCreateExam(ListCreateAPIView):
         """
         qs = self.queryset.all()
 
-        school_id = self.request.GET.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         if not school_id:
             return qs
@@ -325,7 +325,7 @@ class RetrieveUpdateDestroyExam(RetrieveUpdateDestroyAPIView):
         """
         qs = self.queryset.all()
 
-        school_id = self.request.GET.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         if not school_id:
             return qs
@@ -403,7 +403,7 @@ class ListCreateAnswer(ListCreateAPIView):
         """
         qs = self.queryset.all()
 
-        school_id = self.request.GET.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         if not school_id:
             return qs
@@ -450,7 +450,7 @@ class RetrieveUpdateDestroyAnswer(RetrieveUpdateDestroyAPIView):
         """
         qs = self.queryset.all()
 
-        school_id = self.request.GET.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         if not school_id:
             return qs
