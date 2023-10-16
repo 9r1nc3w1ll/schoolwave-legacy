@@ -101,7 +101,7 @@ class SubjectCRUDTestCase(APITestCase):
     def test_list_subjects(self):
         url = reverse("subject_list_create")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -217,7 +217,7 @@ class SubjectSelectionCRUDTestCase(APITestCase):
     def test_list_subject_selections(self):
         url = reverse("subject_selection_list_create")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -353,7 +353,7 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
     def test_list_subject_staff_assignment(self):
         url = reverse("subject_staff_assignment_list_create")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -407,4 +407,3 @@ class SubjectStaffAssignmentCRUDTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(response.data["message"], "Subject staff assignment deleted successfully.")
-

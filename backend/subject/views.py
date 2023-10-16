@@ -62,11 +62,10 @@ class ListCreateSubject(ListCreateAPIView):
     serializer_class = SubjectSerializer
 
     def get_queryset(self):
-        subject_id = self.kwargs.get("subject_id")
-        if subject_id:
-            return self.queryset.filter(id=subject_id)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
         
     
     def create(self, request, *args, **kwargs):
@@ -175,11 +174,10 @@ class ListCreateSubjectSelection(ListCreateAPIView):
     serializer_class = SubjectSelectionSerializer
 
     def get_queryset(self):
-        subjectselection_id = self.kwargs.get("subjectselection_id")
-        if subjectselection_id:
-            return self.queryset.filter(id=subjectselection_id)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
         
 
@@ -284,11 +282,10 @@ class ListCreateSubjectStaffAssignment(ListCreateAPIView):
     serializer_class = SubjectStaffAssignmentSerializer
 
     def get_queryset(self):
-        subject_staff_assignment_id = self.kwargs.get("subjectstaffassignment_id")
-        if subject_staff_assignment_id:
-            return self.queryset.filter(id=subject_staff_assignment_id)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
         
 
