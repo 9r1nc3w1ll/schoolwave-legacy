@@ -79,19 +79,13 @@ class BatchUpdateAdmissionRequests(APIView):
             serializer.save()
 
         return Response({'message': 'Bulk update successful'})
-        
-
-
-
-
-
 
 class CreateSingleAdmission(CreateAPIView):
     serializer_class = StudentInformationSerializer
     permission_classes = [IsSchoolOwner, IsAuthenticated]
 
     def get_queryset(self):
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return super().get_queryset()
@@ -120,7 +114,7 @@ class ListCreateAdmissionRequests(ListCreateAPIView):
     permission_classes = [IsSchoolOwner, IsAuthenticated]
 
     def get_queryset(self):
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return super().get_queryset()
