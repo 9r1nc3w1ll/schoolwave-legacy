@@ -21,11 +21,10 @@ class ListCreateStudentAttendance(ListCreateAPIView):
     serializer_class = AttendanceRecordSerializer
 
     def get_queryset(self):
-        studentattendance_id = self.kwargs.get("studentattendance_id")
-        if studentattendance_id:
-            return self.queryset.filter(id=studentattendance_id)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -238,11 +237,10 @@ class ListCreateStaffAttendance(ListCreateAPIView):
     serializer_class = AttendanceRecordSerializer
 
     def get_queryset(self):
-        staffattendance_id = self.kwargs.get("staffattendance_id")
-        if staffattendance_id:
-            return self.queryset.filter(id=staffattendance_id)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         school = request.data.get("school")

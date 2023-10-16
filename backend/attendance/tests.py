@@ -105,7 +105,7 @@ class AttendanceRecordAPITestCase(APITestCase):
     def test_list_attendance(self):
         url = reverse("student_attendance_list_create")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -172,7 +172,7 @@ class AttendanceRecordAPITestCase(APITestCase):
     def test_list_staff_attendance(self):
         url = reverse("staff_attendance_list_create")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
