@@ -1,6 +1,5 @@
-import { StudentInfo, ClassInfo } from './../types';
-
-import { ISettings } from './Settings';
+import { ISettings } from "./Settings";
+import { type ClassInfo, type StudentInfo } from "@/types";
 
 export interface ISchool {
   id: string;

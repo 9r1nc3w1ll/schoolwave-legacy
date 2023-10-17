@@ -132,6 +132,8 @@ const Header = (props: any) => {
   const { t, i18n } = useTranslation();
 
   const schoolName: string = props?.user_session?.school?.name;
+
+  console.log(props?.user_session?.school?.name);
   return (
     <header
       className={
