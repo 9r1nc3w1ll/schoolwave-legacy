@@ -91,7 +91,7 @@ class ClassTests(APITestCase):
     def test_list_classes(self):
         url = reverse("list_create_class")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["data"]), 1)
@@ -170,7 +170,7 @@ class ClassMemberTests(APITestCase):
     def test_list_class_member(self):
         url = reverse("list_create_class_member")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -255,7 +255,7 @@ class SchoolLogoTests(APITestCase):
     def test_retrieve_school_logo(self):
         url = reverse("school_logo_detail", kwargs={"school_id": self.school.id})
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], "School Logo retrieved successfully.")
@@ -269,7 +269,7 @@ class SchoolLogoTests(APITestCase):
                     },
                 }
 
-        response = self.client.patch(url, data=data, format='json')
+        response = self.client.patch(url, data=data, format='json', HTTP_X_CLIENT_ID=self.school.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
@@ -287,7 +287,7 @@ class SchoolBrandTests(APITestCase):
     def test_retrieve_school_brand(self):
         url = reverse("school_brand_detail", kwargs={"school_id": self.school.id})
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], "School Brand retrieved successfully.")
@@ -308,7 +308,7 @@ class SchoolBrandTests(APITestCase):
 
         data["school_id"] = school_id_str
 
-        response = self.client.patch(url, json.dumps(data), content_type='application/json')
+        response = self.client.patch(url, json.dumps(data), content_type='application/json', HTTP_X_CLIENT_ID=self.school.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], "School Brand updated successfully.")
         self.assertEqual(response.data["data"]["brand"]["primary_color"], "#FF0032")

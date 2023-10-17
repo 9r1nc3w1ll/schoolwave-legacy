@@ -103,11 +103,10 @@ class ListCreateClass(ListCreateAPIView):
     serializer_class = ClassSerializer
 
     def get_queryset(self):
-        class_id = self.kwargs.get("class_id")
-        if class_id:
-            return self.queryset.filter(id=class_id)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -201,11 +200,10 @@ class ListCreateClassMember(ListCreateAPIView):
     serializer_class = ClassMemberSerializer
 
     def get_queryset(self):
-        class_user_id = self.kwargs.get("class_user_id")
-        if class_user_id:
-            return self.queryset.filter(id=class_user_id)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -298,7 +296,10 @@ class ListStudentClass(ListCreateAPIView):
     serializer_class = ClassMemberSerializer
 
     def get_queryset(self):
-        return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -323,7 +324,7 @@ class DashboardStatsAPIView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
 
     def get(self, request, *args, **kwargs):
-        school_id = kwargs.get("school_id")
+        school_id = self.request.headers.get("x-client-id")
 
         try:
             school = School.objects.get(id=school_id)
@@ -430,49 +431,12 @@ class SchoolListAPIView(generics.GenericAPIView):
             'data': response_data
         })
 
-
-# owner_and_schools_data = {
-#                 'id': str(school.id),
-#                 'created_at': str(school.created_at),
-#                 'updated_at': str(school.updated_at),
-#                 'deleted_at': str(school.deleted_at),
-#                 'name': school.name,
-#                 'description': school.description,
-#                 'logo_file_name': school.logo_file_name.url if school.profile_photo else None,
-#                 'date_of_establishment': str(school.date_of_establishment),
-#                 'motto': school.motto,
-#                 'tag': school.tag, 
-#                 'website_url': school.website_url,
-#                 'owner': str(school_owner.id),
-#                 'owner_username': school_owner.username,
-#                 'owner_email': school_owner.email,
-#                 'owner_fullname': school_owner.first_name + school.owner.last_name 
-#             }
-
-# owner_and_schools_data = {
-#                 'id': str(school.id),
-#                 'created_at': str(school.created_at),
-#                 'updated_at': str(school.updated_at),
-#                 'deleted_at': str(school.deleted_at),
-#                 'name': school.name,
-#                 'description': school.description,
-#                 'logo_file_name': school.logo_file_name.url if school.profile_photo else None,
-#                 'date_of_establishment': str(school.date_of_establishment),
-#                 'motto': school.motto,
-#                 'tag': school.tag, 
-#                 'website_url': school.website_url,
-#                 'owner': str(school_owner.id),
-#                 'owner_username': school_owner.username,
-#                 'owner_email': school_owner.email,
-#                 'owner_fullname': school_owner.first_name + school.owner.last_name 
-#             }
-
 class StudentsWithNoClass(generics.GenericAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsSchoolOwner]
 
     def get(self, request):
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         users_in_school = User.objects.filter(school=school).filter(role="student")
 
@@ -493,7 +457,7 @@ class SchoolSettingsRetrieveUpdateView(generics.RetrieveUpdateAPIView):
 
 
     def get_object(self):
-        school_id = self.kwargs.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         try:
             settings_qs = School.objects.get(id=school_id, owner=self.request.user)
@@ -525,7 +489,7 @@ class RetrieveUpdateSchoolLogo(RetrieveUpdateDestroyAPIView):
     serializer_class = SchoolLogoSerializer
     
     def get_object(self):
-        school_id = self.kwargs.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         try:
             school = School.objects.get(id=school_id, owner=self.request.user)
@@ -592,7 +556,7 @@ class RetrieveUpdateSchoolBrand(RetrieveUpdateDestroyAPIView):
     serializer_class = SchoolBrandSerializer
     
     def get_object(self):
-        school_id = self.kwargs.get("school_id", "")
+        school_id = self.request.headers.get("x-client-id")
 
         try:
             school = School.objects.get(id=school_id, owner=self.request.user)
