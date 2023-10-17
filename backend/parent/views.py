@@ -50,13 +50,10 @@ class ListCreateParent(ListCreateAPIView):
     serializer_class = ParentSerializer
 
     def get_queryset(self):
-        parent_id = self.kwargs.get("parent_id")
-        if parent_id:
-            return self.queryset.filter(id=parent_id)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
 
-        
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         serializer = ParentSerializer(data=request.data)
@@ -156,13 +153,10 @@ class ListCreateParentRole(ListCreateAPIView):
     serializer_class = ParentRoleSerializer
 
     def get_queryset(self):
-        parent_role = self.kwargs.get("name")
-        if parent_role:
-            return self.queryset.filter(name=parent_role)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
 
-        
+        qs = self.queryset.filter(school=school)
+        return qs  
 
     def create(self, request, *args, **kwargs):
         serializer = ParentRoleSerializer(data=request.data)
