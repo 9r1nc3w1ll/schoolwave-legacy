@@ -14,26 +14,15 @@ type TLoginResponse = {
   }
 }
 
-const dummySchoolData = {
-  description: "The best School Ever",
-  name: "Alpha Institution",
-  motto: "Another one",
-  website_url: "https://www.sofascore.com/team/football/kf-fjallabyggdar/70086",
-  date_of_establishment: "1996-04-17",
-  owner: "f1fffae4-440e-423e-94ad-e0e90f267321",
-  tag: "Read",
-};
 const refreshToken = async (token: User): Promise<JWT> => {
   const { data: { user, school } } = await api.getSessionUser(token?.access_token)
 
-  const res = {
+  return {
     ...token,
     ...user,
-    school: school ? school : dummySchoolData, 
-    // ...(school ? { school } : {}),
+    ...(school ? { school } : {}),
     name: `${user.first_name} ${user.last_name}`,
   };
-  return res
 };
 
 export const authOptions: NextAuthOptions = {
@@ -59,15 +48,13 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const res = {
+        return {
           ...user,
           ...(school ? { school } : {}),
           name: `${user.first_name} ${user.last_name}`,
           access_token,
           refresh_token,
         }
-
-        return res;
       }
     }),
   ],
