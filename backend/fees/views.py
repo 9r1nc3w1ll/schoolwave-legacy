@@ -23,7 +23,7 @@ class ListCreateFeeTemplate(ListCreateAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -69,7 +69,7 @@ class RetrieveUpdateDestroyFeeTemplate(RetrieveUpdateDestroyAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -120,7 +120,7 @@ class ListCreateFeeItem(ListCreateAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -166,7 +166,7 @@ class RetrieveUpdateDestroyFeeItem(RetrieveUpdateDestroyAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -217,7 +217,7 @@ class ListCreateDiscount(ListCreateAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -263,7 +263,7 @@ class RetrieveUpdateDestroyDiscount(RetrieveUpdateDestroyAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -315,7 +315,7 @@ class ListCreateTransaction(ListCreateAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -361,7 +361,7 @@ class RetrieveUpdateDestroyTransaction(RetrieveUpdateDestroyAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -412,7 +412,7 @@ class BulkCreateInvoice(GenericAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -462,7 +462,7 @@ class ListCreateInvoice(ListCreateAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -508,7 +508,7 @@ class RetrieveUpdateDestroyInvoice(RetrieveUpdateDestroyAPIView):
         """
         Modify in case user can have more than one school
         """
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs

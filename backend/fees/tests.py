@@ -76,7 +76,7 @@ class FeeItemTestCase(APITestCase):
     def test_retrieve_fee_item(self):
         url = reverse("retrieve_update_destroy_fee_item", args=[self.fee_item.id])
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -84,14 +84,14 @@ class FeeItemTestCase(APITestCase):
         url = reverse("retrieve_update_destroy_fee_item", args=[self.fee_item.id])
         data = {"name": "Updated Class", "school": self.school.id}
         self.client.force_authenticate(user=self.user)
-        response = self.client.patch(url, data, format="json")
+        response = self.client.patch(url, data, format="json", HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_fee_item(self):
         url = reverse("retrieve_update_destroy_fee_item", args=[self.fee_item.id])
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(url)
+        response = self.client.delete(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -161,7 +161,7 @@ class FeeTemplateTestCase(APITestCase):
     def test_retrieve_fee_template(self):
         url = reverse("retrieve_update_destroy_fee_template", args=[self.fee_template.id])
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -170,14 +170,14 @@ class FeeTemplateTestCase(APITestCase):
         data = {"name": "Updated Fees", "school": self.school.id}
 
         self.client.force_authenticate(user=self.user)
-        response = self.client.patch(url, data, format="json")
+        response = self.client.patch(url, data, format="json", HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_fee_template(self):
         url = reverse("retrieve_update_destroy_fee_template", args=[self.fee_template.id])
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(url)
+        response = self.client.delete(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -285,7 +285,7 @@ class InvoiceTestCase(APITestCase):
     def test_retrieve_invoice(self):
         url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -294,7 +294,7 @@ class InvoiceTestCase(APITestCase):
         data = {"amount_paid": 3000}
 
         self.client.force_authenticate(user=self.user)
-        response = self.client.patch(url, data, format="json")
+        response = self.client.patch(url, data, format="json", HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
@@ -302,7 +302,7 @@ class InvoiceTestCase(APITestCase):
     def test_delete_invoice(self):
         url = reverse("retrieve_update_destroy_invoice", args=[self.invoice.id])
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(url)
+        response = self.client.delete(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -368,7 +368,7 @@ class DiscountTestCase(APITestCase):
     def test_retrieve_discount(self):
         url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -377,14 +377,14 @@ class DiscountTestCase(APITestCase):
         data = {"amount": 30}
 
         self.client.force_authenticate(user=self.user)
-        response = self.client.patch(url, data, format="json")
+        response = self.client.patch(url, data, format="json", HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_discount(self):
         url = reverse("retrieve_update_destroy_discount", args=[self.discount.id])
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(url)
+        response = self.client.delete(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -460,7 +460,7 @@ class TransactionTestCase(APITestCase):
     def test_retrieve_transaction(self):
         url = reverse("retrieve_update_destroy_transaction", args=[self.transaction.id])
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -472,7 +472,7 @@ class TransactionTestCase(APITestCase):
         }
 
         self.client.force_authenticate(user=self.user)
-        response = self.client.patch(url, data, format="json")
+        response = self.client.patch(url, data, format="json", HTTP_X_CLIENT_ID=self.school.id)
 
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -480,6 +480,6 @@ class TransactionTestCase(APITestCase):
     def test_delete_transaction(self):
         url = reverse("retrieve_update_destroy_transaction", args=[self.transaction.id])
         self.client.force_authenticate(user=self.user)
-        response = self.client.delete(url)
+        response = self.client.delete(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
