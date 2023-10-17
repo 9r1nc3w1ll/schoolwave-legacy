@@ -1,4 +1,6 @@
-import { ISettings } from "./Settings";
+import { StudentInfo, ClassInfo } from './../types';
+
+import { ISettings } from './Settings';
 
 export interface ISchool {
   id: string;
@@ -33,4 +35,13 @@ export type TSchool = {
   settings: ISettings;
   logo_file: string;
   owner: string;
+};
+
+export type Student = {
+  user: string;
+  role: string;
+  class_id: string;
+  class_info: ClassInfo;
+  student_info: StudentInfo;
+  school: string;
 };
