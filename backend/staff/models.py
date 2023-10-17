@@ -9,6 +9,7 @@ class StaffRole(BaseModel):
         db_table = "staff_roles"
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
 
     def save(self, *args, **kwargs):
 

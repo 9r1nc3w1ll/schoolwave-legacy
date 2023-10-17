@@ -61,7 +61,7 @@ class StaffAPITestCase(APITestCase):
     def test_list_staff(self):
         url = reverse("staff_list_create")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -89,12 +89,16 @@ class StaffAPITestCase(APITestCase):
     def test_batch_upload_staff(self):
         url = reverse("batch_upload_staff")
         self.client.force_authenticate(user=self.user)
+        school_id = self.school.id 
+        self.client.defaults["HTTP_X_CLIENT_ID"] = str(school_id)
         with open("staff/sample_upload.csv") as csv:
             response = self.client.post(
                 path=url,
                 data={"csv": csv,
-                      "school_id":self.school.id},
+                    "school_id":school_id},
             )
+
+        del self.client.defaults["HTTP_X_CLIENT_ID"]
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -147,12 +151,14 @@ class StaffRoleAPITestCase(APITestCase):
 
         self.staff_role1 = StaffRole.objects.create(
             name = "Class Teacher",
-            description = "Primary 4 class teacher"
+            description = "Primary 4 class teacher",
+            school = self.school
         )
 
         self.staff_role2 = StaffRole.objects.create(
             name = "Lesson Teacher",
-            description = "Primary 5 lesson teacher"
+            description = "Primary 5 lesson teacher",
+            school = self.school
         )
 
         role1 = StaffRole.objects.get(name="Class Teacher")
@@ -163,7 +169,7 @@ class StaffRoleAPITestCase(APITestCase):
     def test_list_staff_role(self):
         url = reverse("staff_role_list_create")
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -178,7 +184,7 @@ class StaffRoleAPITestCase(APITestCase):
             "description" : "Nusery lesson teacher"
         }
              
-        response = self.client.post(url, data)
+        response = self.client.post(url, data, HTTP_X_CLIENT_ID=self.school.id)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["message"], "Staff role assignment created successfully.")
 

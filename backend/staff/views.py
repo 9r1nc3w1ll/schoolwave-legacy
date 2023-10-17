@@ -21,7 +21,7 @@ class BatchUploadStaff(APIView):
 
     def post(self, request, *args, **kwargs):
         csv_file = request.FILES['csv']
-        school_id = request.POST['school_id']
+        school_id = self.request.headers.get("x-client-id")
 
         if not csv_file.name.endswith('.csv'):
             return Response({'error': 'Invalid file format. Please upload a CSV file.'}, status=400)
@@ -65,11 +65,10 @@ class ListCreateStaff(ListCreateAPIView):
     serializer_class = StaffSerializer
 
     def get_queryset(self):
-        staff_id = self.kwargs.get("staff_id")
-        if staff_id:
-            return self.queryset.filter(id=staff_id)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     def create(self, request, *args, **kwargs):
         school = request.data.get("school")
@@ -224,11 +223,10 @@ class ListCreateStaffRole(ListCreateAPIView):
     serializer_class = StaffRoleSerializer
 
     def get_queryset(self):
-        staff_role = self.kwargs.get("name")
-        if staff_role:
-            return self.queryset.filter(name=staff_role)
-        else:
-            return self.queryset.all()
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
         
 
