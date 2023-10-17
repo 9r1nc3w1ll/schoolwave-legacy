@@ -153,14 +153,8 @@ const Header = (props: any) => {
                   : getInitials(schoolName, schoolName.split(' ')[1][0])}{' '}
               </Avatar>
 
-              {/* <Avatar color='cyan' radius='xl'>
-                  {getInitials(schoolName, schoolName.split(' ')[1][0])}
-                </Avatar> */}
-
               <ShowTree roles={['super_admin']}>
-                <Avatar color='cyan' radius='xl'>
-                  {/* {getInitials(props?.user_session?.first)} */}
-                </Avatar>
+                <Avatar color='cyan' radius='xl'></Avatar>
               </ShowTree>
               <span className='align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline'>
                 {`${schoolName}`}
