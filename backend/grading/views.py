@@ -16,7 +16,7 @@ class GradingSchemeCreateView(generics.CreateAPIView):
 
     def get_queryset(self):
         
-        school = School.objects.get(owner=self.request.user)
+        school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
         return qs
@@ -88,4 +88,3 @@ class ResultRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Result.objects.all()
     serializer_class = ResultSerializer
     permission_classes = [IsAuthenticated,]
-
