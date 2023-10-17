@@ -2,38 +2,38 @@ import {
   GetClassStudentMembersResponse,
   GetUsersResponseInterface,
   ResponseInterface,
-} from '@/types';
+} from "@/types";
 
 export const getStudents = async (
   accessToken: string
 ): Promise<GetUsersResponseInterface[]> => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users",
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
       },
     }
   );
 
   const tempData = (await res.json()) as ResponseInterface<
-    GetUsersResponseInterface[]
+  GetUsersResponseInterface[]
   >;
-  const students = tempData.data.filter((x) => x.role === 'student');
+  const students = tempData.data.filter((x) => x.role === "student");
 
   return students;
 };
 
 export const getStaffs = async (accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users",
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
       },
     }
   );
@@ -45,12 +45,12 @@ export const getStaffs = async (accessToken?: string) => {
 
 export const getAllUsers = async (access_token?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users",
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + access_token,
       },
     }
   );
@@ -61,17 +61,17 @@ export const getAllUsers = async (access_token?: string) => {
 
 export const getParents = async (access_token?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users",
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + access_token,
       },
     }
   );
   const tempData = await res.json();
-  const parents = tempData.data.filter((x: any) => x.role == 'parent');
+  const parents = tempData.data.filter((x: any) => x.role == "parent");
 
   return parents;
 };
@@ -80,10 +80,10 @@ export const getUser = async (access_token: any, id: any) => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/users/${id.id}`,
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + access_token,
       },
     }
   );
@@ -94,12 +94,12 @@ export const getUser = async (access_token: any, id: any) => {
 
 export const EditUser = async (access_token: any, data: any, id: any) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users/' + id.id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users/" + id.id,
     {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + access_token,
       },
 
       body: JSON.stringify(data),
@@ -112,12 +112,12 @@ export const EditUser = async (access_token: any, data: any, id: any) => {
 
 export const createUser = async (data: any, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/account/users',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users",
     {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
       },
       body: JSON.stringify(data),
     }
@@ -131,12 +131,12 @@ export const getStudentsWithoutClass = async (
   accessToken: string
 ): Promise<ResponseInterface<GetClassStudentMembersResponse>> => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/students-with-no-class/',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/students-with-no-class/",
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
       },
     }
   );
