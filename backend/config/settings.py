@@ -5,6 +5,8 @@ from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
 
+from corsheaders.defaults import default_headers
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -205,3 +207,9 @@ LOGGING = {
 FRONTEND_URL = config("FRONTEND_URL", "localhost:3000")
 
 SITE_ID = 1
+
+
+CORS_ALLOWED_HEADERS = (
+    *default_headers,
+    "x-client-id",
+)
