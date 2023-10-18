@@ -313,7 +313,7 @@ class LessonNoteFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "lessonnotes.LessonNote"
 
-    week = factory.LazyFunction(lambda: fk.unique.random_number(digits=6, fix_len=True))
+    week = factory.LazyFunction(lambda: random.randint(1, 9))
     class_id = factory.SubFactory(ClassFactory)
     topic = factory.Faker("sentence", nb_words=3)
     description = factory.Faker("text")
