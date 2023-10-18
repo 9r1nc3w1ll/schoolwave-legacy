@@ -113,8 +113,7 @@ class ListCreateTerm(ListCreateAPIView):
     queryset = Term.objects.all()
     serializer_class = TermSerializer
 
-    def get_queryset(self):
-
+    def get_queryset(self):        
         school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)

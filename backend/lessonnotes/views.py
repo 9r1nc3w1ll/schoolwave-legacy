@@ -36,12 +36,14 @@ class ListCreateLessonNote(ListCreateAPIView):
         
 
     def create(self, request, *args, **kwargs):
+
+
         serializer = LessonNoteSerializer(data=request.data)
         if serializer.is_valid():
-            lessonnote = serializer.save()
+            serializer.save()
+            
             message = "Lesson Note created successfully."
-            data = LessonNoteSerializer(lessonnote)
-
+            
             headers = self.get_success_headers(serializer.data)
 
             resp = {

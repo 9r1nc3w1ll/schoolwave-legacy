@@ -14,7 +14,7 @@ class LessonNote(BaseModel):
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)
     files = models.ManyToManyField('File', related_name='lesson_notes', blank=True)
-    week = models.CharField(max_length=200, default="Week 1")
+    week = models.IntegerField(default=1)
     topic = models.CharField(max_length=150)
     description = models.TextField()
     tag = models.CharField(max_length=150, blank=True, null=True)

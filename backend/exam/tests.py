@@ -63,7 +63,6 @@ class BatchUploadAPITest(APITestCase):
                     "school_id":self.school.id},
         )
             
-        print(response.data)
 
 
         self.assertEqual(response.status_code, 201)
