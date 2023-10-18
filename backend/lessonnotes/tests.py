@@ -66,7 +66,7 @@ class LessonNoteAPITestCase(APITestCase):
         url = reverse("lesson_note_list_create")
         self.client.force_authenticate(user=self.user)
         data = {
-            "week":"1",
+            "week": 1,
             "class_id":self.class_obj.id,
             "term" : self.term.id,
             "content":"This is another content",
