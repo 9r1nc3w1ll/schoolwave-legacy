@@ -5,12 +5,12 @@ export const getDashboardStats = async (
   accessToken?: string
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/dashboard-stats/' + schoolID,
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/dashboard-stats/" + schoolID,
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
         "x-client-id": clientId!,
       },
     }

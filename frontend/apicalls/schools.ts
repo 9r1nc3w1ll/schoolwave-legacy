@@ -1,4 +1,3 @@
-import { clientId } from "@/utility_methods/constants";
 
 export const createSchool = async (data: any, accessToken?: string) => {
   const res = await fetch(
@@ -9,7 +8,6 @@ export const createSchool = async (data: any, accessToken?: string) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
       },
     }
   );
@@ -42,7 +40,6 @@ export const getSchools = async (accessToken?: string) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
       },
     }
   );

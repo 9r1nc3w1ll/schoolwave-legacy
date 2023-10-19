@@ -114,9 +114,9 @@ export const updateAdmission = async (
       method: "PATCH",
       body: JSON.stringify(body),
       headers: {
-        "content-Type": "application/json",
+        "Content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        "X-Client-Id": clientId!,
       },
     }
   );
