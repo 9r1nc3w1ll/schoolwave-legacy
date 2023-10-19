@@ -346,7 +346,10 @@ class CreateSchoolAndOwner(APIView):
         if not request.user.is_superuser:
             return Response({"detail": "Only superusers can create schools."}, status=status.HTTP_403_FORBIDDEN)
         
-        serializer_owner = UserSerializer(data=data)
+        owner_data = data.copy()
+        owner_data["school"] = None
+        serializer_owner = UserSerializer(data=owner_data)
+        
         if serializer_owner.is_valid():
             owner_instance = serializer_owner.save(is_active=True, role="admin")
             data["owner"] = owner_instance.id
@@ -380,7 +383,7 @@ class CreateSchoolAndOwner(APIView):
                 "errors": serializer_owner.errors,
             }
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
-
+            
 
 class SchoolListAPIView(generics.GenericAPIView):
     queryset = School.objects.all()
