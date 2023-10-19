@@ -209,7 +209,7 @@ FRONTEND_URL = config("FRONTEND_URL", "localhost:3000")
 SITE_ID = 1
 
 
-CORS_ALLOWED_HEADERS = (
+CORS_ALLOW_HEADERS = (
     *default_headers,
     "x-client-id",
 )
