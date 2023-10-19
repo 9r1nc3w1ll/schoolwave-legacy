@@ -21,6 +21,7 @@ const Index = () => {
     setloggedin(sessionStatus == 'authenticated');
   }, [sessionStatus]);
 
+  console.log({user_session});
   return (
     <div className=''>
       <span data-cy='content' className='hidden'>

@@ -1,5 +1,6 @@
 import { throwError } from "@/helpers/api";
 import { CreateDiscountPayload, CreateFeeItemPayload, CreateFeeTemplatePayload, CreateInvoicePayload, CreateInvoiceResponse, CreatePayload, CreateTransactionPayload, DeleteFeeItemPayload, DiscountTypes, EditFeeItemData, EditInvoicePayload, EditPayload, FeeItemInterface, FeeTemplateInterface, InvoiceTypes, ResponseInterface, TransactionInterface } from "@/types";
+import { clientId } from "@/utility_methods/constants";
 
 export const createFeeItem = async (payload: CreateFeeItemPayload): Promise<ResponseInterface<FeeItemInterface>> => {
   const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/fees/fee_item", {
@@ -7,6 +8,7 @@ export const createFeeItem = async (payload: CreateFeeItemPayload): Promise<Resp
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
     body: JSON.stringify(payload.data),
   });
@@ -26,6 +28,7 @@ export const editFeeItem = async (payload: EditPayload<EditFeeItemData>): Promis
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
     body: JSON.stringify(payload.data),
   });
@@ -45,6 +48,7 @@ export const deleteFeeItem = async (payload: DeleteFeeItemPayload) => {
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
 
   });
@@ -62,6 +66,7 @@ export const getFeeItems = async (accessToken: string): Promise<ResponseInterfac
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
+      "x-client-id": clientId!,
     }
   });
 
@@ -80,6 +85,7 @@ export const getSingleFeeItem = async (id: any, access_token?: string) => {
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + access_token,
+      "x-client-id": clientId!,
     }
   });
   const tempData = await res.json();
@@ -93,6 +99,7 @@ export const createDiscount = async (payload: CreatePayload<CreateDiscountPayloa
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
     body: JSON.stringify(payload.data),
   });
@@ -110,6 +117,7 @@ export const editDiscount = async (payload: EditPayload<CreateDiscountPayload>):
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
     body: JSON.stringify(payload.data),
   });
@@ -127,6 +135,7 @@ export const deleteDiscount = async (payload: { id: string; accessToken: string 
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
 
   });
@@ -144,6 +153,7 @@ export const getDiscounts = async (accessToken: string): Promise<DiscountTypes[]
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
+      "x-client-id": clientId!,
     }
   });
 
@@ -162,6 +172,7 @@ export const getSingleDiscount = async (id: any, access_token?: string) => {
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + access_token,
+      "x-client-id": clientId!,
     }
   });
   const tempData = await res.json();
@@ -175,6 +186,7 @@ export const createFeeTemplate = async (payload: CreatePayload<CreateFeeTemplate
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
     body: JSON.stringify(payload.data),
   });
@@ -194,6 +206,7 @@ export const editFeeTemplate = async (payload: EditPayload<CreateFeeTemplatePayl
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
     body: JSON.stringify(payload.data),
   });
@@ -213,6 +226,7 @@ export const deleteFeeTemplate = async (id: string, accessToken: string) => {
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
+      "x-client-id": clientId!,
     },
 
   });
@@ -230,6 +244,7 @@ export const getFeeTemplates = async (access_token: string): Promise<ResponseInt
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + access_token,
+      "x-client-id": clientId!,
     }
   });
   const tempData = await res.json();
@@ -243,6 +258,7 @@ export const getSingleFeeTemplate = async (id: any, access_token?: string) => {
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + access_token,
+      "x-client-id": clientId!,
     }
   });
   const tempData = await res.json();
@@ -256,6 +272,7 @@ export const getInvoices = async (accessToken: string): Promise<ResponseInterfac
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
+      "x-client-id": clientId!,
     }
   });
 
@@ -274,6 +291,7 @@ export const getInvoiceById = async (accessToken: string, id: string): Promise<R
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
+      "x-client-id": clientId!,
     }
   });
 
@@ -309,6 +327,7 @@ export const createInvoice = async (payload: CreateInvoicePayload): Promise<Resp
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
     body: JSON.stringify(template),
   });
@@ -328,6 +347,7 @@ export const editInvoice = async (payload: EditInvoicePayload) => {
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
     body: JSON.stringify(payload.data),
   });
@@ -343,6 +363,7 @@ export const getTransactions = async (accessToken: string): Promise<ResponseInte
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
+      "x-client-id": clientId!,
     }
   });
 
@@ -367,6 +388,7 @@ export const createTransaction = async (payload: CreateTransactionPayload): Prom
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
     body: JSON.stringify(body),
   });
@@ -386,6 +408,7 @@ export const editTransaction = async (payload: CreateTransactionPayload) => {
     headers: {
       "content-Type": "application/json",
       "Authorization": "Bearer " + payload.accessToken,
+      "x-client-id": clientId!,
     },
     body: JSON.stringify(payload)
   });

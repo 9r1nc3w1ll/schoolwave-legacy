@@ -1,3 +1,5 @@
+import { clientId } from "@/utility_methods/constants";
+
 export const getDashboardStats = async (
   schoolID: string,
   accessToken?: string
@@ -9,7 +11,7 @@ export const getDashboardStats = async (
       headers: {
         'content-Type': 'application/json',
         Authorization: 'Bearer ' + accessToken,
-        // "Client-Id": schoolID,
+        "x-client-id": clientId!,
       },
     }
   );

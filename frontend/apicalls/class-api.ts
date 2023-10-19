@@ -1,3 +1,4 @@
+import { clientId } from "@/utility_methods/constants";
 import { throwError } from "@/helpers/api";
 import {
   AssignUserToClassPayload,
@@ -16,6 +17,7 @@ export const createClass = async (data: any, accessToken?: string) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -49,6 +51,7 @@ export const editClass = async (id: string, accessToken: string, data: any) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -82,6 +85,7 @@ export const deleteClass = async (id: string, access_token: string) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + access_token,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -99,6 +103,7 @@ export const getClasses = async (
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -120,6 +125,7 @@ export const getClass = async (id: any, access_token?: string) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + access_token,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -136,6 +142,7 @@ export const getClassStudents = async (id: any, accessToken?: string) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -155,6 +162,7 @@ export const getClassStaffs = async (id: any, access_token?: string) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + access_token,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -175,6 +183,7 @@ export const AssignUserToClass = async (
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + payload.accessToken,
+        "x-client-id": clientId!,
       },
       body: JSON.stringify(payload.data),
     }
@@ -200,6 +209,7 @@ export const getClassStudentMembers = async (
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );

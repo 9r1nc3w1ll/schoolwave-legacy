@@ -1,4 +1,5 @@
 import { ResponseInterface } from "@/types";
+import { clientId } from "@/utility_methods/constants";
 import {
   TAdmissionPayload,
   TAdmissionResponse,
@@ -48,6 +49,7 @@ export const createAdmission = async (
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -82,6 +84,7 @@ export const getAdmissions = async (accessToken?: string) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -113,6 +116,7 @@ export const updateAdmission = async (
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );

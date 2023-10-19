@@ -1,3 +1,5 @@
+import { clientId } from "@/utility_methods/constants";
+
 export const createSchool = async (data: any, accessToken?: string) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + "/school/create-school-and-owner",
@@ -7,6 +9,7 @@ export const createSchool = async (data: any, accessToken?: string) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -31,7 +34,7 @@ export const createSchool = async (data: any, accessToken?: string) => {
   }
 };
 
-export const getSchools = async (schoolID?: string, accessToken?: string) => {
+export const getSchools = async (accessToken?: string) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + "/school/school-list",
     {
@@ -39,7 +42,7 @@ export const getSchools = async (schoolID?: string, accessToken?: string) => {
       headers: {
         "content-Type": "application/json",
         "Authorization": "Bearer " + accessToken,
-        "X-Client-Id": schoolID,
+        "x-client-id": clientId!,
       },
     }
   );
