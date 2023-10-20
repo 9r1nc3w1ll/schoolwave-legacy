@@ -1,10 +1,10 @@
-import { AssignUserToClass } from '@/apicalls/class-api';
+import { AssignUserToClass } from '@/api-calls/class-api';
 import { Avatar } from '@mantine/core';
 import CheckboxWithState from './CheckboxWithState';
 import Select, { GroupBase, OptionsOrGroups } from 'react-select';
-import { getAllStaff } from '@/apicalls/staffs';
+import { getAllStaff } from '@/api-calls/staffs';
 import { getFirstLetters } from '@/helpers/api';
-import { getStudentsWithoutClass } from '@/apicalls/users';
+import { getStudentsWithoutClass } from '@/api-calls/users';
 import { showAlert } from '@/utility_methods/alert';
 import {
   ClassUserAssignmentProps,

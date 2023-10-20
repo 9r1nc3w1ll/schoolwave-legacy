@@ -5,7 +5,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import DeleteClasses from '@/components/DeleteClasses';
 import CreateClassForm from '@/components/CreateClassForm';
 import EditClassForm from '@/components/EditClassForm';
-import { createClass, getClasses } from '@/apicalls/class-api';
+import { createClass, getClasses } from '@/api-calls/class-api';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 import { showAlert } from '@/utility_methods/alert';
 import { useSession } from 'next-auth/react';

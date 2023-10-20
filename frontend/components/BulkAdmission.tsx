@@ -1,7 +1,7 @@
 import { showAlert, showPrompt } from '@/utility_methods/alert';
 import UploadFile from './UploadFile';
 import { useMutation } from 'react-query';
-import { BulkAdmissionUpload } from '@/apicalls/admissions';
+import { BulkAdmissionUpload } from '@/api-calls/admissions';
 
 export default function BulkAdmission(props: any) {
   const checkFile = (file: any) => file.type === 'text/csv';

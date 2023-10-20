@@ -1,6 +1,6 @@
 import CreateTransaction from "@/components/CreateTransaction";
 import EditTransaction from "@/components/EditTransaction";
-import { getTransactions } from "@/apicalls/fees";
+import { getTransactions } from "@/api-calls/fees";
 import { setPageTitle } from "@/store/themeConfigSlice";
 import sortBy from "lodash/sortBy";
 import { useDispatch } from "react-redux";

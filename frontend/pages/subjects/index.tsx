@@ -10,7 +10,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
 import BulkAdmission from '@/components/BulkSubjects';
 import { showAlert } from '@/utility_methods/alert';
-import { getSubjects, updateSubject } from '@/apicalls/subjects';
+import { getSubjects, updateSubject } from '@/api-calls/subjects';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 import EditSubjectForm from '@/components/EditSubjectForm';
 import SubjectUserAssignments from '@/components/SubjectStaffAssignment';

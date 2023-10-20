@@ -11,7 +11,7 @@ import { useSession } from 'next-auth/react';
 import BulkAdmission from '@/components/BulkSubjects';
 import { showAlert } from '@/utility_methods/alert';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
-import { getExams, editExam,  deleteExam } from '@/apicalls/exam';
+import { getExams, editExam,  deleteExam } from '@/api-calls/exam';
 import CreateExam from '@/components/CreateExam';
 import BulkExamination from '@/components/BulkExam';
 import DeleteExam from '@/components/DeleteExam';

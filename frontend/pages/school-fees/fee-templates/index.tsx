@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { DeleteFeeTemplatePayload, FeeTemplateInterface, IClientError, UserSession } from "@/types";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
-import { deleteFeeTemplate, getFeeTemplates } from "@/apicalls/fees";
+import { deleteFeeTemplate, getFeeTemplates } from "@/api-calls/fees";
 import { useMutation, useQuery } from "react-query";
 
 const Export = () => {

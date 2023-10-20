@@ -5,39 +5,53 @@ import { downloadExcel } from 'react-export-table-to-excel';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../store/themeConfigSlice';
 import { useQuery } from 'react-query';
-import { getStaffs, getStudents } from '@/apicalls/users';
+import { getStaffs, getStudents } from '@/api-calls/users';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import CreateEmployee from '@/components/CreateEmployee';
 import EditEmployee from '@/components/EditEmployee';
 import { useSession } from 'next-auth/react';
-import { getClassStaffs } from '@/apicalls/class-api';
+import { getClassStaffs } from '@/api-calls/class-api';
 
+const col = [
+  'id',
+  'firstName',
+  'lastName',
+  'company',
+  'age',
+  'dob',
+  'email',
+  'phone',
+  'date_of_birth',
+];
 
-
-
-const col = ['id', 'firstName', 'lastName', 'company', 'age', 'dob', 'email', 'phone', 'date_of_birth' ];
-
-const StaffList = (props:any) => {
-  const router = useRouter()
+const StaffList = (props: any) => {
+  const router = useRouter();
   const { status: sessionStatus, data: user_session } = useSession();
 
-  const {data:students, isSuccess, status, refetch} = useQuery('getStaffs', async ()=> {
-    
-    return getClassStaffs(props.classId, user_session?.access_token)
-  }, {enabled:false})
+  const {
+    data: students,
+    isSuccess,
+    status,
+    refetch,
+  } = useQuery(
+    'getStaffs',
+    async () => {
+      return getClassStaffs(props.classId, user_session?.access_token);
+    },
+    { enabled: false }
+  );
 
   useEffect(() => {
-    if(sessionStatus == 'authenticated'){
-      refetch()
+    if (sessionStatus == 'authenticated') {
+      refetch();
     }
-
   }, [sessionStatus, refetch]);
-    
+
   useEffect(() => {
-    let path = router.asPath.split('#')
-    if(path[1] == 'create_new'){
-      setmodal(true)
+    let path = router.asPath.split('#');
+    if (path[1] == 'create_new') {
+      setmodal(true);
     }
   }, [router]);
 
@@ -45,12 +59,10 @@ const StaffList = (props:any) => {
   const [selectedRecords, setSelectedRecords] = useState<any>([]);
   const [modal, setmodal] = useState(false);
   const [editModal, seteditModal] = useState(false);
-  const canEdit = () => selectedRecords.length === 1
-
+  const canEdit = () => selectedRecords.length === 1;
 
   useEffect(() => {
     dispatch(setPageTitle('Schoolwave | Students'));
-   
   });
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -76,18 +88,16 @@ const StaffList = (props:any) => {
 
   useEffect(() => {
     setInitialRecords(() => {
-      if(isSuccess && students.length ){
-
+      if (isSuccess && students.length) {
         return students.filter((item: any) => {
           return (
             item.user?.toString().includes(search.toLowerCase()) ||
-                      item.first_name?.toLowerCase().includes(search.toLowerCase()) ||
-                      item.last_name?.toLowerCase().includes(search.toLowerCase()) 
-                  
+            item.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+            item.last_name?.toLowerCase().includes(search.toLowerCase())
           );
         });
-      }else{
-        setInitialRecords([])
+      } else {
+        setInitialRecords([]);
       }
     });
   }, [search, students, status]);
@@ -97,11 +107,20 @@ const StaffList = (props:any) => {
     setInitialRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
     setPage(1);
   }, [sortStatus]);
-  const header = ['Id', 'Firstname', 'Lastname', 'Email', 'Start Date', 'Phone No.', 'Age', 'Company'];
+  const header = [
+    'Id',
+    'Firstname',
+    'Lastname',
+    'Email',
+    'Start Date',
+    'Phone No.',
+    'Age',
+    'Company',
+  ];
 
   const exportTable = (type: any) => {
     let columns: any = col;
-    let records = students? students: [];
+    let records = students ? students : [];
     let filename = 'table';
 
     let newVariable: any;
@@ -129,7 +148,8 @@ const StaffList = (props:any) => {
 
       if (result == null) return;
       if (!result.match(/^data:text\/csv/i) && !newVariable.msSaveOrOpenBlob) {
-        var data = 'data:application/csv;charset=utf-8,' + encodeURIComponent(result);
+        var data =
+          'data:application/csv;charset=utf-8,' + encodeURIComponent(result);
         var link = document.createElement('a');
         link.setAttribute('href', data);
         link.setAttribute('download', filename + '.csv');
@@ -143,7 +163,7 @@ const StaffList = (props:any) => {
     } else if (type === 'print') {
       var rowhtml = '<p>' + filename + '</p>';
       rowhtml +=
-                '<table style="width: 100%; " cellpadding="0" cellcpacing="0"><thead><tr style="color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; "> ';
+        '<table style="width: 100%; " cellpadding="0" cellcpacing="0"><thead><tr style="color: #515365; background: #eff5ff; -webkit-print-color-adjust: exact; print-color-adjust: exact; "> ';
       columns.map((d: any) => {
         rowhtml += '<th>' + capitalize(d) + '</th>';
       });
@@ -158,9 +178,13 @@ const StaffList = (props:any) => {
         rowhtml += '</tr>';
       });
       rowhtml +=
-                '<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>';
+        '<style>body {font-family:Arial; color:#495057;}p{text-align:center;font-size:18px;font-weight:bold;margin:15px;}table{ border-collapse: collapse; border-spacing: 0; }th,td{font-size:12px;text-align:left;padding: 4px;}th{padding:8px 4px;}tr:nth-child(2n-1){background:#f7f7f7; }</style>';
       rowhtml += '</tbody></table>';
-      var winPrint: any = window.open('', '', 'left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0');
+      var winPrint: any = window.open(
+        '',
+        '',
+        'left=0,top=0,width=1000,height=600,toolbar=0,scrollbars=0,status=0'
+      );
       winPrint.document.write('<title>Print</title>' + rowhtml);
       winPrint.document.close();
       winPrint.focus();
@@ -187,7 +211,8 @@ const StaffList = (props:any) => {
 
       if (result == null) return;
       if (!result.match(/^data:text\/txt/i) && !newVariable.msSaveOrOpenBlob) {
-        var data1 = 'data:application/txt;charset=utf-8,' + encodeURIComponent(result);
+        var data1 =
+          'data:application/txt;charset=utf-8,' + encodeURIComponent(result);
         var link1 = document.createElement('a');
         link1.setAttribute('href', data1);
         link1.setAttribute('download', filename + '.txt');
@@ -212,75 +237,126 @@ const StaffList = (props:any) => {
   };
   return (
     <div>
-      <div className="panel">
-        <div className="mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center">
-
-          <h5 className=" text-3xl font-semibold dark:text-white-light">Staff</h5>
-          <div className="flex flex-wrap items-center">
-
-            <button type="button" 
-            // onClick={() => exportTable('print')} 
-              className="btn btn-primary btn-sm m-1">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ltr:mr-2 rtl:ml-2">
+      <div className='panel'>
+        <div className='mb-4.5 flex flex-col justify-between gap-5 md:flex-row md:items-center'>
+          <h5 className=' text-3xl font-semibold dark:text-white-light'>
+            Staff
+          </h5>
+          <div className='flex flex-wrap items-center'>
+            <button
+              type='button'
+              // onClick={() => exportTable('print')}
+              className='btn btn-primary btn-sm m-1'
+            >
+              <svg
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                fill='none'
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-5 w-5 ltr:mr-2 rtl:ml-2'
+              >
                 <path
-                  d="M6 17.9827C4.44655 17.9359 3.51998 17.7626 2.87868 17.1213C2 16.2426 2 14.8284 2 12C2 9.17157 2 7.75736 2.87868 6.87868C3.75736 6 5.17157 6 8 6H16C18.8284 6 20.2426 6 21.1213 6.87868C22 7.75736 22 9.17157 22 12C22 14.8284 22 16.2426 21.1213 17.1213C20.48 17.7626 19.5535 17.9359 18 17.9827"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                />
-                <path opacity="0.5" d="M9 10H6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M19 14L5 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <path
-                  d="M18 14V16C18 18.8284 18 20.2426 17.1213 21.1213C16.2426 22 14.8284 22 12 22C9.17157 22 7.75736 22 6.87868 21.1213C6 20.2426 6 18.8284 6 16V14"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
+                  d='M6 17.9827C4.44655 17.9359 3.51998 17.7626 2.87868 17.1213C2 16.2426 2 14.8284 2 12C2 9.17157 2 7.75736 2.87868 6.87868C3.75736 6 5.17157 6 8 6H16C18.8284 6 20.2426 6 21.1213 6.87868C22 7.75736 22 9.17157 22 12C22 14.8284 22 16.2426 21.1213 17.1213C20.48 17.7626 19.5535 17.9359 18 17.9827'
+                  stroke='currentColor'
+                  strokeWidth='1.5'
                 />
                 <path
-                  opacity="0.5"
-                  d="M17.9827 6C17.9359 4.44655 17.7626 3.51998 17.1213 2.87868C16.2427 2 14.8284 2 12 2C9.17158 2 7.75737 2 6.87869 2.87868C6.23739 3.51998 6.06414 4.44655 6.01733 6"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
+                  opacity='0.5'
+                  d='M9 10H6'
+                  stroke='currentColor'
+                  strokeWidth='1.5'
+                  strokeLinecap='round'
                 />
-                <circle opacity="0.5" cx="17" cy="10" r="1" fill="currentColor" />
-                <path opacity="0.5" d="M15 16.5H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <path opacity="0.5" d="M13 19H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path
+                  d='M19 14L5 14'
+                  stroke='currentColor'
+                  strokeWidth='1.5'
+                  strokeLinecap='round'
+                />
+                <path
+                  d='M18 14V16C18 18.8284 18 20.2426 17.1213 21.1213C16.2426 22 14.8284 22 12 22C9.17157 22 7.75736 22 6.87868 21.1213C6 20.2426 6 18.8284 6 16V14'
+                  stroke='currentColor'
+                  strokeWidth='1.5'
+                  strokeLinecap='round'
+                />
+                <path
+                  opacity='0.5'
+                  d='M17.9827 6C17.9359 4.44655 17.7626 3.51998 17.1213 2.87868C16.2427 2 14.8284 2 12 2C9.17158 2 7.75737 2 6.87869 2.87868C6.23739 3.51998 6.06414 4.44655 6.01733 6'
+                  stroke='currentColor'
+                  strokeWidth='1.5'
+                />
+                <circle
+                  opacity='0.5'
+                  cx='17'
+                  cy='10'
+                  r='1'
+                  fill='currentColor'
+                />
+                <path
+                  opacity='0.5'
+                  d='M15 16.5H9'
+                  stroke='currentColor'
+                  strokeWidth='1.5'
+                  strokeLinecap='round'
+                />
+                <path
+                  opacity='0.5'
+                  d='M13 19H9'
+                  stroke='currentColor'
+                  strokeWidth='1.5'
+                  strokeLinecap='round'
+                />
               </svg>
               PRINT
             </button>
 
-
-            <button type="button" onClick={() => exportTable('csv')} className="btn btn-primary btn-sm m-1 ">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
+            <button
+              type='button'
+              onClick={() => exportTable('csv')}
+              className='btn btn-primary btn-sm m-1 '
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='mr-2 h-5 w-5'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15'
+                />
               </svg>
-
-                           Export
+              Export
             </button>
-      
-            
           </div>
           <div>
-            <input type="text" className="form-input w-auto" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
-
+            <input
+              type='text'
+              className='form-input w-auto'
+              placeholder='Search...'
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
         </div>
-
-          
       </div>
-   
-      <div className="datatables">
+
+      <div className='datatables'>
         <DataTable
           highlightOnHover
-          className="table-hover whitespace-nowrap"
+          className='table-hover whitespace-nowrap'
           records={recordsData}
           columns={[
             { accessor: 'user', title: 'Staff Id.', sortable: true },
             { accessor: 'first_name', title: 'First Name', sortable: true },
             { accessor: 'last_name', title: 'Last Name', sortable: true },
             { accessor: 'role', title: 'Role', sortable: true },
-              
           ]}
-          totalRecords={initialRecords? initialRecords.length : 0}
+          totalRecords={initialRecords ? initialRecords.length : 0}
           recordsPerPage={pageSize}
           page={page}
           onPageChange={(p) => setPage(p)}
@@ -289,18 +365,15 @@ const StaffList = (props:any) => {
           sortStatus={sortStatus}
           onSortStatusChange={setSortStatus}
           minHeight={200}
-          paginationText={({ from, to, totalRecords }) => `Showing  ${from} to ${to} of ${totalRecords} entries`}
-
-          onRowClick={(x:any) =>
-            router.push('/employees/'+x.id)
+          paginationText={({ from, to, totalRecords }) =>
+            `Showing  ${from} to ${to} of ${totalRecords} entries`
           }
-
+          onRowClick={(x: any) => router.push('/employees/' + x.id)}
           selectedRecords={selectedRecords}
           onSelectedRecordsChange={setSelectedRecords}
         />
       </div>
     </div>
-    
   );
 };
 

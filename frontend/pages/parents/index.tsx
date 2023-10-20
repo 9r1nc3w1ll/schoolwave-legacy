@@ -5,7 +5,7 @@ import { downloadExcel } from 'react-export-table-to-excel';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useQuery } from 'react-query';
-import { getParents } from '@/apicalls/users';
+import { getParents } from '@/api-calls/users';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import CreateParent from '@/components/CreateParent';

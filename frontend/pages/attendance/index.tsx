@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useMutation, useQuery } from 'react-query';
-import { getClasses, getClassStudents } from '@/apicalls/class-api';
+import { getClasses, getClassStudents } from '@/api-calls/class-api';
 
-import { getAttendance } from '@/apicalls/attendance';
+import { getAttendance } from '@/api-calls/attendance';
 import { useForm } from 'react-hook-form';
 import { showAlert } from '@/utility_methods/alert';
 import ClassSelect from '@/components/ClassSelect';

@@ -3,7 +3,7 @@ import CreateEmployee from "@/components/CreateEmployee";
 import CreateStaffRole from "@/components/CreateStaffRole";
 import EditEmployee from "@/components/EditEmployee";
 import { UserSession } from "@/types";
-import { getAllStaff } from "@/apicalls/staffs";
+import { getAllStaff } from "@/api-calls/staffs";
 import { setPageTitle } from "@/store/themeConfigSlice";
 import sortBy from "lodash/sortBy";
 import { useDispatch } from "react-redux";

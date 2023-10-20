@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useEffect, useState, Fragment } from 'react';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
-import { getUser } from '@/apicalls/users';
+import { getUser } from '@/api-calls/users';
 import { useQuery } from 'react-query';
 import { useRouter } from 'next/router';
 import { toUpper } from 'lodash';

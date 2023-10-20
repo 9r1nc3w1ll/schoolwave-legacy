@@ -1,10 +1,14 @@
-import { IClientError } from "@/types";
-import React from "react";
-import { markBulkAttendance } from "@/apicalls/attendance";
-import { showAlert } from "@/utility_methods/alert";
-import { useMutation } from "react-query";
-import { useSession } from "next-auth/react";
-import { AttendancePayload, AttendancePayloadTypes, RemarkActionTypes } from "@/models/Attendance";
+import { IClientError } from '@/types';
+import React from 'react';
+import { markBulkAttendance } from '@/api-calls/attendance';
+import { showAlert } from '@/utility_methods/alert';
+import { useMutation } from 'react-query';
+import { useSession } from 'next-auth/react';
+import {
+  AttendancePayload,
+  AttendancePayloadTypes,
+  RemarkActionTypes,
+} from '@/models/Attendance';
 
 type MarkAttendanceTypes = {
   setAttendanceState: (payload: AttendancePayloadTypes) => void;
@@ -16,43 +20,49 @@ type MarkAttendanceTypes = {
 };
 
 const initialAttendanceState: AttendancePayload = {
-  attendance_type: "Daily",
-  attendee: "",
-  class_id: "",
-  subject: "",
-  staff: "",
-  date: "",
-  deleted_at: "",
-  start_time: "",
-  end_time: "",
+  attendance_type: 'Daily',
+  attendee: '',
+  class_id: '',
+  subject: '',
+  staff: '',
+  date: '',
+  deleted_at: '',
+  start_time: '',
+  end_time: '',
   present: [],
   remark: [],
-  school: "",
-  role: "student",
+  school: '',
+  role: 'student',
   student: [],
 };
 
 type AttendanceAction =
-    | {
-      type: "SET_FILTER";
+  | {
+      type: 'SET_FILTER';
       payload: { field: keyof AttendancePayload; value: string | number };
     }
-    | {
-      type: "ADD_REMARK";
+  | {
+      type: 'ADD_REMARK';
       payload: RemarkActionTypes;
     }
-    | { type: "RESET_STATE" };
+  | { type: 'RESET_STATE' };
 
-function AttendanceReducer (state: AttendancePayload, action: AttendanceAction): AttendancePayload {
+function AttendanceReducer(
+  state: AttendancePayload,
+  action: AttendanceAction
+): AttendancePayload {
   switch (action.type) {
-    case "SET_FILTER":
+    case 'SET_FILTER':
       return {
         ...state,
         [action.payload.field]: action.payload.value,
       };
-    case "ADD_REMARK":
-
-      if ("index" in action.payload && "remark" in action.payload && "studentID" in action.payload) {
+    case 'ADD_REMARK':
+      if (
+        'index' in action.payload &&
+        'remark' in action.payload &&
+        'studentID' in action.payload
+      ) {
         const { index, remark, studentID } = action.payload;
 
         if (index >= 0) {
@@ -62,7 +72,8 @@ function AttendanceReducer (state: AttendancePayload, action: AttendanceAction):
           const updatedStudents = [...state.student];
 
           updatedRemarks[index] = remark;
-          updatedPresent[index] = ["Late", "Punctual"].includes(remark) ?? false;
+          updatedPresent[index] =
+            ['Late', 'Punctual'].includes(remark) ?? false;
           updatedStudents[index] = studentID;
 
           return {
@@ -75,7 +86,7 @@ function AttendanceReducer (state: AttendancePayload, action: AttendanceAction):
       }
 
       return state;
-    case "RESET_STATE":
+    case 'RESET_STATE':
       return initialAttendanceState;
     default:
       return state;
@@ -84,24 +95,37 @@ function AttendanceReducer (state: AttendancePayload, action: AttendanceAction):
 
 export const useMarkAttendance = (): MarkAttendanceTypes => {
   const { data: userSession } = useSession();
-  const [{ attendance_type: attendanceType, attendee, class_id: classId, subject, staff, date, present, remark, student }, dispatch] = React.useReducer(AttendanceReducer, initialAttendanceState);
+  const [
+    {
+      attendance_type: attendanceType,
+      attendee,
+      class_id: classId,
+      subject,
+      staff,
+      date,
+      present,
+      remark,
+      student,
+    },
+    dispatch,
+  ] = React.useReducer(AttendanceReducer, initialAttendanceState);
 
   const setAttendanceState = React.useCallback(
     (payload: AttendancePayloadTypes) => {
-      dispatch({ type: "SET_FILTER", payload });
+      dispatch({ type: 'SET_FILTER', payload });
     },
     [dispatch]
   );
 
   const addRemark = React.useCallback(
     (payload: RemarkActionTypes) => {
-      dispatch({ type: "ADD_REMARK", payload });
+      dispatch({ type: 'ADD_REMARK', payload });
     },
     [dispatch]
   );
 
   const resetAttendanceState = React.useCallback(() => {
-    dispatch({ type: "RESET_STATE" });
+    dispatch({ type: 'RESET_STATE' });
   }, [dispatch]);
 
   const query: Partial<AttendancePayload> = React.useMemo(
@@ -116,25 +140,33 @@ export const useMarkAttendance = (): MarkAttendanceTypes => {
       remark,
       student,
     }),
-    [attendanceType, attendee, classId, subject, staff, date, present, remark, student]
+    [
+      attendanceType,
+      attendee,
+      classId,
+      subject,
+      staff,
+      date,
+      present,
+      remark,
+      student,
+    ]
   );
 
-  const {
-    mutate: bulkMarkAttendance,
-    isLoading: isMarkingAttendance,
-  } = useMutation(
-    (data: Partial<AttendancePayload>) => {
-      return markBulkAttendance(data, userSession?.access_token);
-    },
-    {
-      onSuccess: async () => {
-        showAlert("success", "Attendance saved successfuly");
+  const { mutate: bulkMarkAttendance, isLoading: isMarkingAttendance } =
+    useMutation(
+      (data: Partial<AttendancePayload>) => {
+        return markBulkAttendance(data, userSession?.access_token);
       },
-      onError: (error: IClientError) => {
-        showAlert("error", error.message);
-      },
-    }
-  );
+      {
+        onSuccess: async () => {
+          showAlert('success', 'Attendance saved successfuly');
+        },
+        onError: (error: IClientError) => {
+          showAlert('error', error.message);
+        },
+      }
+    );
 
   return {
     resetAttendanceState,

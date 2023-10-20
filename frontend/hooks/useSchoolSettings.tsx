@@ -1,75 +1,75 @@
-import { IClientError } from "@/types";
-import { TSchool } from "@/models";
-import { showAlert } from "@/utility_methods/alert";
-import { useSession } from "next-auth/react";
+import { IClientError } from '@/types';
+import { TSchool } from '@/models';
+import { showAlert } from '@/utility_methods/alert';
+import { useSession } from 'next-auth/react';
 import {
   ISettings,
   ISettingsNavTypes,
   ISettingsPayload,
   ISettingsResponse,
   SettingsPayloadTypes,
-} from "@/models/Settings";
-import React, { useEffect, useState } from "react";
-import { getSchoolSettings, updateSettings } from "@/apicalls/settings";
-import { useMutation, useQuery } from "react-query";
+} from '@/models/Settings';
+import React, { useEffect, useState } from 'react';
+import { getSchoolSettings, updateSettings } from '@/api-calls/settings';
+import { useMutation, useQuery } from 'react-query';
 
 type ISettingsTypes = ISettings & ISettingsNavTypes;
 
 const initialSettingState: ISettingsTypes = {
-  logo: { file: "" },
+  logo: { file: '' },
   brand: {
-    primaryColor: "",
-    secondaryColor: "",
+    primaryColor: '',
+    secondaryColor: '',
   },
-  schoolId: "",
-  schoolName: "",
+  schoolId: '',
+  schoolName: '',
   schoolRadius: 0,
   schoolLatitude: 0,
   storageOptions: {
-    token: "",
-    driver: "",
+    token: '',
+    driver: '',
     default: false,
-    basePath: "",
+    basePath: '',
   },
   schoolLongitude: 0,
-  staffCodePrefix: "",
-  studentCodePrefix: "",
-  activeTab: "basic",
+  staffCodePrefix: '',
+  studentCodePrefix: '',
+  activeTab: 'basic',
 };
 
 type SettingsAction =
   | {
-    type: "SET_FILTER";
-    payload: { field: keyof ISettings; value: string | number };
-  }
+      type: 'SET_FILTER';
+      payload: { field: keyof ISettings; value: string | number };
+    }
   | {
-    type: "SET_ACTIVE_TAB";
-    payload: ISettingsNavTypes;
-  }
+      type: 'SET_ACTIVE_TAB';
+      payload: ISettingsNavTypes;
+    }
   | {
-    type: "SET_STATE";
-    payload: ISettingsTypes;
-  }
-  | { type: "RESET_STATE" };
+      type: 'SET_STATE';
+      payload: ISettingsTypes;
+    }
+  | { type: 'RESET_STATE' };
 
-function SettinsReducer (
+function SettinsReducer(
   state: ISettingsTypes,
   action: SettingsAction
 ): ISettingsTypes {
   switch (action.type) {
-    case "SET_FILTER":
+    case 'SET_FILTER':
       return {
         ...state,
         [action.payload.field]: action.payload.value,
       };
-    case "SET_ACTIVE_TAB":
+    case 'SET_ACTIVE_TAB':
       return {
         ...state,
         activeTab: action.payload.activeTab,
       };
-    case "SET_STATE":
+    case 'SET_STATE':
       return action.payload;
-    case "RESET_STATE":
+    case 'RESET_STATE':
       return initialSettingState;
     default:
       return state;
@@ -100,27 +100,27 @@ export const useSettings = () => {
 
   const setSettingsState = React.useCallback(
     (payload: SettingsPayloadTypes) => {
-      dispatch({ type: "SET_FILTER", payload });
+      dispatch({ type: 'SET_FILTER', payload });
     },
     [dispatch]
   );
 
   const setActiveTab = React.useCallback(
-    (activeTab: "basic" | "session" | "email") => {
-      dispatch({ type: "SET_ACTIVE_TAB", payload: { activeTab } });
+    (activeTab: 'basic' | 'session' | 'email') => {
+      dispatch({ type: 'SET_ACTIVE_TAB', payload: { activeTab } });
     },
     [dispatch]
   );
 
   const setState = React.useCallback(
     (payload: ISettingsTypes) => {
-      dispatch({ type: "SET_STATE", payload });
+      dispatch({ type: 'SET_STATE', payload });
     },
     [dispatch]
   );
 
   const resetSettingsState = React.useCallback(() => {
-    dispatch({ type: "RESET_STATE" });
+    dispatch({ type: 'RESET_STATE' });
   }, [dispatch]);
 
   const query: ISettingsTypes = React.useMemo(
@@ -158,11 +158,16 @@ export const useSettings = () => {
     data: settingsConfig,
     isSuccess,
     isFetching: isLoadingSettingsConfig,
-  }: { data: ISettingsResponse | undefined; isSuccess: boolean; isFetching: boolean } = useQuery(
-    "fetch-settings",
-    (): Promise<ISettingsResponse > =>
+  }: {
+    data: ISettingsResponse | undefined;
+    isSuccess: boolean;
+    isFetching: boolean;
+  } = useQuery(
+    'fetch-settings',
+    (): Promise<ISettingsResponse> =>
       getSchoolSettings(
-        userSession!.access_token!, (userSession!.school as unknown as TSchool).id
+        userSession!.access_token!,
+        (userSession!.school as unknown as TSchool).id
       ),
     { enabled: true }
   );
@@ -188,7 +193,7 @@ export const useSettings = () => {
         schoolLongitude: settingsConfig?.school_longitude,
         staffCodePrefix: settingsConfig?.staff_code_prefix,
         studentCodePrefix: settingsConfig?.student_code_prefix,
-        activeTab: "basic",
+        activeTab: 'basic',
       };
 
       setState(defaultState);
@@ -205,10 +210,10 @@ export const useSettings = () => {
     },
     {
       onSuccess: async () => {
-        showAlert("success", "Settings Saved successfuly");
+        showAlert('success', 'Settings Saved successfuly');
       },
       onError: (error: IClientError) => {
-        showAlert("error", error.message);
+        showAlert('error', error.message);
       },
     }
   );

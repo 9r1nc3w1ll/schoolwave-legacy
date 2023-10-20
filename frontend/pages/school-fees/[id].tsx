@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useQuery } from "react-query";
-import { getSession, getSingleSession, getTerms } from "@/apicalls/session";
+import { getSession, getSingleSession, getTerms } from "@/api-calls/session";
 import { useSession } from "next-auth/react";
 import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal, useState, Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";

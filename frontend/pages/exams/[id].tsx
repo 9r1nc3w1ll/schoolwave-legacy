@@ -8,7 +8,7 @@ import { toUpper } from 'lodash';
 import { useSession } from 'next-auth/react';
 import StudentList from '@/components/StudentList';
 import StaffList from '@/components/StaffList';
-import { getSingleExam } from '@/apicalls/exam';
+import { getSingleExam } from '@/api-calls/exam';
 import ExamQuestionList from '@/components/ExamQuestionList';
 
 const AccountSetting = (props: any) => {

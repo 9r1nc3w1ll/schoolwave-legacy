@@ -1,6 +1,6 @@
 import CreateInvoice from "@/components/CreateInvoice";
 import EditInvoice from "@/components/EditInvoice";
-import { getInvoices } from "@/apicalls/fees";
+import { getInvoices } from "@/api-calls/fees";
 import { setPageTitle } from "@/store/themeConfigSlice";
 import { showAlert } from "@/utility_methods/alert";
 import sortBy from "lodash/sortBy";

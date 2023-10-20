@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
 import 'flatpickr/dist/flatpickr.css';
 import { useSession } from 'next-auth/react';
-import { createSchool } from '@/apicalls/schools';
+import { createSchool } from '@/api-calls/schools';
 
 const CreateSchool = (props: any) => {
   const { status: sessionStatus, data: user_session } = useSession();
@@ -46,7 +46,7 @@ const CreateSchool = (props: any) => {
     { value: 'male', label: 'Male' },
     { value: 'female', label: 'Female' },
   ];
-  
+
   const bloodOptions = [
     { value: 'choose', label: 'choose' },
     { value: 'O+', label: 'O+' },

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { IRootState } from '@/store';
 import dynamic from 'next/dynamic';
 import { useQuery } from 'react-query';
-import { getDashboardStats } from '@/apicalls/dashboard';
+import { getDashboardStats } from '@/api-calls/dashboard';
 import { useSession } from 'next-auth/react';
 import { formatDate } from '@/utility_methods/datey';
 import { useMemo } from 'react';

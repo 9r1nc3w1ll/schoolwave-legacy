@@ -1,9 +1,9 @@
-import { CreateInvoiceFormvalues } from "./CreateInvoice";
-import { getFeeTemplates } from "@/apicalls/fees";
-import { useQuery } from "react-query";
-import { FeeTemplateInterface, SessionStatus, UserSession } from "@/types";
-import React, { SetStateAction, useEffect, useState } from "react";
-import { UseFormRegister, UseFormWatch } from "react-hook-form";
+import { CreateInvoiceFormvalues } from './CreateInvoice';
+import { getFeeTemplates } from '@/api-calls/fees';
+import { useQuery } from 'react-query';
+import { FeeTemplateInterface, SessionStatus, UserSession } from '@/types';
+import React, { SetStateAction, useEffect, useState } from 'react';
+import { UseFormRegister, UseFormWatch } from 'react-hook-form';
 
 interface FeeTemplateSelectProps {
   setItems: React.Dispatch<SetStateAction<string[]>>;
@@ -15,13 +15,17 @@ interface FeeTemplateSelectProps {
 
 const FeeTemplateSelect = (props: FeeTemplateSelectProps) => {
   const [feeTemplates, setFeeTemplates] = useState<FeeTemplateInterface[]>([]);
-  const { data, isLoading, refetch } = useQuery("feetemplatess", () => getFeeTemplates(props.user_session.access_token), { enabled: false });
+  const { data, isLoading, refetch } = useQuery(
+    'feetemplatess',
+    () => getFeeTemplates(props.user_session.access_token),
+    { enabled: false }
+  );
 
   useEffect(() => {
-    if (props.user_session_status === "authenticated") {
+    if (props.user_session_status === 'authenticated') {
       refetch();
     }
-  }, [props.user_session_status === "authenticated"]);
+  }, [props.user_session_status === 'authenticated']);
 
   useEffect(() => {
     if (data) {
@@ -31,7 +35,7 @@ const FeeTemplateSelect = (props: FeeTemplateSelectProps) => {
 
   React.useEffect(() => {
     const subscription = props.watch(({ template }) => {
-      console.log("template: ", template);
+      console.log('template: ', template);
       let templateItems: string[] = [];
 
       feeTemplates.forEach((item) => {
@@ -46,21 +50,30 @@ const FeeTemplateSelect = (props: FeeTemplateSelectProps) => {
   }, [props.watch, feeTemplates]);
 
   useEffect(() => {
-    console.log("discountssssss: ", feeTemplates);
+    console.log('discountssssss: ', feeTemplates);
   }, [feeTemplates]);
 
   return (
     <>
       <label>Fee Template</label>
-      <select placeholder="Fee Template" className="form-input" {...props.register("template")}
+      <select
+        placeholder='Fee Template'
+        className='form-input'
+        {...props.register('template')}
         onClick={() => {
           refetch();
-        }}>
+        }}
+      >
         <option>-- Select template --</option>
-        {isLoading
-          ? <option>Loading ...</option>
-          : feeTemplates?.map((feeTemplate: FeeTemplateInterface) => <option key={feeTemplate.id} value={feeTemplate.id} >{feeTemplate.name}</option>)
-        }
+        {isLoading ? (
+          <option>Loading ...</option>
+        ) : (
+          feeTemplates?.map((feeTemplate: FeeTemplateInterface) => (
+            <option key={feeTemplate.id} value={feeTemplate.id}>
+              {feeTemplate.name}
+            </option>
+          ))
+        )}
       </select>
     </>
   );

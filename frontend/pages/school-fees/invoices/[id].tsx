@@ -1,4 +1,4 @@
-import { getInvoiceTemplateById } from "@/apicalls/fees";
+import { getInvoiceTemplateById } from "@/api-calls/fees";
 import Invoice from "@/components/Invoice";
 import { InvoiceTypes } from "@/types";
 import { useRouter } from "next/router";

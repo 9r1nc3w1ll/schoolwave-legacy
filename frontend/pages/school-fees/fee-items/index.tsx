@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { Dialog, Transition } from "@headlessui/react";
 import { FeeItemInterface, IClientError, UserSession } from "@/types";
 import { Fragment, useEffect, useState } from "react";
-import { deleteFeeItem, getFeeItems } from "@/apicalls/fees";
+import { deleteFeeItem, getFeeItems } from "@/api-calls/fees";
 import { useMutation, useQuery } from "react-query";
 
 const Export = () => {

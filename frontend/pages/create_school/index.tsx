@@ -9,8 +9,9 @@ import { useSession } from 'next-auth/react';
 import { formatDate } from '@/utility_methods/datey';
 import { useDispatch } from 'react-redux';
 import CreateSchool from '@/components/CreateSchool';
-import { getSchools } from '@/apicalls/schools';
+
 import SuperAdminLayout from '@/components/Layouts/SuperAdminLayout';
+import { getSchools } from '@/api-calls/schools';
 
 const col = [
   'id',

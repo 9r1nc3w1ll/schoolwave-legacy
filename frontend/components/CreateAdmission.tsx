@@ -5,12 +5,12 @@ import { setPageTitle } from '@/store/themeConfigSlice';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { MutationFunction, useMutation, useQueryClient } from 'react-query';
 import { showAlert } from '@/utility_methods/alert';
-import { createUser } from '@/apicalls/users';
+import { createUser } from '@/api-calls/users';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import { parse } from 'json2csv';
 import { useSession } from 'next-auth/react';
-import { BulkAdmissionUpload, createAdmission } from '@/apicalls/admissions';
+import { BulkAdmissionUpload, createAdmission } from '@/api-calls/admissions';
 import {
   TAdmissionPayload,
   TCreateAdmissionResponse,
@@ -68,8 +68,13 @@ const CreateAdmission = (props: any) => {
   ];
 
   const { mutate, isLoading, error } = useMutation(
-    (data: TAdmissionPayload): Promise<ResponseInterface<TCreateAdmissionResponse>> => {
-      return createAdmission(data, user_session?.access_token) as unknown as Promise<ResponseInterface<TCreateAdmissionResponse>> ;
+    (
+      data: TAdmissionPayload
+    ): Promise<ResponseInterface<TCreateAdmissionResponse>> => {
+      return createAdmission(
+        data,
+        user_session?.access_token
+      ) as unknown as Promise<ResponseInterface<TCreateAdmissionResponse>>;
     },
     {
       onSuccess: async (data: ResponseInterface<TCreateAdmissionResponse>) => {

@@ -3,11 +3,11 @@ import { useDispatch } from "react-redux";
 import {useEffect, useState} from 'react'
 import { setPageTitle } from "@/store/themeConfigSlice";
 import { useMutation, useQuery } from "react-query";
-import { getStudents } from "@/apicalls/users";
+import { getStudents } from "@/api-calls/users";
 import AttendanceTable from "@/components/AttendanceTable";
-import { getClassStudents, getClasses } from "@/apicalls/class-api";
-import { getTerms } from "@/apicalls/session";
-import { getAttendance } from "@/apicalls/attendance";
+import { getClassStudents, getClasses } from "@/api-calls/class-api";
+import { getTerms } from "@/api-calls/session";
+import { getAttendance } from "@/api-calls/attendance";
 import { useForm } from "react-hook-form";
 import { showAlert } from "@/utility_methods/alert";
 import AttendanceAccordion from "@/components/AttendanceAccordion";

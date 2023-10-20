@@ -8,7 +8,8 @@ export const getStudents = async (accessToken: string): Promise<GetUsersResponse
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
       "x-client-id": clientId!,
-    }}
+    }
+  }
   );
 
   const tempData = (await res.json()) as ResponseInterface<
@@ -26,7 +27,8 @@ export const getStaffs = async (accessToken?: string) => {
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
       "x-client-id": clientId!,
-    }}
+    }
+  }
   );
   const tempData = await res.json();
   const staffs = tempData.data.filter((x: any) => x.is_staff);
@@ -41,7 +43,8 @@ export const getAllUsers = async (accessToken?: string) => {
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
       "x-client-id": clientId!,
-    }}
+    }
+  }
   );
   const tempData = await res.json();
 
@@ -55,7 +58,8 @@ export const getParents = async (accessToken?: string) => {
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
       "x-client-id": clientId!,
-    }}
+    }
+  }
   );
   const tempData = await res.json();
   const parents = tempData.data.filter((x: any) => x.role == "parent");
@@ -70,7 +74,8 @@ export const getUser = async (accessToken: any, id: any) => {
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
       "x-client-id": clientId!,
-    }}
+    }
+  }
   );
   const tempData = await res.json();
 
@@ -116,7 +121,8 @@ export const getStudentsWithoutClass = async (accessToken: string): Promise<Resp
       "content-Type": "application/json",
       "Authorization": "Bearer " + accessToken,
       "x-client-id": clientId!,
-    }}
+    }
+  }
   );
 
   const tempData =

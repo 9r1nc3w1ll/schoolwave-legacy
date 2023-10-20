@@ -2,7 +2,7 @@ import BlankLayout from "@/components/Layouts/BlankLayout";
 import Invoice from "@/components/Invoice";
 import { InvoiceTypes } from "@/types";
 import PartPayment from "@/components/Partpayment";
-import { getInvoiceTemplateById } from "@/apicalls/fees";
+import { getInvoiceTemplateById } from "@/api-calls/fees";
 import { useQuery } from "react-query";
 import { useRouter } from "next/router";
 import { Dialog, Transition } from "@headlessui/react";

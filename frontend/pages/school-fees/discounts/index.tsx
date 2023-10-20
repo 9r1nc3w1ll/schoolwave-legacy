@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { Dialog, Transition } from "@headlessui/react";
 import { DiscountTypes, IClientError, UserSession } from "@/types";
 import { Fragment, useEffect, useState } from "react";
-import { deleteDiscount, getDiscounts } from "@/apicalls/fees";
+import { deleteDiscount, getDiscounts } from "@/api-calls/fees";
 import { useMutation, useQuery } from "react-query";
 
 const Export = () => {
