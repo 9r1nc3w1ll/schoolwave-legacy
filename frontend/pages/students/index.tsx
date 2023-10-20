@@ -4,7 +4,6 @@ import sortBy from 'lodash/sortBy';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../store/themeConfigSlice';
 import { useQuery } from 'react-query';
-import { getStudents } from '@/api-calls/users';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
 import EditUser from '@/components/EditUser';
@@ -240,7 +239,6 @@ const Export = (props: any) => {
       .join(' ');
   };
 
-  console.log({ recordsData });
   return (
     <div>
       <div className='panel'>
