@@ -17,12 +17,19 @@ from school.models import School, ClassMember
 from school.serializers import SchoolSerializer, ClassMemberSerializer
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from .tokens import account_activation_token
+
+
 from .models import PasswordResetRequest, User
 from .serializers import (
     AdminPasswordResetSerializer,
     LoginSerializer,
     PasswordChangeSerializer,
     PasswordResetRequestSerializer,
+    PasswordResetSerializer,
     UserSerializer,
     ProfilePhotoSerializer,
     SuperAdminCreateSerializer
@@ -402,3 +409,100 @@ class SuperAdminCreateView(CreateAPIView):
                 "errors": serializer.errors,
             }
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class RequestPasswordReset(APIView):
+    serializer_class = PasswordResetRequestSerializer
+
+    def post(self, request, *args, **kwargs):
+
+        serializer = self.serializer_class(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        email = request.data["email"]
+
+        school = self.request.headers.get("x-client-id")
+
+        try:
+            user = User.objects.filter(school=school).get(email=email)
+        except User.DoesNotExist:
+            return Response({"error" : "User does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        subject = 'Reset Password'
+        
+        message = render_to_string('emails/password-reset.html', {
+            'user': user,
+            'FRONTEND_RESET_URL': settings.FRONTEND_RESET_URL,
+            'uid': urlsafe_base64_encode(force_bytes(user.email)),
+            'token': account_activation_token.make_token(user),
+        })
+        
+        user.email_user(subject, message)
+
+        return Response({'message' : 'Activation email has been sent to the user.'})
+
+
+class VerifyToken(APIView):
+
+    def get_object(self, email):
+        try:
+            email = force_str(urlsafe_base64_decode(email))
+            user = User.objects.get(email=email)
+            return user
+        except User.DoesNotExist:
+            return Response({"error" : "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, *args, **kwargs):
+
+        email = kwargs.get("hashed_email", "")
+        token = kwargs.get("token", "")
+
+        user = self.get_object(email)
+        validated = account_activation_token.check_token(user, token)
+
+        if validated:
+            return Response({'message' : "User Validated. Please set your password"})
+        
+        else:
+            return Response({"error" : "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ResetPassword(APIView):
+    serializer_class = PasswordResetSerializer
+
+    def get_object(self, email):
+        try:
+            email = force_str(urlsafe_base64_decode(email))
+            user = User.objects.get(email=email)
+            return user
+        except User.DoesNotExist:
+            return Response({"error" : "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+
+        serializer = PasswordResetSerializer(data=data)
+
+        serializer.is_valid(raise_exception=True)
+
+        password = serializer.validated_data["password"]
+
+        email = serializer.validated_data["hashed_email"]
+        token = serializer.validated_data["token"]
+
+        user = self.get_object(email)
+
+        validated = account_activation_token.check_token(user, token)
+
+        if validated:
+        
+            user.set_password(password)
+            user.save()
+            resp = {"message": "Password changed successfully."}
+            return Response(resp)
+        
+        else:
+            return Response({"error" : "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)

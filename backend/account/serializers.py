@@ -55,6 +55,35 @@ class PasswordChangeSerializer(serializers.Serializer):
     )
 
 
+class PasswordResetSerializer(serializers.Serializer):
+    password = serializers.CharField(
+        min_length=5,
+        error_messages={
+            "required": "Password is required",
+            "blank": "Password field cannot be empty",
+        },
+    )
+    confirm_password = serializers.CharField(
+        min_length=5,
+        error_messages={
+            "required": "Confirm password is required",
+            "blank": "Confirm password field cannot be empty",
+        },
+    )
+
+    hashed_email = serializers.CharField()
+    token = serializers.CharField()
+
+    def validate(self, data):
+        password = data.get("password")
+        confirm_password = data.get("confirm_password")
+
+        if password != confirm_password:
+            raise serializers.ValidationError("Passwords must match!")
+        
+        return data
+
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=50)
     password = serializers.CharField(min_length=5)

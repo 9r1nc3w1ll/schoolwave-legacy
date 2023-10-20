@@ -119,7 +119,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        'DIRS': [BASE_DIR / 'templates', ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -205,6 +205,10 @@ LOGGING = {
 }
 
 FRONTEND_URL = config("FRONTEND_URL", "localhost:3000")
+
+FRONTEND_RESET_URL = config('FRONTEND_RESET_URL', 'http://localhost:3000/accounts/password-reset')
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SITE_ID = 1
 

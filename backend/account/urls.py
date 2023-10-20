@@ -12,7 +12,10 @@ from account.views import (
     UserViewSet,
     UserClass,
     RetrieveUpdateUserProfile,
-    SuperAdminCreateView
+    SuperAdminCreateView,
+    RequestPasswordReset,
+    VerifyToken,
+    ResetPassword
 )
 
 urlpatterns = [
@@ -26,6 +29,9 @@ urlpatterns = [
         AdminResetPassword.as_view(),
         name="admin_password_reset",
     ),
+    path("/password/request_reset", RequestPasswordReset.as_view(), name="request_password_reset"),
+    path("/password/verify_token/<hashed_email>/<token>", VerifyToken.as_view(), name="verify_token"),
+    path("/password/reset_password", ResetPassword.as_view(), name="reset_password"),
     path("/users/roles", UserRoles.as_view(), name="user_roles"),
     path("/users", UserViewSet.as_view(), name="users"),
     path(
