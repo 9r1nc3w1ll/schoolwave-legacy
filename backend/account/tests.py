@@ -4,7 +4,12 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
+from django.core import mail
 from django.core.files import File
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+
+from .tokens import password_reset_token
 
 from school.models import School
 
@@ -146,3 +151,67 @@ class CreateSuperAdminTestCase(APITestCase):
 
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+
+class RequestPasswordResetTest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", email="test@example.com", password="password123")
+
+    def test_request_password_reset_valid_email(self):
+        data = {"email": "test@example.com"}
+        response = self.client.post(reverse("request_password_reset"), data, format="json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Password reset email has been sent to the user.", response.data["message"])
+
+    def test_request_password_reset_invalid_email(self):
+        data = {"email": "nonexistent@example.com"}
+
+        response = self.client.post(reverse("request_password_reset"), data, format="json")
+        
+        self.assertEqual(response.status_code, 400)
+
+class VerifyTokenTest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", email="test@example.com", password="password123")
+
+    def test_verify_token_valid_token(self):
+        token = password_reset_token.make_token(self.user)
+        email = urlsafe_base64_encode(force_bytes(self.user.email))
+        response = self.client.get(reverse("verify_token", kwargs={"hashed_email": email, "token": token}))
+
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("User Validated. Please set your password", response.data["message"])
+
+    def test_verify_token_invalid_token(self):
+        token = "invalid_token"
+        email = urlsafe_base64_encode(force_bytes(self.user.email))
+        response = self.client.get(reverse("verify_token", kwargs={"hashed_email": email, "token": token}))
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["error"], "Invalid token")
+
+class ResetPasswordTest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", email="test@example.com", password="password123")
+
+    def test_reset_password_valid_token(self):
+        token = password_reset_token.make_token(self.user)
+        email = urlsafe_base64_encode(force_bytes(self.user.email))
+        data = {"hashed_email": email, "token": token, "password": "newpassword123", "confirm_password": "newpassword123"}
+        response = self.client.post(reverse("reset_password"), data, format="json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Password changed successfully.", response.data["message"])
+
+    def test_reset_password_invalid_token(self):
+        token = "invalid_token"
+        email = urlsafe_base64_encode(force_bytes(self.user.email))
+        data = {"hashed_email": email, "token": token, "password": "newpassword123", "confirm_password": "newpassword123"}
+        response = self.client.post(reverse("reset_password"), data, format="json")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["error"], "Invalid token")
