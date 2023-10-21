@@ -206,7 +206,7 @@ LOGGING = {
 
 FRONTEND_URL = config("FRONTEND_URL", "localhost:3000")
 
-FRONTEND_RESET_URL = config('FRONTEND_RESET_URL', 'http://localhost:3000/accounts/password-reset')
+FRONTEND_PASSWORD_RESET_URL = config('FRONTEND_PASSWORD_RESET_URL', 'http://localhost:3000/accounts/password-reset')
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

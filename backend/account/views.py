@@ -20,7 +20,7 @@ from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-from .tokens import account_activation_token
+from .tokens import password_reset_token
 
 
 from .models import PasswordResetRequest, User
@@ -435,14 +435,14 @@ class RequestPasswordReset(APIView):
         
         message = render_to_string('emails/password-reset.html', {
             'user': user,
-            'FRONTEND_RESET_URL': settings.FRONTEND_RESET_URL,
+            'FRONTEND_RESET_URL': settings.FRONTEND_PASSWORD_RESET_URL,
             'uid': urlsafe_base64_encode(force_bytes(user.email)),
-            'token': account_activation_token.make_token(user),
+            'token': password_reset_token.make_token(user),
         })
         
         user.email_user(subject, message)
 
-        return Response({'message' : 'Activation email has been sent to the user.'})
+        return Response({'message' : 'Password reset email has been sent to the user.'})
 
 
 class VerifyToken(APIView):
@@ -461,7 +461,7 @@ class VerifyToken(APIView):
         token = kwargs.get("token", "")
 
         user = self.get_object(email)
-        validated = account_activation_token.check_token(user, token)
+        validated = password_reset_token.check_token(user, token)
 
         if validated:
             return Response({'message' : "User Validated. Please set your password"})
@@ -495,7 +495,7 @@ class ResetPassword(APIView):
 
         user = self.get_object(email)
 
-        validated = account_activation_token.check_token(user, token)
+        validated = password_reset_token.check_token(user, token)
 
         if validated:
         

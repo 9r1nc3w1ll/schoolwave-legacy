@@ -2,7 +2,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import six
 
 
-class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
+class ResetTokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
         user_email = six.text_type(user.email)
         ts = six.text_type(timestamp)
@@ -10,4 +10,4 @@ class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
         
         return f"{user_email}{ts}{is_active}"
 
-account_activation_token = AccountActivationTokenGenerator()
+password_reset_token = ResetTokenGenerator()
