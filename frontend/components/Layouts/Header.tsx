@@ -10,6 +10,7 @@ import Dropdown from '../Dropdown';
 import { signOut, useSession } from 'next-auth/react';
 import { Avatar } from '@mantine/core';
 import { getInitials } from '@/utility_methods/helpers';
+import ShowTree from '../ShowTree';
 
 const Header = (props: any) => {
   const router = useRouter();
@@ -133,7 +134,8 @@ const Header = (props: any) => {
 
   const schoolName: string = props?.user_session?.school?.name;
 
-  console.log(props?.user_session?.school?.name);
+  console.log(props?.user_session?.role);
+
   return (
     <header
       className={
@@ -145,8 +147,23 @@ const Header = (props: any) => {
           <div className='horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden'>
             <Link href='/' className='main-logo flex shrink-0 items-center'>
               <Avatar color='cyan' radius='xl'>
-                {getInitials(schoolName, schoolName.split(' ')[1][0])}
+                {props?.user_session?.role === 'super_admin'
+                  ? getInitials(
+                      props?.user_session?.first_name,
+                      props?.user_session?.last_name
+                    )
+                  : getInitials(schoolName, schoolName.split(' ')[1][0])}{' '}
               </Avatar>
+
+              {/* <Avatar color='cyan' radius='xl'>
+                  {getInitials(schoolName, schoolName.split(' ')[1][0])}
+                </Avatar> */}
+
+              <ShowTree roles={['super_admin']}>
+                <Avatar color='cyan' radius='xl'>
+                  {/* {getInitials(props?.user_session?.first)} */}
+                </Avatar>
+              </ShowTree>
               <span className='align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline'>
                 {`${schoolName}`}
               </span>
