@@ -10,6 +10,7 @@ import { formatDate } from '@/utility_methods/datey';
 import { useDispatch } from 'react-redux';
 import CreateSchool from '@/components/CreateSchool';
 import { getSchools } from '@/apicalls/schools';
+import SuperAdminLayout from '@/components/Layouts/SuperAdminLayout';
 
 const col = [
   'id',
@@ -34,7 +35,6 @@ const CreateSchoolPage = (props: any) => {
   } = useQuery('getSchools', () => getSchools(user_session?.access_token), {
     enabled: false,
   });
-
 
   useEffect(() => {
     let path = router.asPath.split('#');
@@ -222,6 +222,10 @@ const CreateSchoolPage = (props: any) => {
       </div>
     </div>
   );
+};
+
+CreateSchoolPage.getLayout = (page: any) => {
+  return <SuperAdminLayout>{page}</SuperAdminLayout>;
 };
 
 export default CreateSchoolPage;
