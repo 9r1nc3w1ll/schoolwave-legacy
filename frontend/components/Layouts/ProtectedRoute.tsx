@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import DefaultLayout from './DefaultLayout';
 import React from 'react';
-import TeacherDefaultLayout from './TeacherDashbordLayout';
 
 type ProtectedLayoutProps = {
   children: React.ReactNode;

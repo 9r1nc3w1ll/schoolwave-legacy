@@ -5,8 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import App from '../../App';
 import Footer from './Footer';
 import Header from './Header';
-import Sidebar from './Sidebar';
-import Setting from './Setting';
 import Portals from '../../components/Portals';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';

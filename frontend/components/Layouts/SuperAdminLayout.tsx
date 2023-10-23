@@ -10,7 +10,7 @@ import Setting from './Setting';
 import Portals from '../../components/Portals';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import TeacherSidebar from './teacherSidebar';
+import SuperAdminSidebar from './SuperAdminSidebar';
 
 interface IProps {
   children: ReactNode;
@@ -25,14 +25,15 @@ const SuperAdminLayout = ({ children }: IProps) => {
   const [animation, setAnimation] = useState(themeConfig.animation);
   const dispatch = useDispatch();
 
+  console.log(user_session?.role);
   useEffect(() => {
-    if (user_session?.role !== 'teacher') {
+    if (user_session?.role !== 'super_admin') {
       router.push({
         pathname: '/',
         query: { returnUrl: router.asPath },
       });
     }
-  });
+  }, []);
 
   const goToTop = () => {
     document.body.scrollTop = 0;
@@ -78,7 +79,7 @@ const SuperAdminLayout = ({ children }: IProps) => {
     }, 1100);
   }, [router.asPath]);
 
-  if (sessionStatus == 'authenticated' && user_session?.role == 'teacher') {
+  if (sessionStatus == 'authenticated' && user_session?.role == 'super_admin') {
     return (
       <App>
         <div className='relative'>
@@ -157,12 +158,12 @@ const SuperAdminLayout = ({ children }: IProps) => {
             className={`${themeConfig.navbar} main-container min-h-screen text-black dark:text-white-dark`}
           >
             {/* BEGIN SIDEBAR */}
-            <TeacherSidebar user_session={user_session} />
+            <SuperAdminSidebar user_session={user_session} />
             {/* END SIDEBAR */}
             {/* BEGIN CONTENT AREA */}
             <div className='main-content'>
               {/* BEGIN TOP NAVBAR */}
-              <Header user_session={user_session} />
+
               {/* END TOP NAVBAR */}
               <div className={`${animation} animate__animated p-6`}>
                 {children}
