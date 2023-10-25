@@ -240,6 +240,7 @@ const Export = (props: any) => {
       .join(' ');
   };
 
+  console.log({ recordsData });
   return (
     <div>
       <div className='panel'>
@@ -417,27 +418,25 @@ const Export = (props: any) => {
             className='table-hover whitespace-nowrap'
             records={recordsData}
             columns={[
-              { accessor: 'id', title: 'Admission No.', sortable: true },
-              { accessor: 'first_name', title: 'First Name', sortable: true },
-              { accessor: 'last_name', title: 'Last Name', sortable: true },
-              { accessor: 'class', title: 'Class', sortable: true },
               {
-                accessor: 'guardian_name',
-                title: 'Guardian Name',
+                accessor: 'class_info.name',
+                title: 'Class Name',
                 sortable: true,
               },
               {
-                accessor: 'date_of_birth',
-                title: 'D.O.B',
+                accessor: 'student_info.first_name',
+                title: 'First Name',
                 sortable: true,
-                render: ({ date_of_birth }) => (
-                  <div>{formatDate(date_of_birth)}</div>
-                ),
               },
-
               {
-                accessor: 'guardian_phone_number',
-                title: 'Phone',
+                accessor: 'student_info.last_name',
+                title: 'Last Name',
+                sortable: true,
+              },
+              { accessor: 'class_info.code', title: 'Class', sortable: true },
+              {
+                accessor: 'school',
+                title: 'School Id',
                 sortable: true,
               },
             ]}

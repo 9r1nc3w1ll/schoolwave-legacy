@@ -134,8 +134,6 @@ const Header = (props: any) => {
 
   const schoolName: string = props?.user_session?.school?.name;
 
-  console.log(props?.user_session?.role);
-
   return (
     <header
       className={
