@@ -239,6 +239,7 @@ const Export = (props: any) => {
       .join(' ');
   };
 
+  console.log({ recordsData });
   return (
     <div>
       <div className='panel'>
