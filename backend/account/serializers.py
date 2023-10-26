@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 
 from account.models import User, ProfilePhoto
+from school.serializers import SchoolSerializer
 
 
 class PasswordResetRequestSerializer(serializers.Serializer):
@@ -105,6 +106,7 @@ class ProfilePhotoSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     profile_photo = ProfilePhotoSerializer(required=False)
+    school = serializers.StringRelatedField()
 
     class Meta:
         model = User

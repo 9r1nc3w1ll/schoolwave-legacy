@@ -427,7 +427,7 @@ class RequestPasswordReset(APIView):
         school = self.request.headers.get("x-client-id")
 
         try:
-            user = User.objects.filter(school=school).get(email=email)
+            user = User.objects.filter(school_id=school).get(email=email)
         except User.DoesNotExist:
             return Response({"error" : "User does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         

@@ -68,7 +68,7 @@ class User(BaseModel, AbstractUser):
         refresh['role'] = self.role
 
         if self.school:
-            refresh["school"] = self.school.id
+            refresh["school"] = str(self.school.id)
         
         c_member = ClassMember.objects.filter(user=self)
 
