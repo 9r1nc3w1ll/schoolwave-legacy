@@ -93,10 +93,10 @@ const Index = () => {
                     <Link
                       href={
                         user_session?.role === 'teacher'
-                          ? '/teacher_dashboard'
+                          ? '/teacher-dashboard'
                           : user_session?.role === 'super_admin'
                           ? '/create_school'
-                          : '/admin_dashboard'
+                          : '/admin-dashboard'
                       }
                     >
                       <button

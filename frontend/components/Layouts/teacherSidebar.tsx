@@ -189,7 +189,7 @@ const TeacherSidebar = (props: any) => {
                 </li>
 
                 <li className='menu nav-item'>
-                  <Link href='/lesson_notes'>
+                  <Link href='/lesson-notes'>
                     <button type='button' className='nav-link group w-full'>
                       <div className='flex items-center'>
                         {/* Attendance icon */}

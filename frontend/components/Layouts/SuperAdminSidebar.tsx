@@ -210,7 +210,7 @@ const Sidebar = (props: any) => {
                       >
                         <ul className='sub-menu text-gray-500'>
                           <li>
-                            <Link href='/create_school'>
+                            <Link href='/create-school'>
                               {t('Create Schools')}
                             </Link>
                           </li>

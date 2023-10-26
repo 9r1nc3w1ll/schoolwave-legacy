@@ -8,7 +8,7 @@ components/*
 !pages/attendance_new/index.tsx
 !pages/settings/school-preference.tsx
 !pages/subjects/lesson_note.tsx
-!pages/create_school/index.tsx
+!pages/create-school/index.tsx
 # !pages/employee
 !components/CreateFeeItem.tsx
 !components/EditFeeItem.tsx

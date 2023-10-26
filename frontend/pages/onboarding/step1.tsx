@@ -49,7 +49,7 @@ const Step1 = () => {
       }
     },
     async onSuccess(data) {
-      router.push('/create_school');
+      router.push('/create-school');
     },
     onError: (error) => {
       console.error(error);

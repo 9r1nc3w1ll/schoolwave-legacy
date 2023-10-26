@@ -22,7 +22,7 @@ const LoginBoxed = () => {
     });
     if (result.ok) {
       showAlert('success', 'Logged in Successfuly');
-      router.push('/admin_dashboard');
+      router.push('/admin-dashboard');
       return;
     } else {
       showAlert('error', 'An error occured');
