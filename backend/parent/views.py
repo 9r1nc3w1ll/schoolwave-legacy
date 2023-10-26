@@ -56,7 +56,10 @@ class ListCreateParent(ListCreateAPIView):
         return qs
 
     def create(self, request, *args, **kwargs):
-        serializer = ParentSerializer(data=request.data)
+        school = self.request.headers.get("x-client-id")
+        data_copy = request.data.copy()
+        data_copy['school'] = school
+        serializer = ParentSerializer(data=data_copy)
         if serializer.is_valid():
             parent = serializer.save()
             message = "Parent created successfully."
@@ -159,7 +162,10 @@ class ListCreateParentRole(ListCreateAPIView):
         return qs  
 
     def create(self, request, *args, **kwargs):
-        serializer = ParentRoleSerializer(data=request.data)
+        school = self.request.headers.get("x-client-id")
+        data_copy = request.data.copy()
+        data_copy['school'] = school
+        serializer = ParentRoleSerializer(data=data_copy)
         if serializer.is_valid():
             parent_role = serializer.save()
             message = "Parent role created successfully."

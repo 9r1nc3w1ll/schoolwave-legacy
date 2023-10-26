@@ -81,7 +81,7 @@ class StaffAPITestCase(APITestCase):
             school=self.school.id
         )
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(url, data, format="json", HTTP_X_CLIENT_ID=self.school.id)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["message"], "Staff created successfully.")
 

@@ -30,6 +30,10 @@ class FamilyAPITestCase(APITestCase):
             username="parentuser", password="parentpassword", role="parent"
         )
 
+        self.parent_user_1 = User.objects.create(
+            username="parentuser1", password="parentpassword", role="parent"
+        )
+
         self.family_role = FamilyRole.objects.create(
             name = "Guardian",
         )
@@ -67,12 +71,14 @@ class FamilyAPITestCase(APITestCase):
         url = reverse("parent_list_create")
         self.client.force_authenticate(user=self.user)
         data = {
-            "member": self.parent_user.id,
+            "member": self.parent_user_1.id,
             "family_name": "lastname",
-            "role": self.family_role,
+            "role": self.family_role.id,  # Pass the ID of the FamilyRole
         }
              
-        response = self.client.post(url, data)
+        response = self.client.post(url, data, HTTP_X_CLIENT_ID=self.school.id)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Parent created successfully.")
 
     def test_retrieve_parent(self):
         url = reverse("parent_retrieve_update_destroy", kwargs={"pk": self.parent.id})
@@ -146,13 +152,15 @@ class FamilyRoleAPITestCase(APITestCase):
         )
 
     def test_create_parent_roles(self):
-        url = reverse("staff_role_list_create")
+        url = reverse("parent_role_list_create")
         self.client.force_authenticate(user=self.user)
         data = {
             "name" : "Parent",
         }
              
-        response = self.client.post(url, data)
+        response = self.client.post(url, data, HTTP_X_CLIENT_ID=self.school.id)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Parent role created successfully.")
 
     def test_retrieve_parent_role(self):
         url = reverse("parent_role_retrieve_update_destroy", kwargs={"name": self.family_role.name})
@@ -162,7 +170,7 @@ class FamilyRoleAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], "Parent role retrieved successfully.")
 
-    def test_update_staff_role(self):
+    def test_update_parent_role(self):
         url = reverse("parent_role_retrieve_update_destroy", kwargs={"name": self.family_role.name})
         data = {
             "name" : "Parent",
@@ -175,7 +183,7 @@ class FamilyRoleAPITestCase(APITestCase):
         
     
 
-    def test_delete_staff(self):
+    def test_delete_parent(self):
         url = reverse("parent_role_retrieve_update_destroy", kwargs={"name": self.family_role.name})
 
         response = self.client.delete(url)

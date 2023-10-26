@@ -72,6 +72,8 @@ class ListCreateStaff(ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         school = self.request.headers.get("x-client-id")
+        data_copy = request.data.copy()
+        data_copy['school'] = school
         school_settings = School.objects.get(id=school)
 
         prefix = school_settings.settings["staff_code_prefix"]
@@ -79,22 +81,20 @@ class ListCreateStaff(ListCreateAPIView):
             school=school
         ).count()
         staff_number = f"{prefix}{total_students + 1:04d}"
-        request.data["staff_number"] = staff_number
+        data_copy["staff_number"] = staff_number
 
-        data = request.data.copy()
-
-        user_id = data.get("user_id")
+        user_id = data_copy.get("user_id")
 
         if user_id:
             try:
                 user = User.objects.get(id=user_id)
                 user.role = "staff"
                 user.save()
-                serializer = StaffSerializer(data=data)
+                serializer = StaffSerializer(data=data_copy)
                 if serializer.is_valid():
                     staff = serializer.save(user=user)
                     message = "Staff created successfully."
-                    data = StaffSerializer(staff).data
+                    data = StaffSerializer(staff).data_copy
                     resp = {
                         "message": message,
                         "data": data,
@@ -112,13 +112,13 @@ class ListCreateStaff(ListCreateAPIView):
                 }
                 return Response(resp, status=status.HTTP_400_BAD_REQUEST)
         else:
-            user_serializer = UserSerializer(data=data)
+            user_serializer = UserSerializer(data=data_copy)
             if user_serializer.is_valid():
-                staff_serializer = StaffSerializer(data=data)
+                staff_serializer = StaffSerializer(data=data_copy)
                 if user_serializer.is_valid() and staff_serializer.is_valid():
                     user = user_serializer.save(role="staff")
-                    data["user"] = user.id
-                    serializer = StaffSerializer(data=data)
+                    data_copy["user"] = user.id
+                    serializer = StaffSerializer(data=data_copy)
                     if serializer.is_valid():
                         staff = serializer.save()
                         message = "Staff created successfully."
@@ -232,8 +232,9 @@ class ListCreateStaffRole(ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         school = self.request.headers.get("x-client-id")
-        request.data['school'] = school
-        serializer = StaffRoleSerializer(data=request.data)
+        data_copy = request.data.copy()
+        data_copy['school'] = school
+        serializer = StaffRoleSerializer(data=data_copy)
         if serializer.is_valid():
             staff_role = serializer.save()
             message = "Staff role assignment created successfully."
