@@ -71,7 +71,7 @@ class ListCreateStaff(ListCreateAPIView):
         return qs
 
     def create(self, request, *args, **kwargs):
-        school = request.data.get("school")
+        school = self.request.headers.get("x-client-id")
         school_settings = School.objects.get(id=school)
 
         prefix = school_settings.settings["staff_code_prefix"]
@@ -231,6 +231,8 @@ class ListCreateStaffRole(ListCreateAPIView):
         
 
     def create(self, request, *args, **kwargs):
+        school = self.request.headers.get("x-client-id")
+        request.data['school'] = school
         serializer = StaffRoleSerializer(data=request.data)
         if serializer.is_valid():
             staff_role = serializer.save()

@@ -7,7 +7,8 @@ from config.models import BaseModel
 class StaffRole(BaseModel):
     class Meta:
         db_table = "staff_roles"
-    name = models.CharField(max_length=255, unique=True)
+        unique_together = ("school", "name")
+    name = models.CharField(max_length=255)
     description = models.TextField()
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
 
