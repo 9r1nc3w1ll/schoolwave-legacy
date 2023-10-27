@@ -201,7 +201,7 @@ const Export = (props: any) => {
       });
       rowhtml += '</tr></thead>';
       rowhtml += '<tbody>';
-     ( records as any).map((item: any) => {
+      (records as any).map((item: any) => {
         rowhtml += '<tr>';
         columns.map((d: any) => {
           let val = item[d] ? item[d] : '';

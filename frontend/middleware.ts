@@ -1,4 +1,3 @@
-
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
@@ -13,7 +12,7 @@ export async function middleware (request: NextRequest) {
     process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8000"
   }/school/setup-status`;
   const step1Path = "/onboarding/step1";
-  const step2Path = "/create_school";
+  const step2Path = "/create-school";
   const loginPath = "/login";
 
   if (

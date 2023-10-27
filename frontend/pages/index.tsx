@@ -95,7 +95,7 @@ const Index = () => {
                         user_session?.role === 'teacher'
                           ? '/teacher-dashboard'
                           : user_session?.role === 'super_admin'
-                          ? '/create_school'
+                          ? '/create-school'
                           : '/admin-dashboard'
                       }
                     >
