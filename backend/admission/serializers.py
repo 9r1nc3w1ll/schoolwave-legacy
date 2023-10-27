@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import AdmissionRequest, StudentInformation
-from school.models import School
+from school.models import School, Class
+from school.serializers import ClassSerializer
 
 from django.contrib.auth import get_user_model
 
@@ -46,10 +47,22 @@ class StudentInformationSerializer(serializers.ModelSerializer):
 
 class AdmissionRequestSerializer(serializers.ModelSerializer):
     student_info = StudentInformationSerializer(read_only=True)
+    class_info = serializers.SerializerMethodField()  # Use SerializerMethodField to retrieve related Class info
 
     class Meta:
         model = AdmissionRequest
         fields = "__all__"
+
+    def get_class_info(self, obj):
+        # Retrieve the related Class information for the school
+        try:
+            class_info = obj.school.class_set.first()
+            if class_info:
+                # Assuming you have a ClassSerializer defined
+                return ClassSerializer(class_info).data
+            return None
+        except Class.DoesNotExist:
+            return None
 
     def update(self, instance, validated_data):
         status = validated_data.get("status", "")
