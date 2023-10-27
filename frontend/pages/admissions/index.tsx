@@ -14,8 +14,8 @@ import { useSession } from 'next-auth/react';
 import UploadAdmission from '@/components/UploadFile';
 import BulkAdmission from '@/components/BulkAdmission';
 import { getAdmissions, updateAdmission } from '@/api-calls/admissions';
-import { formatDate } from '@/utility_methods/datey';
-import { showAlert } from '@/utility_methods/alert';
+import { formatDate } from '@/utility-methods/datey';
+import { showAlert } from '@/utility-methods/alert';
 import { ResponseInterface } from '@/types';
 import { TAdmissionResponse } from '@/models/Admission';
 

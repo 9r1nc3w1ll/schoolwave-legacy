@@ -1,22 +1,22 @@
-import { ResponseInterface } from "@/types";
-import { clientId } from "@/utility_methods/constants";
+import { ResponseInterface } from '@/types';
+import { clientId } from '@/utility-methods/constants';
 import {
   TAdmissionPayload,
   TAdmissionResponse,
   TBulkAdmissionResponse,
   TCreateAdmissionResponse,
-} from "@/models/Admission";
+} from '@/models/Admission';
 
 export const BulkAdmissionUpload = async (
   data: FormData,
   accessToken?: string
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/admission/batch_upload_requests",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/admission/batch_upload_requests',
     {
-      method: "POST",
+      method: 'POST',
       body: data,
-      headers: { Authorization: "Bearer " + accessToken },
+      headers: { Authorization: 'Bearer ' + accessToken },
     }
   );
   const tempData = (await res.json()) as TBulkAdmissionResponse;
@@ -24,10 +24,10 @@ export const BulkAdmissionUpload = async (
   if (res.ok) {
     return tempData;
   } else {
-    let msg = "an error occured";
+    let msg = 'an error occured';
 
-    if (tempData.message.split(" ")[0] === "duplicate") {
-      msg = "one or more admission with similar record already exist";
+    if (tempData.message.split(' ')[0] === 'duplicate') {
+      msg = 'one or more admission with similar record already exist';
     }
 
     return {
@@ -42,14 +42,14 @@ export const createAdmission = async (
   accessToken?: string
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/admission/requests/create",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/admission/requests/create',
     {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(data),
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -57,13 +57,13 @@ export const createAdmission = async (
   const tempData =
     (await res.json()) as ResponseInterface<TCreateAdmissionResponse>;
 
-  let msg = "an error occured";
+  let msg = 'an error occured';
 
   if (
-    tempData.message.split(" ")[tempData.message.split(" ").length - 1] ===
-    "exists."
+    tempData.message.split(' ')[tempData.message.split(' ').length - 1] ===
+    'exists.'
   ) {
-    msg = "student information with this username already exists.";
+    msg = 'student information with this username already exists.';
   }
 
   if (res.ok) {
@@ -78,13 +78,13 @@ export const createAdmission = async (
 
 export const getAdmissions = async (accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/admission/requests",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/admission/requests',
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -104,19 +104,19 @@ export const updateAdmission = async (
   schoolID?: string
 ) => {
   const body = {
-    status: approve ? "approved" : "denied",
+    status: approve ? 'approved' : 'denied',
     school: schoolID,
   };
 
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/admission/requests/" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/admission/requests/' + id,
     {
-      method: "PATCH",
+      method: 'PATCH',
       body: JSON.stringify(body),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "X-Client-Id": clientId!,
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'X-Client-Id': clientId!,
       },
     }
   );

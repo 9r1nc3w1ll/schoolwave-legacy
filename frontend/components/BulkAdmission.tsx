@@ -1,4 +1,4 @@
-import { showAlert, showPrompt } from '@/utility_methods/alert';
+import { showAlert, showPrompt } from '@/utility-methods/alert';
 import UploadFile from './UploadFile';
 import { useMutation } from 'react-query';
 import { BulkAdmissionUpload } from '@/api-calls/admissions';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { deleteExam } from '@/api-calls/exam';
 
 const DeleteExam = (props: any) => {

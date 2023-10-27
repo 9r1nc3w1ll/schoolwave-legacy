@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { createUser } from '@/api-calls/users';
+import { IUser } from '@/models/User';
 
 const CreateParent = (props: any) => {
   const dispatch = useDispatch();
@@ -47,7 +48,7 @@ const CreateParent = (props: any) => {
 
   const queryClient = useQueryClient();
   const { mutate, isLoading, error } = useMutation(
-    (data) => createUser(data, props.access_token),
+    (data: IUser) => createUser(data, props.access_token),
     {
       onSuccess: async (data) => {
         showAlert('success', 'Saved Successfuly');

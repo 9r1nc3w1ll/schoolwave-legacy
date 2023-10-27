@@ -7,7 +7,7 @@ import { getClasses, getClassStudents } from '@/api-calls/class-api';
 
 import { getAttendance } from '@/api-calls/attendance';
 import { useForm } from 'react-hook-form';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import ClassSelect from '@/components/ClassSelect';
 import AttendanceAccordion from '@/components/AttendanceAccordionNew';
 import { Student } from '@/models/Attendance';

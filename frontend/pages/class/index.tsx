@@ -7,7 +7,7 @@ import CreateClassForm from '@/components/CreateClassForm';
 import EditClassForm from '@/components/EditClassForm';
 import { createClass, getClasses } from '@/api-calls/class-api';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useSession } from 'next-auth/react';
 import ClassUserAssignment from '@/components/ClassUserAssignment';
 import { ClassTypes, UserSession } from '@/types';

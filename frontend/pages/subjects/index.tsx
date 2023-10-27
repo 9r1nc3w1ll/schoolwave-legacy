@@ -9,7 +9,7 @@ import Subject from '@/components/CreateSubject';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
 import BulkAdmission from '@/components/BulkSubjects';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { getSubjects, updateSubject } from '@/api-calls/subjects';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 import EditSubjectForm from '@/components/EditSubjectForm';

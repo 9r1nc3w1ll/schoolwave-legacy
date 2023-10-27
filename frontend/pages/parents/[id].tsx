@@ -1,13 +1,11 @@
 import Link from 'next/link';
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState } from 'react';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
 import { getUser } from '@/api-calls/users';
 import { useQuery } from 'react-query';
 import { useRouter } from 'next/router';
 import { toUpper } from 'lodash';
-import { Dialog, Transition } from '@headlessui/react';
-import EditEmployee from '@/components/EditEmployee';
 import { useSession } from 'next-auth/react';
 import ChildrenList from '@/components/ChildrenList';
 import FeesList from '@/components/FeesList';
@@ -23,7 +21,7 @@ const AccountSetting = (props: any) => {
   } = useQuery(
     'getUser',
     () => {
-      return getUser(user_session?.access_token, router.query);
+      return getUser(user_session?.access_token, router.query.id as string);
     },
     { enabled: false }
   );

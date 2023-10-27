@@ -1,16 +1,16 @@
-import { throwError } from "@/helpers/api";
-import { clientId } from "@/utility_methods/constants";
+import { throwError } from '@/helpers/api';
+import { clientId } from '@/utility-methods/constants';
 
 export const getAttendance = async (data: any, accessToken?: string) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL +
       `/attendance/student-attendance/${data?.class}/${data?.startDate}/${data?.endDate}`,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -24,11 +24,11 @@ export const markAttendance = async (data: any, accessToken?: string) => {
     process.env.NEXT_PUBLIC_BACKEND_URL +
       `/attendance/student-attendance/${data?.class}/${data?.startDate}/${data?.endDate}`,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -45,13 +45,13 @@ export const markAttendance = async (data: any, accessToken?: string) => {
 export const markBulkAttendance = async (data: any, accessToken?: string) => {
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL +
-      "/attendance/student-attendance/create",
+      '/attendance/student-attendance/create',
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -61,13 +61,13 @@ export const markBulkAttendance = async (data: any, accessToken?: string) => {
   if (res.ok) {
     return tempData;
   } else {
-    let msg = "An error occured";
+    let msg = 'An error occured';
 
     if (
-      tempData.message.split(" ")[tempData.message.split(" ").length - 1] ==
-      "exists."
+      tempData.message.split(' ')[tempData.message.split(' ').length - 1] ==
+      'exists.'
     ) {
-      msg = "Class with class Code already exists";
+      msg = 'Class with class Code already exists';
     }
 
     return {

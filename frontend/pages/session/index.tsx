@@ -15,7 +15,7 @@ import DeleteSessions from '@/components/DeleteSessions';
 import CreateSessionForm from '@/components/CreateSessionForm';
 import EditSessionForm from '@/components/EditSessionForm';
 import { getSession } from '@/api-calls/session';
-import { dateInPast } from '@/utility_methods/datey';
+import { dateInPast } from '@/utility-methods/datey';
 import { useSession } from 'next-auth/react';
 import ActivateSessions from '@/components/ActivateSessions';
 

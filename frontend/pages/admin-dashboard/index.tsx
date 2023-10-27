@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { useQuery } from 'react-query';
 import { getDashboardStats } from '@/api-calls/dashboard';
 import { useSession } from 'next-auth/react';
-import { formatDate } from '@/utility_methods/datey';
+import { formatDate } from '@/utility-methods/datey';
 import { useMemo } from 'react';
 
 const ReactApexChart = dynamic(import('react-apexcharts'), { ssr: false });

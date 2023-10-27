@@ -9,7 +9,7 @@ import { getClassStudents, getClasses } from '@/api-calls/class-api';
 import { getTerms } from '@/api-calls/session';
 import { getAttendance } from '@/api-calls/attendance';
 import { useForm } from 'react-hook-form';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import AttendanceAccordion from '@/components/AttendanceAccordion';
 import ClassSelect from '@/components/ClassSelect';
 

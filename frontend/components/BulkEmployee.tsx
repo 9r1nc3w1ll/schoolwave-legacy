@@ -3,7 +3,7 @@ import { bulkEmployeeUpload } from '@/api-calls/staffs';
 import { useMutation } from 'react-query';
 import { IClientError, UserSession } from '@/types';
 import React, { SetStateAction } from 'react';
-import { showAlert, showPrompt } from '@/utility_methods/alert';
+import { showAlert, showPrompt } from '@/utility-methods/alert';
 
 type BulkEmployeePropsType = {
   userSession: UserSession;

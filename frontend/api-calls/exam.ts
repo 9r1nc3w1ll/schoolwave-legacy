@@ -1,14 +1,14 @@
-import { clientId } from "@/utility_methods/constants";
+import { clientId } from '@/utility-methods/constants';
 
 export const BulkSubjectsUpload = async (data: any, access_token?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/subject/batch_upload_requests",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/subject/batch_upload_requests',
     {
-      method: "POST",
+      method: 'POST',
       body: data,
       headers: {
-        "Authorization": "Bearer " + access_token,
-        "x-client-id": clientId!,
+        Authorization: 'Bearer ' + access_token,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -18,12 +18,12 @@ export const BulkSubjectsUpload = async (data: any, access_token?: string) => {
 };
 
 export const createExams = async (access_token: any, data: any) => {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/exam/exams", {
-    method: "POST",
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/exams', {
+    method: 'POST',
     headers: {
-      "content-Type": "application/json",
-      "Authorization": "Bearer " + access_token,
-      "x-client-id": clientId!,
+      'content-Type': 'application/json',
+      Authorization: 'Bearer ' + access_token,
+      'x-client-id': clientId!,
     },
     body: JSON.stringify(data),
   });
@@ -34,13 +34,13 @@ export const createExams = async (access_token: any, data: any) => {
 
 export const editExam = async (id: string, access_token: string, data: any) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/exam/exams" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/exams' + id,
     {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
+        'x-client-id': clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -52,13 +52,13 @@ export const editExam = async (id: string, access_token: string, data: any) => {
 
 export const deleteExam = async (id: string, access_token: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/examexams/" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/examexams/' + id,
     {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -67,12 +67,12 @@ export const deleteExam = async (id: string, access_token: string) => {
 };
 
 export const getExams = async (access_token: any) => {
-  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/exam/exams", {
-    method: "GET",
+  const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/exams', {
+    method: 'GET',
     headers: {
-      "content-Type": "application/json",
-      "Authorization": "Bearer " + access_token,
-      "x-client-id": clientId!,
+      'content-Type': 'application/json',
+      Authorization: 'Bearer ' + access_token,
+      'x-client-id': clientId!,
     },
   });
   const tempData = await res.json();
@@ -82,13 +82,13 @@ export const getExams = async (access_token: any) => {
 
 export const getSingleExam = async (id: any, access_token?: any) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/exam/exams/" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/exams/' + id,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -99,13 +99,13 @@ export const getSingleExam = async (id: any, access_token?: any) => {
 
 export const createExamQuestion = async (access_token: any, data: any) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/exam/questions",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/questions',
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
+        'x-client-id': clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -117,13 +117,13 @@ export const createExamQuestion = async (access_token: any, data: any) => {
 
 export const getExamsQuestions = async (access_token: any) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/exam/questions",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/exam/questions',
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -138,13 +138,13 @@ export const editExamQuestion = async (
   data: any
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/examquestions/" + id + "/",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/examquestions/' + id + '/',
     {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
+        'x-client-id': clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -156,13 +156,13 @@ export const editExamQuestion = async (
 
 export const deleteExamQuestion = async (id: string, access_token: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/examquestions/" + id + "/",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/examquestions/' + id + '/',
     {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + access_token,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + access_token,
+        'x-client-id': clientId!,
       },
     }
   );

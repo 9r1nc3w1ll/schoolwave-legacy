@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
-import { formatDate } from '@/utility_methods/datey';
+import { formatDate } from '@/utility-methods/datey';
 import { useDispatch } from 'react-redux';
 import CreateSchool from '@/components/CreateSchool';
 import { getSchools } from '@/api-calls/schools';

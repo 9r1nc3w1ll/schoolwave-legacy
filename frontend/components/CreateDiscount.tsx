@@ -1,5 +1,5 @@
 import { createDiscount } from '@/api-calls/fees';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { DiscountFormValues, IClientError, UserSession } from '@/types';

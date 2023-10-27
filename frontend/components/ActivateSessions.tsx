@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { deleteSession, editSession } from '@/api-calls/session';
 
 const ActivateSessions = (props: any) => {

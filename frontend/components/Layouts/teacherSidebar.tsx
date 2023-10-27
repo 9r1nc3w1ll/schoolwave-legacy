@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
 import { Avatar } from '@mantine/core';
-import { getInitials } from '@/utility_methods/helpers';
+import { getInitials } from '@/utility-methods/helpers';
 
 const TeacherSidebar = (props: any) => {
   const router = useRouter();

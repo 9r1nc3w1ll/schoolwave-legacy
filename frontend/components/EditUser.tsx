@@ -5,13 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { EditUser, getUser } from '@/api-calls/users';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import { useRouter } from 'next/router';
-import { dirtyValues } from '@/utility_methods/form';
+import { dirtyValues } from '@/utility-methods/form';
 import { useSession } from 'next-auth/react';
+import { IUser } from '@/models/User';
 
 const Edit = (props: any) => {
   const router = useRouter();
@@ -69,8 +70,8 @@ const Edit = (props: any) => {
   ];
 
   const { mutate, isLoading, error } = useMutation(
-    (data) =>
-      EditUser(session?.access_token, data, { id: props.studentData.id }),
+    (data: IUser) =>
+      EditUser(session?.access_token, data, props.studentData.id),
     {
       onSuccess: async (data) => {
         showAlert('success', 'Saved Successfuly');

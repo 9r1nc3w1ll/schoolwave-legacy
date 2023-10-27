@@ -1,7 +1,7 @@
 import { PropsWithChildren, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useState } from 'react';
 import { getClasses } from '@/api-calls/class-api';
 import Select from 'react-select';

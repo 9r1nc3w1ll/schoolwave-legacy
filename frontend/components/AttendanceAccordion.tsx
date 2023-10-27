@@ -2,7 +2,7 @@ import AnimateHeight from 'react-animate-height';
 import { useEffect, useState } from 'react';
 import AttendanceTablet from './AttendanceTablet';
 import { useMutation } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { markBulkAttendance } from '@/api-calls/attendance';
 
 const AttendanceAccordion = (props: any) => {

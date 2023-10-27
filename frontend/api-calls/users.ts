@@ -1,9 +1,8 @@
-import { clientId } from "@/utility_methods/constants";
+import { clientId } from "@/utility-methods/constants";
 import {
   GetClassStudentMembersResponse,
   GetUsersResponseInterface,
   ResponseInterface,
-  SchoolInfo,
 } from "@/types";
 import { IUser, IUserResponse } from "@/models/User";
 
@@ -98,9 +97,9 @@ export const getParents = async (accessToken?: string) => {
   return parents;
 };
 
-export const getUser = async (accessToken: string, id: SchoolInfo) => {
+export const getUser = async (accessToken: string | undefined, id: string) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/users/${id.id}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/account/users/${id}`,
     {
       method: "GET",
       headers: {
@@ -112,19 +111,19 @@ export const getUser = async (accessToken: string, id: SchoolInfo) => {
   );
 
   const tempData = (await res.json()) as ResponseInterface<
-  GetUsersResponseInterface[]
+  IUserResponse
   >;
 
   return tempData.data;
 };
 
 export const EditUser = async (
-  accessToken: string,
+  accessToken: string | undefined,
   data: IUser,
-  id: SchoolInfo
+  id: string
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users/" + id.id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/account/users/" + id,
     {
       method: "PATCH",
       headers: {
@@ -137,9 +136,7 @@ export const EditUser = async (
     }
   );
 
-  const tempData = (await res.json()) as ResponseInterface<
-  IUserResponse
-  >;
+  const tempData = (await res.json()) as ResponseInterface<IUserResponse>;
 
   return tempData;
 };

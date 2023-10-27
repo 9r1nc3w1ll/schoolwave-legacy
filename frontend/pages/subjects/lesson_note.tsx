@@ -12,7 +12,7 @@ import { useQuery } from 'react-query';
 import { useSession } from 'next-auth/react';
 import { getClasses } from '@/api-calls/class-api';
 import { Parser } from 'html-to-react';
-import { formatDate } from '@/utility_methods/datey';
+import { formatDate } from '@/utility-methods/datey';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import AjaxLoader from '@/components/Layouts/AjaxLoader';

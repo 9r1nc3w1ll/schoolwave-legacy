@@ -12,6 +12,7 @@ import CreateParent from '@/components/CreateParent';
 import { Dialog, Transition } from '@headlessui/react';
 import EditParent from '@/components/EditParent';
 import { useSession } from 'next-auth/react';
+import { GetUsersResponseInterface } from '@/types';
 
 const col = [
   'id',
@@ -51,7 +52,9 @@ const Export = (props: any) => {
   }, [sessionStatus, refetch]);
 
   const dispatch = useDispatch();
-  const [selectedRecords, setSelectedRecords] = useState<any>([]);
+  const [selectedRecords, setSelectedRecords] = useState<
+    GetUsersResponseInterface[]
+  >([]);
   const [modal, setmodal] = useState(false);
   const [editModal, seteditModal] = useState(false);
   const canEdit = () => selectedRecords.length === 1;
@@ -81,20 +84,39 @@ const Export = (props: any) => {
     setRecordsData([...initialRecords.slice(from, to)]);
   }, [page, pageSize, initialRecords]);
 
+  // useEffect(() => {
+  //   // setInitialRecords((): GetUsersResponseInterface[] => {
+  //   //   if (isSuccess && students.length) {
+  //   //     return students.filter((item: GetUsersResponseInterface) => {
+  //   //       return (
+  //   //         item.id.toString().includes(search.toLowerCase()) ||
+  //   //         item.first_name.toLowerCase().includes(search.toLowerCase()) ||
+  //   //         item.last_name.toLowerCase().includes(search.toLowerCase())
+  //   //       );
+  //   //     });
+  //   //   } else {
+  //   //     setInitialRecords([]);
+  //   //   }
+  //   // });
+
+  // }, [search, students, status]);
+
   useEffect(() => {
-    setInitialRecords(() => {
-      if (isSuccess && students.length) {
-        return students.filter((item: any) => {
+    if (isSuccess && students.length) {
+      const filteredRecords = students.filter(
+        (item: GetUsersResponseInterface) => {
           return (
             item.id.toString().includes(search.toLowerCase()) ||
             item.first_name.toLowerCase().includes(search.toLowerCase()) ||
             item.last_name.toLowerCase().includes(search.toLowerCase())
           );
-        });
-      } else {
-        setInitialRecords([]);
-      }
-    });
+        }
+      );
+
+      setInitialRecords(filteredRecords);
+    } else {
+      setInitialRecords([]);
+    }
   }, [search, students, status]);
 
   useEffect(() => {

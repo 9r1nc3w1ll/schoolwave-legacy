@@ -18,7 +18,7 @@ const AccountSetting = (props: any) => {
   const { data: student, refetch } = useQuery(
     'getStudent',
     () => {
-      return getUser(session?.access_token, router.query);
+      return getUser(session?.access_token, router.query.id as string);
     },
     {
       enabled: false,
@@ -244,7 +244,7 @@ const AccountSetting = (props: any) => {
                 </div>
                 <div className='mt-8'>
                   <button
-                    className='mx-auto block flex w-[20%] justify-center bg-primary px-5 py-3 text-lg text-white'
+                    className='mx-auto flex w-[20%] justify-center bg-primary px-5 py-3 text-lg text-white'
                     onClick={() => {
                       seteditModal(true);
                     }}

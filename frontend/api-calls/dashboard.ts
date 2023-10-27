@@ -1,17 +1,17 @@
-import { clientId } from "@/utility_methods/constants";
+import { clientId } from '@/utility-methods/constants';
 
 export const getDashboardStats = async (
   schoolID: string,
   accessToken?: string
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/dashboard-stats/" + schoolID,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/dashboard-stats/' + schoolID,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );

@@ -1,4 +1,4 @@
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { IClientError, UserSession } from '@/types';

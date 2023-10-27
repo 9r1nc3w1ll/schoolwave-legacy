@@ -2,7 +2,7 @@ import ClassSelect from './ClassSelect';
 import DiscountSelect from './DiscountSelect';
 import Select from 'react-select';
 import { Session } from 'next-auth/core/types';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useForm } from 'react-hook-form';
 import {
   FeeTemplateFormValues,

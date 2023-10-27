@@ -1,7 +1,7 @@
 import { AssignStaffToSubject, getSingleSubject } from '@/api-calls/subjects';
 import { getAllStaff } from '@/api-calls/staffs';
 import { getRoles } from '@/api-calls/roles';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import Select from 'react-select';

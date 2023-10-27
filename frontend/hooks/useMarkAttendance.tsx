@@ -1,7 +1,7 @@
 import { IClientError } from '@/types';
 import React from 'react';
 import { markBulkAttendance } from '@/api-calls/attendance';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useMutation } from 'react-query';
 import { useSession } from 'next-auth/react';
 import {

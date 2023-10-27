@@ -7,7 +7,7 @@ import { useMutation, useQuery } from 'react-query';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 import { getExams, editExam, deleteExam } from '@/api-calls/exam';
 import { getExamsQuestions } from '@/api-calls/exam';

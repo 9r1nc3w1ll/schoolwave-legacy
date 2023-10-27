@@ -1,14 +1,14 @@
-import { clientId } from "@/utility_methods/constants";
+import { clientId } from '@/utility-methods/constants';
 
 export const BulkSubjectsUpload = async (data: any, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/subject/batch_upload_requests",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/subject/batch_upload_requests',
     {
-      method: "POST",
+      method: 'POST',
       body: data,
       headers: {
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -19,13 +19,13 @@ export const BulkSubjectsUpload = async (data: any, accessToken?: string) => {
 
 export const getSubjects = async (accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/subject/subjects",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/subject/subjects',
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -41,17 +41,17 @@ export const updateSubject = async (
 ) => {
   const bdy: any = {};
 
-  bdy.status = approve ? "approved" : "denied";
+  bdy.status = approve ? 'approved' : 'denied';
 
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/subject/subjects/{id}" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/subject/subjects/{id}' + id,
     {
-      method: "PATCH",
+      method: 'PATCH',
       body: JSON.stringify(bdy),
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -66,13 +66,13 @@ export const editSubject = async (
   data: any
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/subject/subjects/" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/subject/subjects/' + id,
     {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -84,13 +84,13 @@ export const editSubject = async (
 
 export const CreateSubject = async (data: any, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/subject/subjects",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/subject/subjects',
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
 
       body: JSON.stringify(data),
@@ -101,18 +101,15 @@ export const CreateSubject = async (data: any, accessToken?: string) => {
   return tempData;
 };
 
-export const AssignStaffToSubject = async (
-  data: any,
-  accessToken?: string
-) => {
+export const AssignStaffToSubject = async (data: any, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/subject/subject-staff-assignment",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/subject/subject-staff-assignment',
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -124,13 +121,13 @@ export const AssignStaffToSubject = async (
 
 export const getSingleSubject = async (id: any, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/subject/subjects/" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/subject/subjects/' + id,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );

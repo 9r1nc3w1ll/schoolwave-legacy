@@ -9,7 +9,7 @@ import Subject from '@/components/CreateSubject';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
 import BulkAdmission from '@/components/BulkSubjects';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import DropDownWIthChildren from '@/components/DropDownWIthChildren';
 import { getExams, editExam, deleteExam } from '@/api-calls/exam';
 import CreateExam from '@/components/CreateExam';

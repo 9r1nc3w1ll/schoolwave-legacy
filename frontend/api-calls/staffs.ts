@@ -1,5 +1,5 @@
-import { clientId } from "@/utility_methods/constants";
-import { throwError } from "@/helpers/api";
+import { clientId } from '@/utility-methods/constants';
+import { throwError } from '@/helpers/api';
 import {
   BulkEmployeeUploadPayload,
   BulkUploadEmployeeResponse,
@@ -9,7 +9,7 @@ import {
   GetAllStaffType,
   GetStaffRolesType,
   ResponseInterface,
-} from "@/types";
+} from '@/types';
 
 interface Staff {
   username: string;
@@ -24,13 +24,13 @@ export const getAllStaff = async (
   accessToken?: string
 ): Promise<GetAllStaffType[]> => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/staff/staff-list",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/staff/staff-list',
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -41,13 +41,13 @@ export const getAllStaff = async (
 
 export const CreateStaff = async (payload: CreatePayload<CreateStaffData>) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/staff/staff-list",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/staff/staff-list',
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + payload.accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + payload.accessToken,
+        'x-client-id': clientId!,
       },
       body: JSON.stringify(payload.data),
     }
@@ -66,13 +66,13 @@ export const EditStaff = async (
   data: Staff
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/staff/staff-list" + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/staff/staff-list' + id,
     {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer" + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer' + accessToken,
+        'x-client-id': clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -87,11 +87,11 @@ export const getStaffRoles = async (
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/staff/staff-role-list`,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -109,13 +109,13 @@ export const createStaffRole = async (
   payload: CreatePayload<CreateStaffRoleData>
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/staff/staff-role-list",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/staff/staff-role-list',
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + payload.accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + payload.accessToken,
+        'x-client-id': clientId!,
       },
       body: JSON.stringify(payload.data),
     }
@@ -132,12 +132,12 @@ export const bulkEmployeeUpload = async (
   payload: BulkEmployeeUploadPayload
 ): Promise<BulkUploadEmployeeResponse> => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/staff/batch_upload",
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/staff/batch_upload',
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Authorization": "Bearer " + payload.accessToken,
-        "x-client-id": clientId!,
+        Authorization: 'Bearer ' + payload.accessToken,
+        'x-client-id': clientId!,
       },
       body: payload.data,
     }

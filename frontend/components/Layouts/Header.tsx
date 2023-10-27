@@ -9,7 +9,7 @@ import { toggleSidebar } from '../../store/themeConfigSlice';
 import Dropdown from '../Dropdown';
 import { signOut, useSession } from 'next-auth/react';
 import { Avatar } from '@mantine/core';
-import { getInitials } from '@/utility_methods/helpers';
+import { getInitials } from '@/utility-methods/helpers';
 import ShowTree from '../ShowTree';
 
 const Header = (props: any) => {

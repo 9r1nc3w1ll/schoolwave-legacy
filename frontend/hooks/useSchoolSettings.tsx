@@ -1,6 +1,6 @@
 import { IClientError } from '@/types';
 import { TSchool } from '@/models';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useSession } from 'next-auth/react';
 import {
   ISettings,

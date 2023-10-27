@@ -1,6 +1,6 @@
 import Select from 'react-select';
 import { setPageTitle } from '@/store/themeConfigSlice';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { CreateStaff, getStaffRoles } from '@/api-calls/staffs';

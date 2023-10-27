@@ -1,7 +1,7 @@
 import InvoiceSelect from './InvoiceSelect';
 import { SetStateAction } from 'react';
 import { createTransaction } from '@/api-calls/fees';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { IClientError, SessionStatus, UserSession } from '@/types';

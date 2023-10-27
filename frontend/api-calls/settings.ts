@@ -1,18 +1,18 @@
-import { ISettingsPayload } from "@/models/Settings";
-import { clientId } from "@/utility_methods/constants";
+import { ISettingsPayload } from '@/models/Settings';
+import { clientId } from '@/utility-methods/constants';
 
 export const getSchoolSettings = async (
   accessToken: string,
   schoolID: string
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + "/school/school-settings/" + schoolID,
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/school/school-settings/' + schoolID,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-        "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
     }
   );
@@ -33,11 +33,11 @@ export const updateSettings = async (
   const res = await fetch(
     process.env.NEXT_PUBLIC_BACKEND_URL + `/school/school-settings/${schoolID}`,
     {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        "content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken,
-         "x-client-id": clientId!,
+        'content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'x-client-id': clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -47,13 +47,13 @@ export const updateSettings = async (
   if (res.ok) {
     return tempData;
   } else {
-    let msg = "An error occured";
+    let msg = 'An error occured';
 
     if (
-      tempData.message.split(" ")[tempData.message.split(" ").length - 1] ==
-      "exists."
+      tempData.message.split(' ')[tempData.message.split(' ').length - 1] ==
+      'exists.'
     ) {
-      msg = "Class with class Code already exists";
+      msg = 'Class with class Code already exists';
     }
 
     return {

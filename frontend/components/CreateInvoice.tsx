@@ -1,6 +1,6 @@
 import ClassSelect from './ClassSelect';
 import FeeTemplateSelect from './FeeTemplateSelect';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useForm } from 'react-hook-form';
 import { IClientError, SessionStatus, UserSession } from '@/types';
 import { SetStateAction, useEffect, useState } from 'react';

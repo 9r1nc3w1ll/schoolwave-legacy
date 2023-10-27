@@ -1,4 +1,4 @@
-import { clientId } from "@/utility_methods/constants";
+import { clientId } from "@/utility-methods/constants";
 
 export const createSchool = async (data: any, accessToken?: string) => {
   const res = await fetch(

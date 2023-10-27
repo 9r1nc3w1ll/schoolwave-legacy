@@ -5,7 +5,7 @@ import Select, { GroupBase, OptionsOrGroups } from 'react-select';
 import { getAllStaff } from '@/api-calls/staffs';
 import { getFirstLetters } from '@/helpers/api';
 import { getStudentsWithoutClass } from '@/api-calls/users';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import {
   ClassUserAssignmentProps,
   GetAllStaffType,

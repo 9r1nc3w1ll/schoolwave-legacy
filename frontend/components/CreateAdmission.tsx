@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { MutationFunction, useMutation, useQueryClient } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { createUser } from '@/api-calls/users';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';

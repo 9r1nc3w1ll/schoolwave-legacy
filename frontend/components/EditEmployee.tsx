@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { EditUser, getUser } from '@/api-calls/users';
 
 import { useRouter } from 'next/router';
+import { IUser } from '@/models/User';
 
 const EditEmployee = (props: any) => {
   const router = useRouter();
@@ -19,7 +20,7 @@ const EditEmployee = (props: any) => {
     isLoading: studentDataLoading,
   } = useQuery('getStudent', () => {
     if (router) {
-      return getUser(props.access_token, { id: props.id });
+      return getUser(props.access_token, props.id );
     }
   });
 
@@ -63,7 +64,7 @@ const EditEmployee = (props: any) => {
 
   const queryClient = useQueryClient();
   const { mutate, isLoading, error } = useMutation(
-    (data) => EditUser(props.access_token, data, { id: props.id }),
+    (data: IUser) => EditUser(props.access_token, data, props.id),
     {
       onSuccess: async (data) => {
         showAlert('success', 'Saved Successfuly');

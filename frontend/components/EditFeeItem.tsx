@@ -1,6 +1,6 @@
 import DiscountSelect from './DiscountSelect';
 import { editFeeItem } from '@/api-calls/fees';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useForm } from 'react-hook-form';
 import {
   FeeItemFormValues,

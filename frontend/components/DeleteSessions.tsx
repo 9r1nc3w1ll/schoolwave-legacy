@@ -1,5 +1,5 @@
 import { useQueryClient } from 'react-query';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { deleteSession } from '@/api-calls/session';
 
 const DeleteSessions = (props: any) => {

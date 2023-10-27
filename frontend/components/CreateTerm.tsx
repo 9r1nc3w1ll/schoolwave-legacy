@@ -1,5 +1,5 @@
 import { createTerm } from '@/api-calls/session';
-import { showAlert } from '@/utility_methods/alert';
+import { showAlert } from '@/utility-methods/alert';
 import { useMutation } from 'react-query';
 
 const CreateTerm = (props: any) => {

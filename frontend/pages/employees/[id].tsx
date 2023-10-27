@@ -20,7 +20,7 @@ const AccountSetting = (props: any) => {
   } = useQuery(
     'getUser',
     () => {
-      return getUser(user_session?.access_token, router.query);
+      return getUser(user_session?.access_token, router?.query?.id as string);
     },
     { enabled: false }
   );
