@@ -47,7 +47,7 @@ class ListCreateQuestion(ListCreateAPIView):
         if not school.exists():
             return qs
 
-        qs = qs.filter(school=school)
+        qs = qs.filter(school=school[0])
         return qs
 
     def create(self, request, *args, **kwargs):

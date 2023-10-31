@@ -77,7 +77,7 @@ class ClassMember(BaseModel):
     class Meta:
         db_table = "class_members"
 
-    user = models.ForeignKey("account.User", on_delete=models.CASCADE)
+    user = models.OneToOneField("account.User", on_delete=models.CASCADE)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     role = models.CharField(max_length=100)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
