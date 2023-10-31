@@ -47,7 +47,7 @@ class AdmissionRequest(BaseModel):
     student_info = models.ForeignKey(StudentInformation, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     comment_if_declined = models.TextField(blank=True, null=True)
-    student_number = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    student_number = models.CharField(max_length=20, null=True, blank=True)
 
     def create_student_user(self, **kwargs):
         student_info_data = StudentInformation.objects.filter(
