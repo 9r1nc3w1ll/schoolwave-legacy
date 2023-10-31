@@ -11,6 +11,11 @@ from django.db.models import Count, Q
 from partial_date import PartialDateField as CustomPartialDateField
 
 
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"
+
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
@@ -67,6 +72,11 @@ class ClassMemberSerializer(serializers.ModelSerializer):
             'id': obj.user.id,
             'first_name': obj.user.first_name,
             'last_name': obj.user.last_name,
+            'guardian_name': obj.user.guardian_name,
+            'guardian_phone_number': obj.user.guardian_phone_number,
+            'date_of_birth': obj.user.date_of_birth,
+            'state': obj.user.state,
+
         }
         if data:
             return data
