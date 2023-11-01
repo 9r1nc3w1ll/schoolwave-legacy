@@ -239,8 +239,6 @@ const Export = (props: any) => {
       .map((s: any) => s.charAt(0).toUpperCase() + s.substring(1))
       .join(' ');
   };
-
-  console.log({ recordsData });
   return (
     <div>
       <div className='panel'>

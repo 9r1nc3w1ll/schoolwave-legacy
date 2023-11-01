@@ -92,12 +92,12 @@ const Index = () => {
                   <div>
                     <Link
                       href={
-                        user_session?.role === 'teacher'
+                        user_session?.role === 'teacher' ||
+                        user_session?.role === 'staff'
                           ? '/teacher-dashboard'
                           : user_session?.role === 'super_admin'
                           ? '/create-school'
-                          : '/teacher-dashboard'
-                        // : '/admin-dashboard'
+                          : '/admin-dashboard'
                       }
                     >
                       <button

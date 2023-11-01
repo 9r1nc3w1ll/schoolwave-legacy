@@ -35,7 +35,6 @@ const FeeTemplateSelect = (props: FeeTemplateSelectProps) => {
 
   React.useEffect(() => {
     const subscription = props.watch(({ template }) => {
-      console.log('template: ', template);
       let templateItems: string[] = [];
 
       feeTemplates.forEach((item) => {

@@ -50,7 +50,6 @@ const CreateFeeTemplate = (props: CreateFeeTemplateProps) => {
       }));
     }
 
-    console.log('refinedFeeitems: ', refinedFeeItems);
     setFeeItems(refinedFeeItems);
   }, [data]);
 

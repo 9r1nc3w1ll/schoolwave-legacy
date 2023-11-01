@@ -47,8 +47,6 @@ const EditTransaction = (props: EditTransactionProps) => {
   });
 
   const onSubmit = handleSubmit(async (tnxData) => {
-    console.log('props?.user_session?.school: ', props?.user_session?.school);
-
     mutate({
       ...tnxData,
       id: props?.record?.id,

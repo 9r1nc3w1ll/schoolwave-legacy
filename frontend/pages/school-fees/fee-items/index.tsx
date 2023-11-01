@@ -20,8 +20,6 @@ const Export = () => {
   const { data: sessionData, status: sessionStatus } = useSession();
 
   useEffect(() => {
-    console.log('activeToolTip: ', activeToolTip);
-
     if (activeToolTip !== '') {
       const x = items.find((t) => {
         return t.id === activeToolTip;

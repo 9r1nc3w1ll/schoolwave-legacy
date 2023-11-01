@@ -14,7 +14,6 @@ const DeleteQuestion = (props: any) => {
       props.sessionID,
       props.user_session.access_token
     );
-    console.log(props.sessionID, props.user_session.access_token);
   }
 
   const showAlert = async (type: number) => {

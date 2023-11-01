@@ -48,8 +48,6 @@ const CreateInvoice = (props: CreateInvoiceProps) => {
   });
 
   const onSubmit = handleSubmit(async ({ classId, template }) => {
-    console.log('tempdata: ', items);
-
     mutate({
       accessToken: props.user_session.access_token,
       items,

@@ -70,7 +70,6 @@ const CreateEmployee = (props: CreateEmployeePropsType) => {
       }));
     }
 
-    console.log('refinedFeeitems: ', refinedFeeItems);
     setRoles(refinedFeeItems);
   }, [data]);
 

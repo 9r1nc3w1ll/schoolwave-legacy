@@ -25,7 +25,6 @@ const SuperAdminLayout = ({ children }: IProps) => {
   const [animation, setAnimation] = useState(themeConfig.animation);
   const dispatch = useDispatch();
 
-  console.log(user_session?.role);
   useEffect(() => {
     if (user_session?.role !== 'super_admin') {
       router.push({
