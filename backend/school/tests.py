@@ -50,7 +50,7 @@ class SchoolAPITestCase(APITestCase):
             "motto": "Learning is fun!",
             "website_url": "https://www.example.com",
             "tag": "example",
-        }      
+        }
 
         response = self.client.post(url, data=data)
 
@@ -68,9 +68,11 @@ class ClassTests(APITestCase):
             date_of_establishment=datetime.now().date(),
         )
         self.class_obj = Class.objects.create(
-            name="Test Class", school=self.school, description="Description", code="class12"
+            name="Test Class",
+            school=self.school,
+            description="Description",
+            code="class12",
         )
-        
 
     def test_create_class(self):
         url = reverse("list_create_class")
@@ -80,13 +82,12 @@ class ClassTests(APITestCase):
             "school": self.school.id,
             "description": "Description",
             "class_index": 1,
-            "code": "class43"
+            "code": "class43",
         }
-        
+
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["message"], "Class created successfully.")
-
 
     def test_list_classes(self):
         url = reverse("list_create_class")
@@ -134,7 +135,10 @@ class ClassMemberTests(APITestCase):
             date_of_establishment=datetime.now().date(),
         )
         self.class_obj = Class.objects.create(
-            name="Test Class", school=self.school, description="Description", code="class12"
+            name="Test Class",
+            school=self.school,
+            description="Description",
+            code="class12",
         )
 
         self.teacher_user = User.objects.create_user(
@@ -142,14 +146,17 @@ class ClassMemberTests(APITestCase):
         )
 
         self.student_user = User.objects.create_user(
-            username="studentuser", password="testpassword", first_name="firstname", last_name="lastname"
+            username="studentuser",
+            password="testpassword",
+            first_name="firstname",
+            last_name="lastname",
         )
 
         self.class_member_obj = ClassMember.objects.create(
-            user= self.student_user,
-            class_id= self.class_obj,
-            role= "student",
-            school=self.school
+            user=self.student_user,
+            class_id=self.class_obj,
+            role="student",
+            school=self.school,
         )
 
     def test_create_class_member(self):
@@ -159,15 +166,13 @@ class ClassMemberTests(APITestCase):
             "user": self.teacher_user.id,
             "class_id": self.class_obj.id,
             "role": "teacher",
-            "school":self.school.id
+            "school": self.school.id,
         }
-        
+
         response = self.client.post(url, data)
 
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["message"], "Class member created successfully.")
-
 
     def test_list_class_member(self):
         url = reverse("list_create_class_member")
@@ -175,33 +180,40 @@ class ClassMemberTests(APITestCase):
         response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            len(response.data["data"]), 1
-        )
+        self.assertEqual(len(response.data["data"]), 1)
 
     def test_retrieve_class_member(self):
-        url = reverse("retrieve_update_destroy_class_member", kwargs={"pk":self.class_member_obj.id})
+        url = reverse(
+            "retrieve_update_destroy_class_member",
+            kwargs={"pk": self.class_member_obj.id},
+        )
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_class_member(self):
-        url = reverse("retrieve_update_destroy_class_member", kwargs={"pk":self.class_member_obj.id})
+        url = reverse(
+            "retrieve_update_destroy_class_member",
+            kwargs={"pk": self.class_member_obj.id},
+        )
         self.client.force_authenticate(user=self.user)
         data = {
-                "user": self.student_user.id,
-                "class_id": self.class_obj.id,
-                "role": "student"
-            }
-        
+            "user": self.student_user.id,
+            "class_id": self.class_obj.id,
+            "role": "student",
+        }
+
         response = self.client.patch(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], "Class member updated successfully.")
 
     def test_delete_class_member(self):
-        url = reverse("retrieve_update_destroy_class_member", kwargs={"pk":self.class_member_obj.id})
+        url = reverse(
+            "retrieve_update_destroy_class_member",
+            kwargs={"pk": self.class_member_obj.id},
+        )
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(url)
 
@@ -213,6 +225,7 @@ class ClassMemberTests(APITestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class CreateSchoolAndOwner(APITestCase):
     def setUp(self) -> None:
@@ -235,18 +248,23 @@ class CreateSchoolAndOwner(APITestCase):
             "username": "testuser77",
             "password": "testpassword",
             "first_name": "first_name",
-            "last_name":"last_name",
-            "school":self.school.id
+            "last_name": "last_name",
+            "school": self.school.id,
         }
 
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["message"], "Owner and School created successfully.")
+        self.assertEqual(
+            response.data["message"], "Owner and School created successfully."
+        )
+
 
 class SchoolLogoTests(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword"
+        )
         self.school = School.objects.create(
             name="chrisland",
             owner=self.user,
@@ -260,25 +278,30 @@ class SchoolLogoTests(APITestCase):
         response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "School Logo retrieved successfully.")
-        
-    def test_update_school_logo(self):
-        url = reverse('school_logo_detail', kwargs={"school_id": self.school.id})
-        data =  {
-                    "logo":
-                    {
-                        "logo_url": "https://placehold.co/600x400.png",
-                    },
-                }
+        self.assertEqual(
+            response.data["message"], "School Logo retrieved successfully."
+        )
 
-        response = self.client.patch(url, data=data, format='json', HTTP_X_CLIENT_ID=self.school.id)
+    def test_update_school_logo(self):
+        url = reverse("school_logo_detail", kwargs={"school_id": self.school.id})
+        data = {
+            "logo": {
+                "logo_url": "https://placehold.co/600x400.png",
+            },
+        }
+
+        response = self.client.patch(
+            url, data=data, format="json", HTTP_X_CLIENT_ID=self.school.id
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class SchoolBrandTests(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.user = User.objects.create_user(
+            username="testuser", password="testpassword"
+        )
         self.school = School.objects.create(
             name="chrisland",
             owner=self.user,
@@ -292,25 +315,29 @@ class SchoolBrandTests(APITestCase):
         response = self.client.get(url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "School Brand retrieved successfully.")
-        
+        self.assertEqual(
+            response.data["message"], "School Brand retrieved successfully."
+        )
+
     def test_update_school_brand(self):
         url = reverse("school_brand_detail", kwargs={"school_id": self.school.id})
         self.client.force_authenticate(user=self.user)
 
         data = {
             "id": str(self.school.id),
-            "brand": {
-                "primary_color": "#FF0032",
-                "secondary_color": "#2200FF"
-            }
+            "brand": {"primary_color": "#FF0032", "secondary_color": "#2200FF"},
         }
 
         school_id_str = str(self.school.id)
 
         data["school_id"] = school_id_str
 
-        response = self.client.patch(url, json.dumps(data), content_type='application/json', HTTP_X_CLIENT_ID=self.school.id)
+        response = self.client.patch(
+            url,
+            json.dumps(data),
+            content_type="application/json",
+            HTTP_X_CLIENT_ID=self.school.id,
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], "School Brand updated successfully.")
         self.assertEqual(response.data["data"]["brand"]["primary_color"], "#FF0032")
