@@ -24,7 +24,7 @@ const TeacherDefaultLayout = ({ children }: IProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (user_session?.role !== 'teacher') {
+    if (!['teacher', 'admin'].includes(user_session?.role!)) {
       router.push({
         pathname: '/',
         query: { returnUrl: router.asPath },
@@ -76,7 +76,11 @@ const TeacherDefaultLayout = ({ children }: IProps) => {
     }, 1100);
   }, [router.asPath]);
 
-  if (sessionStatus == 'authenticated' && user_session?.role == 'teacher') {
+  // if (sessionStatus == 'authenticated' && user_session?.role == 'teacher') {
+  if (
+    sessionStatus == 'authenticated' &&
+    ['teacher', 'admin'].includes(user_session?.role!)
+  ) {
     return (
       <App>
         <div className='relative'>

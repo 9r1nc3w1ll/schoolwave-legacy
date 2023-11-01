@@ -96,7 +96,8 @@ const Index = () => {
                           ? '/teacher-dashboard'
                           : user_session?.role === 'super_admin'
                           ? '/create-school'
-                          : '/admin-dashboard'
+                          : '/teacher-dashboard'
+                        // : '/admin-dashboard'
                       }
                     >
                       <button
