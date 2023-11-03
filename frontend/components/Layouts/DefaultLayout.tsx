@@ -9,6 +9,8 @@ import Sidebar from './Sidebar';
 import Portals from '../../components/Portals';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import { clientId } from '@/utility-methods/constants';
+import useMatchID from '../../hooks/useMatchID';
 
 interface IProps {
   children: ReactNode;
@@ -22,6 +24,7 @@ const DefaultLayout = ({ children }: IProps) => {
   const themeConfig = useSelector((state: IRootState) => state.themeConfig);
   const [animation, setAnimation] = useState(themeConfig.animation);
   const dispatch = useDispatch();
+  const { authClient } = useMatchID(user_session?.school?.id);
 
   useEffect(() => {
     if (sessionStatus === 'authenticated') {
@@ -80,7 +83,8 @@ const DefaultLayout = ({ children }: IProps) => {
 
   if (
     sessionStatus == 'authenticated' &&
-    ['admin', 'super_admin', 'student'].includes(user_session?.role)
+    ['admin', 'super_admin', 'student'].includes(user_session?.role) &&
+    authClient
   ) {
     return (
       <App>
@@ -181,7 +185,18 @@ const DefaultLayout = ({ children }: IProps) => {
       </App>
     );
   }
-  return <h1>Loading...</h1>;
+  return (
+    <div>
+      {!user_session?.first_name ? (
+        <h1 className='pb-12 pt-40 text-center'>Loading...</h1>
+      ) : (
+        <h1 className='pb-12 pt-40 text-center'>
+          Hello {user_session?.first_name}, you are not authorized to view this
+          page
+        </h1>
+      )}
+    </div>
+  );
 };
 
 export default DefaultLayout;
