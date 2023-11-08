@@ -17,10 +17,6 @@ interface LinearLoginCodeEmailProps {
   validationCode?: string;
 }
 
-// const baseUrl = process.env.VERCEL_URL
-//   ? `https://${process.env.VERCEL_URL}`
-//   : "";
-
 export const LinearLoginCodeEmail = ({ validationCode = "tt226-5398x" }: LinearLoginCodeEmailProps) => (
   <Html>
     <Head />
