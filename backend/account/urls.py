@@ -18,6 +18,7 @@ from account.views import (
     ResetPassword
 )
 
+
 urlpatterns = [
     path("/login", LoginView.as_view(), name="user_login"),
     path("/user", FetchUser.as_view(), name="fetch_user"),

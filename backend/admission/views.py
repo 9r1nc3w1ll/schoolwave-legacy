@@ -61,6 +61,13 @@ class BatchUploadAdmissionRequest(APIView):
 class BatchUpdateAdmissionRequests(APIView):
     serializer_class = AdmissionRequestSerializer
     permission_classes = [IsSchoolOwner, IsAuthenticated]
+    queryset = AdmissionRequest.objects.all()
+
+    def get_queryset(self):
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        return qs
 
     
     def patch(self, request, *args, **kwargs):
@@ -70,7 +77,7 @@ class BatchUpdateAdmissionRequests(APIView):
         if not ids:
             return Response({"error" : "Please pass in array of admission request ids to be updated."}, status=status.HTTP_400_BAD_REQUEST)
 
-        admission_requests = AdmissionRequest.objects.filter(id__in=ids)
+        admission_requests = self.get_queryset().filter(id__in=ids)
 
         for admission_request in admission_requests:
             
@@ -83,12 +90,13 @@ class BatchUpdateAdmissionRequests(APIView):
 class CreateSingleAdmission(CreateAPIView):
     serializer_class = StudentInformationSerializer
     permission_classes = [IsSchoolOwner, IsAuthenticated]
+    queryset = AdmissionRequest.objects.all()
 
     def get_queryset(self):
         school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
-        return super().get_queryset()
+        return qs
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -117,12 +125,12 @@ class ListCreateAdmissionRequests(ListCreateAPIView):
         school = self.request.headers.get("x-client-id")
 
         qs = self.queryset.filter(school=school)
-        return super().get_queryset()
+        
+        return qs
 
     def create(self, request, *args, **kwargs):
-        data = request.data.copy()
 
-        serializer = self.get_serializer(data=data)
+        serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             resp = {
                 "message": "Validation error",
@@ -160,6 +168,13 @@ class RUDAdmissionRequests(RetrieveUpdateDestroyAPIView):
     serializer_class = AdmissionRequestSerializer
     queryset = AdmissionRequest.objects.all()
     permission_classes = [IsSchoolOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        school = self.request.headers.get("x-client-id")
+
+        qs = self.queryset.filter(school=school)
+        
+        return qs
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
