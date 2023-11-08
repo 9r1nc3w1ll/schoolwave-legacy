@@ -38,7 +38,6 @@ const Step1 = () => {
         last_name: data.last_name,
         password: data.password,
       });
-
       const { ok, error }: any = await signIn('credentials', {
         username: data.email,
         password: data.password,

@@ -76,7 +76,6 @@ const TeacherDefaultLayout = ({ children }: IProps) => {
     }, 1100);
   }, [router.asPath]);
 
-  // if (sessionStatus == 'authenticated' && user_session?.role == 'teacher') {
   if (
     sessionStatus == 'authenticated' &&
     ['teacher', 'admin', 'staff'].includes(user_session?.role!)
