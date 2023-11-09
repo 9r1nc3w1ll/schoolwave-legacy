@@ -23,27 +23,20 @@ export const LinearLoginCodeEmail = ({ validationCode = "tt226-5398x" }: LinearL
     <Preview>Your login code for Linear</Preview>
     <Body style={main}>
       <Container style={container}>
-        {/* <Img
-          src={`${baseUrl}/static/linear-logo.png`}
-          width="42"
-          height="42"
-          alt="Linear"
-          style={logo}
-        /> */}
         <Heading style={heading}>Your login code for Linear</Heading>
         <Section style={buttonContainer}>
           <Button pY={11} pX={23} style={button} href="https://linear.app">
-              Login to Linear
+            Login to Linear
           </Button>
         </Section>
         <Text style={paragraph}>
-            This link and code will only be valid for the next 5 minutes. If the
-            link does not work, you can use the login verification code directly:
+          This link and code will only be valid for the next 5 minutes. If the
+          link does not work, you can use the login verification code directly:
         </Text>
         <code style={code}>{validationCode}</code>
         <Hr style={hr} />
         <Link href="https://linear.app" style={reportLink}>
-            Linear
+          Linear
         </Link>
       </Container>
     </Body>
@@ -55,7 +48,7 @@ export default LinearLoginCodeEmail;
 const main = {
   backgroundColor: "#ffffff",
   fontFamily:
-      "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif",
+    "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif",
 };
 
 const container = {
@@ -113,4 +106,3 @@ const code = {
   borderRadius: "4px",
   color: "#3c4149",
 };
-
