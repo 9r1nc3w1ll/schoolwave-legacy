@@ -9,6 +9,8 @@ import { IRootState } from '../../store';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import ShowTree from '../ShowTree';
+import { Avatar } from '@mantine/core';
+import { getInitials } from '@/utility-methods/helpers';
 
 const Sidebar = (props: any) => {
   const router = useRouter();
@@ -74,6 +76,7 @@ const Sidebar = (props: any) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
+  const schoolName: string = props?.user_session?.school?.name;
   return (
     <div className={semidark ? 'dark' : ''}>
       <nav
@@ -84,11 +87,10 @@ const Sidebar = (props: any) => {
         <div className='h-full bg-white dark:bg-black'>
           <div className='flex items-center justify-between px-4 py-3'>
             <Link href='/' className='main-logo flex shrink-0 items-center'>
-              <img
-                className='ml-[5px] w-8 flex-none'
-                src='/assets/images/logo.svg'
-                alt='logo'
-              />
+              <Avatar color='cyan' radius='xl'>
+                {getInitials(schoolname1, schoolname2)}
+              </Avatar>
+
               <span className='align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline'>
                 {schoolname1 + schoolname2}
               </span>

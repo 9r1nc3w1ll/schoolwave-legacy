@@ -150,7 +150,7 @@ const Header = (props: any) => {
                       props?.user_session?.first_name,
                       props?.user_session?.last_name
                     )
-                  : getInitials(schoolName, schoolName.split(' ')[1][0])}{' '}
+                  : getInitials(schoolName, schoolName.split(' ')[1][0])}
               </Avatar>
 
               <ShowTree roles={['super_admin']}>

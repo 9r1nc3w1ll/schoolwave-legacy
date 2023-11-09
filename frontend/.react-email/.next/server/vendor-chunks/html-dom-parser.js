@@ -1,0 +1,44 @@
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+exports.id = "vendor-chunks/html-dom-parser";
+exports.ids = ["vendor-chunks/html-dom-parser"];
+exports.modules = {
+
+/***/ "(rsc)/../node_modules/html-dom-parser/index.js":
+/*!************************************************!*\
+  !*** ../node_modules/html-dom-parser/index.js ***!
+  \************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+eval("/**\n * When running on Node.js, use the server parser.\n * When bundling for the browser, use the client parser.\n *\n * @see {@link https://github.com/substack/node-browserify#browser-field}\n */ var HTMLDOMParser = __webpack_require__(/*! ./lib/server/html-to-dom */ \"(rsc)/../node_modules/html-dom-parser/lib/server/html-to-dom.js\");\nmodule.exports = HTMLDOMParser;\nmodule.exports[\"default\"] = HTMLDOMParser;\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi4vbm9kZV9tb2R1bGVzL2h0bWwtZG9tLXBhcnNlci9pbmRleC5qcyIsIm1hcHBpbmdzIjoiQUFBQTs7Ozs7Q0FLQyxHQUNELElBQUlBLGdCQUFnQkMsbUJBQU9BLENBQUM7QUFFNUJDLE9BQU9DLE9BQU8sR0FBR0g7QUFDakJFLHlCQUFzQixHQUFHRiIsInNvdXJjZXMiOlsid2VicGFjazovL3JlYWN0LWVtYWlsLWNsaWVudC8uLi9ub2RlX21vZHVsZXMvaHRtbC1kb20tcGFyc2VyL2luZGV4LmpzPzliNjYiXSwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBXaGVuIHJ1bm5pbmcgb24gTm9kZS5qcywgdXNlIHRoZSBzZXJ2ZXIgcGFyc2VyLlxuICogV2hlbiBidW5kbGluZyBmb3IgdGhlIGJyb3dzZXIsIHVzZSB0aGUgY2xpZW50IHBhcnNlci5cbiAqXG4gKiBAc2VlIHtAbGluayBodHRwczovL2dpdGh1Yi5jb20vc3Vic3RhY2svbm9kZS1icm93c2VyaWZ5I2Jyb3dzZXItZmllbGR9XG4gKi9cbnZhciBIVE1MRE9NUGFyc2VyID0gcmVxdWlyZSgnLi9saWIvc2VydmVyL2h0bWwtdG8tZG9tJyk7XG5cbm1vZHVsZS5leHBvcnRzID0gSFRNTERPTVBhcnNlcjtcbm1vZHVsZS5leHBvcnRzLmRlZmF1bHQgPSBIVE1MRE9NUGFyc2VyO1xuIl0sIm5hbWVzIjpbIkhUTUxET01QYXJzZXIiLCJyZXF1aXJlIiwibW9kdWxlIiwiZXhwb3J0cyIsImRlZmF1bHQiXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(rsc)/../node_modules/html-dom-parser/index.js\n");
+
+/***/ }),
+
+/***/ "(rsc)/../node_modules/html-dom-parser/lib/server/html-to-dom.js":
+/*!*****************************************************************!*\
+  !*** ../node_modules/html-dom-parser/lib/server/html-to-dom.js ***!
+  \*****************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+eval("var Parser = (__webpack_require__(/*! htmlparser2 */ \"(rsc)/../node_modules/htmlparser2/lib/index.js\").Parser);\nvar DomHandler = (__webpack_require__(/*! domhandler */ \"(rsc)/../node_modules/domhandler/lib/index.js\").DomHandler);\nvar unsetRootParent = (__webpack_require__(/*! ./utilities */ \"(rsc)/../node_modules/html-dom-parser/lib/server/utilities.js\").unsetRootParent);\n/**\n * Parses HTML string to DOM nodes in Node.js.\n *\n * This is the same method as `require('htmlparser2').parseDOM`\n * https://github.com/fb55/htmlparser2/blob/v6.0.0/src/index.ts#L29-L41\n *\n * @param  {string}            html      - HTML markup.\n * @param  {DomHandlerOptions} [options] - Parser options (https://github.com/fb55/domhandler/tree/v4.0.0#readme).\n * @return {Array<Comment|Element|ProcessingInstruction|Text>} - DOM nodes.\n */ function HTMLDOMParser(html, options) {\n    if (typeof html !== \"string\") {\n        throw new TypeError(\"First argument must be a string.\");\n    }\n    if (html === \"\") {\n        return [];\n    }\n    var handler = new DomHandler(undefined, options);\n    new Parser(handler, options).end(html);\n    return unsetRootParent(handler.dom);\n}\nmodule.exports = HTMLDOMParser;\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi4vbm9kZV9tb2R1bGVzL2h0bWwtZG9tLXBhcnNlci9saWIvc2VydmVyL2h0bWwtdG8tZG9tLmpzIiwibWFwcGluZ3MiOiJBQUFBLElBQUlBLFNBQVNDLGlHQUE2QjtBQUMxQyxJQUFJQyxhQUFhRCxtR0FBZ0M7QUFFakQsSUFBSUUsa0JBQWtCRix5SEFBc0M7QUFFNUQ7Ozs7Ozs7OztDQVNDLEdBQ0QsU0FBU0csY0FBY0MsSUFBSSxFQUFFQyxPQUFPO0lBQ2xDLElBQUksT0FBT0QsU0FBUyxVQUFVO1FBQzVCLE1BQU0sSUFBSUUsVUFBVTtJQUN0QjtJQUVBLElBQUlGLFNBQVMsSUFBSTtRQUNmLE9BQU8sRUFBRTtJQUNYO0lBRUEsSUFBSUcsVUFBVSxJQUFJTixXQUFXTyxXQUFXSDtJQUN4QyxJQUFJTixPQUFPUSxTQUFTRixTQUFTSSxHQUFHLENBQUNMO0lBQ2pDLE9BQU9GLGdCQUFnQkssUUFBUUcsR0FBRztBQUNwQztBQUVBQyxPQUFPQyxPQUFPLEdBQUdUIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vcmVhY3QtZW1haWwtY2xpZW50Ly4uL25vZGVfbW9kdWxlcy9odG1sLWRvbS1wYXJzZXIvbGliL3NlcnZlci9odG1sLXRvLWRvbS5qcz9jNTUzIl0sInNvdXJjZXNDb250ZW50IjpbInZhciBQYXJzZXIgPSByZXF1aXJlKCdodG1scGFyc2VyMicpLlBhcnNlcjtcbnZhciBEb21IYW5kbGVyID0gcmVxdWlyZSgnZG9taGFuZGxlcicpLkRvbUhhbmRsZXI7XG5cbnZhciB1bnNldFJvb3RQYXJlbnQgPSByZXF1aXJlKCcuL3V0aWxpdGllcycpLnVuc2V0Um9vdFBhcmVudDtcblxuLyoqXG4gKiBQYXJzZXMgSFRNTCBzdHJpbmcgdG8gRE9NIG5vZGVzIGluIE5vZGUuanMuXG4gKlxuICogVGhpcyBpcyB0aGUgc2FtZSBtZXRob2QgYXMgYHJlcXVpcmUoJ2h0bWxwYXJzZXIyJykucGFyc2VET01gXG4gKiBodHRwczovL2dpdGh1Yi5jb20vZmI1NS9odG1scGFyc2VyMi9ibG9iL3Y2LjAuMC9zcmMvaW5kZXgudHMjTDI5LUw0MVxuICpcbiAqIEBwYXJhbSAge3N0cmluZ30gICAgICAgICAgICBodG1sICAgICAgLSBIVE1MIG1hcmt1cC5cbiAqIEBwYXJhbSAge0RvbUhhbmRsZXJPcHRpb25zfSBbb3B0aW9uc10gLSBQYXJzZXIgb3B0aW9ucyAoaHR0cHM6Ly9naXRodWIuY29tL2ZiNTUvZG9taGFuZGxlci90cmVlL3Y0LjAuMCNyZWFkbWUpLlxuICogQHJldHVybiB7QXJyYXk8Q29tbWVudHxFbGVtZW50fFByb2Nlc3NpbmdJbnN0cnVjdGlvbnxUZXh0Pn0gLSBET00gbm9kZXMuXG4gKi9cbmZ1bmN0aW9uIEhUTUxET01QYXJzZXIoaHRtbCwgb3B0aW9ucykge1xuICBpZiAodHlwZW9mIGh0bWwgIT09ICdzdHJpbmcnKSB7XG4gICAgdGhyb3cgbmV3IFR5cGVFcnJvcignRmlyc3QgYXJndW1lbnQgbXVzdCBiZSBhIHN0cmluZy4nKTtcbiAgfVxuXG4gIGlmIChodG1sID09PSAnJykge1xuICAgIHJldHVybiBbXTtcbiAgfVxuXG4gIHZhciBoYW5kbGVyID0gbmV3IERvbUhhbmRsZXIodW5kZWZpbmVkLCBvcHRpb25zKTtcbiAgbmV3IFBhcnNlcihoYW5kbGVyLCBvcHRpb25zKS5lbmQoaHRtbCk7XG4gIHJldHVybiB1bnNldFJvb3RQYXJlbnQoaGFuZGxlci5kb20pO1xufVxuXG5tb2R1bGUuZXhwb3J0cyA9IEhUTUxET01QYXJzZXI7XG4iXSwibmFtZXMiOlsiUGFyc2VyIiwicmVxdWlyZSIsIkRvbUhhbmRsZXIiLCJ1bnNldFJvb3RQYXJlbnQiLCJIVE1MRE9NUGFyc2VyIiwiaHRtbCIsIm9wdGlvbnMiLCJUeXBlRXJyb3IiLCJoYW5kbGVyIiwidW5kZWZpbmVkIiwiZW5kIiwiZG9tIiwibW9kdWxlIiwiZXhwb3J0cyJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(rsc)/../node_modules/html-dom-parser/lib/server/html-to-dom.js\n");
+
+/***/ }),
+
+/***/ "(rsc)/../node_modules/html-dom-parser/lib/server/utilities.js":
+/*!***************************************************************!*\
+  !*** ../node_modules/html-dom-parser/lib/server/utilities.js ***!
+  \***************************************************************/
+/***/ ((module) => {
+
+eval("/**\n * Sets root parent to null.\n *\n * @param  {Array<Comment|Element|ProcessingInstruction|Text>} nodes\n * @return {Array<Comment|Element|ProcessingInstruction|Text>}\n */ function unsetRootParent(nodes) {\n    for(var index = 0, len = nodes.length; index < len; index++){\n        var node = nodes[index];\n        node.parent = null;\n    }\n    return nodes;\n}\nmodule.exports = {\n    unsetRootParent: unsetRootParent\n};\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9yZWFjdC1lbWFpbC1jbGllbnQvLi4vbm9kZV9tb2R1bGVzL2h0bWwtZG9tLXBhcnNlci9saWIvc2VydmVyL3V0aWxpdGllcy5qcz82Njc5Il0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogU2V0cyByb290IHBhcmVudCB0byBudWxsLlxuICpcbiAqIEBwYXJhbSAge0FycmF5PENvbW1lbnR8RWxlbWVudHxQcm9jZXNzaW5nSW5zdHJ1Y3Rpb258VGV4dD59IG5vZGVzXG4gKiBAcmV0dXJuIHtBcnJheTxDb21tZW50fEVsZW1lbnR8UHJvY2Vzc2luZ0luc3RydWN0aW9ufFRleHQ+fVxuICovXG5mdW5jdGlvbiB1bnNldFJvb3RQYXJlbnQobm9kZXMpIHtcbiAgZm9yICh2YXIgaW5kZXggPSAwLCBsZW4gPSBub2Rlcy5sZW5ndGg7IGluZGV4IDwgbGVuOyBpbmRleCsrKSB7XG4gICAgdmFyIG5vZGUgPSBub2Rlc1tpbmRleF07XG4gICAgbm9kZS5wYXJlbnQgPSBudWxsO1xuICB9XG4gIHJldHVybiBub2Rlcztcbn1cblxubW9kdWxlLmV4cG9ydHMgPSB7XG4gIHVuc2V0Um9vdFBhcmVudDogdW5zZXRSb290UGFyZW50XG59O1xuIl0sIm5hbWVzIjpbInVuc2V0Um9vdFBhcmVudCIsIm5vZGVzIiwiaW5kZXgiLCJsZW4iLCJsZW5ndGgiLCJub2RlIiwicGFyZW50IiwibW9kdWxlIiwiZXhwb3J0cyJdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7O0NBS0MsR0FDRCxTQUFTQSxnQkFBZ0JDLEtBQUs7SUFDNUIsSUFBSyxJQUFJQyxRQUFRLEdBQUdDLE1BQU1GLE1BQU1HLE1BQU0sRUFBRUYsUUFBUUMsS0FBS0QsUUFBUztRQUM1RCxJQUFJRyxPQUFPSixLQUFLLENBQUNDLE1BQU07UUFDdkJHLEtBQUtDLE1BQU0sR0FBRztJQUNoQjtJQUNBLE9BQU9MO0FBQ1Q7QUFFQU0sT0FBT0MsT0FBTyxHQUFHO0lBQ2ZSLGlCQUFpQkE7QUFDbkIiLCJmaWxlIjoiKHJzYykvLi4vbm9kZV9tb2R1bGVzL2h0bWwtZG9tLXBhcnNlci9saWIvc2VydmVyL3V0aWxpdGllcy5qcyIsInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///(rsc)/../node_modules/html-dom-parser/lib/server/utilities.js\n");
+
+/***/ })
+
+};
+;
