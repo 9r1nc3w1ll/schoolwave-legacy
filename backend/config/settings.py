@@ -221,8 +221,8 @@ CORS_ALLOW_HEADERS = (
     "x-client-id",
 )
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD", "6233bc80a20317f9c50da0ee080b0de5-8c9e82ec-88b3c3dc")
+EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD", "f6b6270d6fe4f8136241b093dfc3d655")
 EMAIL_HOST = config('EMAIL_HOST', 'smtp.mailgun.com')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', "postmaster@sandbox2e6e9ddca9cd4499a0238a72862cfa31.mailgun.org")
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', "postmaster@sandbox13312edbb9e3459aaba832c27e545d87.mailgun.org")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
