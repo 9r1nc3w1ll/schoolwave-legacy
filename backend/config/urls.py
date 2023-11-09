@@ -27,7 +27,7 @@ from utils.views import FetchRef, VerifyFlutterwaveTx
 from config.views import CheckEntities, HealthCheck
 
 urlpatterns = [
-    path("admin", admin.site.urls),
+    path("admin/", admin.site.urls),
     path("account", include("account.urls")),
     path("school", include("school.urls")),
     path("session", include("session.urls")),
