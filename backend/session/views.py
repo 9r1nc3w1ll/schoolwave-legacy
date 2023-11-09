@@ -10,6 +10,9 @@ from utils.permissions import IsSchoolOwner
 from .models import Session, Term
 from .serializers import SessionSerializer, TermSerializer
 
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse, OpenApiExample
+
+
 
 class ListCreateSession(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
@@ -107,6 +110,21 @@ class RetrieveUpdateDestorySession(RetrieveUpdateDestroyAPIView):
 
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
 
+
+
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(name='session_id', description='Filter by Session', type=str, required=False),
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    )
+)
 
 class ListCreateTerm(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]

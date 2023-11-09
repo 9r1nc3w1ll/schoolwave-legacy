@@ -13,8 +13,21 @@ from datetime import datetime, timedelta
 from utils.views import get_user_location
 from school.models import School
 from haversine import haversine
-from math import radians
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse, OpenApiExample
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(name='class_id', description='Filter by Class ID', type=str, required=False),
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    )
+)
 class ListCreateStudentAttendance(ListCreateAPIView):
     # permission_classes = [IsAuthenticated]
     queryset = AttendanceRecord.objects.all()
@@ -130,6 +143,7 @@ class ListCreateStudentAttendance(ListCreateAPIView):
         }
         return Response(resp)
 
+
 class RetrieveUpdateStudentAttendance(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = AttendanceRecord.objects.all()
@@ -231,6 +245,18 @@ class CreateMultipleStudentAttendance(CreateAPIView):
         return Response(resp, status=status.HTTP_201_CREATED)
     
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    )
+)
 class ListCreateStaffAttendance(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = AttendanceRecord.objects.all()

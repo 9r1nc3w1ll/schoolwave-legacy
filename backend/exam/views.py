@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Question, QuestionOption, Exam, Answer
 from subject.models import Subject
 from .serializers import (
+    BatchUploadSerializer,
     QuestionSerializer,
     BatchQuestionSerializer,
     QuestionOptionSerializer,
@@ -25,7 +26,31 @@ import uuid
 import csv
 import io
 from school.models import School
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse, OpenApiExample
 
+
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    post=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class ListCreateQuestion(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Question.objects.all()
@@ -72,7 +97,38 @@ class ListCreateQuestion(ListCreateAPIView):
             }
         )
 
-
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    patch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    put=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class RetrieveUpdateDestroyQuestion(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Question.objects.all()
@@ -142,6 +198,28 @@ class RetrieveUpdateDestroyQuestion(RetrieveUpdateDestroyAPIView):
         )
 
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    post=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class ListCreateQuestionOption(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = QuestionOption.objects.all()
@@ -189,6 +267,38 @@ class ListCreateQuestionOption(ListCreateAPIView):
         )
 
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    patch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    put=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class RetrieveUpdateDestroyQuestionOption(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = QuestionOption.objects.all()
@@ -267,6 +377,28 @@ class RetrieveUpdateDestroyQuestionOption(RetrieveUpdateDestroyAPIView):
         )
 
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    post=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class ListCreateExam(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Exam.objects.all()
@@ -313,7 +445,38 @@ class ListCreateExam(ListCreateAPIView):
             }
         )
 
-
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    patch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    put=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class RetrieveUpdateDestroyExam(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Exam.objects.all()
@@ -391,7 +554,28 @@ class RetrieveUpdateDestroyExam(RetrieveUpdateDestroyAPIView):
             status=status.HTTP_204_NO_CONTENT,
         )
 
-
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    post=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class ListCreateAnswer(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Answer.objects.all()
@@ -438,7 +622,38 @@ class ListCreateAnswer(ListCreateAPIView):
             }
         )
 
-
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    patch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    put=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class RetrieveUpdateDestroyAnswer(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Answer.objects.all()
@@ -522,7 +737,17 @@ class BatchUploadAPI(GenericAPIView):
     parser_classes = (MultiPartParser,)
     permission_classes = [IsAuthenticated]
 
-    
+    @extend_schema(
+        request=BatchUploadSerializer,
+        responses={
+            201: OpenApiResponse(
+                description="Upload successful.",
+            ),
+            400: OpenApiResponse(
+                description="Bad Request",
+            )
+        }
+    )
     def post(self, request, *args, **kwargs):
         csv_file = request.FILES.get('csv')
         school_id = request.POST['school_id']

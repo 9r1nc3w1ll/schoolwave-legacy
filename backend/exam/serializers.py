@@ -2,6 +2,11 @@ from rest_framework import serializers
 from .models import Question, QuestionOption, Exam, Answer
 
 
+
+class BatchUploadSerializer(serializers.Serializer):
+    school_id = serializers.UUIDField()
+    csv = serializers.FileField()
+
 class QuestionSerializer(serializers.ModelSerializer):
     subject_info = serializers.SerializerMethodField()
     class Meta:

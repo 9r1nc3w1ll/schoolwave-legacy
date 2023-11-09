@@ -459,6 +459,7 @@ class SuperAdminCreateView(CreateAPIView):
 
 class RequestPasswordReset(APIView):
     serializer_class = PasswordResetRequestSerializer
+    
 
     @extend_schema(
         responses={
@@ -468,7 +469,15 @@ class RequestPasswordReset(APIView):
             400: OpenApiResponse(
                 description="Bad Request",
             )
-        }
+        },
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
     )
     def post(self, request, *args, **kwargs):
 

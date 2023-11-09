@@ -12,8 +12,31 @@ from fees.serializers import BulkInvoiceSerializer, FeeItemSerializer, PaymentSe
     FeeTemplateSerializer, InvoiceSerializer, InvoiceTemplateSerializer
 from utils.permissions import IsSchoolOwner
 from utils.flutterwave import verify_flutterwave_tx, generate_random_number
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse, OpenApiExample
 
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    post=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class ListCreateFeeTemplate(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = FeeTemplate.objects.all()
@@ -60,6 +83,38 @@ class ListCreateFeeTemplate(ListCreateAPIView):
         return Response(resp)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    patch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    put=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class RetrieveUpdateDestroyFeeTemplate(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = FeeTemplate.objects.all()
@@ -110,7 +165,28 @@ class RetrieveUpdateDestroyFeeTemplate(RetrieveUpdateDestroyAPIView):
 
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
 
-
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    post=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class ListCreateFeeItem(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = FeeItem.objects.all()
@@ -157,6 +233,38 @@ class ListCreateFeeItem(ListCreateAPIView):
         return Response(resp)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    patch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    put=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class RetrieveUpdateDestroyFeeItem(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = FeeItem.objects.all()
@@ -208,6 +316,28 @@ class RetrieveUpdateDestroyFeeItem(RetrieveUpdateDestroyAPIView):
         return Response(resp, status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    post=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class ListCreateDiscount(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Discount.objects.all()
@@ -252,8 +382,40 @@ class ListCreateDiscount(ListCreateAPIView):
             "data": serializer.data,
         }
         return Response(resp)
+    
 
-
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    patch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    put=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class RetrieveUpdateDestroyDiscount(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Discount.objects.all()
@@ -306,6 +468,28 @@ class RetrieveUpdateDestroyDiscount(RetrieveUpdateDestroyAPIView):
 
 
 
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    post=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class ListCreateTransaction(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Transaction.objects.all()
@@ -351,7 +535,38 @@ class ListCreateTransaction(ListCreateAPIView):
         }
         return Response(resp)
 
-
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    patch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    put=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class RetrieveUpdateDestroyTransaction(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Transaction.objects.all()
@@ -452,7 +667,28 @@ class BulkCreateInvoice(GenericAPIView):
         
 
 
-
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    post=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class ListCreateInvoice(ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Invoice.objects.all()
@@ -497,8 +733,41 @@ class ListCreateInvoice(ListCreateAPIView):
             "data": serializer.data,
         }
         return Response(resp)
+    
+    
 
-
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    patch=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+    put=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="x-client-id",
+                type=str,
+                location=OpenApiParameter.HEADER,
+                description="School ID",
+            )
+        ]
+    ),
+)
 class RetrieveUpdateDestroyInvoice(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsSchoolOwner]
     queryset = Invoice.objects.all()
