@@ -74,7 +74,7 @@ const TeacherSidebar = (props: any) => {
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
-
+  const schoolName: string = props?.user_session?.school?.name;
   return (
     <div className={semidark ? 'dark' : ''}>
       <nav
@@ -86,7 +86,7 @@ const TeacherSidebar = (props: any) => {
           <div className='flex items-center justify-between px-4 py-3'>
             <Link href='/' className='main-logo flex shrink-0 items-center'>
               <Avatar color='cyan' radius='xl'>
-                {getInitials(schoolname1, schoolname2)}
+                {getInitials(schoolName, schoolName.split(' ')[1][0])}
               </Avatar>
               <span className='align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline'>
                 {`${schoolname1} ${schoolname2} `}

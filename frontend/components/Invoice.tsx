@@ -143,13 +143,12 @@ const Invoice: FC<InvoiceProps> = ({ invoiceDetails, invoice }) => {
             Invoice
           </h3>
           <div className='shrink-0'>
-            <Image
-              src='/assets/images/logo.svg'
-              alt='img'
-              className='w-14 ltr:ml-auto rtl:mr-auto'
-              width={100}
-              height={100}
-            />
+            <Avatar color='cyan' radius='xl'>
+              {getInitials(
+                props?.user_session?.first_name,
+                props?.user_session?.last_name
+              )}
+            </Avatar>
           </div>
         </div>
         <div className='flex flex-wrap justify-between gap-4 px-4'>
