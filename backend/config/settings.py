@@ -208,21 +208,19 @@ FRONTEND_URL = config("FRONTEND_URL", "localhost:3000")
 
 FRONTEND_PASSWORD_RESET_URL = config('FRONTEND_PASSWORD_RESET_URL', 'http://localhost:3000/accounts/password-reset')
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD")
-EMAIL_HOST = '127.0.0.1'
-EMAIL_PORT = 1025
 
 SITE_ID = 1
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST', 'smtp.mailgun.org')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', "postmaster@sandbox13312edbb9e3459aaba832c27e545d87.mailgun.org")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", "24ad73879aecc46dde5e935fd5383e8a-8c9e82ec-8f565488")
 
 CORS_ALLOW_HEADERS = (
     *default_headers,
     "x-client-id",
 )
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD", "f6b6270d6fe4f8136241b093dfc3d655")
-EMAIL_HOST = config('EMAIL_HOST', 'smtp.mailgun.com')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', "postmaster@sandbox13312edbb9e3459aaba832c27e545d87.mailgun.org")
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
