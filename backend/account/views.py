@@ -32,12 +32,23 @@ from .serializers import (
     PasswordResetSerializer,
     UserSerializer,
     ProfilePhotoSerializer,
-    SuperAdminCreateSerializer
+    SuperAdminCreateSerializer,
 )
+
+from .doc_serializers import TokenResponseSerializer, RefreshAuthUserSerializer
+
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 
 
 # Create your views here.
 class LoginView(APIView):
+    
+    @extend_schema(
+        description="Login to your account",
+        request=LoginSerializer,
+        responses={200: TokenResponseSerializer}
+    )
     def post(self, request, *args, **kwargs):
         data = request.data
         serializer = LoginSerializer(data=data)
@@ -84,6 +95,11 @@ class FetchUser(APIView):
         IsAuthenticated,
     ]
 
+    @extend_schema(
+        responses={
+            200: UserSerializer
+        }
+    )
     def get(self, request, *args, **kwargs):
         data = {
             "message": "User retrieved successfully.",
@@ -97,6 +113,11 @@ class RefreshAuthUser(APIView):
         IsAuthenticated,
     ]
 
+    @extend_schema(
+        responses={
+            200: RefreshAuthUserSerializer
+        }
+    )
     def get(self, request, *args, **kwargs):
         try:
             # TODO: Fetch the school that the user is trying to access
@@ -126,6 +147,16 @@ class ChangePassword(APIView):
         IsAuthenticated,
     ]
 
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                description="Password changed successfully.",
+            ),
+            400: OpenApiResponse(
+                description="Bad Request",
+            )
+        }
+    )
     def post(self, request, *args, **kwargs):
         data = request.data
 
@@ -148,6 +179,8 @@ class ChangePassword(APIView):
 
 
 class PasswordResetRequestView(APIView):
+
+
     def post(self, request):
         serializer = PasswordResetRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -281,6 +314,17 @@ class AdminResetPassword(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
     serializer_class = AdminPasswordResetSerializer
 
+    @extend_schema(
+        request=AdminPasswordResetSerializer,
+        responses={
+            200: OpenApiResponse(
+                description="Password changed successfully.",
+            ),
+            400: OpenApiResponse(
+                description="Bad Request",
+            )
+        }
+    )
     def post(self, request, *args, **kwargs):
         data = request.data
 
@@ -416,6 +460,16 @@ class SuperAdminCreateView(CreateAPIView):
 class RequestPasswordReset(APIView):
     serializer_class = PasswordResetRequestSerializer
 
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                description="Password reset email has been sent to the user.",
+            ),
+            400: OpenApiResponse(
+                description="Bad Request",
+            )
+        }
+    )
     def post(self, request, *args, **kwargs):
 
         serializer = self.serializer_class(data=request.data)
@@ -455,6 +509,16 @@ class VerifyToken(APIView):
         except User.DoesNotExist:
             return Response({"error" : "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                description="User Validated. Please set your password.",
+            ),
+            400: OpenApiResponse(
+                description="Bad Request",
+            )
+        }
+    )
     def get(self, request, *args, **kwargs):
 
         email = kwargs.get("hashed_email", "")
@@ -481,6 +545,16 @@ class ResetPassword(APIView):
         except User.DoesNotExist:
             return Response({"error" : "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                description="Password changed successfully.",
+            ),
+            400: OpenApiResponse(
+                description="Invalid token.",
+            )
+        }
+    )
     def post(self, request, *args, **kwargs):
         data = request.data
 

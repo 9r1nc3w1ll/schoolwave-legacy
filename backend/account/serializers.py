@@ -98,6 +98,10 @@ class LoginSerializer(serializers.Serializer):
             raise AuthenticationFailed("Invalid login credentials")
         return data
 
+
+
+
+
 class ProfilePhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfilePhoto
@@ -117,6 +121,9 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
+
+
+
 
 class OwnerSerializer(UserSerializer):
     email = serializers.EmailField()

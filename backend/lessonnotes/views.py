@@ -5,6 +5,18 @@ from .serializers import LessonNoteSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse, OpenApiExample
+
+
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(name='teacher_id', description='Filter by category', type=str),
+            OpenApiParameter(name='week', description='Filter by week', type=str),
+            OpenApiParameter(name='subject_id', description='Filter by subject', type=str),
+        ]
+    )
+)
 class ListCreateLessonNote(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = LessonNote.objects.all()
@@ -13,7 +25,7 @@ class ListCreateLessonNote(ListCreateAPIView):
     def get_queryset(self):
         qs = self.queryset.all()
 
-        lessonnote_id = self.kwargs.get("lesson_notes_id", "") 
+        lessonnote_id = self.kwargs.get("lesson_note_id", "") 
         if lessonnote_id:
             qs = qs.filter(id=lessonnote_id)
         
@@ -58,7 +70,8 @@ class ListCreateLessonNote(ListCreateAPIView):
                 "errors": serializer.errors,
             }
             return Response(resp, status=status.HTTP_400_BAD_REQUEST)
-   
+    
+    
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
