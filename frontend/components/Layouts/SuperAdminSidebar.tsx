@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import ShowTree from '../ShowTree';
 import { getInitials } from '@/utility-methods/helpers';
+import { Avatar } from '@mantine/core';
 
 const Sidebar = (props: any) => {
   const router = useRouter();

@@ -5,6 +5,9 @@ import { formatDate } from '@/utility-methods/datey';
 import { setPageTitle } from '../store/themeConfigSlice';
 import { useDispatch } from 'react-redux';
 import { FC, useEffect, useRef } from 'react';
+import { Avatar } from '@mantine/core';
+import { getInitials } from '@/utility-methods/helpers';
+import { useSession } from 'next-auth/react';
 
 interface itemsProp {
   id: number;
@@ -65,6 +68,7 @@ const Invoice: FC<InvoiceProps> = ({ invoiceDetails, invoice }) => {
 
   const componentRef = useRef<any>();
 
+  const { data: userSession } = useSession();
   return (
     <div className='container mx-auto max-w-5xl'>
       <div className='mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end'>
@@ -144,10 +148,7 @@ const Invoice: FC<InvoiceProps> = ({ invoiceDetails, invoice }) => {
           </h3>
           <div className='shrink-0'>
             <Avatar color='cyan' radius='xl'>
-              {getInitials(
-                props?.user_session?.first_name,
-                props?.user_session?.last_name
-              )}
+              {getInitials(userSession?.first_name, userSession?.last_name)}
             </Avatar>
           </div>
         </div>
