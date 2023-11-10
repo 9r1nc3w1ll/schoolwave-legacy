@@ -437,6 +437,26 @@ const Export = (props: any) => {
                 title: 'School Id',
                 sortable: true,
               },
+              {
+                accessor: 'student_info.date_of_birth',
+                title: 'Date of Birth',
+                sortable: true,
+              },
+              {
+                accessor: 'student_info.state',
+                title: 'State of Origin',
+                sortable: true,
+              },
+              {
+                accessor: 'student_info.guardian_name',
+                title: 'Guardian Name',
+                sortable: true,
+              },
+              {
+                accessor: 'student_info.guardian_phone_number',
+                title: 'Phone No',
+                sortable: true,
+              },
             ]}
             totalRecords={initialRecords ? initialRecords.length : 0}
             recordsPerPage={pageSize}

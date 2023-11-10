@@ -190,10 +190,18 @@ const DefaultLayout = ({ children }: IProps) => {
       {!user_session?.first_name ? (
         <h1 className='pb-12 pt-40 text-center'>Loading...</h1>
       ) : (
-        <h1 className='pb-12 pt-40 text-center'>
-          Hello {user_session?.first_name}, you are not authorized to view this
-          page
-        </h1>
+        <div className='flex flex-col items-center justify-center'>
+          <h1 className='pb-6 pt-40 text-center'>
+            Hello {user_session?.first_name}, you are not authorized to view
+            this page
+          </h1>
+          <button
+            className='rounded-md bg-blue-800 px-3 py-1.5 text-white'
+            onClick={() => router.push('/')}
+          >
+            Return to Home
+          </button>
+        </div>
       )}
     </div>
   );
