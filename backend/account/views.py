@@ -69,13 +69,21 @@ class LoginView(APIView):
         update_last_login(User, authUser)
         user: User = User.objects.get(username=authUser.get_username())
 
-        try:
-            # TODO: Fetch the school that the user is trying to access
-            # from a request header
-            school = School.objects.get(owner=user)
-            schoolData = SchoolSerializer(school).data
-        except School.DoesNotExist:
-            schoolData = None
+        school_id = request.headers.get("x-client-id", None)
+
+        if school_id is not None:
+            try:
+                school = School.objects.get(id=school_id)
+                schoolData = SchoolSerializer(school).data
+            except School.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST, data={"message" : "Invalid school_id"})
+        
+        else:
+            try:
+                school = School.objects.get(owner=user)
+                schoolData = SchoolSerializer(school).data
+            except School.DoesNotExist:
+                schoolData = None
 
         data = {
             "message": "Login Successful",
