@@ -1,20 +1,23 @@
 import BlankLayout from '@/components/Layouts/BlankLayout';
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { AuthenticationRoute } from '@/components/Layouts/AuthenticationRoute';
 import { showAlert } from '@/utility-methods/alert';
 import Link from 'next/link';
+import Loader from '@/components/Loader';
 
 const LoginBoxed = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const onSubmit = async (data: any) => {
+    setLoading(true);
     const result: any = await signIn('credentials', {
       username: data.email,
       password: data.password,
@@ -23,9 +26,11 @@ const LoginBoxed = () => {
     });
     if (result.ok) {
       showAlert('success', 'Logged in Successfuly');
+      setLoading(false);
       router.push('/admin-dashboard');
       return;
     } else {
+      setLoading(false);
       showAlert('error', 'An error occured');
     }
   };
@@ -58,12 +63,12 @@ const LoginBoxed = () => {
               />
             </div>
             <button type='submit' className='btn btn-primary w-full'>
-              SIGN IN
+            {loading ? <Loader /> : "SIGN IN"} 
             </button>
           </form>
-          <p className='text-center'>
+          <p className='py-6'>
             <Link
-              href='/auth/boxed-signup'
+              href='/password-reset'
               className='font-bold text-primary hover:underline ltr:ml-1 rtl:mr-1'
             >
               Forgot Password
