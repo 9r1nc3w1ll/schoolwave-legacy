@@ -1,14 +1,14 @@
-import { clientId } from '@/utility-methods/constants';
+import { clientId } from "@/utility-methods/constants";
 
 export const createSession = async (accessToken: string, data: any) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/session/session",
     {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
-        'x-client-id': clientId!,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -18,14 +18,14 @@ export const createSession = async (accessToken: string, data: any) => {
   if (res.ok) {
     return tempData;
   } else {
-    let msg = 'An error occured';
+    let msg = "An error occured";
 
     if (
-      tempData.message.split(' ')[tempData.message.split(' ').length - 1] ==
-        'exists.' ||
-      tempData.message.split(' ')[0] == 'duplicate'
+      tempData.message.split(" ")[tempData.message.split(" ").length - 1] ==
+        "exists." ||
+      tempData.message.split(" ")[0] == "duplicate"
     ) {
-      msg = 'Session already exists';
+      msg = "Session already exists";
     }
 
     return {
@@ -41,13 +41,13 @@ export const editSession = async (
   data: any
 ) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/session/session/" + id,
     {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
-        'x-client-id': clientId!,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -59,13 +59,13 @@ export const editSession = async (
 
 export const deleteSession = async (id: string, access_token: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/session/session/" + id,
     {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
-        'x-client-id': clientId!,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + access_token,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -75,13 +75,13 @@ export const deleteSession = async (id: string, access_token: string) => {
 
 export const getSession = async (accessToken: any) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/session/session",
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
-        'x-client-id': clientId!,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -92,13 +92,13 @@ export const getSession = async (accessToken: any) => {
 
 export const getSingleSession = async (id: any, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/session/session/' + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/session/session/" + id,
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
-        'x-client-id': clientId!,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -109,13 +109,13 @@ export const getSingleSession = async (id: any, accessToken?: string) => {
 
 export const getTerms = async (id: any, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/session/term?session_id=' + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/session/term?session_id=" + id,
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
-        'x-client-id': clientId!,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -126,13 +126,13 @@ export const getTerms = async (id: any, accessToken?: string) => {
 
 export const getAllTerms = async (accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/session/term',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/session/term",
     {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
-        'x-client-id': clientId!,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
     }
   );
@@ -143,13 +143,13 @@ export const getAllTerms = async (accessToken?: string) => {
 
 export const createTerm = async (data: any, accessToken?: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/session/term',
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/session/term",
     {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
-        'x-client-id': clientId!,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + accessToken,
+        "x-client-id": clientId!,
       },
       body: JSON.stringify(data),
     }
@@ -161,13 +161,13 @@ export const createTerm = async (data: any, accessToken?: string) => {
 
 export const deleteTerm = async (id: string, access_token: string) => {
   const res = await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_URL + '/session/term/' + id,
+    process.env.NEXT_PUBLIC_BACKEND_URL + "/session/term/" + id,
     {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'content-Type': 'application/json',
-        Authorization: 'Bearer ' + access_token,
-        'x-client-id': clientId!,
+        "content-Type": "application/json",
+        "Authorization": "Bearer " + access_token,
+        "x-client-id": clientId!,
       },
     }
   );

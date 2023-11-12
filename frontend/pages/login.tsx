@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { AuthenticationRoute } from '@/components/Layouts/AuthenticationRoute';
 import { showAlert } from '@/utility-methods/alert';
+import Link from 'next/link';
 
 const LoginBoxed = () => {
   const router = useRouter();
@@ -60,6 +61,14 @@ const LoginBoxed = () => {
               SIGN IN
             </button>
           </form>
+          <p className='text-center'>
+            <Link
+              href='/auth/boxed-signup'
+              className='font-bold text-primary hover:underline ltr:ml-1 rtl:mr-1'
+            >
+              Forgot Password
+            </Link>
+          </p>
         </div>
       </div>
     </AuthenticationRoute>
