@@ -7,7 +7,8 @@ import { requestPasswordReset } from '@/api-calls/password-reset';
 import { ReqestPasswordPayload } from '@/models/User';
 import { useMutation } from 'react-query';
 import { IClientError } from '@/types';
-import { Loader } from '@mantine/core';
+import Loader from '@/components/Loader';
+
 
 const PasswordReset = () => {
 
