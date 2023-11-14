@@ -7,6 +7,7 @@ export async function middleware (request: NextRequest) {
     step1: boolean;
     step2: boolean;
   }
+  const nextPath = request.nextUrl.pathname;
 
   const initCheckUrl = `${
     process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8000"
@@ -14,6 +15,8 @@ export async function middleware (request: NextRequest) {
   const step1Path = "/onboarding/step1";
   const step2Path = "/create-school";
   const loginPath = "/login";
+  const passwordResetPath = "/password-reset";
+  const changePasswordPath = "/change-password";
 
   if (
     request.nextUrl.pathname.match(
@@ -39,17 +42,27 @@ export async function middleware (request: NextRequest) {
   }
 
   if (status.step1 && !status.step2) {
-    if (!token && !request.nextUrl.pathname.startsWith(loginPath)) {
+    if (
+      !token &&
+      ![loginPath, passwordResetPath, changePasswordPath].some((path) =>
+        nextPath.startsWith(path)
+      )
+    ) {
       return NextResponse.redirect(new URL(loginPath, request.url));
     }
 
-    if (token && !request.nextUrl.pathname.startsWith(step2Path)) {
+    if (token && !nextPath.startsWith(step2Path)) {
       return NextResponse.redirect(new URL(step2Path, request.url));
     }
   }
 
   if (status.step1 && status.step2) {
-    if (!token && !request.nextUrl.pathname.startsWith(loginPath)) {
+    if (
+      !token &&
+      ![loginPath, passwordResetPath, changePasswordPath].some((path) =>
+        nextPath.startsWith(path)
+      )
+    ) {
       return NextResponse.redirect(new URL(loginPath, request.url));
     }
 

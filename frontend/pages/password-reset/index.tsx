@@ -1,33 +1,40 @@
 import BlankLayout from '@/components/Layouts/BlankLayout';
 import React from 'react';
-import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
-import { signIn } from 'next-auth/react';
 import { AuthenticationRoute } from '@/components/Layouts/AuthenticationRoute';
 import { showAlert } from '@/utility-methods/alert';
+import { requestPasswordReset } from '@/api-calls/password-reset';
+import { ReqestPasswordPayload } from '@/models/User';
+import { useMutation } from 'react-query';
+import { IClientError } from '@/types';
+import { Loader } from '@mantine/core';
 
 const PasswordReset = () => {
-  const router = useRouter();
+
+  const requestPassword = async (data: ReqestPasswordPayload) => {
+    const res = await requestPasswordReset(data);
+    return res;
+  };
+  const { mutate, isLoading } = useMutation(requestPassword, {
+    onSuccess: async () => {
+      showAlert('success', 'Password reset successfully sent to your mail ');
+    },
+    onError: (error: IClientError) => {
+      showAlert('error', error.message);
+    },
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const onSubmit = async (data: any) => {
-    const result: any = await signIn('credentials', {
-      username: data.email,
-      password: data.password,
-      redirect: false,
-      callbackUrl: '/',
-    });
-    if (result.ok) {
-      showAlert('success', 'Logged in Successfuly');
-      router.push('/admin_dashboard');
-      return;
-    } else {
-      showAlert('error', 'An error occured');
-    }
-  };
+  } = useForm<ReqestPasswordPayload>();
+
+  const onSubmit = handleSubmit(async (data: ReqestPasswordPayload) => {
+    mutate(data);
+  });
+
+
 
   return (
     <AuthenticationRoute>
@@ -37,7 +44,7 @@ const PasswordReset = () => {
           <p className='mb-7'>
             Enter your email to request for password request token
           </p>
-          <form className='space-y-5' onSubmit={handleSubmit(onSubmit)}>
+          <form className='space-y-5' onSubmit={onSubmit}>
             <div>
               <label htmlFor='email'>Email</label>
               <input
@@ -49,7 +56,7 @@ const PasswordReset = () => {
               />
             </div>
             <button type='submit' className='btn btn-primary w-full'>
-              Request Password Reset
+              {isLoading ? <Loader /> : 'Request Password Reset'}
             </button>
           </form>
         </div>

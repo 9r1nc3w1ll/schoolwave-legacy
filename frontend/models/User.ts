@@ -31,3 +31,14 @@ export interface IUser {
 export interface IUserResponse extends IUser {
   id: string;
 }
+
+export interface ReqestPasswordPayload {
+  email: string;
+}
+
+export interface ResetPassword {
+  password: string;
+  confirm_password: string;
+  hashed_email: string;
+  token: string;
+}

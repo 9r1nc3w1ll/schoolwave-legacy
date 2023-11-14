@@ -5,29 +5,47 @@ import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { AuthenticationRoute } from '@/components/Layouts/AuthenticationRoute';
 import { showAlert } from '@/utility-methods/alert';
+import { resetPassword } from '@/api-calls/password-reset';
+import { ResetPassword } from '@/models/User';
+import { useMutation } from 'react-query';
+import { IClientError } from '@/types';
+import { Loader } from '@mantine/core';
 
 const ChangePassword = () => {
   const router = useRouter();
+
+  const { hashed_email, reset_token } = router?.query;
+
+  const requestPassword = async (data: ResetPassword) => {
+    const res = await resetPassword(data);
+    return res;
+  };
+
+  const { mutate, isLoading } = useMutation(requestPassword, {
+    onSuccess: async () => {
+      showAlert('success', 'Password Successfully Updated');
+      router.push('/login');
+    },
+    onError: (error: IClientError) => {
+      showAlert('error', error.message);
+    },
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const onSubmit = async (data: any) => {
-    const result: any = await signIn('credentials', {
-      username: data.email,
-      password: data.password,
-      redirect: false,
-      callbackUrl: '/',
-    });
-    if (result.ok) {
-      showAlert('success', 'Logged in Successfuly');
-      router.push('/admin_dashboard');
-      return;
-    } else {
-      showAlert('error', 'An error occured');
-    }
-  };
+  } = useForm<ResetPassword>();
+
+  const onSubmit = handleSubmit(async (data: ResetPassword) => {
+    const payload: ResetPassword = {
+      hashed_email: hashed_email as string,
+      token: reset_token as string,
+      confirm_password: data?.confirm_password,
+      password: data?.password,
+    };
+    mutate(payload);
+  });
 
   return (
     <AuthenticationRoute>
@@ -35,7 +53,7 @@ const ChangePassword = () => {
         <div className='panel m-6 w-full max-w-lg sm:w-[480px]'>
           <h2 className='mb-3 text-2xl font-bold'>Change Password</h2>
           <p className='mb-7'>Enter New Password</p>
-          <form className='space-y-5' onSubmit={handleSubmit(onSubmit)}>
+          <form className='space-y-5' onSubmit={onSubmit}>
             <div>
               <label htmlFor='email'>New Password</label>
               <input
@@ -53,11 +71,14 @@ const ChangePassword = () => {
                 type='password'
                 className='form-input'
                 placeholder='Enter Email'
-                {...register('confirm-password', { required: true, maxLength: 80 })}
+                {...register('confirm_password', {
+                  required: true,
+                  maxLength: 80,
+                })}
               />
             </div>
             <button type='submit' className='btn btn-primary w-full'>
-              Request Password Reset
+              {isLoading ? <Loader /> : 'Request Password Reset'}
             </button>
           </form>
         </div>
