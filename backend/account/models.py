@@ -31,7 +31,8 @@ class User(BaseModel, AbstractUser):
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(null=True)
+
+    email = models.EmailField(null=True, unique=True)
     role = models.CharField(max_length=50, choices=USER_TYPES, default="student")
 
     
