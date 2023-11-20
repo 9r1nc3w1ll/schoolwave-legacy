@@ -10,7 +10,7 @@ import { formatDate } from '@/utility-methods/datey';
 import { useDispatch } from 'react-redux';
 import CreateSchool from '@/components/CreateSchool';
 import { getSchools } from '@/api-calls/schools';
-import SuperAdminLayout from '@/components/Layouts/SuperAdminLayout'
+import SuperAdminLayout from '@/components/Layouts/SuperAdminLayout';
 
 const col = [
   'id',
@@ -172,12 +172,9 @@ const CreateSchoolPage = (props: any) => {
                 sortable: true,
               },
               {
-                accessor: 'description',
-                title: 'Description',
+                accessor: 'school_id',
+                title: 'School ID',
                 sortable: true,
-                render: ({ description }) => (
-                  <div>{description === 'None' ? '-' : description}</div>
-                ),
               },
               {
                 accessor: 'owner_fullname',
@@ -185,20 +182,9 @@ const CreateSchoolPage = (props: any) => {
                 sortable: true,
               },
               {
-                accessor: 'date_of_establishment',
-                title: 'Date of establishment',
+                accessor: 'website_url',
+                title: 'Website URL',
                 sortable: true,
-                render: ({ date_of_establishment }) => (
-                  <div>{formatDate(date_of_establishment)}</div>
-                ),
-              },
-              {
-                accessor: 'motto',
-                title: 'Motto',
-                sortable: true,
-                render: ({ description }) => (
-                  <div>{description === 'None' ? '-' : description}</div>
-                ),
               },
             ]}
             totalRecords={initialRecords ? initialRecords.length : 0}
