@@ -116,4 +116,4 @@ class ProfilePhoto(BaseModel):
         on_delete=models.CASCADE,
         related_name="profile_photos"
     )
-    file = models.ImageField(upload_to="profile_pics", blank=True, null=True)
+    file_path = models.URLField()

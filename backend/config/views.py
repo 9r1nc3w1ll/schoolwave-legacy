@@ -7,6 +7,9 @@ from subject.models import Subject
 from account.models import User
 from parent.models import Family
 
+import boto3
+
+
 
 class HealthCheck(APIView):
     def get(self, request):
@@ -30,3 +33,16 @@ class CheckEntities(APIView):
         }
 
         return Response(data)
+
+
+class GetSignedURL(APIView):
+
+    def get(self, request, *args, **kwargs):
+
+        client = boto3.client('s3')
+        response = client.generate_presigned_post(
+            'get_object', 
+            Params={'Bucket': bucket_name, 'Key': objectpath}, 
+            HttpMethod="POST", 
+            ExpiresIn=3600
+        )

@@ -14,4 +14,3 @@ urlpatterns = [
         name="lesson_note_retrieve_update_destroy",
     ),
 ]
-

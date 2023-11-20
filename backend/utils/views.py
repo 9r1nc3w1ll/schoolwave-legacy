@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from utils.flutterwave import verify_flutterwave_tx, generate_random_number
+from utils.storages import S3Manager
 
 import hashlib
 import hmac
@@ -62,3 +63,16 @@ def get_user_location():
     except Exception as e:
         print("An error occurred:", str(e))
         return None
+
+
+
+
+class GeneratePresignedURLView(APIView):
+    def get(self, request):
+        object_name = request.GET.get('object_name')
+        object_type = request.GET.get('object_type')
+
+        s3_manager = S3Manager()
+        presigned_url = s3_manager.generate_presigned_url(settings.AWS_STORAGE_BUCKET_NAME, object_name, object_type)
+
+        return Response(presigned_url)

@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import LessonNote, File
+from .models import LessonNote, LessonNoteFile
 
 # Register your models here.
 admin.site.register(LessonNote)
-admin.site.register(File)
+admin.site.register(LessonNoteFile)

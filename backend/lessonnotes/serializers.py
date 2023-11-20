@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import LessonNote
+from .models import LessonNote, LessonNoteFile
+
 
 class LessonNoteSerializer(serializers.ModelSerializer):
     class_info = serializers.SerializerMethodField()
@@ -13,9 +14,15 @@ class LessonNoteSerializer(serializers.ModelSerializer):
         files = validated_data.pop("files", "")
 
         note = LessonNote.objects.create(**validated_data)
-        
-        for file in files:
-            note.files.set(file)
+
+        if files:
+            for file in files:
+                new_lesson_note = LessonNoteFile.objects.create(
+                    file_path = file,
+                    created_by = validated_data.get("created_by", None)
+                )
+                new_lesson_note.save()
+                note.files.add(file)
         
         note.save()
 

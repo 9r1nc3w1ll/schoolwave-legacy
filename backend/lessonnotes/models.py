@@ -13,7 +13,7 @@ class LessonNote(BaseModel):
     term = models.ForeignKey(Term, on_delete=models.CASCADE, blank=True, null=True)
     class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)
-    files = models.ManyToManyField('File', related_name='lesson_notes', blank=True)
+    files = models.ManyToManyField('LessonNoteFile', related_name='lesson_notes', blank=True)
     week = models.IntegerField(default=1)
     topic = models.CharField(max_length=150)
     description = models.TextField()
@@ -28,13 +28,12 @@ class LessonNote(BaseModel):
 
 
 
-class File(BaseModel):
+class LessonNoteFile(BaseModel):
 
     class Meta:
-        db_table = "files"
+        db_table = "lesson_note_files"
 
-    host = models.CharField(max_length=255)
-    file_path = models.CharField(max_length=255)
+    file_path = models.FileField(upload_to="lesson_notes", blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_files')
 
     def save(self, *args, **kwargs):
