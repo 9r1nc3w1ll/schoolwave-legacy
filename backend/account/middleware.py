@@ -24,14 +24,14 @@ def audit_log_middleware(get_response):
 
         response: Response = get_response(request)
 
-        if shouldRun and record:
-            record.status = response.status_text
-            record.status_code = response.status_code
-            view = resolve(request.path_info).func
+        # if shouldRun and record:
+        #     record.status = response.status_text
+        #     record.status_code = response.status_code
+        #     view = resolve(request.path_info).func
 
-            if hasattr(view, "kwargs"):
-                record.object_type = view.__class__.__name__
-                record.object_id = view.kwargs.get("pk")
+        #     if hasattr(view, "kwargs"):
+        #         record.object_type = view.__class__.__name__
+        #         record.object_id = view.kwargs.get("pk")
 
         return response
 
