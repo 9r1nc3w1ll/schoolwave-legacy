@@ -22,8 +22,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .tokens import password_reset_token
 
-
-from .models import PasswordResetRequest, User
+from rest_framework.parsers import MultiPartParser
+from .models import PasswordResetRequest, ProfilePhoto, User
 from .serializers import (
     AdminPasswordResetSerializer,
     LoginSerializer,
@@ -405,6 +405,9 @@ class RetrieveUpdateUserProfile(RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = "user_id"
+    parser_classes = [
+        MultiPartParser,
+    ]
     
     def get_object(self):
         return self.request.user
@@ -423,21 +426,27 @@ class RetrieveUpdateUserProfile(RetrieveUpdateAPIView):
         user_data = request.data.copy()
         
         # Pop the profile_photo data from the mutable copy
-        profile_photo_data = user_data.pop("profile_photo", None)
+
+        profile_photo_data = request.FILES.get("profile_photo", "")
+        
 
         serializer = UserSerializer(user, data=user_data, partial=True)
+
         if serializer.is_valid():
             if profile_photo_data:
                 # Update the profile photo if data is provided
-                profile_photo_serializer = ProfilePhotoSerializer(instance=user.profile_photo, data=profile_photo_data)
-                if profile_photo_serializer.is_valid():
-                    profile_photo_serializer.save()
+                photo = ProfilePhoto.objects.create(
+                    user=request.user,
+                    file=profile_photo_data
+                )
+                photo.save()
 
             user = serializer.save()
             message = "User Profile updated successfully."
+
             data = UserSerializer(user).data
 
-            return Response({"message": message, "data": data})
+            return Response({"message": message, "data": {**data, 'profile_photo': photo.file.url}})
 
         return Response({"message": "Invalid data.", "errors": serializer.errors})
 
