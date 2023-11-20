@@ -101,20 +101,22 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "config.urls"
 
-# AWS_ACCESS_KEY_ID = 'your-access-key-id'
-# AWS_SECRET_ACCESS_KEY = 'your-secret-access-key'
-# AWS_STORAGE_BUCKET_NAME = 'your-bucket-name'
-# AWS_S3_REGION_NAME = 'your-s3-region'
-# AWS_S3_ENDPOINT_URL = 'your-s3-endpoint-url'
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', 'AKIAXNYMAJWJZZAQZVYP')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', 'J11YqsZKfUmyXwhIFisdAGadVwpW6IvhfBwFSE22')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME', 'schwave-staging-001')
+AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', 'eu-central-1')
+AWS_S3_SIGNATURE_VERSION = config('AWS_S3_SIGNATURE_VERSION', 's3v4')
+AWS_S3_ENDPOINT_URL = 'https://s3.eu-central-1.amazonaws.com'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = 'private'
+AWS_S3_VERIFY = True
+AWS_S3_ADDRESSING_STYLE = "virtual"
 
-# AWS_S3_CUSTOM_DOMAIN = 'your-custom-domain'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
 
-
-# AWS_S3_OBJECT_PARAMETERS = {
-#     'CacheControl': 'max-age=86400',
-# }
-
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 TEMPLATES = [
     {
