@@ -127,14 +127,22 @@ class RefreshAuthUser(APIView):
         }
     )
     def get(self, request, *args, **kwargs):
-        try:
-            # TODO: Fetch the school that the user is trying to access
-            # from a request header
-            school = School.objects.get(owner=request.user)
-            schoolData = SchoolSerializer(school).data
-        except School.DoesNotExist:
-            schoolData = None
+        school_id = request.headers.get("x-client-id", "")
 
+        if school_id:
+            try:
+                school = School.objects.get(id=school_id)
+                schoolData = SchoolSerializer(school).data
+            except School.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST, data={"message" : "Invalid school_id"})
+        
+        else:
+            try:
+                school = School.objects.get(owner=request.user)
+                schoolData = SchoolSerializer(school).data
+            except School.DoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST, data={"message" : "Invalid school_id"})
+            
         data = {
             "message": "User refresh successful",
             "data": {
