@@ -13,11 +13,17 @@ import EditParent from '@/components/EditParent';
 import { useSession } from 'next-auth/react';
 import UploadAdmission from '@/components/UploadFile';
 import BulkAdmission from '@/components/BulkAdmission';
-import { getAdmissions, updateAdmission } from '@/api-calls/admissions';
+import {
+  getAdmissions,
+  updateAdmission,
+  updateAdmissionSingle,
+} from '@/api-calls/admissions';
 import { formatDate } from '@/utility-methods/datey';
 import { showAlert } from '@/utility-methods/alert';
 import { ResponseInterface } from '@/types';
 import { TAdmissionResponse } from '@/models/Admission';
+import { ActionIcon, CheckIcon } from '@mantine/core';
+import BulkAdmissionDropDown from '@/components/BulkAdmissionDropDown';
 
 const col = [
   'id',
@@ -30,8 +36,14 @@ const col = [
   'phone',
   'date_of_birth',
 ];
+interface Record {
+  id: string; // Assuming 'id' is a number
+  // Other properties...
+}
 
 const Export = (props: any) => {
+  const [recordIndex, setRecordIndex] = useState(0);
+  const [recordRow, setRecordRow] = useState<Record | null>(null);
   const router = useRouter();
   const { status: sessionStatus, data: user_session } = useSession();
   const {
@@ -44,14 +56,46 @@ const Export = (props: any) => {
     () => getAdmissions(user_session?.access_token!),
     { enabled: false }
   );
-  const { mutate, isLoading, error } = useMutation(
+  const {
+    mutate: update,
+    isLoading,
+    error,
+  } = useMutation(
     (data: any): any => {
+      const recordID: string[] = selectedRecords.map((rec: Record) => rec.id);
       return updateAdmission(
-        selectedRecords[0].id,
+        recordID,
         data,
         user_session?.access_token,
         user_session?.school?.id
       );
+    },
+    {
+      onSuccess: async (data: string) => {
+        if (!(data === 'Bulk update successful')) {
+          showAlert('success', 'Admission updated Successfully');
+          refetch();
+        } else {
+          showAlert('error', 'An error occured');
+        }
+      },
+      onError: (error: any) => {
+        showAlert('error', 'An Error Occured');
+      },
+    }
+  );
+
+  const { mutate: updateSingle } = useMutation(
+    (data: any): any => {
+      if (recordRow) {
+        const { id } = recordRow;
+        return updateAdmissionSingle(
+          id,
+          data,
+          user_session?.access_token,
+          user_session?.school?.id
+        );
+      }
     },
     {
       onSuccess: async (data: ResponseInterface<TAdmissionResponse>) => {
@@ -275,60 +319,65 @@ const Export = (props: any) => {
             Admissions
           </h5>
           <div className='flex flex-wrap items-center'>
-            <button
-              type='button'
-              onClick={() => {
-                if (canEdit()) {
-                  mutate(true);
-                }
-              }}
-              className={`btn ${
-                canEdit() ? 'btn-success' : ' bg-grey'
-              } btn-sm m-1 `}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={1.5}
-                stroke='currentColor'
-                className='mr-2 h-5 w-5'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12'
-                />
-              </svg>
-              Approve
-            </button>
-            <button
-              type='button'
-              onClick={() => {
-                if (canEdit()) {
-                  mutate(false);
-                }
-              }}
-              className={`btn ${
-                canEdit() ? 'btn-danger' : ' bg-grey'
-              } btn-sm m-1 `}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={1.5}
-                stroke='currentColor'
-                className='mr-2 h-5 w-5'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z'
-                />
-              </svg>
-              Decline
-            </button>
+            {selectedRecords.length > 1 ? (
+              <div className='flex items-center'>
+                <button
+                  type='button'
+                  onClick={() => {
+                    if (selectedRecords.length > 1) {
+                      update(true);
+                    }
+                  }}
+                  className={`btn ${
+                    selectedRecords.length > 1 ? 'btn-success' : ' bg-grey'
+                  } btn-sm m-1 `}
+                >
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='mr-2 h-5 w-5'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      d='M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12'
+                    />
+                  </svg>
+                  Approve
+                </button>
+
+                <button
+                  type='button'
+                  onClick={() => {
+                    if (selectedRecords.length > 1) {
+                      update(false);
+                    }
+                  }}
+                  className={`btn ${
+                    selectedRecords.length > 1 ? 'btn-danger' : ' bg-grey'
+                  } btn-sm m-1 `}
+                >
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='mr-2 h-5 w-5'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      d='M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z'
+                    />
+                  </svg>
+                  Decline
+                </button>
+              </div>
+            ) : null}
             <button
               type='button'
               onClick={() => setuploadModal(true)}
@@ -374,6 +423,9 @@ const Export = (props: any) => {
               </svg>
               Create Admission
             </button>
+            {/* <div className='m-1'>
+              <BulkAdmissionDropDown size={8} />
+            </div> */}
 
             <Transition appear show={modal} as={Fragment}>
               <Dialog as='div' open={modal} onClose={() => setmodal(false)}>
@@ -456,6 +508,7 @@ const Export = (props: any) => {
         <div className='datatables'>
           <DataTable
             highlightOnHover
+            textSelectionDisabled
             className='table-hover whitespace-nowrap'
             records={recordsData}
             columns={[
@@ -493,6 +546,26 @@ const Export = (props: any) => {
                 sortable: true,
                 render: ({ created_at }) => <div>{formatDate(created_at)}</div>,
               },
+              {
+                accessor: 'action',
+                title: '',
+                render: () => (
+                  <ActionIcon
+                    size='sm'
+                    variant='subtle'
+                    color='blue'
+                    id=''
+                    onClick={(e: React.MouseEvent) => {
+                      // e.stopPropagation();
+                    }}
+                  >
+                    <BulkAdmissionDropDown
+                      updateSingle={updateSingle}
+                      size={5}
+                    />
+                  </ActionIcon>
+                ),
+              },
             ]}
             totalRecords={initialRecords ? initialRecords.length : 0}
             recordsPerPage={pageSize}
@@ -506,9 +579,12 @@ const Export = (props: any) => {
             paginationText={({ from, to, totalRecords }) =>
               `Showing  ${from} to ${to} of ${totalRecords} entries`
             }
-            onRowClick={(x: any) => router.push('#')}
             selectedRecords={selectedRecords}
             onSelectedRecordsChange={setSelectedRecords}
+            onRowClick={(record, recordIndex) => {
+              setRecordIndex(recordIndex);
+              setRecordRow(record);
+            }}
           />
         </div>
       </div>

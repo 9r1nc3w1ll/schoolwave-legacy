@@ -131,7 +131,7 @@ const CreateAdmission = (props: any) => {
               <input {...register('email')} className='form-input' />
             </div>
             <div className='my-3'>
-              <label htmlFor='username'> User Name </label>
+              <label htmlFor='username'> Student ID </label>
               <input
                 className='form-input'
                 {...register('username', {

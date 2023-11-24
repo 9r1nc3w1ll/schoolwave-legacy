@@ -98,6 +98,38 @@ export const getAdmissions = async (accessToken?: string) => {
 };
 
 export const updateAdmission = async (
+  id: Array<string>,
+  approve: boolean,
+  accessToken?: string,
+  schoolID?: string
+) => {
+  const body = {
+    data: { status: approve ? 'approved' : 'denied' },
+    ids: id,
+  };
+
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_BACKEND_URL + '/admission/batch_update_requests',
+    {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + accessToken,
+        'X-Client-Id': clientId!,
+      },
+    }
+  );
+  const tempData = (await res.json()) as ResponseInterface<TAdmissionResponse>;
+
+  if (res.ok) {
+    return tempData.data;
+  } else {
+    return { error: true };
+  }
+};
+
+export const updateAdmissionSingle = async (
   id: string,
   approve: boolean,
   accessToken?: string,
@@ -105,7 +137,7 @@ export const updateAdmission = async (
 ) => {
   const body = {
     status: approve ? 'approved' : 'denied',
-    school: schoolID,
+    ids: schoolID,
   };
 
   const res = await fetch(
