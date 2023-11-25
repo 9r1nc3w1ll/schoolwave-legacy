@@ -37,8 +37,7 @@ const col = [
   'date_of_birth',
 ];
 interface Record {
-  id: string; // Assuming 'id' is a number
-  // Other properties...
+  id: string; 
 }
 
 const Export = (props: any) => {

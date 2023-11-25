@@ -124,8 +124,6 @@ export const updateAdmission = async (
 
   if (res.ok) {
     return tempData.data;
-  } else {
-    return { error: true };
   }
 };
 
