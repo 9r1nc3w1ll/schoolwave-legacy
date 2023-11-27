@@ -67,6 +67,8 @@ class AdmissionRequestSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         status = validated_data.get("status", "")
 
-        if status == "approved" and instance.status == "approved":
-            raise serializers.ValidationError("Request already approved.")
+        if status:
+            if instance.status == "approved":
+                if status == "approved" or status == "declined":
+                    raise serializers.ValidationError("Request has been approved.")
         return super().update(instance, validated_data)
