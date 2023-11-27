@@ -34,6 +34,7 @@ class LessonNoteFile(BaseModel):
         db_table = "lesson_note_files"
 
     file_path = models.FileField(upload_to="lesson_notes", blank=True, null=True)
+    # file_path = models.URLField(blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_files')
 
     def save(self, *args, **kwargs):

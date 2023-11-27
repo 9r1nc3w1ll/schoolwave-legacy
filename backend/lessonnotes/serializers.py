@@ -8,25 +8,13 @@ class LessonNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = LessonNote
         fields = '__all__'
+        extra_kwargs={'files' : {'read_only' : True}}
     
+    def validate(self, attrs):
+        files = attrs.pop("files", None)
 
-    def create(self, validated_data):
-        files = validated_data.pop("files", "")
+        return super().validate(attrs)
 
-        note = LessonNote.objects.create(**validated_data)
-
-        if files:
-            for file in files:
-                new_lesson_note = LessonNoteFile.objects.create(
-                    file_path = file,
-                    created_by = validated_data.get("created_by", None)
-                )
-                new_lesson_note.save()
-                note.files.add(file)
-        
-        note.save()
-
-        return note
 
     def get_class_info(self, obj):
         data = {
@@ -38,3 +26,7 @@ class LessonNoteSerializer(serializers.ModelSerializer):
         if data:
             return data
         return None
+
+
+class LessonNoteFileSerializer(serializers.Serializer):
+    note_id = serializers.UUIDField()

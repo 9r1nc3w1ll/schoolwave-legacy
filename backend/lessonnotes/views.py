@@ -1,9 +1,11 @@
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import LessonNote
+from rest_framework.views import APIView
+from .models import LessonNote, LessonNoteFile
 from .serializers import LessonNoteSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser
 
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse, OpenApiExample
 
@@ -21,6 +23,9 @@ class ListCreateLessonNote(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = LessonNote.objects.all()
     serializer_class = LessonNoteSerializer
+    parser_classes = [
+        MultiPartParser
+    ]
 
     def get_queryset(self):
         qs = self.queryset.all()
@@ -50,26 +55,31 @@ class ListCreateLessonNote(ListCreateAPIView):
     def create(self, request, *args, **kwargs):
 
 
-        serializer = LessonNoteSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            
-            message = "Lesson Note created successfully."
-            
-            headers = self.get_success_headers(serializer.data)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-            resp = {
-                    "message": message,
-                    "data": serializer.data,
-                }
-            return Response(resp, status=status.HTTP_201_CREATED, headers=headers)
+        note = serializer.save()
 
-        else:
-            resp = {
-                "message": "Invalid data.",
-                "errors": serializer.errors,
-            }
-            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+        
+        files = request.FILES.getlist("files", "")
+
+        if files:
+            for file in files:
+                new_lesson_note = LessonNoteFile.objects.create(
+                    file_path = file,
+                    created_by = note.created_by
+                )
+                new_lesson_note.save()
+                
+                note.files.add(new_lesson_note)
+        
+        note.save()
+
+        resp = {
+            "message" : "Note created successfully",
+            "data" : serializer.data
+        }
+        return Response(resp, status=status.HTTP_400_BAD_REQUEST)
     
     
     def list(self, request, *args, **kwargs):
@@ -88,6 +98,47 @@ class ListCreateLessonNote(ListCreateAPIView):
         }
         return Response(resp)
 
+
+class UploadLessonNoteFile(APIView):
+    parser_classes = [
+        MultiPartParser
+    ]
+    permission_classes = [IsAuthenticated]
+    queryset = LessonNoteFile.objects.all()
+
+
+    def post(self, request, *args, **kwargs):
+
+        
+        note_id = request.data.get("note_id", "")
+        files = request.FILES.getlist("files", "")
+        created_by = request.data.get("created_by", request.user.id)
+
+        if not note_id and not files:
+            return Response(data={"error" : "Note id and files are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            note = LessonNote.objects.get(id=note_id)
+        except LessonNote.DoesNotExist:
+            return Response(data={"error" : "Invalid note id"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if files:
+            for file in files:
+                new_lesson_note = LessonNoteFile.objects.create(
+                    file_path = file,
+                    created_by_id = created_by
+                )
+                new_lesson_note.save()
+                
+                note.files.add(new_lesson_note)
+            note.save()
+        
+        resp = {
+            "message" : "File uploaded successfully",
+            "data" : LessonNoteSerializer(note).data
+        }
+
+        return Response(resp)
 
 class RetrieveUpdateDestoryLessonNote(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
