@@ -18,14 +18,18 @@ User = get_user_model()
 
 class AuthenticationTestCase(APITestCase):
     def setUp(self):
-        self.user = User.objects.create(username="username")
-        self.user.set_password("password")
-        self.user.save()
+        self.user = User.objects.create_user(username="username", password="password")
+        self.school = School.objects.create(
+            name="Test School",
+            owner=self.user,
+            date_of_establishment=datetime.now().date(),
+        )
 
     def test_user_login(self):
         data = {"username": "username", "password": "password"}
 
-        response = self.client.post(reverse("user_login"), data)
+        response = self.client.post(reverse("user_login"), data, HTTP_X_CLIENT_ID=self.school.id)
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_user_login_with_incorrect_credentials(self):

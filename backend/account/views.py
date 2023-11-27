@@ -432,6 +432,8 @@ class RetrieveUpdateUserProfile(RetrieveUpdateAPIView):
 
         serializer = UserSerializer(user, data=user_data, partial=True)
 
+        photo_url = None
+        
         if serializer.is_valid():
             if profile_photo_data:
                 # Update the profile photo if data is provided
@@ -441,12 +443,14 @@ class RetrieveUpdateUserProfile(RetrieveUpdateAPIView):
                 )
                 photo.save()
 
+                photo_url = photo.file.url
+
             user = serializer.save()
             message = "User Profile updated successfully."
 
             data = UserSerializer(user).data
 
-            return Response({"message": message, "data": {**data, 'profile_photo': photo.file.url}})
+            return Response({"message": message, "data": {**data, 'profile_photo': photo_url}})
 
         return Response({"message": "Invalid data.", "errors": serializer.errors})
 
