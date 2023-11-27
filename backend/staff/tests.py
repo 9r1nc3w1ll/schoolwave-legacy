@@ -74,6 +74,7 @@ class StaffAPITestCase(APITestCase):
         data = dict(
             username="newuser", 
             password="newpassword", 
+            email="email@email.com",
             first_name="user_firstname", 
             last_name="User_last_name",
             title="Staff Title",
@@ -82,6 +83,8 @@ class StaffAPITestCase(APITestCase):
         )
 
         response = self.client.post(url, data, format="json", HTTP_X_CLIENT_ID=self.school.id)
+
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["message"], "Staff created successfully.")
 

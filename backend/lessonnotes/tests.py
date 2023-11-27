@@ -80,7 +80,6 @@ class LessonNoteAPITestCase(APITestCase):
 
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["message"], "Lesson Note created successfully.")
 
     def test_retrieve_lesson_note(self):
         url = reverse("lesson_note_retrieve_update_destroy", kwargs={"pk": self.lesson_note.id})

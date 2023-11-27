@@ -79,7 +79,7 @@ class ListCreateLessonNote(ListCreateAPIView):
             "message" : "Note created successfully",
             "data" : serializer.data
         }
-        return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+        return Response(resp, status=status.HTTP_201_CREATED)
     
     
     def list(self, request, *args, **kwargs):

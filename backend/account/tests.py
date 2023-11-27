@@ -80,6 +80,7 @@ class UserCRUDTestCase(APITestCase):
 
         data = {"username": "newuser", 
                 "password": "newpassword", 
+                "email" : "email@email.com",
                 "first_name":"user_firstname", 
                 "last_name":"User_last_name",
                 "school":self.school.id}
