@@ -117,6 +117,11 @@ class UserSerializer(serializers.ModelSerializer):
         exclude = ["groups", "user_permissions", "deleted_at"]
     
     def create(self, validated_data):
+        email = validated_data.get("email")
+
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError("Emails must be unique.")
+        
         user = User(**validated_data)
         user.set_password(validated_data["password"])
         user.save()

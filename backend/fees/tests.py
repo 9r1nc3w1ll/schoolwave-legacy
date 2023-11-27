@@ -17,7 +17,6 @@ User = get_user_model()
 
 class FeeItemTestCase(APITestCase):
     def setUp(self):
-        self.client = APIClient()
 
         self.user = User.objects.create_user(
             username="testuser", password="testpassword", role="owner"
@@ -50,6 +49,8 @@ class FeeItemTestCase(APITestCase):
         self.fee_template = FeeTemplate.objects.create(
             school=self.school, class_id=self.class_obj, discount=self.discount
         )
+
+        self.client = APIClient(HTTP_X_CLIENT_ID=self.school.id)
 
     
     def test_create_fee_item(self):
@@ -98,8 +99,6 @@ class FeeItemTestCase(APITestCase):
 
 class FeeTemplateTestCase(APITestCase):
     def setUp(self):
-        self.client = APIClient()
-
         self.user = User.objects.create_user(
             username="testuser", password="testpassword", role="owner"
         )
@@ -131,6 +130,8 @@ class FeeTemplateTestCase(APITestCase):
         self.fee_template = FeeTemplate.objects.create(
             school=self.school, class_id=self.class_obj, discount=self.discount
         )
+
+        self.client = APIClient(HTTP_X_CLIENT_ID=self.school.id)
 
     
     def test_create_fee_template(self):
@@ -184,8 +185,6 @@ class FeeTemplateTestCase(APITestCase):
 
 class InvoiceTestCase(APITestCase):
     def setUp(self):
-        self.client = APIClient()
-
         self.user = User.objects.create_user(
             username="testuser", password="testpassword", role="owner"
         )
@@ -244,6 +243,8 @@ class InvoiceTestCase(APITestCase):
         self.invoice = Invoice.objects.create(
             school=self.school, template=self.fee_template, student=self.student
         )
+
+        self.client = APIClient(HTTP_X_CLIENT_ID=self.school.id)
 
     
     def test_create_invoice(self):
@@ -309,8 +310,6 @@ class InvoiceTestCase(APITestCase):
 
 class DiscountTestCase(APITestCase):
     def setUp(self):
-        self.client = APIClient()
-
         self.user = User.objects.create_user(
             username="testuser", password="testpassword", role="owner"
         )
@@ -342,6 +341,8 @@ class DiscountTestCase(APITestCase):
         self.fee_template = FeeTemplate.objects.create(
             school=self.school, class_id=self.class_obj, discount=self.discount
         )
+
+        self.client = APIClient(HTTP_X_CLIENT_ID=self.school.id)
 
     
     def test_create_discount(self):
@@ -391,8 +392,6 @@ class DiscountTestCase(APITestCase):
 
 class TransactionTestCase(APITestCase):
     def setUp(self):
-        self.client = APIClient()
-
         self.user = User.objects.create_user(
             username="testuser", password="testpassword", role="owner"
         )
@@ -434,6 +433,8 @@ class TransactionTestCase(APITestCase):
             invoice_id=self.invoice.id,
             school=self.school
         )
+
+        self.client = APIClient(HTTP_X_CLIENT_ID=self.school.id)
 
     
     def test_create_transaction(self):

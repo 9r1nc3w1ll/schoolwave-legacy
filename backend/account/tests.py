@@ -29,7 +29,6 @@ class AuthenticationTestCase(APITestCase):
         data = {"username": "username", "password": "password"}
 
         response = self.client.post(reverse("user_login"), data, HTTP_X_CLIENT_ID=self.school.id)
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_user_login_with_incorrect_credentials(self):

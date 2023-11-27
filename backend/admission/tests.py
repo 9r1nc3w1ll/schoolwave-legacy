@@ -23,6 +23,7 @@ class BatchUploadAdmissionRequestTestCase(TestCase):
         with open("admission/sample_admission_requests.csv") as csv:
             response = self.client.post(
                 path=url,
+                HTTP_X_CLIENT_ID=self.school.id,
                 data={"school_id": self.school.id, "csv": csv},
             )
 
@@ -75,7 +76,7 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_list_admission_requests(self):
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, HTTP_X_CLIENT_ID=self.school.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["data"]), 2)
 
@@ -93,7 +94,7 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
             "school": self.school.id
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(url, data, format="json", HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
     
@@ -109,7 +110,7 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
             }
         }
 
-        response = self.client.patch(url, data, format="json")
+        response = self.client.patch(url, data, format="json", HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(AdmissionRequest.objects.get(id=self.addmission_request_1.id).status, "approved")
@@ -140,7 +141,7 @@ class RUDAdmissionRequestsTestCase(TestCase):
         )
 
     def test_retrieve_admission_request(self):
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["data"]["id"], str(self.admission_request.id))
@@ -148,7 +149,7 @@ class RUDAdmissionRequestsTestCase(TestCase):
     def test_update_admission_request(self):
         data = {"status": "approved", "comment_if_declined": ""}
 
-        response = self.client.patch(self.url, data=data, format="json")
+        response = self.client.patch(self.url, data=data, format="json", HTTP_X_CLIENT_ID=self.school.id)
         updated_admission_request = AdmissionRequest.objects.get(
             id=self.admission_request.id
         )
@@ -157,7 +158,7 @@ class RUDAdmissionRequestsTestCase(TestCase):
         self.assertEqual(updated_admission_request.status, "approved")
 
     def test_delete_admission_request(self):
-        response = self.client.delete(self.url)
+        response = self.client.delete(self.url, HTTP_X_CLIENT_ID=self.school.id)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(AdmissionRequest.objects.count(), 0)
