@@ -19,6 +19,7 @@ User = get_user_model()
 class AuthenticationTestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="username", password="password")
+        self.user_non_owner = User.objects.create_user(username="non_owner", password="password")
         self.school = School.objects.create(
             name="Test School",
             owner=self.user,
@@ -30,6 +31,30 @@ class AuthenticationTestCase(APITestCase):
 
         response = self.client.post(reverse("user_login"), data, HTTP_X_CLIENT_ID=self.school.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+
+    def test_refresh_user_with_school_id(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(reverse("refresh_auth_user"), HTTP_X_CLIENT_ID=self.school.id)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["data"]["school"]["id"], str(self.school.id))
+
+    def test_refresh_user_without_school_id(self):
+        self.client.force_authenticate(user=self.user_non_owner)
+        response = self.client.get(reverse("refresh_auth_user"))
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data["message"], "Invalid school_id")
+    
+
+    def test_refresh_school_owner_without_school_id(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(reverse("refresh_auth_user"))
+
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["data"]["school"]["id"], str(self.school.id))
 
     def test_user_login_with_incorrect_credentials(self):
         data = {"username": "username", "password": "wrongpassword"}

@@ -16,7 +16,20 @@ class SchoolAPITestCase(APITestCase):
     def setUp(self) -> None:
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username="testuser", password="testpassword"
+            username="testuser", password="testpassword", email="test@test.com",
+            first_name="Naruto", last_name="Uzumaki", 
+        )
+        self.super_user = User.objects.create_superuser(username="superuser", password="password123")
+
+        self.school = School.objects.create(
+            name="Test School",
+            owner=self.user,
+            description="Test",
+            logo_file_name="Test",
+            motto="Test",
+            tag="test",
+            website_url="https://test.com",
+            date_of_establishment=datetime.now().date(),
         )
 
     def test_setup_status_no_user_no_school(self):
@@ -27,6 +40,7 @@ class SchoolAPITestCase(APITestCase):
     def test_create_admin(self):
         url = reverse("register_admin")
         self.user.delete()
+        self.super_user.delete()
 
         data = {
             "username": "name1",
@@ -41,6 +55,8 @@ class SchoolAPITestCase(APITestCase):
 
     def test_create_school(self):
         url = reverse("create_school")
+        self.school.delete()
+
         self.client.force_authenticate(user=self.user)
         data = {
             "name": "Example School",
@@ -55,6 +71,31 @@ class SchoolAPITestCase(APITestCase):
         response = self.client.post(url, data=data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    
+
+    def test_admin_list_schools(self):
+        self.client.force_authenticate(user=self.super_user)
+
+        response = self.client.get(reverse("school-list"))
+
+        self.assertEqual(response.status_code, 200)
+        
+        data = response.data["data"]
+
+        self.assertIsInstance(data, list)
+
+        for item in data:
+            
+            item.pop("deleted_at", "")
+            item.pop("updated_at", "")
+
+            for key, value in item.items():
+                self.assertIsNotNone(value, f"Field '{key}' in dictionary {item} is None")
+
+                
+                if isinstance(value, str):
+                    self.assertNotEqual(value.strip(), "", f"Field '{key}' in dictionary {item} is an empty string")
+        
 
 
 class ClassTests(APITestCase):
