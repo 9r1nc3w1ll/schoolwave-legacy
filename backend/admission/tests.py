@@ -64,6 +64,14 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
             date_of_birth=datetime.now(),
         )
 
+        self.student_info_3 = StudentInformation.objects.create(
+            username="student4",
+            password="testpass",
+            first_name="John",
+            last_name="Doe",
+            date_of_birth=datetime.now(),
+        )
+
         # Create an admission request
         self.addmission_request_1 = AdmissionRequest.objects.create(
             status="pending", student_info=self.student_info, school=self.school
@@ -73,12 +81,16 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
             status="denied", student_info=self.student_info_2, school=self.school
         )
 
+        self.addmission_request_3 = AdmissionRequest.objects.create(
+            status="approved", student_info=self.student_info_3, school=self.school
+        )
+
         self.client.force_authenticate(user=self.user)
 
     def test_list_admission_requests(self):
         response = self.client.get(self.url, HTTP_X_CLIENT_ID=self.school.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data["data"]), 2)
+        self.assertEqual(len(response.data["data"]), 3)
 
     def test_create_single_admission_request(self):
         url = reverse("create_single_admission")
@@ -115,7 +127,23 @@ class ListCreateAdmissionRequestsTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(AdmissionRequest.objects.get(id=self.addmission_request_1.id).status, "approved")
         self.assertEqual(AdmissionRequest.objects.get(id=self.addmission_request_2.id).status, "approved")
+    
+    def test_prevent_updating_approved_request(self):
+        url = reverse("batch_update_requests")
+        self.client.force_authenticate(user=self.user)
 
+        data = {
+            "ids": [self.addmission_request_3.id,],
+            "data": {
+                "status": "denied",
+                "comment_if_declined": "Updated comment"
+            }
+        }
+
+        response = self.client.patch(url, data, format="json", HTTP_X_CLIENT_ID=self.school.id)
+        print(response.data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class RUDAdmissionRequestsTestCase(TestCase):

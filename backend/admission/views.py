@@ -81,6 +81,9 @@ class BatchUpdateAdmissionRequests(APIView):
 
         for admission_request in admission_requests:
             
+            if admission_request.status == "approved":
+                return Response({"error": f"Admission {admission_request.id} has been approved."}, status=status.HTTP_400_BAD_REQUEST)
+
             serializer = self.serializer_class(admission_request, data=data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
