@@ -15,7 +15,7 @@ services:
       - key: FRONTEND_URL
         value: https://schoolwave-staging.vercel.app
       - key: ALLOWED_HOSTS
-        value: vercel.app,sw-api-staging-68z1.onrender.com
+        value: sw-api-staging-68z1.onrender.com
       - key: PYTHON_VERSION
         value: 3.9.10
       - key: DATABASE_NAME
